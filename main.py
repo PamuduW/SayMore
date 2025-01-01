@@ -5,9 +5,11 @@ app = FastAPI()
 
 @app.get("/")
 async def root():
-    return {"message": "Hello World"}
+    return {"message": "Backend of the SayMore app"}
 
 
-@app.get("/hello/{name}")
-async def say_hello(name: str):
-    return {"message": f"Hello {name}"}
+@app.get("/test/{test_type}")
+async def say_hello(test_type: int):
+    return {"message": f"Hello {test_type}"}
+
+
