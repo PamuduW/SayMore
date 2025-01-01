@@ -1,0 +1,7 @@
+fastapi
+uvicorn
+firebase-admin
+torch
+librosa
+numpy
+python-multipart
