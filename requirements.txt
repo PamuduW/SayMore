@@ -1,7 +1,2 @@
 fastapi
 uvicorn
-firebase-admin
-torchvision
-librosa
-numpy
-python-multipart
