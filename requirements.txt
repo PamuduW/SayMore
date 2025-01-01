@@ -1,7 +1,7 @@
 fastapi
 uvicorn
 firebase-admin
-torch
+torchvision
 librosa
 numpy
 python-multipart
