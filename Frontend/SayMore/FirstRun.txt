@@ -1,0 +1,2 @@
+on the first run give a "npm i" command
+then npx react-native run-android
