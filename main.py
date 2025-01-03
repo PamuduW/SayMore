@@ -19,6 +19,7 @@ async def root():
 @app.post("/test/{acc_id}")
 async def test(acc_id: str, file: UploadFile = File(...)):
     try:
+        # upload the file straight from the frontend and have it send the file_name
         file_id = str(uuid.uuid4())
         file_name = f"test/{acc_id}+{file_id}.wav"
 
@@ -26,14 +27,12 @@ async def test(acc_id: str, file: UploadFile = File(...)):
         blob = bucket.blob(file_name)
         blob.upload_from_string(await file.read(), content_type=file.content_type)
 
-        analysis_result = analyze_audio(file_id,file)
+        analysis_result = analyze_audio(file_id)
 
         doc_ref = db.collection("User_Accounts").document(acc_id)
         doc_ref.update({"results": ArrayUnion([analysis_result])})
 
         # blob.delete()
-
         return {"result": analysis_result}
-
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
