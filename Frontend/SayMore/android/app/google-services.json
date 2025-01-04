@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "290999401549",
+    "project_id": "saymore-340e9",
+    "storage_bucket": "saymore-340e9.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:290999401549:android:ed5811cf2be867c9a0b004",
+        "android_client_info": {
+          "package_name": "com.saymore"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "290999401549-a5105uaonnckmle3lbrcoce6l0qhfps2.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.saymore",
+            "certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"
+          }
+        },
+        {
+          "client_id": "290999401549-28sv0ta1mhh68drtsi40nr5vmlvnpoa6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCVuOKH7hcfdf67XU5iVkrt2o31S5DKGk0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "290999401549-28sv0ta1mhh68drtsi40nr5vmlvnpoa6.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
