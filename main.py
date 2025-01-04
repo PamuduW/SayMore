@@ -37,12 +37,12 @@ async def test(acc_id: str, file: UploadFile = File(...)):
         blob = bucket.blob(file_name)
         blob.download_to_filename(local_file)
 
-        analysis_result, mfccs = analyze_audio(local_file)
+        analysis_result= analyze_audio(local_file)
 
         doc_ref = db.collection("User_Accounts").document(acc_id)
         doc_ref.update({"results": ArrayUnion([analysis_result])})
 
-        # blob.delete()
-        return {"result": analysis_result, "mfccs": str(mfccs)}
+        blob.delete()
+        return {"result": analysis_result}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
