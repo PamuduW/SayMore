@@ -7,7 +7,7 @@ import os
 
 app = FastAPI()
 
-cred = credentials.Certificate("saymore-340e9-firebase-adminsdk-aaxo4-0c2888eda4.json")
+cred = credentials.Certificate("saymore-340e9-firebase-adminsdk-aaxo4-2e6ac8d48e.json")
 initialize_app(cred, {"storageBucket": "saymore-340e9.firebasestorage.app"})
 db = firestore.client()
 
