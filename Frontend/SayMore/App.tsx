@@ -1,7 +1,10 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { Image } from 'react-native';
+import { Image, PermissionsAndroid, Platform } from 'react-native';
+import messaging from '@react-native-firebase/messaging';
+import notifee from '@notifee/react-native';
+import inAppMessaging from '@react-native-firebase/in-app-messaging';
 
 // Import Screens
 import HomeScreen from './screens/HomeScreen';
@@ -16,6 +19,62 @@ import MoreInfoIcon from './assets/more-info.png';
 const Tab = createBottomTabNavigator();
 
 export default function App() {
+  const requestUserPermission = async () => {
+    // Handle Android 13+ notification permissions
+    if (Platform.OS === 'android' && Platform.Version >= 33) {
+      await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS);
+    }
+
+    const authStatus = await messaging().requestPermission();
+    const enabled =
+      authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
+      authStatus === messaging.AuthorizationStatus.PROVISIONAL;
+
+    if (enabled) {
+      console.log('Notification Authorization status:', authStatus);
+    } else {
+      console.log('Notification permissions not granted.');
+    }
+  };
+
+  const getToken = async () => {
+    try {
+      const fcmToken = await messaging().getToken();
+      console.log('FCM Token:', fcmToken);
+    } catch (error) {
+      console.error('Error fetching FCM token:', error);
+    }
+  };
+
+  const setupInAppMessaging = () => {
+    inAppMessaging().setMessagesDisplaySuppressed(false); // Enable in-app messages
+    console.log('Firebase In-App Messaging initialized.');
+  };
+
+  useEffect(() => {
+    // Request notification permissions and retrieve FCM token
+    requestUserPermission();
+    getToken();
+    setupInAppMessaging();
+
+    // Listener for foreground FCM messages
+    const unsubscribe = messaging().onMessage(async (remoteMessage) => {
+      console.log('A new FCM message arrived!', remoteMessage);
+
+      // Display notification using notifee
+      await notifee.displayNotification({
+        title: remoteMessage.notification?.title,
+        body: remoteMessage.notification?.body,
+        android: {
+          channelId: 'default',
+        },
+      });
+    });
+
+    // Cleanup listener on unmount
+    return unsubscribe;
+  }, []);
+
   return (
     <NavigationContainer>
       <Tab.Navigator
@@ -23,7 +82,7 @@ export default function App() {
           tabBarIcon: ({ focused }) => {
             let icon;
 
-            // Use your custom icons based on the route name
+            // Map route names to custom icons
             if (route.name === 'Home') {
               icon = HomeIcon;
             } else if (route.name === 'Lessons') {
@@ -34,14 +93,13 @@ export default function App() {
               icon = MoreInfoIcon;
             }
 
-            // Return the custom icon
             return (
               <Image
                 source={icon}
                 style={{
                   width: 25,
                   height: 25,
-                  tintColor: focused ? '#003366' : 'gray', // Change color when focused
+                  tintColor: focused ? '#003366' : 'gray',
                 }}
               />
             );
