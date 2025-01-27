@@ -1,4 +1,4 @@
-In CMD run >>>
+In CMD run >>> (for powerShell. not needed for cmd)
     python -m venv .venv
     .venv\Scripts\activate
 
