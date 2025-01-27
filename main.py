@@ -14,7 +14,7 @@ db = firestore.client()
 
 @app.get("/")
 async def root():
-    return {"message": "Backend of the SayMore app"}
+    return {"message": "Deep Learning model of the SayMore app"}
 
 
 @app.post("/test/{acc_id}")
