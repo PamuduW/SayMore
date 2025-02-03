@@ -4,3 +4,17 @@ then npx react-native run-android
 
 
 npm install -g firebase-tools
+
+
+
+
+
+
+
+
+
+
+
+
+cd android
+./gradlew assembleRelease
