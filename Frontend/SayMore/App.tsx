@@ -9,6 +9,7 @@ import inAppMessaging from '@react-native-firebase/in-app-messaging';
 // Import Screens
 import HomeScreen from './screens/HomeScreen';
 import LessonsScreen from './screens/LessonsScreen';
+import MoreScreen from './screens/MoreScreen';
 
 // Import your custom icons
 import HomeIcon from './assets/home.png';
@@ -116,7 +117,7 @@ export default function App() {
         <Tab.Screen name="Home" component={HomeScreen} />
         <Tab.Screen name="Lessons" component={LessonsScreen} />
         <Tab.Screen name="Activity" component={() => null} />
-        <Tab.Screen name="More Info" component={() => null} />
+        <Tab.Screen name="More" component={MoreScreen} />
       </Tab.Navigator>
     </NavigationContainer>
   );
