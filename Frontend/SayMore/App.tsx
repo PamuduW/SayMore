@@ -11,15 +11,13 @@ import { GoogleSignin } from '@react-native-google-signin/google-signin';
 
 // Import Screens
 import HomeScreen from './screens/HomeScreen';
-import LessonsScreen from './screens/LessonsScreen';
 import MoreScreen from './screens/MoreScreen';
+import AccountScreen from './screens/AccountScreen';
 import SignInScreen from './screens/SignInScreen';
 import SignUpScreen from './screens/SignUpScreen';
 
 // Import your custom icons
 import HomeIcon from './assets/home.png';
-import LessonsIcon from './assets/lessons.png';
-import ActivityIcon from './assets/activity.png';
 import MoreInfoIcon from './assets/more-info.png';
 
 const Stack = createNativeStackNavigator();
@@ -35,13 +33,10 @@ function TabNavigator() {
             case 'Home':
               icon = HomeIcon;
               break;
-            case 'Lessons':
-              icon = LessonsIcon;
-              break;
-            case 'Activity':
-              icon = ActivityIcon;
-              break;
             case 'More':
+              icon = MoreInfoIcon;
+              break;
+              case 'Account':
               icon = MoreInfoIcon;
               break;
           }
@@ -67,9 +62,8 @@ function TabNavigator() {
       })}
     >
       <Tab.Screen name="Home" component={HomeScreen} />
-      <Tab.Screen name="Lessons" component={LessonsScreen} />
-      <Tab.Screen name="Activity" component={() => null} />
       <Tab.Screen name="More" component={MoreScreen} />
+      <Tab.Screen name="Account" component={AccountScreen} />
     </Tab.Navigator>
   );
 }
