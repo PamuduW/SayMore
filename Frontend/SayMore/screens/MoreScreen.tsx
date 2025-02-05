@@ -1,9 +1,53 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Image } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, Image, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import auth from '@react-native-firebase/auth';
+import { GoogleSignin } from '@react-native-google-signin/google-signin';
 
 export default function MoreScreen() {
   const navigation = useNavigation();
+
+  const handleSignOut = async () => {
+    try {
+      // Get the current user
+      const currentUser = auth().currentUser;
+
+      if (currentUser) {
+        // Try Google sign out if GoogleSignin is available
+        try {
+          await GoogleSignin.signOut();
+        } catch (googleError) {
+          console.log('Google sign out error:', googleError);
+          // Continue with Firebase signout even if Google signout fails
+        }
+
+        // Sign out from Firebase
+        await auth().signOut();
+      }
+    } catch (error) {
+      console.error('Sign out error:', error);
+      Alert.alert('Error', 'An error occurred while signing out. Please try again.');
+    }
+  };
+
+  const confirmSignOut = () => {
+    Alert.alert(
+      'Sign Out',
+      'Are you sure you want to sign out?',
+      [
+        {
+          text: 'Cancel',
+          style: 'cancel'
+        },
+        {
+          text: 'Sign Out',
+          onPress: handleSignOut,
+          style: 'destructive'
+        }
+      ],
+      { cancelable: true }
+    );
+  };
 
   return (
     <View style={styles.container}>
@@ -30,7 +74,7 @@ export default function MoreScreen() {
           <Text style={styles.menuText}>Speech Therapy</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.logoutButton}>
+        <TouchableOpacity style={styles.logoutButton} onPress={confirmSignOut}>
           <Text style={styles.logoutText}>Log Out</Text>
         </TouchableOpacity>
       </View>
