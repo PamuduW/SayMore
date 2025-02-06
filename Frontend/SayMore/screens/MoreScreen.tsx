@@ -1,11 +1,11 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, Image, StyleSheet } from 'react-native';
-import {NavigationContainer} from '@react-navigation/native';
+import Lessons from './LessonsScreen';
 
-export default function LessonsScreen() {
-  const lessons = [
-    { title: 'Activity ', icon: require('../assets/videoicon.png') },
-    { title: 'Lessons', icon: require('../assets/videoicon.png') },
+export default function NewMoreScreen({ navigation }){
+  const NewScreens = [
+    { title: 'Activity', icon: require('../assets/videoicon.png') },
+    { title: 'Lesson', icon: require('../assets/videoicon.png') },
     { title: 'Quizzes and Challenges', icon: require('../assets/videoicon.png') },
     { title: 'Progress', icon: require('../assets/videoicon.png') },
     { title: 'Points', icon: require('../assets/videoicon.png') },
@@ -16,8 +16,28 @@ export default function LessonsScreen() {
   return (
     <View style={styles.container}>
       <View style={styles.gridContainer}>
-        {lessons.map((lesson, index) => (
-          <TouchableOpacity key={index} style={styles.lessonButton}>
+        {NewScreens.map((lesson, index) => (
+          <TouchableOpacity
+            key={index}
+            style={styles.lessonButton}
+            onPress={() => {
+              if (lesson.title === 'Activity') {
+                // Placeholder: Do nothing
+              } else if (lesson.title === 'Lesson') {
+                navigation.navigate('Lessons');
+              } else if (lesson.title === 'Quizzes and Challenges') {
+                // navigation.navigate('QuizzesScreen');
+              } else if (lesson.title === 'Progress') {
+                // navigation.navigate('ProgressScreen');
+              } else if (lesson.title === 'Points') {
+                // navigation.navigate('PointsScreen');
+              } else if (lesson.title === 'Leaderboard') {
+                // navigation.navigate('LeaderboardScreen');
+              } else if (lesson.title === 'Speech Therapy') {
+                // navigation.navigate('SpeechTherapyScreen');
+              }
+            }}
+          >
             <Image source={lesson.icon} style={styles.lessonIcon} />
             <Text style={styles.lessonText}>{lesson.title}</Text>
           </TouchableOpacity>
@@ -25,25 +45,13 @@ export default function LessonsScreen() {
       </View>
     </View>
   );
-
-}
+};
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#F0F8FF',
     padding: 20,
-  },
-  headerText: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#003366',
-    marginBottom: 10,
-  },
-  subText: {
-    fontSize: 16,
-    color: '#003366',
-    marginBottom: 20,
   },
   gridContainer: {
     flexDirection: 'row',
@@ -75,3 +83,4 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
 });
+

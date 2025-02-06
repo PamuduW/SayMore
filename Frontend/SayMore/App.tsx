@@ -12,6 +12,7 @@ import { GoogleSignin } from '@react-native-google-signin/google-signin';
 // Import Screens
 import HomeScreen from './screens/HomeScreen';
 import MoreScreen from './screens/MoreScreen';
+import LessonsScreen from './screens/LessonsScreen';
 import AccountScreen from './screens/AccountScreen';
 import SignInScreen from './screens/SignInScreen';
 import SignUpScreen from './screens/SignUpScreen';
@@ -27,7 +28,6 @@ const MoreStack = () => (
     <Stack.Navigator>
         <Stack.Screen name="MoreScreen" component={MoreScreen} />
         <Stack.Screen name="Lessons" component={LessonsScreen} />
-        <Stack.Screen name="Test" component={Test} />
     </Stack.Navigator>
 );
 
