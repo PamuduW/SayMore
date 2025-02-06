@@ -23,6 +23,14 @@ import MoreInfoIcon from './assets/more-info.png';
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
+const MoreStack = () => (
+    <Stack.Navigator>
+        <Stack.Screen name="MoreScreen" component={MoreScreen} />
+        <Stack.Screen name="Lessons" component={LessonsScreen} />
+        <Stack.Screen name="Test" component={Test} />
+    </Stack.Navigator>
+);
+
 function TabNavigator() {
   return (
     <Tab.Navigator
@@ -62,7 +70,7 @@ function TabNavigator() {
       })}
     >
       <Tab.Screen name="Home" component={HomeScreen} />
-      <Tab.Screen name="More" component={MoreScreen} />
+      <Tab.Screen name="More" component={MoreStack} />
       <Tab.Screen name="Account" component={AccountScreen} />
     </Tab.Navigator>
   );
