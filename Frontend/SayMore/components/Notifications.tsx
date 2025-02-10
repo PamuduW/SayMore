@@ -23,17 +23,19 @@ export const useNotifications = () => {
       inAppMessaging().setMessagesDisplaySuppressed(false);
     };
 
-    requestUserPermission();
-    getToken();
-    setupInAppMessaging();
-
-    const unsubscribeOnMessage = messaging().onMessage(async (remoteMessage) => {
+    const handleForegroundMessage = async (remoteMessage) => {
       await notifee.displayNotification({
         title: remoteMessage.notification?.title,
         body: remoteMessage.notification?.body,
         android: { channelId: 'default' },
       });
-    });
+    };
+
+    requestUserPermission();
+    getToken();
+    setupInAppMessaging();
+
+    const unsubscribeOnMessage = messaging().onMessage(handleForegroundMessage);
 
     notifee.createChannel({ id: 'default', name: 'Default Channel' });
 

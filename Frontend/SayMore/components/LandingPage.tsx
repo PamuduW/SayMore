@@ -18,13 +18,13 @@ const LandingPage = () => {
   return (
     <NavigationContainer>
       <Stack.Navigator screenOptions={{ headerShown: false }}>
-        {!user ? (
+        {user ? (
+          <Stack.Screen name="MainApp" component={TabNavigator} />
+        ) : (
           <>
             <Stack.Screen name="SignIn" component={SignInScreen} />
             <Stack.Screen name="SignUp" component={SignUpScreen} />
           </>
-        ) : (
-          <Stack.Screen name="MainApp" component={TabNavigator} />
         )}
       </Stack.Navigator>
     </NavigationContainer>
