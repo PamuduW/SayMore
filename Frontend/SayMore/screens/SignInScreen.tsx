@@ -11,7 +11,6 @@ export default function SignInScreen() {
   const navigation = useNavigation();
 
   useEffect(() => {
-    // Configure Google Sign In
     GoogleSignin.configure({
       webClientId: '290999401549-28sv0ta1mhh68drtsi40nr5vmlvnpoa6.apps.googleusercontent.com',
     });
@@ -26,14 +25,10 @@ export default function SignInScreen() {
           'Please verify your email before signing in.',
           [
             { text: 'OK' },
-            {
-              text: 'Resend Email',
-              onPress: () => userCredential.user.sendEmailVerification(),
-            },
+            { text: 'Resend Email', onPress: () => userCredential.user.sendEmailVerification() },
           ]
         );
         await auth().signOut();
-        return;
       }
     } catch (error) {
       Alert.alert('Error', error.message);
@@ -42,27 +37,12 @@ export default function SignInScreen() {
 
   const handleGoogleSignIn = async () => {
     try {
-      // Check if your device supports Google Play
       await GoogleSignin.hasPlayServices({ showPlayServicesUpdateDialog: true });
-
-      // Get the users ID token
       const { idToken } = await GoogleSignin.signIn();
-
-      // Create a Google credential with the token
       const googleCredential = auth.GoogleAuthProvider.credential(idToken);
-
-      // Sign-in the user with the credential
-      const userCredential = await auth().signInWithCredential(googleCredential);
-
-      // You can access the user info like this:
-      console.log(userCredential.user.displayName);
-      console.log(userCredential.user.email);
+      await auth().signInWithCredential(googleCredential);
     } catch (error) {
-      console.error(error);
-      Alert.alert(
-        'Authentication Error',
-        error.message || 'An error occurred during Google Sign In'
-      );
+      Alert.alert('Authentication Error', error.message || 'An error occurred during Google Sign In');
     }
   };
 
@@ -88,17 +68,11 @@ export default function SignInScreen() {
       <TouchableOpacity style={styles.button} onPress={handleSignIn}>
         <Text style={styles.buttonText}>Sign In</Text>
       </TouchableOpacity>
-
       <Text style={styles.orText}>OR</Text>
-
       <TouchableOpacity style={styles.googleButton} onPress={handleGoogleSignIn}>
-        <Image
-          source={require('../assets/google-icon.png')}
-          style={styles.googleIcon}
-        />
+        <Image source={require('../assets/google-icon.png')} style={styles.googleIcon} />
         <Text style={styles.googleButtonText}>Sign in with Google</Text>
       </TouchableOpacity>
-
       <TouchableOpacity onPress={() => navigation.navigate('SignUp')}>
         <Text style={styles.linkText}>Don't have an account? Sign Up</Text>
       </TouchableOpacity>
@@ -121,11 +95,11 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   subtitle: {
-      fontSize: 16,
-      color: '#666',
-      marginBottom: 30,
-      textAlign: 'center',
-    },
+    fontSize: 16,
+    color: '#666',
+    marginBottom: 30,
+    textAlign: 'center',
+  },
   input: {
     backgroundColor: 'white',
     borderRadius: 10,

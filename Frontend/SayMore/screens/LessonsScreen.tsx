@@ -3,12 +3,12 @@ import { View, Text, TouchableOpacity, Image, StyleSheet } from 'react-native';
 
 export default function LessonsScreen() {
   const lessons = [
-    { title: 'Speech Exercises', icon: require('../assets/videoicon.png') },
-    { title: 'Understanding Stuttering', icon: require('../assets/videoicon.png') },
-    { title: 'Building Confidence', icon: require('../assets/videoicon.png') },
-    { title: 'Communication Tips', icon: require('../assets/videoicon.png') },
-    { title: 'Techniques for Overcoming Stuttering', icon: require('../assets/videoicon.png') },
-    { title: 'Managing Stage Fright', icon: require('../assets/videoicon.png') },
+    'Speech Exercises',
+    'Understanding Stuttering',
+    'Building Confidence',
+    'Communication Tips',
+    'Techniques for Overcoming Stuttering',
+    'Managing Stage Fright',
   ];
 
   return (
@@ -19,10 +19,10 @@ export default function LessonsScreen() {
       </Text>
 
       <View style={styles.gridContainer}>
-        {lessons.map((lesson, index) => (
+        {lessons.map((title, index) => (
           <TouchableOpacity key={index} style={styles.lessonButton}>
-            <Image source={lesson.icon} style={styles.lessonIcon} />
-            <Text style={styles.lessonText}>{lesson.title}</Text>
+            <Image source={require('../assets/videoicon.png')} style={styles.lessonIcon} />
+            <Text style={styles.lessonText}>{title}</Text>
           </TouchableOpacity>
         ))}
       </View>
@@ -31,49 +31,15 @@ export default function LessonsScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#F0F8FF',
-    padding: 20,
-  },
-  headerText: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#003366',
-    marginBottom: 10,
-  },
-  subText: {
-    fontSize: 16,
-    color: '#003366',
-    marginBottom: 20,
-  },
-  gridContainer: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'space-between',
-  },
+  container: { flex: 1, backgroundColor: '#F0F8FF', padding: 20 },
+  headerText: { fontSize: 24, fontWeight: 'bold', color: '#003366', marginBottom: 10 },
+  subText: { fontSize: 16, color: '#003366', marginBottom: 20 },
+  gridContainer: { flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between' },
   lessonButton: {
-    width: '48%',
-    backgroundColor: '#E6F7FF',
-    borderRadius: 10,
-    padding: 20,
-    alignItems: 'center',
-    marginBottom: 15,
-    elevation: 3,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 3,
+    width: '48%', backgroundColor: '#E6F7FF', borderRadius: 10, padding: 20, alignItems: 'center',
+    marginBottom: 15, elevation: 3, shadowColor: '#000', shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2, shadowRadius: 3,
   },
-  lessonIcon: {
-    width: 40,
-    height: 40,
-    marginBottom: 10,
-  },
-  lessonText: {
-    fontSize: 14,
-    fontWeight: 'bold',
-    color: '#003366',
-    textAlign: 'center',
-  },
+  lessonIcon: { width: 40, height: 40, marginBottom: 10 },
+  lessonText: { fontSize: 14, fontWeight: 'bold', color: '#003366', textAlign: 'center' },
 });
