@@ -8,9 +8,7 @@ export const useNotifications = () => {
   useEffect(() => {
     const requestUserPermission = async () => {
       if (Platform.OS === "android" && Platform.Version >= 33) {
-        await PermissionsAndroid.request(
-          PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS,
-        );
+        await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS);
       }
       const authStatus = await messaging().requestPermission();
       console.log("Notification Authorization status:", authStatus);

@@ -1,13 +1,5 @@
 import React, { useState, useEffect } from "react";
-import {
-  View,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  StyleSheet,
-  Alert,
-  Image,
-} from "react-native";
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, Image } from "react-native";
 import auth from "@react-native-firebase/auth";
 import { useNavigation } from "@react-navigation/native";
 import { GoogleSignin } from "@react-native-google-signin/google-signin";
@@ -19,29 +11,21 @@ export default function SignInScreen() {
 
   useEffect(() => {
     GoogleSignin.configure({
-      webClientId:
-        "290999401549-28sv0ta1mhh68drtsi40nr5vmlvnpoa6.apps.googleusercontent.com",
+      webClientId: "290999401549-28sv0ta1mhh68drtsi40nr5vmlvnpoa6.apps.googleusercontent.com",
     });
   }, []);
 
   const handleSignIn = async () => {
     try {
-      const userCredential = await auth().signInWithEmailAndPassword(
-        email,
-        password,
-      );
+      const userCredential = await auth().signInWithEmailAndPassword(email, password);
       if (!userCredential.user.emailVerified) {
-        Alert.alert(
-          "Email Not Verified",
-          "Please verify your email before signing in.",
-          [
-            { text: "OK" },
-            {
-              text: "Resend Email",
-              onPress: () => userCredential.user.sendEmailVerification(),
-            },
-          ],
-        );
+        Alert.alert("Email Not Verified", "Please verify your email before signing in.", [
+          { text: "OK" },
+          {
+            text: "Resend Email",
+            onPress: () => userCredential.user.sendEmailVerification(),
+          },
+        ]);
         await auth().signOut();
       }
     } catch (error) {
@@ -55,15 +39,10 @@ export default function SignInScreen() {
         showPlayServicesUpdateDialog: true,
       });
       const signInResult = await GoogleSignin.signIn();
-      const googleCredential = auth.GoogleAuthProvider.credential(
-        signInResult.data.idToken,
-      );
+      const googleCredential = auth.GoogleAuthProvider.credential(signInResult.data.idToken);
       await auth().signInWithCredential(googleCredential);
     } catch (error) {
-      Alert.alert(
-        "Authentication Error",
-        error.message || "An error occurred during Google Sign In",
-      );
+      Alert.alert("Authentication Error", error.message || "An error occurred during Google Sign In");
     }
   };
 
@@ -90,17 +69,13 @@ export default function SignInScreen() {
         <Text style={styles.buttonText}>Sign In</Text>
       </TouchableOpacity>
       <Text style={styles.orText}>OR</Text>
-      <TouchableOpacity
-        style={styles.googleButton}
-        onPress={handleGoogleSignIn}>
-        <Image
-          source={require("../assets/google-icon.png")}
-          style={styles.googleIcon}
-        />
+      <TouchableOpacity style={styles.googleButton} onPress={handleGoogleSignIn}>
+        <Image source={require("../assets/google-icon.png")} style={styles.googleIcon} />
         <Text style={styles.googleButtonText}>Sign in with Google</Text>
       </TouchableOpacity>
+      <Text>Don't have an account? </Text>
       <TouchableOpacity onPress={() => navigation.navigate("SignUp")}>
-        <Text style={styles.linkText}>Don't have an account? Sign Up</Text>
+        <Text style={styles.linkText}>Sign Up</Text>
       </TouchableOpacity>
     </View>
   );

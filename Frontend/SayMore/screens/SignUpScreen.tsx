@@ -40,10 +40,7 @@ export default function SignUpScreen() {
     setLoading(true);
 
     try {
-      const userCredential = await auth().createUserWithEmailAndPassword(
-        email,
-        password,
-      );
+      const userCredential = await auth().createUserWithEmailAndPassword(email, password);
       await userCredential.user.sendEmailVerification();
       Alert.alert(
         "Success",
@@ -53,8 +50,7 @@ export default function SignUpScreen() {
     } catch (error) {
       const errorMessage =
         {
-          "auth/email-already-in-use":
-            "This email address is already registered",
+          "auth/email-already-in-use": "This email address is already registered",
           "auth/invalid-email": "Please enter a valid email address",
           "auth/weak-password": "Password is too weak",
         }[error.code] || error.message;
@@ -72,9 +68,7 @@ export default function SignUpScreen() {
         <ScrollView contentContainerStyle={styles.scrollView}>
           <View style={styles.formContainer}>
             <Text style={styles.title}>Create Account</Text>
-            <Text style={styles.subtitle}>
-              Join now to begin your journey with us
-            </Text>
+            <Text style={styles.subtitle}>Join now to begin your journey with us</Text>
             <View style={styles.inputContainer}>
               <TextInput
                 style={styles.input}
@@ -109,16 +103,11 @@ export default function SignUpScreen() {
               style={[styles.button, loading && styles.buttonDisabled]}
               onPress={handleSignUp}
               disabled={loading}>
-              <Text style={styles.buttonText}>
-                {loading ? "Creating Account..." : "Sign Up"}
-              </Text>
+              <Text style={styles.buttonText}>{loading ? "Creating Account..." : "Sign Up"}</Text>
             </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.linkButton}
-              onPress={() => navigation.navigate("SignIn")}>
-              <Text style={styles.linkText}>
-                Already have an account? Sign In
-              </Text>
+            <Text>Already have an account? </Text>
+            <TouchableOpacity style={styles.linkButton} onPress={() => navigation.navigate("SignIn")}>
+              <Text style={styles.linkText}>Sign In</Text>
             </TouchableOpacity>
           </View>
         </ScrollView>

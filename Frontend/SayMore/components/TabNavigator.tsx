@@ -16,11 +16,7 @@ const Stack = createNativeStackNavigator();
 
 const MoreStack = () => (
   <Stack.Navigator>
-    <Stack.Screen
-      name="MoreScreen"
-      component={MoreScreen}
-      options={{ headerShown: false }}
-    />
+    <Stack.Screen name="MoreScreen" component={MoreScreen} options={{ headerShown: false }} />
     <Stack.Screen name="Lessons" component={LessonsScreen} />
   </Stack.Navigator>
 );

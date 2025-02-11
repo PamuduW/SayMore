@@ -27,14 +27,8 @@ const MoreScreen = ({ navigation }) => {
     <View style={styles.container}>
       <View style={styles.gridContainer}>
         {NewScreens.map((title, index) => (
-          <TouchableOpacity
-            key={index}
-            style={styles.lessonButton}
-            onPress={() => handlePress(title)}>
-            <Image
-              source={require("../assets/videoicon.png")}
-              style={styles.lessonIcon}
-            />
+          <TouchableOpacity key={index} style={styles.lessonButton} onPress={() => handlePress(title)}>
+            <Image source={require("../assets/videoicon.png")} style={styles.lessonIcon} />
             <Text style={styles.lessonText}>{title}</Text>
           </TouchableOpacity>
         ))}

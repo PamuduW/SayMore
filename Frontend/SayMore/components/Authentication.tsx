@@ -8,8 +8,7 @@ export const useAuth = () => {
 
   useEffect(() => {
     GoogleSignin.configure({
-      webClientId:
-        "290999401549-28sv0ta1mhh68drtsi40nr5vmlvnpoa6.apps.googleusercontent.com",
+      webClientId: "290999401549-28sv0ta1mhh68drtsi40nr5vmlvnpoa6.apps.googleusercontent.com",
     });
 
     const onAuthStateChanged = (user: any) => {

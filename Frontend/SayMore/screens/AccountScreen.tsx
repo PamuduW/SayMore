@@ -1,12 +1,5 @@
 import React from "react";
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  StyleSheet,
-  Image,
-  Alert,
-} from "react-native";
+import { View, Text, TouchableOpacity, StyleSheet, Image, Alert } from "react-native";
 import auth from "@react-native-firebase/auth";
 import { GoogleSignin } from "@react-native-google-signin/google-signin";
 
@@ -24,10 +17,7 @@ export default function AccountScreen() {
       }
     } catch (error) {
       console.error("Sign out error:", error);
-      Alert.alert(
-        "Error",
-        "An error occurred while signing out. Please try again.",
-      );
+      Alert.alert("Error", "An error occurred while signing out. Please try again.");
     }
   };
 
@@ -58,15 +48,8 @@ export default function AccountScreen() {
         ].map((item, index) => (
           <TouchableOpacity
             key={index}
-            style={
-              item === "Progress" ? styles.menuItemActive : styles.menuItem
-            }>
-            <Text
-              style={
-                item === "Progress" ? styles.menuTextActive : styles.menuText
-              }>
-              {item}
-            </Text>
+            style={item === "Progress" ? styles.menuItemActive : styles.menuItem}>
+            <Text style={item === "Progress" ? styles.menuTextActive : styles.menuText}>{item}</Text>
           </TouchableOpacity>
         ))}
         <TouchableOpacity style={styles.logoutButton} onPress={confirmSignOut}>
