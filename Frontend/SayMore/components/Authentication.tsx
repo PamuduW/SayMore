@@ -11,8 +11,8 @@ export const useAuth = () => {
       webClientId: "290999401549-28sv0ta1mhh68drtsi40nr5vmlvnpoa6.apps.googleusercontent.com",
     });
 
-    const onAuthStateChanged = (user: any) => {
-      setUser(user);
+    const onAuthStateChanged = (authUser: any) => {
+      setUser(authUser);
       if (initializing) setInitializing(false);
     };
 
