@@ -1,22 +1,26 @@
-import React from 'react';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { Image } from 'react-native';
+import React from "react";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { Image } from "react-native";
 
-import HomeScreen from '../screens/HomeScreen';
-import MoreScreen from '../screens/MoreScreen';
-import LessonsScreen from '../screens/LessonsScreen';
-import AccountScreen from '../screens/AccountScreen';
+import HomeScreen from "../screens/HomeScreen";
+import MoreScreen from "../screens/MoreScreen";
+import LessonsScreen from "../screens/LessonsScreen";
+import AccountScreen from "../screens/AccountScreen";
 
-import HomeIcon from '../assets/home.png';
-import MoreInfoIcon from '../assets/more-info.png';
+import HomeIcon from "../assets/home.png";
+import MoreInfoIcon from "../assets/more-info.png";
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
 
 const MoreStack = () => (
   <Stack.Navigator>
-    <Stack.Screen name="MoreScreen" component={MoreScreen} options={{ headerShown: false }}/>
+    <Stack.Screen
+      name="MoreScreen"
+      component={MoreScreen}
+      options={{ headerShown: false }}
+    />
     <Stack.Screen name="Lessons" component={LessonsScreen} />
   </Stack.Navigator>
 );
@@ -35,15 +39,15 @@ const TabNavigator = () => {
           style={{
             width: 25,
             height: 25,
-            tintColor: focused ? '#003366' : 'gray',
+            tintColor: focused ? "#003366" : "gray",
           }}
         />
       );
     },
-    tabBarActiveTintColor: '#003366',
-    tabBarInactiveTintColor: 'gray',
+    tabBarActiveTintColor: "#003366",
+    tabBarInactiveTintColor: "gray",
     tabBarStyle: {
-      backgroundColor: '#F0F8FF',
+      backgroundColor: "#F0F8FF",
       borderTopWidth: 0,
       elevation: 0,
     },

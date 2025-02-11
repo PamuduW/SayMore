@@ -1,11 +1,11 @@
-import React from 'react';
-import { NavigationContainer } from '@react-navigation/native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { useAuth } from '../components/Authentication';
-import { useNotifications } from '../components/Notifications';
-import TabNavigator from '../components/TabNavigator';
-import SignInScreen from '../screens/SignInScreen';
-import SignUpScreen from '../screens/SignUpScreen';
+import React from "react";
+import { NavigationContainer } from "@react-navigation/native";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { useAuth } from "../components/Authentication";
+import { useNotifications } from "../components/Notifications";
+import TabNavigator from "../components/TabNavigator";
+import SignInScreen from "../screens/SignInScreen";
+import SignUpScreen from "../screens/SignUpScreen";
 
 const Stack = createNativeStackNavigator();
 

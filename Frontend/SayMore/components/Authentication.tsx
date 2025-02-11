@@ -1,13 +1,16 @@
-import { useState, useEffect } from 'react';
-import auth from '@react-native-firebase/auth';
-import { GoogleSignin } from '@react-native-google-signin/google-signin';
+import { useState, useEffect } from "react";
+import auth from "@react-native-firebase/auth";
+import { GoogleSignin } from "@react-native-google-signin/google-signin";
 
 export const useAuth = () => {
   const [user, setUser] = useState(null);
   const [initializing, setInitializing] = useState(true);
 
   useEffect(() => {
-    GoogleSignin.configure({ webClientId: '290999401549-28sv0ta1mhh68drtsi40nr5vmlvnpoa6.apps.googleusercontent.com' });
+    GoogleSignin.configure({
+      webClientId:
+        "290999401549-28sv0ta1mhh68drtsi40nr5vmlvnpoa6.apps.googleusercontent.com",
+    });
 
     const onAuthStateChanged = (user: any) => {
       setUser(user);
