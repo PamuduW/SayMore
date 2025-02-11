@@ -1,5 +1,16 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, Image } from "react-native";
+import {
+  Text,
+  TextInput,
+  TouchableOpacity,
+  StyleSheet,
+  Alert,
+  Image,
+  SafeAreaView,
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+} from "react-native";
 import auth from "@react-native-firebase/auth";
 import { useNavigation } from "@react-navigation/native";
 import { GoogleSignin } from "@react-native-google-signin/google-signin";
@@ -16,6 +27,11 @@ export default function SignInScreen() {
   }, []);
 
   const handleSignIn = async () => {
+    if (!email || !password || !confirmPassword) {
+      Alert.alert("Error", "Please fill in all fields");
+      return;
+    }
+
     try {
       const userCredential = await auth().signInWithEmailAndPassword(email, password);
       if (!userCredential.user.emailVerified) {
@@ -47,37 +63,46 @@ export default function SignInScreen() {
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Welcome Back</Text>
-      <Text style={styles.subtitle}>Log In and continue your learning</Text>
-      <TextInput
-        style={styles.input}
-        placeholder="Email"
-        value={email}
-        onChangeText={setEmail}
-        keyboardType="email-address"
-        autoCapitalize="none"
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Password"
-        value={password}
-        onChangeText={setPassword}
-        secureTextEntry
-      />
-      <TouchableOpacity style={styles.button} onPress={handleSignIn}>
-        <Text style={styles.buttonText}>Sign In</Text>
-      </TouchableOpacity>
-      <Text style={styles.orText}>OR</Text>
-      <TouchableOpacity style={styles.googleButton} onPress={handleGoogleSignIn}>
-        <Image source={require("../assets/google-icon.png")} style={styles.googleIcon} />
-        <Text style={styles.googleButtonText}>Sign in with Google</Text>
-      </TouchableOpacity>
-      <Text>Don't have an account? </Text>
-      <TouchableOpacity onPress={() => navigation.navigate("SignUp")}>
-        <Text style={styles.linkText}>Sign Up</Text>
-      </TouchableOpacity>
-    </View>
+    <SafeAreaView style={styles.container}>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        style={styles.keyboardAvoidingView}>
+        <ScrollView contentContainerStyle={styles.scrollView}>
+          <Text style={styles.title}>Welcome Back</Text>
+          <Text style={styles.subtitle}>Log In and continue your learning</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="Email"
+            value={email}
+            onChangeText={setEmail}
+            keyboardType="email-address"
+            autoCapitalize="none"
+            autoCorrect={false}
+          />
+          <TextInput
+            style={styles.input}
+            placeholder="Password"
+            value={password}
+            onChangeText={setPassword}
+            secureTextEntry
+            autoCapitalize="none"
+            autoCorrect={false}
+          />
+          <TouchableOpacity style={styles.button} onPress={handleSignIn}>
+            <Text style={styles.buttonText}>Log In</Text>
+          </TouchableOpacity>
+          <Text style={styles.Text}>OR</Text>
+          <TouchableOpacity style={styles.googleButton} onPress={handleGoogleSignIn}>
+            <Image source={require("../assets/google-icon.png")} style={styles.googleIcon} />
+            <Text style={styles.googleButtonText}>Sign in with Google</Text>
+          </TouchableOpacity>
+          <Text style={styles.LongText}>Don't have an account? </Text>
+          <TouchableOpacity onPress={() => navigation.navigate("SignUp")}>
+            <Text style={styles.linkText}>Sign Up</Text>
+          </TouchableOpacity>
+        </ScrollView>
+      </KeyboardAvoidingView>
+    </SafeAreaView>
   );
 }
 
@@ -88,11 +113,18 @@ const styles = StyleSheet.create({
     padding: 20,
     justifyContent: "center",
   },
+  keyboardAvoidingView: {
+    flex: 1,
+  },
+  scrollView: {
+    flexGrow: 1,
+    justifyContent: "center",
+  },
   title: {
     fontSize: 28,
     fontWeight: "bold",
     color: "#003366",
-    marginBottom: 30,
+    marginBottom: 20,
     textAlign: "center",
   },
   subtitle: {
@@ -112,18 +144,23 @@ const styles = StyleSheet.create({
     backgroundColor: "#87CEEB",
     borderRadius: 10,
     padding: 15,
+    width: "100%",
     alignItems: "center",
-    marginTop: 10,
+    marginVertical: 15,
   },
   buttonText: {
     color: "#003366",
     fontSize: 16,
     fontWeight: "bold",
   },
-  orText: {
-    color: "#003366",
+  Text: {
     textAlign: "center",
     marginVertical: 20,
+    fontSize: 16,
+  },
+  LongText: {
+    textAlign: "center",
+    marginTop: 20,
     fontSize: 16,
   },
   googleButton: {
@@ -150,6 +187,5 @@ const styles = StyleSheet.create({
   linkText: {
     color: "#003366",
     textAlign: "center",
-    marginTop: 20,
   },
 });
