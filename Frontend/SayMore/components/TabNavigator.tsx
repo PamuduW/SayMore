@@ -1,7 +1,7 @@
 import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { Image } from "react-native";
+import { Image, StyleSheet } from "react-native";
 
 import HomeScreen from "../screens/HomeScreen";
 import MoreScreen from "../screens/MoreScreen";
@@ -25,42 +25,51 @@ const MoreStack = () => (
   </Stack.Navigator>
 );
 
-const TabNavigator = () => {
-  const screenOptions = ({ route }) => ({
-    tabBarIcon: ({ focused }) => {
-      const icons = {
-        Home: HomeIcon,
-        More: MoreInfoIcon,
-        Account: MoreInfoIcon,
-      };
-      return (
-        <Image
-          source={icons[route.name]}
-          style={{
-            width: 25,
-            height: 25,
-            tintColor: focused ? "#003366" : "gray",
-          }}
-        />
-      );
-    },
-    tabBarActiveTintColor: "#003366",
-    tabBarInactiveTintColor: "gray",
-    tabBarStyle: {
-      backgroundColor: "#F0F8FF",
-      borderTopWidth: 0,
-      elevation: 0,
-    },
-    headerShown: false,
-  });
+const getScreenOptions = ({ route }) => ({
+  tabBarIcon: ({ focused }) => {
+    const icons = {
+      Home: HomeIcon,
+      More: MoreInfoIcon,
+      Account: MoreInfoIcon,
+    };
+    return (
+      <Image
+        source={icons[route.name]}
+        style={[styles.icon, focused ? styles.activeIcon : styles.inactiveIcon]}
+      />
+    );
+  },
+  tabBarActiveTintColor: "#003366",
+  tabBarInactiveTintColor: "gray",
+  tabBarStyle: {
+    backgroundColor: "#F0F8FF",
+    borderTopWidth: 0,
+    elevation: 0,
+  },
+  headerShown: false,
+});
 
+const TabNavigator = () => {
   return (
-    <Tab.Navigator screenOptions={screenOptions}>
+    <Tab.Navigator screenOptions={getScreenOptions}>
       <Tab.Screen name="Home" component={HomeScreen} />
       <Tab.Screen name="More" component={MoreStack} />
       <Tab.Screen name="Account" component={AccountScreen} />
     </Tab.Navigator>
   );
 };
+
+const styles = StyleSheet.create({
+  icon: {
+    width: 25,
+    height: 25,
+  },
+  activeIcon: {
+    tintColor: "#003366", // ✅ Moved from inline styles
+  },
+  inactiveIcon: {
+    tintColor: "gray", // ✅ Moved from inline styles
+  },
+});
 
 export default TabNavigator;

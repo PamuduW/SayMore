@@ -1,4 +1,3 @@
-import messaging from "@react-native-firebase/messaging";
 import React, { useState, useEffect } from "react";
 import {
   View,
@@ -55,8 +54,10 @@ export default function SignInScreen() {
       await GoogleSignin.hasPlayServices({
         showPlayServicesUpdateDialog: true,
       });
-      const { idToken } = await GoogleSignin.signIn();
-      const googleCredential = auth.GoogleAuthProvider.credential(idToken);
+      const signInResult = await GoogleSignin.signIn();
+      const googleCredential = auth.GoogleAuthProvider.credential(
+        signInResult.data.idToken,
+      );
       await auth().signInWithCredential(googleCredential);
     } catch (error) {
       Alert.alert(
