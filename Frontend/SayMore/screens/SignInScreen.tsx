@@ -27,13 +27,14 @@ export default function SignInScreen() {
   }, []);
 
   const handleSignIn = async () => {
-    if (!email || !password || !confirmPassword) {
+    if (!email || !password) {
       Alert.alert("Error", "Please fill in all fields");
       return;
     }
 
     try {
       const userCredential = await auth().signInWithEmailAndPassword(email, password);
+
       if (!userCredential.user.emailVerified) {
         Alert.alert("Email Not Verified", "Please verify your email before signing in.", [
           { text: "OK" },
@@ -45,7 +46,14 @@ export default function SignInScreen() {
         await auth().signOut();
       }
     } catch (error) {
-      Alert.alert("Error", error.message);
+      if (error.code === "auth/invalid-credential") {
+        Alert.alert(
+          "Login Error",
+          "Username or password is incorrect. Please check your credentials and try again.",
+        );
+      } else {
+        Alert.alert("Error", error.message);
+      }
     }
   };
 
@@ -55,6 +63,9 @@ export default function SignInScreen() {
         showPlayServicesUpdateDialog: true,
       });
       const signInResult = await GoogleSignin.signIn();
+      if (!signInResult.idToken) {
+        throw new Error("Google Sign-In failed. No ID token returned.");
+      }
       const googleCredential = auth.GoogleAuthProvider.credential(signInResult.data.idToken);
       await auth().signInWithCredential(googleCredential);
     } catch (error) {
@@ -89,7 +100,7 @@ export default function SignInScreen() {
             autoCorrect={false}
           />
           <TouchableOpacity style={styles.button} onPress={handleSignIn}>
-            <Text style={styles.buttonText}>Log In</Text>
+            <Text style={styles.buttonText}>Sign In</Text>
           </TouchableOpacity>
           <Text style={styles.Text}>OR</Text>
           <TouchableOpacity style={styles.googleButton} onPress={handleGoogleSignIn}>
