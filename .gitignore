@@ -1,9 +1,9 @@
-# OSX
-#
+# macOS
 .DS_Store
+*.AppleDouble
+._*
 
-# Xcode
-#
+# Xcode (iOS)
 build/
 *.pbxuser
 !default.pbxuser
@@ -13,20 +13,19 @@ build/
 !default.mode2v3
 *.perspectivev3
 !default.perspectivev3
-xcuserdata
+xcuserdata/
 *.xccheckout
 *.moved-aside
-DerivedData
+DerivedData/
 *.hmap
 *.ipa
 *.xcuserstate
 **/.xcode.env.local
 
-# Android/IntelliJ
-#
+# Android (React Native)
 build/
-.idea
-.gradle
+.idea/
+.gradle/
 local.properties
 *.iml
 *.hprof
@@ -34,38 +33,80 @@ local.properties
 *.keystore
 !debug.keystore
 
-# node.js
-#
+# Node.js (Next.js, React Native)
 node_modules/
-npm-debug.log
-yarn-error.log
+.pnp/
+.pnp.*
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
 
-# fastlane
-#
-# It is recommended to not store the screenshots in the git repo. Instead, use fastlane to re-generate the
-# screenshots whenever they are needed.
-# For more information about the recommended setup visit:
-# https://docs.fastlane.tools/best-practices/source-control/
+# Next.js
+.next/
+out/
+.vercel/
 
+# React Native / Expo
+.expo/
+dist/
+web-build/
+expo-env.d.ts
+
+# Bundle artifacts
+*.jsbundle
+
+# FastAPI (Python)
+__pycache__/
+*.py[cod]
+venv/
+.venv/
+pip-log.txt
+pip-delete-this-directory.txt
+instance/
+*.sqlite3
+*.db
+
+# Fastlane (iOS automation)
 **/fastlane/report.xml
 **/fastlane/Preview.html
 **/fastlane/screenshots
 **/fastlane/test_output
 
-# Bundle artifact
-*.jsbundle
-
 # Ruby / CocoaPods
 **/Pods/
-/vendor/bundle/
+vendor/bundle/
 
-# Temporary files created by Metro to check the health of the file watcher
+# Temporary files (Metro, Debugging, Logs)
 .metro-health-check*
+npm-debug.*
+yarn-debug.*
+yarn-error.*
 
-# testing
+# Coverage & Testing
 /coverage
 
-# Yarn
+# Production builds
+/build/
+
+# TypeScript
+*.tsbuildinfo
+next-env.d.ts
+
+# Sensitive files
+.env*
+.env*.local
+*.pem
+
+# Native app signing keys & certificates
+*.orig.*
+*.jks
+*.p8
+*.p12
+*.key
+*.mobileprovision
+
+# Yarn (Ensuring proper tracking for specific directories)
 .yarn/*
 !.yarn/patches
 !.yarn/plugins
