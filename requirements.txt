@@ -5,3 +5,4 @@ torchvision
 librosa
 numpy
 python-multipart
+pydantic
