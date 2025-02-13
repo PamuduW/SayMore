@@ -16,7 +16,6 @@ export default function AccountScreen() {
         await auth().signOut();
       }
     } catch (error) {
-      console.error("Sign out error:", error);
       Alert.alert("Error", "An error occurred while signing out. Please try again.");
     }
   };
