@@ -14,6 +14,7 @@ import {
 import auth from "@react-native-firebase/auth";
 import { useNavigation } from "@react-navigation/native";
 import { GoogleSignin } from "@react-native-google-signin/google-signin";
+import firestore from "@react-native-firebase/firestore";
 
 export default function SignUpScreen() {
   const [email, setEmail] = useState("");
@@ -48,7 +49,14 @@ export default function SignUpScreen() {
 
     try {
       const userCredential = await auth().createUserWithEmailAndPassword(email, password);
-      await userCredential.user.sendEmailVerification();
+      const user = userCredential.user;
+      await user.sendEmailVerification();
+
+      await firestore().collection("User_Accounts").doc(user.uid).set({
+        email: user.email,
+        createdAt: firestore.FieldValue.serverTimestamp(),
+      });
+
       Alert.alert(
         "Success",
         "Account created successfully! Please check your email for verification.",
@@ -56,7 +64,8 @@ export default function SignUpScreen() {
     } catch (error) {
       const errorMessage =
         {
-          "auth/email-already-in-use": "This email address is already registered",
+          "auth/email-already-in-use":
+            "This email address is already registered. Please log in or use Google login.",
           "auth/invalid-email": "Please enter a valid email address",
           "auth/weak-password": "Password is too weak",
         }[error.code] || error.message;
@@ -73,7 +82,19 @@ export default function SignUpScreen() {
       });
       const signInResult = await GoogleSignin.signIn();
       const googleCredential = auth.GoogleAuthProvider.credential(signInResult.data.idToken);
-      await auth().signInWithCredential(googleCredential);
+      const userCredential = await auth().signInWithCredential(googleCredential);
+      const user = userCredential.user;
+
+      const userDoc = await firestore().collection("User_Accounts").doc(user.uid).get();
+
+      if (!userDoc.exists) {
+        await firestore().collection("User_Accounts").doc(user.uid).set({
+          email: user.email,
+          createdAt: firestore.FieldValue.serverTimestamp(),
+        });
+      }
+
+      Alert.alert("Success", "Account created successfully!");
     } catch (error) {
       Alert.alert("Authentication Error", error.message || "An error occurred during Google Sign In");
     }
@@ -124,11 +145,11 @@ export default function SignUpScreen() {
           <Text style={styles.Text}>OR</Text>
           <TouchableOpacity style={styles.googleButton} onPress={handleGoogleSignIn}>
             <Image source={require("../assets/google-icon.png")} style={styles.googleIcon} />
-            <Text style={styles.googleButtonText}>Sign in with Google</Text>
+            <Text style={styles.googleButtonText}>Sign Up with Google</Text>
           </TouchableOpacity>
           <Text style={styles.LongText}>Already have an account? </Text>
           <TouchableOpacity onPress={() => navigation.navigate("SignIn")}>
-            <Text style={styles.linkText}>Log In</Text>
+            <Text style={styles.linkText}>Sign In</Text>
           </TouchableOpacity>
         </ScrollView>
       </KeyboardAvoidingView>
