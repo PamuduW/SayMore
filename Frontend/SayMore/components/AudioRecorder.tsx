@@ -91,7 +91,8 @@ const AudioRecorder = ({ isPublicSpeaking }) => {
       return;
     }
     const folder = isPublicSpeaking ? "PS_Check" : "Stuttering_Check";
-    const filename = `recordings/${folder}/${currentUser.uid}+${new Date().toISOString()}.wav`;
+    const date = new Date().toISOString().replace(/[-:.]/g, "").slice(0, 15);
+    const filename = `recordings/${folder}/${currentUser.uid}+${date}.wav`;
     const reference = storage().ref(filename);
     try {
       await reference.putFile(audioPath, { contentType: "audio/wav" });

@@ -23,7 +23,7 @@ class StutterDetector(nn.Module):
 
 # Initialize the model and load the state dictionary
 model = StutterDetector(40)
-model.load_state_dict(torch.load('Backend/stutter_detector.pth', weights_only=True))
+model.load_state_dict(torch.load('Model/stutter_detector.pth', weights_only=True))
 model.eval()
 
 def analyze_audio(local_file, test_type):
