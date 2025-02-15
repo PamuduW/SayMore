@@ -1,25 +1,42 @@
 import React from "react";
 import { View, Text, TouchableOpacity, Image, StyleSheet } from "react-native";
 
-const HomeScreen = () => (
-  <View style={styles.container}>
-    <View style={styles.header}>
-      <Text style={styles.greeting}>Hello User!</Text>
-      <Text style={styles.welcomeMessage}>Welcome Back :)</Text>
-    </View>
-    <View style={styles.testContainer}>
-      <Text style={styles.testHeading}>Start Your Test!</Text>
-      <Image style={styles.testImage} source={require("../assets/public-speaking.png")} />
-      <View style={styles.testOptions}>
-        {["Public Speaking", "Stuttering"].map((option, index) => (
-          <TouchableOpacity key={index} style={styles.optionButton}>
-            <Text style={styles.optionText}>{option}</Text>
-          </TouchableOpacity>
-        ))}
+const HomeScreen = ({ navigation }) => {
+  const NewScreens = [
+    "Audio",
+  ];
+
+  const handlePress = option => {
+    switch (option) {
+      case "Audio":
+        navigation.navigate("Audio");
+        break;
+      // Add other cases as needed
+      default:
+        break;
+    }
+  };
+
+  return (
+    <View style={styles.container}>
+      <View style={styles.header}>
+        <Text style={styles.greeting}>Hello User!</Text>
+        <Text style={styles.welcomeMessage}>Welcome Back :)</Text>
+      </View>
+      <View style={styles.testContainer}>
+        <Text style={styles.testHeading}>Start Your Test!</Text>
+        <Image style={styles.testImage} source={require("../assets/public-speaking.png")} />
+        <View style={styles.testOptions}>
+          {["Public Speaking", "Stuttering"].map((option, index) => (
+            <TouchableOpacity key={index} style={styles.optionButton} onPress={() => handlePress(option)}>
+              <Text style={styles.optionText}>{option}</Text>
+            </TouchableOpacity>
+          ))}
+        </View>
       </View>
     </View>
-  </View>
-);
+  );
+};
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: "#F0F8FF", padding: 20 },

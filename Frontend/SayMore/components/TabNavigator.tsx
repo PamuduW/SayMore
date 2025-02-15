@@ -7,6 +7,8 @@ import HomeScreen from "../screens/HomeScreen";
 import MoreScreen from "../screens/MoreScreen";
 import LessonsScreen from "../screens/LessonsScreen";
 import AccountScreen from "../screens/AccountScreen";
+import AudioScreen from "../screens/AudioScreen";
+
 
 import HomeIcon from "../assets/home.png";
 import MoreInfoIcon from "../assets/more-info.png";
@@ -20,6 +22,13 @@ const MoreStack = () => (
     <Stack.Screen name="Lessons" component={LessonsScreen} />
   </Stack.Navigator>
 );
+
+const HomeStack = () => (
+    <Stack.Navigator>
+        <Stack.Screen name="HomeScreen" component={HomeScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="Audio" component={AudioScreen} />
+    </Stack.Navigator>
+    );
 
 const getScreenOptions = ({ route }) => ({
   tabBarIcon: ({ focused }) => {
@@ -48,7 +57,7 @@ const getScreenOptions = ({ route }) => ({
 const TabNavigator = () => {
   return (
     <Tab.Navigator screenOptions={getScreenOptions}>
-      <Tab.Screen name="Home" component={HomeScreen} />
+      <Tab.Screen name="Home" component={HomeStack} />
       <Tab.Screen name="More" component={MoreStack} />
       <Tab.Screen name="Account" component={AccountScreen} />
     </Tab.Navigator>
