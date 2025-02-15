@@ -1,50 +1,44 @@
-import React from "react";
-import { View, Text, StyleSheet } from "react-native";
+import React, { useEffect, useState } from "react";
+import { View, StyleSheet, Animated } from "react-native";
 
-useEffect(() => {
-    //Fade in animation
+const WelcomeScreen = ({ navigation }) => {
+  const [fadeAnim] = useState(new Animated.Value(0));
+
+  useEffect(() => {
+    // Fade in animation
     Animated.timing(fadeAnim, {
       toValue: 1,
       duration: 1500,
       useNativeDriver: true,
     }).start();
+  }, [fadeAnim, navigation]);
 
-return () => clearTimeout(timer);
-},[fadeAnim,navigation]);
-
-return(
-    <view style={styles.container}>
-    <Animated.Image
-    source={require('../assets/applogo.jpg')}>
-    style={[style.logo, {opacity: fadeAnim}]}
-    />
-    </view>
-    );
+  return (
+    <View style={styles.container}>
+      <Animated.Image
+        source={require("../assets/applogo.jpg")}
+        style={[styles.logo, { opacity: fadeAnim }]}
+      />
+    </View>
+  );
 };
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: '#FFFFFF',
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    logo: {
-        width: 200,
-        height: 200,
-    },
+  container: {
+    flex: 1,
+    backgroundColor: "#FFFFFF",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  logo: {
+    width: 200,
+    height: 200,
+  },
+  welcomeText: {
+    fontSize: 24,
+    fontWeight: "bold",
+    color: "#003366",
+  },
 });
-
-const WelcomeScreen = () => (
-  <View style={styles.container}>
-    <Text style={styles.welcomeText}>Welcome to the App!</Text>
-  </View>
-);
-
-const styles = StyleSheet.create({
-  container: { flex: 1, justifyContent: "center", alignItems: "center", backgroundColor: "#F0F8FF" },
-  welcomeText: { fontSize: 24, fontWeight: "bold", color: "#003366" },
-});
-
 
 export default WelcomeScreen;
