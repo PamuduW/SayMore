@@ -3,6 +3,8 @@ import { View, Text, TouchableOpacity, PermissionsAndroid, Platform, Alert } fro
 import AudioRecorderPlayer from "react-native-audio-recorder-player";
 import storage from "@react-native-firebase/storage";
 import RNFS from "react-native-fs";
+import { v4 as uuidv4 } from "uuid";
+import auth from "@react-native-firebase/auth";
 
 const audioRecorderPlayer = new AudioRecorderPlayer();
 
@@ -50,7 +52,10 @@ const AudioRecorder = () => {
 
   const uploadAudio = async () => {
     if (audioPath) {
-      const filename = `audio_${Date.now()}.wav`;
+      const currentUser = auth().currentUser;
+      const acc_id = currentUser.uid;
+      const file_id = uuidv4();
+      const filename = `audio_${acc_id}+${file_id}.wav`;
       const reference = storage().ref(`recordings/${filename}`);
       try {
         await reference.putFile(audioPath);

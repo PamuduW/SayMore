@@ -24,7 +24,10 @@ const HomeScreen = ({ navigation }) => {
         <Image style={styles.testImage} source={require("../assets/public-speaking.png")} />
         <View style={styles.testOptions}>
           {["Public Speaking", "Stuttering"].map((option, index) => (
-            <TouchableOpacity key={index} style={styles.optionButton} onPress={() => handlePress(option)}>
+            <TouchableOpacity
+              key={index}
+              style={styles.optionButton}
+              onPress={() => handlePress(option)}>
               <Text style={styles.optionText}>{option}</Text>
             </TouchableOpacity>
           ))}

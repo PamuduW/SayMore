@@ -9,7 +9,6 @@ import LessonsScreen from "../screens/LessonsScreen";
 import AccountScreen from "../screens/AccountScreen";
 import AudioScreen from "../screens/AudioScreen";
 
-
 import HomeIcon from "../assets/home.png";
 import MoreInfoIcon from "../assets/more-info.png";
 
@@ -24,11 +23,11 @@ const MoreStack = () => (
 );
 
 const HomeStack = () => (
-    <Stack.Navigator>
-        <Stack.Screen name="HomeScreen" component={HomeScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="Audio" component={AudioScreen} />
-    </Stack.Navigator>
-    );
+  <Stack.Navigator>
+    <Stack.Screen name="HomeScreen" component={HomeScreen} options={{ headerShown: false }} />
+    <Stack.Screen name="Audio" component={AudioScreen} />
+  </Stack.Navigator>
+);
 
 const getScreenOptions = ({ route }) => ({
   tabBarIcon: ({ focused }) => {
