@@ -3,23 +3,32 @@ import { View, Text, TouchableOpacity, StyleSheet, Image, Alert } from "react-na
 import auth from "@react-native-firebase/auth";
 import { GoogleSignin } from "@react-native-google-signin/google-signin";
 
+/**
+ * AccountScreen component.
+ * Displays user account information and provides sign-out functionality.
+ */
 export default function AccountScreen() {
+  /**
+   * Handles the sign-out process.
+   * Signs out from Google and Firebase authentication.
+   */
   const handleSignOut = async () => {
     try {
-      const currentUser = auth().currentUser;
-      if (currentUser) {
-        try {
-          await GoogleSignin.signOut();
-        } catch (googleError) {
-          console.log("Google sign out error:", googleError);
-        }
-        await auth().signOut();
-      }
+      await GoogleSignin.signOut();
+    } catch (googleError) {
+      console.log("Google sign out error:", googleError);
+    }
+    try {
+      await auth().signOut();
     } catch (error) {
       Alert.alert("Error", "An error occurred while signing out. Please try again.");
     }
   };
 
+  /**
+   * Confirms the sign-out action with the user.
+   * Displays an alert dialog to confirm the sign-out.
+   */
   const confirmSignOut = () => {
     Alert.alert(
       "Sign Out",
@@ -84,6 +93,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
   },
   menuTextActive: { fontSize: 16, color: "#FFFFFF" },
-  logoutButton: { marginTop: 20, flexDirection: "row", alignItems: "center" },
+  logoutButton: { marginTop: 20 },
   logoutText: { fontSize: 16, color: "#FF0000" },
 });

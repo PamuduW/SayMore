@@ -1,17 +1,27 @@
 import React from "react";
 import { View, Text, TouchableOpacity, Image, StyleSheet } from "react-native";
+import { useNotifications } from "../components/Notifications";
 
+/**
+ * HomeScreen component.
+ * Displays a welcome message and options for starting tests.
+ *
+ * @param {Object} navigation - The navigation object used to navigate between screens.
+ * @returns {JSX.Element} The rendered HomeScreen component.
+ */
 const HomeScreen = ({ navigation }) => {
-  const handlePress = option => {
-    switch (option) {
-      case "Public Speaking":
-      case "Stuttering":
-        navigation.navigate("Audio");
-        break;
-      default:
-        break;
-    }
-  };
+  useNotifications();
+
+  /**
+   * Handles the press event for the test options.
+   * Navigates to the Audio screen if the selected option is "Public Speaking" or "Stuttering".
+   *
+   * @param {string} option - The selected test option.
+   */
+   const handlePress = option => {
+     const isPublicSpeaking = option === "Public Speaking";
+     navigation.navigate("Audio", { isPublicSpeaking });
+   };
 
   return (
     <View style={styles.container}>
@@ -24,7 +34,10 @@ const HomeScreen = ({ navigation }) => {
         <Image style={styles.testImage} source={require("../assets/public-speaking.png")} />
         <View style={styles.testOptions}>
           {["Public Speaking", "Stuttering"].map((option, index) => (
-            <TouchableOpacity key={index} style={styles.optionButton} onPress={() => handlePress(option)}>
+            <TouchableOpacity
+              key={index}
+              style={styles.optionButton}
+              onPress={() => handlePress(option)}>
               <Text style={styles.optionText}>{option}</Text>
             </TouchableOpacity>
           ))}
@@ -53,11 +66,7 @@ const styles = StyleSheet.create({
   },
   testHeading: { fontSize: 20, fontWeight: "bold", marginBottom: 20 },
   testImage: { width: 150, height: 150, marginBottom: 20 },
-  testOptions: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    width: "100%",
-  },
+  testOptions: { flexDirection: "row", justifyContent: "space-between", width: "100%" },
   optionButton: {
     flex: 1,
     backgroundColor: "#87CEEB",

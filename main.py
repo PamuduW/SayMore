@@ -5,8 +5,6 @@ from Backend.model import analyze_audio
 from pydantic import BaseModel
 import os
 
-# import uuid
-
 app = FastAPI()
 
 cred = credentials.Certificate("saymore-340e9-firebase-adminsdk-aaxo4-2e6ac8d48e.json")
@@ -27,18 +25,9 @@ async def root():
 @app.post("/test")
 async def test(request_body: RequestBody):
     try:
-        # ##################################################################################
-        # # upload the file straight from the frontend and have it send the file_name
-        # file_id = str(uuid.uuid4())
-        # file_name = f"test/{acc_id}+{file_id}.wav"
-        #
-        # bucket = storage.bucket()
-        # blob = bucket.blob(file_name)
-        # blob.upload_from_file(file.file, content_type="audio/wav")
-        # ####################################################################################
-
         file_name = request_body.file_name
         acc_id = request_body.acc_id
+        test_type = request_body.type
 
         os.makedirs('Temp', exist_ok=True)
         local_file = "Temp/temp_audio.wav"
@@ -47,12 +36,15 @@ async def test(request_body: RequestBody):
         blob = bucket.blob(file_name)
         blob.download_to_filename(local_file)
 
-        analysis_result = analyze_audio(local_file)
+        analysis_result = analyze_audio(local_file, test_type)
 
         doc_ref = db.collection("User_Accounts").document(acc_id)
-        doc_ref.update({"results": ArrayUnion([analysis_result])})
+        if test_type:
+            doc_ref.update({"results": {"PS_Check": ArrayUnion([analysis_result])}})
+        else:
+            doc_ref.update({"results": {"Stuttering_Check": ArrayUnion([analysis_result])}})
 
-        # blob.delete()
+        blob.delete()
         return {"result": analysis_result}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))

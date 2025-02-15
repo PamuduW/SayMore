@@ -8,7 +8,7 @@ import MoreScreen from "../screens/MoreScreen";
 import LessonsScreen from "../screens/LessonsScreen";
 import AccountScreen from "../screens/AccountScreen";
 import AudioScreen from "../screens/AudioScreen";
-
+import AnalysisScreen from "../screens/AnalysisScreen";
 
 import HomeIcon from "../assets/home.png";
 import MoreInfoIcon from "../assets/more-info.png";
@@ -16,20 +16,35 @@ import MoreInfoIcon from "../assets/more-info.png";
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
 
+/**
+ * Stack navigator for the "More" tab.
+ * Contains the MoreScreen and LessonsScreen.
+ */
 const MoreStack = () => (
-  <Stack.Navigator>
-    <Stack.Screen name="MoreScreen" component={MoreScreen} options={{ headerShown: false }} />
+  <Stack.Navigator screenOptions={{ headerShown: false }}>
+    <Stack.Screen name="MoreScreen" component={MoreScreen} />
     <Stack.Screen name="Lessons" component={LessonsScreen} />
   </Stack.Navigator>
 );
 
+/**
+ * Stack navigator for the "Home" tab.
+ * Contains the HomeScreen, AudioScreen, and AnalysisScreen.
+ */
 const HomeStack = () => (
-    <Stack.Navigator>
-        <Stack.Screen name="HomeScreen" component={HomeScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="Audio" component={AudioScreen} />
-    </Stack.Navigator>
-    );
+  <Stack.Navigator screenOptions={{ headerShown: false }}>
+    <Stack.Screen name="HomeScreen" component={HomeScreen} />
+    <Stack.Screen name="Audio" component={AudioScreen} />
+    <Stack.Screen name="AnalysisScreen" component={AnalysisScreen} />
+  </Stack.Navigator>
+);
 
+/**
+ * Function to get screen options for the tab navigator.
+ * Sets the tabBarIcon, tabBarActiveTintColor, tabBarInactiveTintColor, tabBarStyle, and headerShown.
+ * @param {Object} route - The route object.
+ * @returns {Object} The screen options.
+ */
 const getScreenOptions = ({ route }) => ({
   tabBarIcon: ({ focused }) => {
     const icons = {
@@ -54,15 +69,17 @@ const getScreenOptions = ({ route }) => ({
   headerShown: false,
 });
 
-const TabNavigator = () => {
-  return (
-    <Tab.Navigator screenOptions={getScreenOptions}>
-      <Tab.Screen name="Home" component={HomeStack} />
-      <Tab.Screen name="More" component={MoreStack} />
-      <Tab.Screen name="Account" component={AccountScreen} />
-    </Tab.Navigator>
-  );
-};
+/**
+ * Tab navigator component.
+ * Contains the HomeStack, MoreStack, and AccountScreen.
+ */
+const TabNavigator = () => (
+  <Tab.Navigator screenOptions={getScreenOptions}>
+    <Tab.Screen name="Home" component={HomeStack} />
+    <Tab.Screen name="More" component={MoreStack} />
+    <Tab.Screen name="Account" component={AccountScreen} />
+  </Tab.Navigator>
+);
 
 const styles = StyleSheet.create({
   icon: {

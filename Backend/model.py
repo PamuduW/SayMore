@@ -4,7 +4,6 @@ import librosa
 import torch.nn as nn
 import numpy as np
 
-
 # Define your model architecture
 class StutterDetector(nn.Module):
     def __init__(self, input_size):
@@ -22,14 +21,12 @@ class StutterDetector(nn.Module):
     def forward(self, x):
         return self.fc(x)
 
-
 # Initialize the model and load the state dictionary
 model = StutterDetector(40)
 model.load_state_dict(torch.load('Backend/stutter_detector.pth', weights_only=True))
 model.eval()
 
-
-def analyze_audio(local_file):
+def analyze_audio(local_file, test_type):
     try:
         audio, sample_rate = librosa.load(local_file, sr=16000)
         mfccs = librosa.feature.mfcc(y=audio, sr=sample_rate, n_mfcc=40)

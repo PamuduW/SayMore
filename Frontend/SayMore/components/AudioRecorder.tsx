@@ -1,97 +1,160 @@
-import React, { useState } from "react";
-import { View, Text, TouchableOpacity, PermissionsAndroid, Platform, Alert } from "react-native";
-import AudioRecorderPlayer from "react-native-audio-recorder-player";
+import React, { useState, useEffect } from "react";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  PermissionsAndroid,
+  Platform,
+  Alert,
+  StyleSheet,
+} from "react-native";
+import AudioRecord from "react-native-audio-record";
+import Sound from "react-native-sound";
 import storage from "@react-native-firebase/storage";
-import RNFS from "react-native-fs";
+import auth from "@react-native-firebase/auth";
+import { useNavigation } from "@react-navigation/native";
+import { request, PERMISSIONS } from "react-native-permissions";
 
-const audioRecorderPlayer = new AudioRecorderPlayer();
-
-const AudioRecorder = () => {
+/**
+ * AudioRecorder component allows users to record, play, and upload audio files.
+ * It handles permissions, recording, playback, and uploading to Firebase.
+ *
+ * @param {object} props - The component props.
+ * @param {boolean} props.isPublicSpeaking - Boolean indicating if the test is for public speaking.
+ */
+const AudioRecorder = ({ isPublicSpeaking }) => {
   const [isRecording, setIsRecording] = useState(false);
-  const [isPlaying, setIsPlaying] = useState(false);
   const [audioPath, setAudioPath] = useState<string | null>(null);
+  const [sound, setSound] = useState<Sound | null>(null);
+  const navigation = useNavigation();
+
+  useEffect(() => {
+    requestPermissions();
+    AudioRecord.init({
+      sampleRate: 44100,
+      channels: 1,
+      bitsPerSample: 16,
+      audioSource: 6,
+      wavFile: "recordedAudio.wav",
+    });
+  }, []);
 
   const requestPermissions = async () => {
     if (Platform.OS === "android") {
-      const granted = await PermissionsAndroid.request(
-        PermissionsAndroid.PERMISSIONS.RECORD_AUDIO
-      );
-      if (granted !== PermissionsAndroid.RESULTS.GRANTED) {
-        Alert.alert("Permission denied", "Cannot record audio without permission.");
-        return false;
-      }
+      await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.RECORD_AUDIO);
+      await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE);
+    } else {
+      await request(PERMISSIONS.IOS.MICROPHONE);
     }
-    return true;
   };
 
-  const startRecording = async () => {
-    const hasPermission = await requestPermissions();
-    if (!hasPermission) return;
-
-    const path = `${RNFS.DocumentDirectoryPath}/recordedAudio.wav`;
-    await audioRecorderPlayer.startRecorder(path);
+  const startRecording = () => {
     setIsRecording(true);
-    setAudioPath(path);
+    AudioRecord.start();
   };
 
   const stopRecording = async () => {
-    const result = await audioRecorderPlayer.stopRecorder();
     setIsRecording(false);
-    setAudioPath(result);
+    setAudioPath(await AudioRecord.stop());
   };
 
-  const startPlayback = async () => {
-    if (!audioPath) return;
-
-    await audioRecorderPlayer.startPlayer(audioPath);
-    setIsPlaying(true);
-  };
-
-  const stopPlayback = async () => {
-    await audioRecorderPlayer.stopPlayer();
-    setIsPlaying(false);
-  };
-
-  const uploadAudio = async () => {
+  const playAudio = () => {
     if (!audioPath) {
-      Alert.alert("No Audio", "Please record audio before uploading.");
+      Alert.alert("No Audio", "Please record audio before playing.");
       return;
     }
-
-    const filename = `audio_${Date.now()}.wav`;
-    const reference = storage().ref(`recordings/${filename}`);
-
-    try {
-      await reference.putFile(audioPath);
-      Alert.alert("Upload Success", "Audio uploaded successfully!");
-    } catch (error) {
-      Alert.alert("Upload Failed", error.message);
-    }
+    const soundInstance = new Sound(audioPath, Sound.MAIN_BUNDLE, error => {
+      if (error) {
+        Alert.alert("Playback Error", error.message);
+        return;
+      }
+      soundInstance.play(() => {
+        soundInstance.release();
+        setSound(null);
+      });
+    });
+    setSound(soundInstance);
   };
 
-  return (
-    <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-      <Text style={{ fontSize: 20, marginBottom: 10 }}>Audio Recorder</Text>
+  const stopAudio = () => {
+    sound?.stop(() => setSound(null));
+  };
 
+const uploadAudio = async () => {
+  if (!audioPath) {
+    Alert.alert("No Audio", "Please record audio before uploading.");
+    return;
+  }
+  const currentUser = auth().currentUser;
+  if (!currentUser) {
+    Alert.alert("Error", "User not authenticated");
+    return;
+  }
+  const folder = isPublicSpeaking ? "PS_Check" : "Stuttering_Check";
+  const filename = `recordings/${folder}/${currentUser.uid}+${new Date().toISOString()}.wav`;
+  const reference = storage().ref(filename);
+  try {
+    await reference.putFile(audioPath, { contentType: "audio/wav" });
+    navigation.navigate("AnalysisScreen", { filename, acc_id: currentUser.uid, type: isPublicSpeaking });
+  } catch (error) {
+    Alert.alert("Upload Failed", error.message);
+  }
+};
+
+  return (
+    <View style={styles.container}>
+      <Text style={styles.title}>Audio Recorder</Text>
       <TouchableOpacity
         onPress={isRecording ? stopRecording : startRecording}
-        style={{ backgroundColor: isRecording ? "red" : "green", padding: 10, margin: 10 }}>
-        <Text style={{ color: "white" }}>{isRecording ? "Stop Recording" : "Start Recording"}</Text>
+        style={[styles.button, isRecording ? styles.recording : styles.notRecording]}>
+        <Text style={styles.buttonText}>{isRecording ? "Stop Recording" : "Start Recording"}</Text>
       </TouchableOpacity>
-
       <TouchableOpacity
-        onPress={isPlaying ? stopPlayback : startPlayback}
-        style={{ backgroundColor: isPlaying ? "orange" : "blue", padding: 10, margin: 10 }}>
-        <Text style={{ color: "white" }}>{isPlaying ? "Stop Playback" : "Play Audio"}</Text>
+        onPress={sound ? stopAudio : playAudio}
+        style={[styles.button, sound ? styles.playing : styles.notPlaying]}>
+        <Text style={styles.buttonText}>{sound ? "Stop Playback" : "Play Audio"}</Text>
       </TouchableOpacity>
-
-      <TouchableOpacity
-        onPress={uploadAudio}
-        style={{ backgroundColor: "purple", padding: 10, margin: 10 }}>
-        <Text style={{ color: "white" }}>Upload to Firebase</Text>
+      <TouchableOpacity onPress={uploadAudio} style={[styles.button, styles.upload]}>
+        <Text style={styles.buttonText}>Upload to Firebase</Text>
       </TouchableOpacity>
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  title: {
+    fontSize: 20,
+    marginBottom: 10,
+  },
+  button: {
+    padding: 10,
+    margin: 10,
+    borderRadius: 5,
+  },
+  buttonText: {
+    color: "white",
+    textAlign: "center",
+  },
+  recording: {
+    backgroundColor: "red",
+  },
+  notRecording: {
+    backgroundColor: "green",
+  },
+  playing: {
+    backgroundColor: "orange",
+  },
+  notPlaying: {
+    backgroundColor: "blue",
+  },
+  upload: {
+    backgroundColor: "purple",
+  },
+});
 
 export default AudioRecorder;

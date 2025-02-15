@@ -1,24 +1,36 @@
 import React from "react";
 import { View, Text, TouchableOpacity, Image, StyleSheet } from "react-native";
 
-const MoreScreen = ({ navigation }) => {
-  const NewScreens = [
-    "Activity",
-    "Lesson",
-    "Quizzes and Challenges",
-    "Progress",
-    "Points",
-    "Leaderboard",
-    "Speech Therapy",
-  ];
+/**
+ * Array of screen titles.
+ */
+const NewScreens = [
+  "Activity",
+  "Lesson",
+  "Quizzes and Challenges",
+  "Progress",
+  "Points",
+  "Leaderboard",
+  "Speech Therapy",
+];
 
+/**
+ * MoreScreen component.
+ * Displays a grid of options for different screens.
+ *
+ * @param {Object} navigation - The navigation object used to navigate between screens.
+ * @returns {JSX.Element} The rendered MoreScreen component.
+ */
+const MoreScreen = ({ navigation }) => {
+  /**
+   * Handles the press event for the screen options.
+   * Navigates to the Lessons screen if the selected option is "Lesson".
+   *
+   * @param {string} title - The selected screen title.
+   */
   const handlePress = title => {
-    switch (title) {
-      case "Lesson":
-        navigation.navigate("Lessons");
-        break;
-      default:
-        break;
+    if (title === "Lesson") {
+      navigation.navigate("Lessons");
     }
   };
 
@@ -38,11 +50,7 @@ const MoreScreen = ({ navigation }) => {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: "#F0F8FF", padding: 20 },
-  gridContainer: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    justifyContent: "space-between",
-  },
+  gridContainer: { flexDirection: "row", flexWrap: "wrap", justifyContent: "space-between" },
   lessonButton: {
     width: "48%",
     backgroundColor: "#E6F7FF",
@@ -57,12 +65,7 @@ const styles = StyleSheet.create({
     shadowRadius: 3,
   },
   lessonIcon: { width: 40, height: 40, marginBottom: 10 },
-  lessonText: {
-    fontSize: 14,
-    fontWeight: "bold",
-    color: "#003366",
-    textAlign: "center",
-  },
+  lessonText: { fontSize: 14, fontWeight: "bold", color: "#003366", textAlign: "center" },
 });
 
 export default MoreScreen;
