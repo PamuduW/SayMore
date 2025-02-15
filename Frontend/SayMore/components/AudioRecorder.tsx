@@ -67,7 +67,9 @@ const AudioRecorder = () => {
       const filename = `recordings/${acc_id}+${file_id}.wav`;
       const reference = storage().ref(filename);
       try {
-        await reference.putFile(audioPath);
+        await reference.putFile(audioPath, {
+          contentType: "audio/wav",
+        });
         navigation.navigate("AnalysisScreen", { filename, acc_id });
       } catch (error) {
         Alert.alert("Upload Failed", error.message);

@@ -8,9 +8,10 @@ const AnalysisScreen = ({ route }) => {
 
   useEffect(() => {
     const sendPostRequest = async () => {
-      const url = "https://saymore-ec85c1fe019f.herokuapp.com/test";
-                console.log("filename", fileName);
-                  console.log("acc_id", accountId);
+//       const url = "https://saymore-ec85c1fe019f.herokuapp.com/test";
+      const url = "http://127.0.0.1:8000/test";
+      console.log("filename", fileName);
+      console.log("acc_id", accountId);
       const body = {
         file_name: fileName,
         acc_id: accountId,
