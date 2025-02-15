@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { View, Text } from "react-native";
+import { View, Text, Alert } from "react-native";
 
 const AnalysisScreen = ({ route }) => {
   const { filename, acc_id } = route.params;
@@ -8,8 +8,8 @@ const AnalysisScreen = ({ route }) => {
 
   useEffect(() => {
     const sendPostRequest = async () => {
-//       const url = "https://saymore-ec85c1fe019f.herokuapp.com/test";
-      const url = "http://127.0.0.1:8000/test";
+      const url = "https://saymore-ec85c1fe019f.herokuapp.com/test";
+//       const url = "http://127.0.0.1:8000/test";
       console.log("filename", fileName);
       console.log("acc_id", accountId);
       const body = {
@@ -32,6 +32,7 @@ const AnalysisScreen = ({ route }) => {
 
         const data = await response.json();
         console.log("Response data:", data);
+        Alert.alert("Response data:", data.message || "No message received");
       } catch (error) {
         console.error("Error sending POST request:", error);
       }
