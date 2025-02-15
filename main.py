@@ -27,21 +27,8 @@ async def root():
 @app.post("/test")
 async def test(request_body: RequestBody):
     try:
-        # ##################################################################################
-        # # upload the file straight from the frontend and have it send the file_name
-        # file_id = str(uuid.uuid4())
-        # file_name = f"test/{acc_id}+{file_id}.wav"
-        #
-        # bucket = storage.bucket()
-        # blob = bucket.blob(file_name)
-        # blob.upload_from_file(file.file, content_type="audio/wav")
-        # ####################################################################################
-
         file_name = request_body.file_name
         acc_id = request_body.acc_id
-
-        print(file_name)
-        print(acc_id)
 
         os.makedirs('Temp', exist_ok=True)
         local_file = "Temp/temp_audio.wav"
@@ -55,7 +42,7 @@ async def test(request_body: RequestBody):
         doc_ref = db.collection("User_Accounts").document(acc_id)
         doc_ref.update({"results": ArrayUnion([analysis_result])})
 
-        # blob.delete()
+        blob.delete()
         return {"result": analysis_result}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
