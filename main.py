@@ -11,6 +11,7 @@ cred = credentials.Certificate("saymore-340e9-firebase-adminsdk-aaxo4-2e6ac8d48e
 initialize_app(cred, {"storageBucket": "saymore-340e9.firebasestorage.app"})
 db = firestore.client()
 
+
 class RequestBody(BaseModel):
     file_name: str
     acc_id: str
@@ -20,11 +21,13 @@ class RequestBody(BaseModel):
 async def root():
     return {"message": "Backend with the Deep Learning model of the SayMore app"}
 
+
 @app.post("/test")
 async def test(request_body: RequestBody):
     try:
         file_name = request_body.file_name
         acc_id = request_body.acc_id
+        test_type = request_body.type
 
         os.makedirs('Temp', exist_ok=True)
         local_file = "Temp/temp_audio.wav"
@@ -33,10 +36,13 @@ async def test(request_body: RequestBody):
         blob = bucket.blob(file_name)
         blob.download_to_filename(local_file)
 
-        analysis_result = analyze_audio(local_file)
+        analysis_result = analyze_audio(local_file, test_type)
 
         doc_ref = db.collection("User_Accounts").document(acc_id)
-        doc_ref.update({"results": ArrayUnion([analysis_result])})
+        if test_type:
+            doc_ref.update({"results": {"PS_Check": ArrayUnion([analysis_result])}})
+        else:
+            doc_ref.update({"results": {"Stuttering_Check": ArrayUnion([analysis_result])}})
 
         blob.delete()
         return {"result": analysis_result}

@@ -18,11 +18,10 @@ const HomeScreen = ({ navigation }) => {
    *
    * @param {string} option - The selected test option.
    */
-  const handlePress = option => {
-    if (["Public Speaking", "Stuttering"].includes(option)) {
-      navigation.navigate("Audio");
-    }
-  };
+   const handlePress = option => {
+     const isPublicSpeaking = option === "Public Speaking";
+     navigation.navigate("Audio", { isPublicSpeaking });
+   };
 
   return (
     <View style={styles.container}>

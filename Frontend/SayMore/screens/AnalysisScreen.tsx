@@ -1,30 +1,14 @@
-import React, { useEffect, useState } from "react";
-import { View, Text, StyleSheet } from "react-native";
-
-/**
- * AnalysisScreen component.
- * Fetches and displays analysis data based on the provided filename and account ID.
- *
- * @param {Object} route - The route object containing navigation parameters.
- * @param {Object} route.params - The parameters passed to the route.
- * @param {string} route.params.filename - The name of the file to be analyzed.
- * @param {string} route.params.acc_id - The account ID associated with the analysis.
- */
 const AnalysisScreen = ({ route }) => {
-  const { filename, acc_id } = route.params;
+  const { filename, acc_id, type } = route.params;
   const [responseData, setResponseData] = useState(null);
 
   useEffect(() => {
-    /**
-     * Sends a POST request to the analysis endpoint with the filename and account ID.
-     * Updates the responseData state with the response data.
-     */
     const sendPostRequest = async () => {
       try {
         const response = await fetch("https://saymore-ec85c1fe019f.herokuapp.com/test", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ file_name: filename, acc_id: acc_id }),
+          body: JSON.stringify({ file_name: filename, acc_id: acc_id, type: type }),
         });
 
         if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
@@ -38,7 +22,7 @@ const AnalysisScreen = ({ route }) => {
     };
 
     sendPostRequest();
-  }, [filename, acc_id]);
+  }, [filename, acc_id, type]);
 
   return (
     <View style={styles.container}>
