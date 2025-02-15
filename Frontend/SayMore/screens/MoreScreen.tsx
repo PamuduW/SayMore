@@ -17,7 +17,6 @@ const MoreScreen = ({ navigation }) => {
       case "Lesson":
         navigation.navigate("Lessons");
         break;
-      // Add other cases as needed
       default:
         break;
     }
