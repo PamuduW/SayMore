@@ -10,13 +10,11 @@ export const useNotifications = () => {
       if (Platform.OS === "android" && Platform.Version >= 33) {
         await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS);
       }
-      const authStatus = await messaging().requestPermission();
-      console.log("Notification Authorization status:", authStatus);
+      await messaging().requestPermission();
     };
 
     const getToken = async () => {
-      const fcmToken = await messaging().getToken();
-      console.log("FCM Token:", fcmToken);
+      await messaging().getToken();
     };
 
     const setupInAppMessaging = () => {

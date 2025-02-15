@@ -14,6 +14,7 @@ import {
 import auth from "@react-native-firebase/auth";
 import { useNavigation } from "@react-navigation/native";
 import { GoogleSignin } from "@react-native-google-signin/google-signin";
+import firestore from "@react-native-firebase/firestore";
 
 export default function SignInScreen() {
   const [email, setEmail] = useState("");
@@ -64,7 +65,18 @@ export default function SignInScreen() {
       });
       const signInResult = await GoogleSignin.signIn();
       const googleCredential = auth.GoogleAuthProvider.credential(signInResult.data.idToken);
-      await auth().signInWithCredential(googleCredential);
+      const userCredential = await auth().signInWithCredential(googleCredential);
+      const user = userCredential.user;
+
+      const userDoc = await firestore().collection("User_Accounts").doc(user.uid).get();
+
+      if (!userDoc.exists) {
+        await firestore().collection("User_Accounts").doc(user.uid).set({
+          email: user.email,
+          createdAt: firestore.FieldValue.serverTimestamp(),
+        });
+        Alert.alert("Success", "Account created successfully!");
+      }
     } catch (error) {
       Alert.alert("Authentication Error", error.message || "An error occurred during Google Sign In");
     }

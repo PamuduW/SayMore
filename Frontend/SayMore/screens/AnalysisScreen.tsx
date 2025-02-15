@@ -1,20 +1,16 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, Alert } from "react-native";
+import { View, Text, StyleSheet } from "react-native";
 
 const AnalysisScreen = ({ route }) => {
   const { filename, acc_id } = route.params;
-  const [fileName, setFileName] = useState(filename);
-  const [accountId, setAccountId] = useState(acc_id);
+  const [responseData, setResponseData] = useState(null);
 
   useEffect(() => {
     const sendPostRequest = async () => {
       const url = "https://saymore-ec85c1fe019f.herokuapp.com/test";
-//       const url = "http://127.0.0.1:8000/test";
-      console.log("filename", fileName);
-      console.log("acc_id", accountId);
       const body = {
-        file_name: fileName,
-        acc_id: accountId,
+        file_name: filename,
+        acc_id: acc_id,
       };
 
       try {
@@ -32,20 +28,33 @@ const AnalysisScreen = ({ route }) => {
 
         const data = await response.json();
         console.log("Response data:", data);
-        Alert.alert("Response data:", data.message || "No message received");
+        setResponseData(JSON.stringify(data, null, 2)); // Convert JSON to formatted string
       } catch (error) {
         console.error("Error sending POST request:", error);
       }
     };
 
     sendPostRequest();
-  }, [fileName, accountId]);
+  }, [filename, acc_id]);
 
   return (
-    <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+    <View style={styles.container}>
       <Text>Analysis Screen</Text>
+      {responseData && <Text style={styles.responseText}>{responseData}</Text>}
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  responseText: {
+    marginTop: 10,
+    padding: 10,
+  },
+});
 
 export default AnalysisScreen;
