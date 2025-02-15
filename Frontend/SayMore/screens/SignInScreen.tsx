@@ -63,9 +63,6 @@ export default function SignInScreen() {
         showPlayServicesUpdateDialog: true,
       });
       const signInResult = await GoogleSignin.signIn();
-      if (!signInResult.idToken) {
-        throw new Error("Google Sign-In failed. No ID token returned.");
-      }
       const googleCredential = auth.GoogleAuthProvider.credential(signInResult.data.idToken);
       await auth().signInWithCredential(googleCredential);
     } catch (error) {

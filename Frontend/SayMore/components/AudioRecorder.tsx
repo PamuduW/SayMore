@@ -5,6 +5,7 @@ import storage from "@react-native-firebase/storage";
 import RNFS from "react-native-fs";
 import { v4 as uuidv4 } from "uuid";
 import auth from "@react-native-firebase/auth";
+import { useNavigation } from "@react-navigation/native";
 
 const audioRecorderPlayer = new AudioRecorderPlayer();
 
@@ -12,6 +13,7 @@ const AudioRecorder = () => {
   const [isRecording, setIsRecording] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
   const [audioPath, setAudioPath] = useState<string | null>(null);
+  const navigation = useNavigation();
 
   const requestPermissions = async () => {
     if (Platform.OS === "android") {
@@ -41,12 +43,19 @@ const AudioRecorder = () => {
   const startPlayback = async () => {
     if (audioPath) {
       await audioRecorderPlayer.startPlayer(audioPath);
+      const playbackListener = audioRecorderPlayer.addPlayBackListener(e => {
+        if (e.currentPosition === e.duration) {
+          stopPlayback();
+          audioRecorderPlayer.removePlayBackListener(playbackListener);
+        }
+      });
       setIsPlaying(true);
     }
   };
 
   const stopPlayback = async () => {
     await audioRecorderPlayer.stopPlayer();
+    audioRecorderPlayer.removePlayBackListener();
     setIsPlaying(false);
   };
 
@@ -54,12 +63,12 @@ const AudioRecorder = () => {
     if (audioPath) {
       const currentUser = auth().currentUser;
       const acc_id = currentUser.uid;
-      const file_id = uuidv4();
-      const filename = `audio_${acc_id}+${file_id}.wav`;
-      const reference = storage().ref(`recordings/${filename}`);
+      const file_id = new Date().toISOString();
+      const filename = `recordings/${acc_id}+${file_id}.wav`;
+      const reference = storage().ref(filename);
       try {
         await reference.putFile(audioPath);
-        Alert.alert("Upload Success", "Audio uploaded successfully!");
+        navigation.navigate("AnalysisScreen", { filename, acc_id });
       } catch (error) {
         Alert.alert("Upload Failed", error.message);
       }
