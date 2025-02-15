@@ -1,3 +1,6 @@
+import React, { useEffect, useState } from "react";
+import { View, Text, StyleSheet } from "react-native";
+
 const AnalysisScreen = ({ route }) => {
   const { filename, acc_id, type } = route.params;
   const [responseData, setResponseData] = useState(null);
