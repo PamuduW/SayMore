@@ -2,18 +2,8 @@ on the first run give a "npm i" command
 then npx react-native run-android
 
 
-
-npm install -g firebase-tools
-
-
-
-
-
-
-
-
-
-
+npm run lint
+npm run format
 
 
 cd android

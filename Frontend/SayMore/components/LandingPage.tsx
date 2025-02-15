@@ -9,26 +9,31 @@ import WelcomeScreen from "../screens/WelcomeScreen";
 
 const Stack = createNativeStackNavigator();
 
+/**
+ * LandingPage component manages the initial navigation flow of the app.
+ * It shows a welcome screen initially, then navigates to the main app or authentication screens based on the user's authentication state.
+ */
 const LandingPage = () => {
   const { user, initializing } = useAuth();
   const [showWelcome, setShowWelcome] = useState(true);
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setShowWelcome(false);
-    }, 2000); // 2 seconds
-
-    return () => clearTimeout(timer);
+    // Show the welcome screen for 2 seconds
+    const timer = setTimeout(() => setShowWelcome(false), 2000);
+    return () => clearTimeout(timer); // Cleanup the timer on component unmount
   }, []);
 
+  // Show the welcome screen if initializing or showWelcome is true
   if (initializing || showWelcome) return <WelcomeScreen />;
 
   return (
     <NavigationContainer>
       <Stack.Navigator screenOptions={{ headerShown: false }}>
         {user ? (
+          // If user is authenticated, navigate to the main app
           <Stack.Screen name="MainApp" component={TabNavigator} />
         ) : (
+          // If user is not authenticated, show SignIn and SignUp screens
           <>
             <Stack.Screen name="SignIn" component={SignInScreen} />
             <Stack.Screen name="SignUp" component={SignUpScreen} />

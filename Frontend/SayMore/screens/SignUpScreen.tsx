@@ -16,6 +16,12 @@ import { useNavigation } from "@react-navigation/native";
 import { GoogleSignin } from "@react-native-google-signin/google-signin";
 import firestore from "@react-native-firebase/firestore";
 
+/**
+ * SignUpScreen component.
+ * Allows users to sign up using email/password or Google Sign-In.
+ *
+ * @returns {JSX.Element} The rendered SignUpScreen component.
+ */
 export default function SignUpScreen() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -29,6 +35,10 @@ export default function SignUpScreen() {
     });
   }, []);
 
+  /**
+   * Handles the sign-up process using email and password.
+   * Displays an alert if fields are empty, passwords do not match, or if there is an error during sign-up.
+   */
   const handleSignUp = async () => {
     if (!email || !password || !confirmPassword) {
       Alert.alert("Error", "Please fill in all fields");
@@ -75,13 +85,15 @@ export default function SignUpScreen() {
     }
   };
 
+  /**
+   * Handles the Google Sign-In process.
+   * Displays an alert if there is an error during Google Sign-In.
+   */
   const handleGoogleSignIn = async () => {
     try {
-      await GoogleSignin.hasPlayServices({
-        showPlayServicesUpdateDialog: true,
-      });
+      await GoogleSignin.hasPlayServices({ showPlayServicesUpdateDialog: true });
       const signInResult = await GoogleSignin.signIn();
-      const googleCredential = auth.GoogleAuthProvider.credential(signInResult.data.idToken);
+      const googleCredential = auth.GoogleAuthProvider.credential(signInResult.idToken);
       const userCredential = await auth().signInWithCredential(googleCredential);
       const user = userCredential.user;
 

@@ -15,6 +15,10 @@ import auth from "@react-native-firebase/auth";
 import { useNavigation } from "@react-navigation/native";
 import { request, PERMISSIONS } from "react-native-permissions";
 
+/**
+ * AudioRecorder component allows users to record, play, and upload audio files.
+ * It handles permissions, recording, playback, and uploading to Firebase.
+ */
 const AudioRecorder = () => {
   const [isRecording, setIsRecording] = useState(false);
   const [audioPath, setAudioPath] = useState<string | null>(null);
@@ -32,6 +36,9 @@ const AudioRecorder = () => {
     });
   }, []);
 
+  /**
+   * Requests necessary permissions for recording audio.
+   */
   const requestPermissions = async () => {
     if (Platform.OS === "android") {
       await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.RECORD_AUDIO);
@@ -41,18 +48,26 @@ const AudioRecorder = () => {
     }
   };
 
-  const startRecording = async () => {
+  /**
+   * Starts audio recording.
+   */
+  const startRecording = () => {
     setIsRecording(true);
     AudioRecord.start();
   };
 
+  /**
+   * Stops audio recording and sets the audio path.
+   */
   const stopRecording = async () => {
     setIsRecording(false);
-    const path = await AudioRecord.stop();
-    setAudioPath(path);
+    setAudioPath(await AudioRecord.stop());
   };
 
-  const playAudio = async () => {
+  /**
+   * Plays the recorded audio.
+   */
+  const playAudio = () => {
     if (!audioPath) {
       Alert.alert("No Audio", "Please record audio before playing.");
       return;
@@ -70,31 +85,33 @@ const AudioRecorder = () => {
     setSound(soundInstance);
   };
 
+  /**
+   * Stops audio playback.
+   */
   const stopAudio = () => {
-    if (sound) {
-      sound.stop(() => setSound(null));
-    }
+    sound?.stop(() => setSound(null));
   };
 
+  /**
+   * Uploads the recorded audio to Firebase storage.
+   */
   const uploadAudio = async () => {
-    if (audioPath) {
-      const currentUser = auth().currentUser;
-      if (!currentUser) {
-        Alert.alert("Error", "User not authenticated");
-        return;
-      }
-      const acc_id = currentUser.uid;
-      const file_id = new Date().toISOString();
-      const filename = `recordings/${acc_id}+${file_id}.wav`;
-      const reference = storage().ref(filename);
-      try {
-        await reference.putFile(audioPath, { contentType: "audio/wav" });
-        navigation.navigate("AnalysisScreen", { filename, acc_id });
-      } catch (error) {
-        Alert.alert("Upload Failed", error.message);
-      }
-    } else {
+    if (!audioPath) {
       Alert.alert("No Audio", "Please record audio before uploading.");
+      return;
+    }
+    const currentUser = auth().currentUser;
+    if (!currentUser) {
+      Alert.alert("Error", "User not authenticated");
+      return;
+    }
+    const filename = `recordings/${currentUser.uid}+${new Date().toISOString()}.wav`;
+    const reference = storage().ref(filename);
+    try {
+      await reference.putFile(audioPath, { contentType: "audio/wav" });
+      navigation.navigate("AnalysisScreen", { filename, acc_id: currentUser.uid });
+    } catch (error) {
+      Alert.alert("Upload Failed", error.message);
     }
   };
 

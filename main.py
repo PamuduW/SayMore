@@ -5,14 +5,11 @@ from Backend.model import analyze_audio
 from pydantic import BaseModel
 import os
 
-# import uuid
-
 app = FastAPI()
 
 cred = credentials.Certificate("saymore-340e9-firebase-adminsdk-aaxo4-2e6ac8d48e.json")
 initialize_app(cred, {"storageBucket": "saymore-340e9.firebasestorage.app"})
 db = firestore.client()
-
 
 class RequestBody(BaseModel):
     file_name: str
@@ -22,7 +19,6 @@ class RequestBody(BaseModel):
 @app.get("/")
 async def root():
     return {"message": "Backend with the Deep Learning model of the SayMore app"}
-
 
 @app.post("/test")
 async def test(request_body: RequestBody):

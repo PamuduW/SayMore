@@ -16,6 +16,12 @@ import { useNavigation } from "@react-navigation/native";
 import { GoogleSignin } from "@react-native-google-signin/google-signin";
 import firestore from "@react-native-firebase/firestore";
 
+/**
+ * SignInScreen component.
+ * Allows users to sign in using email/password or Google Sign-In.
+ *
+ * @returns {JSX.Element} The rendered SignInScreen component.
+ */
 export default function SignInScreen() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -27,6 +33,10 @@ export default function SignInScreen() {
     });
   }, []);
 
+  /**
+   * Handles the sign-in process using email and password.
+   * Displays an alert if fields are empty or if there is an error during sign-in.
+   */
   const handleSignIn = async () => {
     if (!email || !password) {
       Alert.alert("Error", "Please fill in all fields");
@@ -47,24 +57,23 @@ export default function SignInScreen() {
         await auth().signOut();
       }
     } catch (error) {
-      if (error.code === "auth/invalid-credential") {
-        Alert.alert(
-          "Login Error",
-          "Username or password is incorrect. Please check your credentials and try again.",
-        );
-      } else {
-        Alert.alert("Error", error.message);
-      }
+      const errorMessage =
+        error.code === "auth/invalid-credential"
+          ? "Username or password is incorrect. Please check your credentials and try again."
+          : error.message;
+      Alert.alert("Error", errorMessage);
     }
   };
 
+  /**
+   * Handles the Google Sign-In process.
+   * Displays an alert if there is an error during Google Sign-In.
+   */
   const handleGoogleSignIn = async () => {
     try {
-      await GoogleSignin.hasPlayServices({
-        showPlayServicesUpdateDialog: true,
-      });
+      await GoogleSignin.hasPlayServices({ showPlayServicesUpdateDialog: true });
       const signInResult = await GoogleSignin.signIn();
-      const googleCredential = auth.GoogleAuthProvider.credential(signInResult.data.idToken);
+      const googleCredential = auth.GoogleAuthProvider.credential(signInResult.idToken);
       const userCredential = await auth().signInWithCredential(googleCredential);
       const user = userCredential.user;
 

@@ -1,34 +1,37 @@
 import React, { useEffect, useState } from "react";
 import { View, Text, StyleSheet } from "react-native";
 
+/**
+ * AnalysisScreen component.
+ * Fetches and displays analysis data based on the provided filename and account ID.
+ *
+ * @param {Object} route - The route object containing navigation parameters.
+ * @param {Object} route.params - The parameters passed to the route.
+ * @param {string} route.params.filename - The name of the file to be analyzed.
+ * @param {string} route.params.acc_id - The account ID associated with the analysis.
+ */
 const AnalysisScreen = ({ route }) => {
   const { filename, acc_id } = route.params;
   const [responseData, setResponseData] = useState(null);
 
   useEffect(() => {
+    /**
+     * Sends a POST request to the analysis endpoint with the filename and account ID.
+     * Updates the responseData state with the response data.
+     */
     const sendPostRequest = async () => {
-      const url = "https://saymore-ec85c1fe019f.herokuapp.com/test";
-      const body = {
-        file_name: filename,
-        acc_id: acc_id,
-      };
-
       try {
-        const response = await fetch(url, {
+        const response = await fetch("https://saymore-ec85c1fe019f.herokuapp.com/test", {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(body),
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ file_name: filename, acc_id: acc_id }),
         });
 
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
+        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
 
         const data = await response.json();
         console.log("Response data:", data);
-        setResponseData(JSON.stringify(data, null, 2)); // Convert JSON to formatted string
+        setResponseData(JSON.stringify(data, null, 2));
       } catch (error) {
         console.error("Error sending POST request:", error);
       }
@@ -46,15 +49,8 @@ const AnalysisScreen = ({ route }) => {
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  responseText: {
-    marginTop: 10,
-    padding: 10,
-  },
+  container: { flex: 1, justifyContent: "center", alignItems: "center" },
+  responseText: { marginTop: 10, padding: 10 },
 });
 
 export default AnalysisScreen;
