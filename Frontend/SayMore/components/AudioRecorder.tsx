@@ -28,7 +28,7 @@ const AudioRecorder = () => {
     const hasPermission = await requestPermissions();
     if (!hasPermission) return;
 
-    const path = ${RNFS.DocumentDirectoryPath}/recordedAudio.wav;
+    const path = `${RNFS.DocumentDirectoryPath}/recordedAudio.wav`;
     await audioRecorderPlayer.startRecorder(path);
     setIsRecording(true);
     setAudioPath(path);
@@ -58,8 +58,8 @@ const AudioRecorder = () => {
       return;
     }
 
-    const filename = audio_${Date.now()}.wav;
-    const reference = storage().ref(/recordings/${filename});
+    const filename = `audio_${Date.now()}.wav`;
+    const reference = storage().ref(`recordings/${filename}`);
 
     try {
       await reference.putFile(audioPath);

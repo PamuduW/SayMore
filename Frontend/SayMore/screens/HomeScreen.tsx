@@ -2,16 +2,12 @@ import React from "react";
 import { View, Text, TouchableOpacity, Image, StyleSheet } from "react-native";
 
 const HomeScreen = ({ navigation }) => {
-  const NewScreens = [
-    "Audio",
-  ];
-
   const handlePress = option => {
     switch (option) {
-      case "Audio":
+      case "Public Speaking":
+      case "Stuttering":
         navigation.navigate("Audio");
         break;
-      // Add other cases as needed
       default:
         break;
     }

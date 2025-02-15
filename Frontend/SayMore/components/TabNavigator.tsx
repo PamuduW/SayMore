@@ -70,10 +70,10 @@ const styles = StyleSheet.create({
     height: 25,
   },
   activeIcon: {
-    tintColor: "#003366", // ✅ Moved from inline styles
+    tintColor: "#003366",
   },
   inactiveIcon: {
-    tintColor: "gray", // ✅ Moved from inline styles
+    tintColor: "gray",
   },
 });
 
