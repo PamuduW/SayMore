@@ -15,6 +15,7 @@ db = firestore.client()
 class RequestBody(BaseModel):
     file_name: str
     acc_id: str
+    test_type: bool
 
 
 @app.get("/")
@@ -27,7 +28,7 @@ async def test(request_body: RequestBody):
     try:
         file_name = request_body.file_name
         acc_id = request_body.acc_id
-        test_type = request_body.type
+        test_type = request_body.test_type
 
         os.makedirs('Temp', exist_ok=True)
         local_file = "Temp/temp_audio.wav"

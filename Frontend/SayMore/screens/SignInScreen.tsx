@@ -73,7 +73,7 @@ export default function SignInScreen() {
     try {
       await GoogleSignin.hasPlayServices({ showPlayServicesUpdateDialog: true });
       const signInResult = await GoogleSignin.signIn();
-      const googleCredential = auth.GoogleAuthProvider.credential(signInResult.idToken);
+      const googleCredential = auth.GoogleAuthProvider.credential(signInResult.data.idToken);
       const userCredential = await auth().signInWithCredential(googleCredential);
       const user = userCredential.user;
 

@@ -11,7 +11,7 @@ const AnalysisScreen = ({ route }) => {
         const response = await fetch("https://saymore-ec85c1fe019f.herokuapp.com/test", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ file_name: filename, acc_id: acc_id, type: type }),
+          body: JSON.stringify({ file_name: filename, acc_id: acc_id, test_type: type }),
         });
 
         if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
