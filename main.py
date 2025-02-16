@@ -1,7 +1,7 @@
 from firebase_admin import credentials, initialize_app, storage, firestore
 from fastapi import FastAPI, UploadFile, File, HTTPException
 from google.cloud.firestore_v1 import ArrayUnion
-from Backend.model import analyze_audio
+from Model.model import analyze_audio
 from pydantic import BaseModel
 import os
 
@@ -30,14 +30,15 @@ async def test(request_body: RequestBody):
         acc_id = request_body.acc_id
         test_type = request_body.test_type
 
-        os.makedirs('Temp', exist_ok=True)
-        local_file = "Temp/temp_audio.wav"
+        os.makedirs("recordings", exist_ok=True)
+        os.makedirs("recordings/PS_Check", exist_ok=True)
+        os.makedirs("recordings/Stuttering_Check", exist_ok=True)
 
         bucket = storage.bucket()
         blob = bucket.blob(file_name)
-        blob.download_to_filename(local_file)
+        blob.download_to_filename(file_name)
 
-        analysis_result = analyze_audio(local_file, test_type)
+        analysis_result = analyze_audio(file_name, test_type)
 
         doc_ref = db.collection("User_Accounts").document(acc_id)
         if test_type:
@@ -46,6 +47,7 @@ async def test(request_body: RequestBody):
             doc_ref.update({"results": {"Stuttering_Check": ArrayUnion([analysis_result])}})
 
         blob.delete()
+        os.remove(file_name)
         return {"result": analysis_result}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
