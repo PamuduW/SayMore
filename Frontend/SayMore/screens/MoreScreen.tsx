@@ -12,6 +12,7 @@ const NewScreens = [
   "Points",
   "Leaderboard",
   "Speech Therapy",
+  "Analysis and Reports",
 ];
 
 /**
@@ -31,6 +32,8 @@ const MoreScreen = ({ navigation }) => {
   const handlePress = title => {
     if (title === "Lesson") {
       navigation.navigate("Lessons");
+    }else if (title === "Analysis and Reports") {
+      navigation.navigate("Chart");
     }
   };
 
