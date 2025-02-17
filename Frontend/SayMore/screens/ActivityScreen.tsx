@@ -2,15 +2,27 @@ import React, { useState, useEffect } from "react";
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Share, Dimensions } from "react-native";
 import { LineChart } from "react-native-chart-kit";
 
-const screenWidth = Dimensions.get("window").width;
-
 const dataPoints = [
-  { date: "01", points: 20 }, { date: "02", points: 40 }, { date: "03", points: 35 },
-  { date: "04", points: 50 }, { date: "05", points: 65 }, { date: "06", points: 80 },
-  { date: "07", points: 90 }, { date: "08", points: 110 }, { date: "09", points: 130 },
-  { date: "10", points: 150 }, { date: "11", points: 160 }, { date: "12", points: 175 },
-  { date: "13", points: 190 }, { date: "14", points: 200 },
+  { date: "01", points: 20 },
+  { date: "02", points: 40 },
+  { date: "03", points: 35 },
+  { date: "04", points: 50 },
+  { date: "05", points: 65 },
+  { date: "06", points: 80 },
+  { date: "07", points: 90 },
+  { date: "08", points: 110 },
+  { date: "09", points: 130 },
+  { date: "10", points: 150 },
+  { date: "11", points: 160 },
+  { date: "12", points: 175 },
+  { date: "13", points: 190 },
+  { date: "14", points: 200 },
 ];
+
+const sanitizedData = dataPoints.map((item) => ({
+  date: item.date,
+  points: isFinite(item.points) ? item.points : 0, // Replace invalid values
+}));
 
 interface UserRecord {
   score: number;
@@ -21,14 +33,14 @@ interface Props {
 }
 
 const ActivityScreen: React.FC<Props> = ({ userRecords }) => {
-  const [animatedData, setAnimatedData] = useState<number[]>([]);
+  const [animatedData, setAnimatedData] = useState<{ date: string; points: number }[]>([]);
   const [stats, setStats] = useState({ avgScore: 0, highestScore: 0, totalQuizzes: 0 });
 
   useEffect(() => {
     let index = 0;
     const interval = setInterval(() => {
-      if (index < dataPoints.length) {
-        setAnimatedData((prevData) => [...prevData, dataPoints[index].points]);
+      if (index < sanitizedData.length) {
+        setAnimatedData((prevData) => [...prevData, sanitizedData[index]]);
         index++;
       } else {
         clearInterval(interval);
@@ -43,7 +55,7 @@ const ActivityScreen: React.FC<Props> = ({ userRecords }) => {
       const highestScore = Math.max(...userRecords.map((record) => record.score));
       setStats({
         avgScore: parseFloat((totalScore / userRecords.length).toFixed(2)),
-        highestScore,
+        highestScore: highestScore,
         totalQuizzes: userRecords.length,
       });
     }
@@ -65,29 +77,42 @@ const ActivityScreen: React.FC<Props> = ({ userRecords }) => {
       <View style={styles.chartContainer}>
         <LineChart
           data={{
-            labels: dataPoints.map((point) => point.date),
-            datasets: [{ data: animatedData }],
+            labels: sanitizedData.map((item) => item.date),
+            datasets: [
+              {
+                data: sanitizedData.map((item) => item.points),
+              },
+            ],
           }}
-          width={screenWidth - 40}
-          height={220}
-          yAxisSuffix=" pts"
+          width={Dimensions.get("window").width - 40} // Adjust width to fit screen
+          height={220} // Adjust height
           chartConfig={{
-            backgroundColor: "#007AFF",
-            backgroundGradientFrom: "#DFF6FF",
-            backgroundGradientTo: "#007AFF",
-            decimalPlaces: 0,
+            backgroundColor: "#fff",
+            backgroundGradientFrom: "#fff",
+            backgroundGradientTo: "#fff",
             color: (opacity = 1) => `rgba(0, 122, 255, ${opacity})`,
             labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
-            style: { borderRadius: 10 },
+            strokeWidth: 2,
+            barPercentage: 0.5,
           }}
-          bezier
-          style={{ borderRadius: 10 }}
+          verticalLabelRotation={30}
         />
       </View>
-      <View style={styles.infoBox}><Text style={styles.infoText}>Your average score this month: {stats.avgScore} points</Text></View>
-      <View style={styles.infoBox}><Text style={styles.infoText}>Your highest score: {stats.highestScore} points</Text></View>
-      <View style={styles.infoBox}><Text style={styles.infoText}>Total Quizzes Taken: {stats.totalQuizzes}</Text></View>
-      <Text style={styles.footerText}>Your scores have been steadily improving. Keep up the great work!</Text>
+
+      <View style={styles.infoBox}>
+        <Text style={styles.infoText}>Your average score this month: {stats.avgScore} points</Text>
+      </View>
+      <View style={styles.infoBox}>
+        <Text style={styles.infoText}>Your highest score: {stats.highestScore} points</Text>
+      </View>
+      <View style={styles.infoBox}>
+        <Text style={styles.infoText}>Total Quizzes Taken: {stats.totalQuizzes}</Text>
+      </View>
+
+      <Text style={styles.footerText}>
+       🎉✨ Your scores have been steadily improving! 🚀 Keep up the amazing work and let’s aim even higher! 💪🔥 You’re doing fantastic! 🌟
+      </Text>
+
       <TouchableOpacity style={styles.shareButton} onPress={handleShare}>
         <Text style={styles.shareText}>Share your achievement</Text>
       </TouchableOpacity>
@@ -97,12 +122,12 @@ const ActivityScreen: React.FC<Props> = ({ userRecords }) => {
 
 const styles = StyleSheet.create({
   container: { flex: 1, padding: 20, backgroundColor: "#fff" },
-  title: { fontSize: 24, fontWeight: "bold", textAlign: "center", marginVertical: 10 },
-  chartContainer: { alignItems: "center", padding: 10, backgroundColor: "#DFF6FF", borderRadius: 10 },
-  infoBox: { backgroundColor: "#007AFF", padding: 15, borderRadius: 10, marginVertical: 5, alignItems: "center" },
+  title: { fontSize: 24, fontWeight: "bold", textAlign: "center", marginVertical: 20 },
+  chartContainer: { alignItems: "center", padding: 10, backgroundColor: "#DFF6FF", borderRadius: 10, marginBottom: 20 },
+  infoBox: { backgroundColor: "#007AFF", padding: 15, borderRadius: 10, marginVertical: 10, alignItems: "center" },
   infoText: { color: "white", fontSize: 16, fontWeight: "bold" },
-  footerText: { textAlign: "center", marginTop: 10, fontSize: 16 },
-  shareButton: { backgroundColor: "#007AFF", padding: 15, borderRadius: 10, alignItems: "center", marginTop: 10 },
+  footerText: { textAlign: "center", marginTop: 20, fontSize: 16, marginBottom: 30 },
+  shareButton: { backgroundColor: "#007AFF", padding: 15, borderRadius: 10, alignItems: "center", marginTop: 20 },
   shareText: { color: "white", fontSize: 16, fontWeight: "bold" },
 });
 
