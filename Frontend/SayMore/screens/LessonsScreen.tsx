@@ -1,15 +1,28 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, Image, StyleSheet } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+
+interface Lesson {
+  title: string;
+  icon: any;
+  documentId: string;
+}
 
 export default function LessonsScreen() {
-  const lessons = [
-    { title: 'Speech Exercises', icon: require('../assets/videoicon.png') },
-    { title: 'Understanding Stuttering', icon: require('../assets/videoicon.png') },
-    { title: 'Building Confidence', icon: require('../assets/videoicon.png') },
-    { title: 'Communication Tips', icon: require('../assets/videoicon.png') },
-    { title: 'Techniques for Overcoming Stuttering', icon: require('../assets/videoicon.png') },
-    { title: 'Managing Stage Fright', icon: require('../assets/videoicon.png') },
+  const navigation = useNavigation();
+
+  const lessons: Lesson[] = [
+    { title: 'Speech Exercises', icon: require('../assets/videoicon.png'), documentId: 'speech_exercises' },
+    { title: 'Understanding Stuttering', icon: require('../assets/videoicon.png'), documentId: 'understanding_stuttering' },
+    { title: 'Building Confidence', icon: require('../assets/videoicon.png'), documentId: 'building_confidence' },
+    { title: 'Communication Tips', icon: require('../assets/videoicon.png'), documentId: 'communication_tips' },
+    { title: 'Overcoming Stuttering', icon: require('../assets/videoicon.png'), documentId: 'overcoming_stuttering' },
+    { title: 'Managing Stage Fright', icon: require('../assets/videoicon.png'), documentId: 'stage_fright' },
   ];
+
+  const handleLessonPress = (lesson: Lesson) => {
+    navigation.navigate('VideoList', { lesson });  // Use navigate instead of replace
+  };
 
   return (
     <View style={styles.container}>
@@ -20,7 +33,7 @@ export default function LessonsScreen() {
 
       <View style={styles.gridContainer}>
         {lessons.map((lesson, index) => (
-          <TouchableOpacity key={index} style={styles.lessonButton}>
+          <TouchableOpacity key={index} style={styles.lessonButton} onPress={() => handleLessonPress(lesson)}>
             <Image source={lesson.icon} style={styles.lessonIcon} />
             <Text style={styles.lessonText}>{lesson.title}</Text>
           </TouchableOpacity>
