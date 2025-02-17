@@ -1,39 +1,48 @@
 import React from "react";
 import { View, Text, TouchableOpacity, Image, StyleSheet } from "react-native";
+import { StackNavigationProp } from "@react-navigation/stack";
 
-const MoreScreen = ({ navigation }) => {
+type RootStackParamList = {
+  MoreScreen: undefined;
+  ActivityScreen: undefined;
+  Lessons: undefined;
+};
+
+type MoreScreenNavigationProp = StackNavigationProp<RootStackParamList, "MoreScreen">;
+
+interface Props {
+  navigation: MoreScreenNavigationProp;
+}
+
+const MoreScreen: React.FC<Props> = ({ navigation }) => {
   const NewScreens = [
-    "Activity",
-    "Lesson",
-    "Quizzes and Challenges",
-    "Progress",
-    "Points",
-    "Leaderboard",
-    "Speech Therapy",
-    "Activity",
+    { title: "Activity", screen: "ActivityScreen" },
+    { title: "Lesson", screen: "Lessons" },
+    { title: "Quizzes and Challenges", screen: "" },
+    { title: "Progress", screen: "" },
+    { title: "Points", screen: "" },
+    { title: "Leaderboard", screen: "" },
+    { title: "Speech Therapy", screen: "" },
   ];
 
-  const handlePress = title => {
-    switch (title) {
-      case "Lesson":
-        navigation.navigate("Lessons");
-        break;
-      case "Activity":
-          navigation.navigate("Activity");
-          break;
-      // Add other cases as needed
-      default:
-        break;
+  const handlePress = (screen: string) => {
+    if (screen) {
+      navigation.navigate(screen as keyof RootStackParamList);
     }
   };
 
   return (
     <View style={styles.container}>
       <View style={styles.gridContainer}>
-        {NewScreens.map((title, index) => (
-          <TouchableOpacity key={index} style={styles.lessonButton} onPress={() => handlePress(title)}>
+        {NewScreens.map((item, index) => (
+          <TouchableOpacity
+            key={index}
+            style={styles.lessonButton}
+            onPress={() => handlePress(item.screen)}
+            disabled={!item.screen}
+          >
             <Image source={require("../assets/videoicon.png")} style={styles.lessonIcon} />
-            <Text style={styles.lessonText}>{title}</Text>
+            <Text style={styles.lessonText}>{item.title}</Text>
           </TouchableOpacity>
         ))}
       </View>

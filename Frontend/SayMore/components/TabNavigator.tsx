@@ -9,28 +9,39 @@ import LessonsScreen from "../screens/LessonsScreen";
 import AccountScreen from "../screens/AccountScreen";
 import ActivityScreen from "../screens/ActivityScreen";
 
-
 import HomeIcon from "../assets/home.png";
 import MoreInfoIcon from "../assets/more-info.png";
+import AccountIcon from "../assets/account.png";
 
-const Tab = createBottomTabNavigator();
-const Stack = createNativeStackNavigator();
+type TabParamList = {
+  Home: undefined;
+  More: undefined;
+  Account: undefined;
+};
+
+type MoreStackParamList = {
+  MoreScreen: undefined;
+  Lessons: undefined;
+  ActivityScreen: undefined;
+};
+
+const Tab = createBottomTabNavigator<TabParamList>();
+const Stack = createNativeStackNavigator<MoreStackParamList>();
 
 const MoreStack = () => (
   <Stack.Navigator>
     <Stack.Screen name="MoreScreen" component={MoreScreen} options={{ headerShown: false }} />
     <Stack.Screen name="Lessons" component={LessonsScreen} />
-    <Stack.Screen name="Activity" component={ActivityScreen} />
-
+    <Stack.Screen name="ActivityScreen" component={ActivityScreen} />
   </Stack.Navigator>
 );
 
-const getScreenOptions = ({ route }) => ({
-  tabBarIcon: ({ focused }) => {
+const getScreenOptions = ({ route }: { route: { name: keyof TabParamList } }) => ({
+  tabBarIcon: ({ focused }: { focused: boolean }) => {
     const icons = {
       Home: HomeIcon,
       More: MoreInfoIcon,
-      Account: MoreInfoIcon,
+      Account: AccountIcon,
     };
     return (
       <Image
@@ -60,16 +71,9 @@ const TabNavigator = () => {
 };
 
 const styles = StyleSheet.create({
-  icon: {
-    width: 25,
-    height: 25,
-  },
-  activeIcon: {
-    tintColor: "#003366", // ✅ Moved from inline styles
-  },
-  inactiveIcon: {
-    tintColor: "gray", // ✅ Moved from inline styles
-  },
+  icon: { width: 25, height: 25 },
+  activeIcon: { tintColor: "#003366" },
+  inactiveIcon: { tintColor: "gray" },
 });
 
 export default TabNavigator;
