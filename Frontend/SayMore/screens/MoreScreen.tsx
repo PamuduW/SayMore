@@ -12,7 +12,6 @@ const NewScreens = [
   "Points",
   "Leaderboard",
   "Speech Therapy",
-  "Analysis and Reports",
 ];
 
 /**
@@ -29,11 +28,9 @@ const MoreScreen = ({ navigation }) => {
    *
    * @param {string} title - The selected screen title.
    */
-  const handlePress = title => {
+  const handlePress = (title: string) => {
     if (title === "Lesson") {
       navigation.navigate("Lessons");
-    }else if (title === "Analysis and Reports") {
-      navigation.navigate("Chart");
     }
   };
 

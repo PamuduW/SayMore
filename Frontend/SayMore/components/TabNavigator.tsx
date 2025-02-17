@@ -9,7 +9,6 @@ import LessonsScreen from "../screens/LessonsScreen";
 import AccountScreen from "../screens/AccountScreen";
 import AudioScreen from "../screens/AudioScreen";
 import AnalysisScreen from "../screens/AnalysisScreen";
-import ChartScreen from "../screens/ChartScreen";
 
 import HomeIcon from "../assets/home.png";
 import MoreInfoIcon from "../assets/more-info.png";
@@ -25,7 +24,6 @@ const MoreStack = () => (
   <Stack.Navigator screenOptions={{ headerShown: false }}>
     <Stack.Screen name="MoreScreen" component={MoreScreen} />
     <Stack.Screen name="Lessons" component={LessonsScreen} />
-    <Stack.Screen name="Chart" component={ChartScreen} />
   </Stack.Navigator>
 );
 
