@@ -21,20 +21,23 @@ const PersonalDetailsScreen = () => {
     }
 
     try {
-      await firestore().collection("User_Accounts").doc(user.uid).set(
-        {
-          fname,
-          sname,
-          username,
-          dob: dob.toISOString(), // Save as Firestore-compatible string
-          profileComplete: true,
-          results: {
-            PS_Check: firestore.FieldValue.arrayUnion(), // Ensures it's an empty array if not present
-            Stuttering_Check: firestore.FieldValue.arrayUnion(),
+      await firestore()
+        .collection("User_Accounts")
+        .doc(user.uid)
+        .set(
+          {
+            fname,
+            sname,
+            username,
+            dob: dob.toISOString(), // Save as Firestore-compatible string
+            profileComplete: true,
+            results: {
+              PS_Check: firestore.FieldValue.arrayUnion(), // Ensures it's an empty array if not present
+              Stuttering_Check: firestore.FieldValue.arrayUnion(),
+            },
           },
-        },
-        { merge: true } // Prevents overwriting existing data
-      );
+          { merge: true }, // Prevents overwriting existing data
+        );
 
       Alert.alert("Success", "Profile updated successfully!");
 
