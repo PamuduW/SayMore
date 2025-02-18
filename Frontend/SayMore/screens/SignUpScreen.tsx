@@ -67,10 +67,8 @@ export default function SignUpScreen() {
         createdAt: firestore.FieldValue.serverTimestamp(),
       });
 
-      Alert.alert(
-        "Success",
-        "Account created successfully! Please check your email for verification.",
-      );
+      navigation.replace("PersonalInfoScreen");
+
     } catch (error) {
       const errorMessage =
         {
@@ -106,7 +104,8 @@ export default function SignUpScreen() {
         });
       }
 
-      Alert.alert("Success", "Account created successfully!");
+      navigation.replace("PersonalInfoScreen");
+
     } catch (error) {
       Alert.alert("Authentication Error", error.message || "An error occurred during Google Sign In");
     }
