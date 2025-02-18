@@ -60,7 +60,7 @@ def analyze_jitter(audio_path):
     pitches, _ = librosa.piptrack(y=y, sr=sr)
     pitch_values = pitches[pitches > 0]
     jitter = np.std(np.diff(pitch_values)) / np.mean(pitch_values) if len(pitch_values) > 1 else 0
-    return round(jitter, 4)
+    return float(round(jitter, 4))
 
 # def analyze_shimmer(audio_path):
 #     y, sr = librosa.load(audio_path, sr=None)
