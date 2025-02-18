@@ -28,24 +28,24 @@ def analyze_pitch(audio_path, segment_duration=2.0):
     return pitch_data
 
 
-# def analyze_intensity(audio_path, segment_duration=2.0):
-#     y, sr = librosa.load(audio_path, sr=None)
-#     rms_energy = librosa.feature.rms(y=y)[0]
-#     duration = librosa.get_duration(y=y, sr=sr)
-#
-#     intensity_data = {}
-#     frame_length = len(rms_energy) // (duration / segment_duration)
-#     for t in np.arange(0, duration, segment_duration):
-#         idx = int(t / segment_duration * frame_length)
-#         segment_intensity = np.mean(rms_energy[idx:idx + int(frame_length)])
-#         intensity_data[int(t)] = round(segment_intensity, 4) if not np.isnan(segment_intensity) else 0
-#     return intensity_data
-#
-# def analyze_formants(audio_path, segment_duration=2.0):
-#     y, sr = librosa.load(audio_path, sr=None)
-#     duration = librosa.get_duration(y=y, sr=sr)
-#     _f0, sp, _ap = pw.wav2world(y.astype(np.float64), sr)
-#
+def analyze_intensity(audio_path, segment_duration=2.0):
+    y, sr = librosa.load(audio_path, sr=None)
+    rms_energy = librosa.feature.rms(y=y)[0]
+    duration = librosa.get_duration(y=y, sr=sr)
+
+    intensity_data = {}
+    frame_length = len(rms_energy) // (duration / segment_duration)
+    for t in np.arange(0, duration, segment_duration):
+        idx = int(t / segment_duration * frame_length)
+        segment_intensity = np.mean(rms_energy[idx:idx + int(frame_length)])
+        intensity_data[int(t)] = float(round(segment_intensity, 4)) if not np.isnan(segment_intensity) else 0
+    return intensity_data
+
+def analyze_formants(audio_path, segment_duration=2.0):
+    y, sr = librosa.load(audio_path, sr=None)
+    duration = librosa.get_duration(y=y, sr=sr)
+    _f0, sp, _ap = pw.wav2world(y.astype(np.float64), sr)
+
 #     formant_data = {}
 #     for t in np.arange(0, duration, segment_duration):
 #         idx = int(t * len(sp) / duration)
@@ -145,8 +145,8 @@ def analyze_pitch(audio_path, segment_duration=2.0):
 def ps_test(audio_path):
     return {
         "Pitch_data": analyze_pitch(audio_path),
-        # "Intensity_data": analyze_intensity(audio_path),
-        # "Formant_data": analyze_formants(audio_path),
+        "Intensity_data": analyze_intensity(audio_path),
+        "Formant_data": analyze_formants(audio_path),
         # "Jitter_data": analyze_jitter(audio_path),
         # "Shimmer_data": analyze_shimmer(audio_path),
         # "HNR_data": analyze_hnr(audio_path),
