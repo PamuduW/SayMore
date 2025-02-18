@@ -8,7 +8,7 @@ import TabNavigator from "../components/TabNavigator";
 import SignInScreen from "../screens/SignInScreen";
 import SignUpScreen from "../screens/SignUpScreen";
 import WelcomeScreen from "../screens/WelcomeScreen";
-import PersonalInfoScreen from "../screens/PersonalInfoScreen";
+import PersonalDetailsScreen from "../screens/PersonalDetailsScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -44,7 +44,6 @@ const LandingPage = () => {
     }
   }, [user]);
 
-  // Show welcome screen if initializing or still showing welcome
   if (initializing || showWelcome || loadingProfile) return <WelcomeScreen />;
 
   return (
@@ -54,7 +53,7 @@ const LandingPage = () => {
           profileComplete ? (
             <Stack.Screen name="MainApp" component={TabNavigator} />
           ) : (
-            <Stack.Screen name="PersonalInfoScreen" component={PersonalInfoScreen} />
+            <Stack.Screen name="PersonalDetailsScreen" component={PersonalDetailsScreen} />
           )
         ) : (
           <>

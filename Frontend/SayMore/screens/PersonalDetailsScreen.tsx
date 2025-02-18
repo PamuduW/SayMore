@@ -4,7 +4,7 @@ import firestore from "@react-native-firebase/firestore";
 import { useNavigation } from "@react-navigation/native";
 import { useAuth } from "../components/Authentication";
 
-const PersonalInfoScreen = () => {
+const PersonalDetailsScreen = () => {
   const { user } = useAuth();
   const navigation = useNavigation();
   const [fname, setFname] = useState("");
@@ -28,7 +28,6 @@ const PersonalInfoScreen = () => {
       });
 
       Alert.alert("Success", "Profile updated successfully!");
-      navigation.replace("MainApp");
     } catch (error) {
       Alert.alert("Error", "Failed to update profile.");
     }
@@ -56,4 +55,4 @@ const styles = StyleSheet.create({
   buttonText: { color: "#003366", fontWeight: "bold" },
 });
 
-export default PersonalInfoScreen;
+export default PersonalDetailsScreen;
