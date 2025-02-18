@@ -102,14 +102,14 @@ def analyze_energy(audio_path, segment_duration=2.0):
 #     frames = [y[i:i + frame_length] for i in range(0, len(y), frame_length)]
 #     pauses = sum(1 for frame in frames if not vad.is_speech(frame.tobytes(), sr))
 #     return pauses
-#
-# def analyze_volume(audio_path):
-#     return analyze_intensity(audio_path)
-#
+
+def analyze_volume(audio_path):
+    return analyze_intensity(audio_path)
+
 # def analyze_rhythm(audio_path):
 #     y, sr = librosa.load(audio_path, sr=None)
 #     tempo, _ = librosa.beat.beat_track(y=y, sr=sr)
-#     return round(tempo, 2)
+#     return float(round(tempo, 2))
 #
 # def analyze_fluency(audio_path):
 #     pauses = analyze_pause(audio_path)
@@ -157,7 +157,7 @@ def ps_test(audio_path):
         "Duration_data": analyze_duration(audio_path),
         "Energy_data": analyze_energy(audio_path),
         # "Pause_data": analyze_pause(audio_path),
-        # "Volume_data": analyze_volume(audio_path),
+        "Volume_data": analyze_volume(audio_path),
         # "Rhythm_data": analyze_rhythm(audio_path),
         # "Prosody_data": analyze_prosody(audio_path),
         # "Fluency_data": analyze_fluency(audio_path),
