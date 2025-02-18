@@ -110,7 +110,7 @@ const ActivityScreen: React.FC<Props> = ({ userRecords }) => {
       </View>
 
       <Text style={styles.footerText}>
-       🎉✨ Your scores have been steadily improving! 🚀 Keep up the amazing work and let’s aim even higher! 💪🔥 You’re doing fantastic! 🌟
+         Your scores have been steadily improving! 🚀 Keep up the amazing work and let’s aim even higher! 💪🔥 You’re doing fantastic! 🌟
       </Text>
 
       <TouchableOpacity style={styles.shareButton} onPress={handleShare}>
