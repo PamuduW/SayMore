@@ -73,28 +73,28 @@ def analyze_shimmer(audio_path):
     return float(round(shimmer, 4))
 
 
-# def analyze_hnr(audio_path):
-#     y, sr = librosa.load(audio_path, sr=None)
-#     _f0, sp, ap = pw.wav2world(y.astype(np.float64), sr)
-#     hnr = np.mean(10 * np.log10(sp / (ap + 1e-10)))  # Harmonic-to-noise ratio
-#     return round(hnr, 2)
-#
-# def analyze_duration(audio_path):
-#     y, sr = librosa.load(audio_path, sr=None)
-#     return round(librosa.get_duration(y=y, sr=sr), 2)
-#
-# def analyze_energy(audio_path, segment_duration=2.0):
-#     y, sr = librosa.load(audio_path, sr=None)
-#     duration = librosa.get_duration(y=y, sr=sr)
-#
-#     energy_data = {}
-#     for t in np.arange(0, duration, segment_duration):
-#         start, end = int(t * sr), int((t + segment_duration) * sr)
-#         segment = y[start:end]
-#         energy = np.sum(segment ** 2)
-#         energy_data[int(t)] = round(energy, 2)
-#     return energy_data
-#
+def analyze_hnr(audio_path):
+    y, sr = librosa.load(audio_path, sr=None)
+    _f0, sp, ap = pw.wav2world(y.astype(np.float64), sr)
+    hnr = np.mean(10 * np.log10(sp / (ap + 1e-10)))  # Harmonic-to-noise ratio
+    return float(round(hnr, 2))
+
+def analyze_duration(audio_path):
+    y, sr = librosa.load(audio_path, sr=None)
+    return float(round(librosa.get_duration(y=y, sr=sr), 2))
+
+def analyze_energy(audio_path, segment_duration=2.0):
+    y, sr = librosa.load(audio_path, sr=None)
+    duration = librosa.get_duration(y=y, sr=sr)
+
+    energy_data = {}
+    for t in np.arange(0, duration, segment_duration):
+        start, end = int(t * sr), int((t + segment_duration) * sr)
+        segment = y[start:end]
+        energy = np.sum(segment ** 2)
+        energy_data[int(t)] = float(round(energy, 2))
+    return energy_data
+
 # def analyze_pause(audio_path):
 #     vad = webrtcvad.Vad(2)
 #     y, sr = librosa.load(audio_path, sr=16000)  # WebRTC VAD works best at 16kHz
@@ -153,9 +153,9 @@ def ps_test(audio_path):
         "Formant_data": analyze_formants(audio_path),
         "Jitter_data": analyze_jitter(audio_path),
         "Shimmer_data": analyze_shimmer(audio_path),
-        # "HNR_data": analyze_hnr(audio_path),
-        # "Duration_data": analyze_duration(audio_path),
-        # "Energy_data": analyze_energy(audio_path),
+        "HNR_data": analyze_hnr(audio_path),
+        "Duration_data": analyze_duration(audio_path),
+        "Energy_data": analyze_energy(audio_path),
         # "Pause_data": analyze_pause(audio_path),
         # "Volume_data": analyze_volume(audio_path),
         # "Rhythm_data": analyze_rhythm(audio_path),
