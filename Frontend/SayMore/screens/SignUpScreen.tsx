@@ -57,14 +57,14 @@ export default function SignUpScreen() {
         createdAt: firestore.FieldValue.serverTimestamp(),
         profileComplete: false, // Ensure profileComplete is set to false initially
       });
-
-
     } catch (error) {
-      const errorMessage = {
-        "auth/email-already-in-use": "This email address is already registered. Please log in or use Google login.",
-        "auth/invalid-email": "Please enter a valid email address",
-        "auth/weak-password": "Password is too weak",
-      }[error.code] || error.message;
+      const errorMessage =
+        {
+          "auth/email-already-in-use":
+            "This email address is already registered. Please log in or use Google login.",
+          "auth/invalid-email": "Please enter a valid email address",
+          "auth/weak-password": "Password is too weak",
+        }[error.code] || error.message;
       Alert.alert("Error", errorMessage);
     } finally {
       setLoading(false);
@@ -88,8 +88,6 @@ export default function SignUpScreen() {
           profileComplete: false, // Ensure profileComplete is set to false initially
         });
       }
-
-
     } catch (error) {
       Alert.alert("Authentication Error", error.message || "An error occurred during Google Sign In");
     }
@@ -97,7 +95,9 @@ export default function SignUpScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} style={styles.keyboardAvoidingView}>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        style={styles.keyboardAvoidingView}>
         <ScrollView contentContainerStyle={styles.scrollView}>
           <Text style={styles.title}>Create Account</Text>
           <Text style={styles.subtitle}>Join now to begin your journey with us</Text>
@@ -129,7 +129,10 @@ export default function SignUpScreen() {
             autoCapitalize="none"
             autoCorrect={false}
           />
-          <TouchableOpacity style={[styles.button, loading && styles.buttonDisabled]} onPress={handleSignUp} disabled={loading}>
+          <TouchableOpacity
+            style={[styles.button, loading && styles.buttonDisabled]}
+            onPress={handleSignUp}
+            disabled={loading}>
             <Text style={styles.buttonText}>{loading ? "Creating Account..." : "Sign Up"}</Text>
           </TouchableOpacity>
           <Text style={styles.Text}>OR</Text>

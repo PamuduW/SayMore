@@ -19,26 +19,27 @@ const LandingPage = () => {
   const [loadingProfile, setLoadingProfile] = useState(true);
 
   useEffect(() => {
-    // Show welcome screen for 2 seconds
     const timer = setTimeout(() => setShowWelcome(false), 2000);
     return () => clearTimeout(timer);
   }, []);
 
   useEffect(() => {
-    // Check Firestore for profile completion status
     if (user) {
-      const checkProfile = async () => {
-        try {
-          const userDoc = await firestore().collection("User_Accounts").doc(user.uid).get();
-          setProfileComplete(userDoc.exists && userDoc.data()?.profileComplete);
-        } catch (error) {
-          console.error("Error fetching profile data: ", error);
-        } finally {
-          setLoadingProfile(false);
-        }
-      };
+      const unsubscribe = firestore()
+        .collection("User_Accounts")
+        .doc(user.uid)
+        .onSnapshot(
+          doc => {
+            setProfileComplete(doc.exists && doc.data()?.profileComplete);
+            setLoadingProfile(false);
+          },
+          error => {
+            console.error("Error fetching profile data: ", error);
+            setLoadingProfile(false);
+          },
+        );
 
-      checkProfile();
+      return () => unsubscribe();
     } else {
       setLoadingProfile(false);
     }

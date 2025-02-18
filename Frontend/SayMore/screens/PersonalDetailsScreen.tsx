@@ -19,15 +19,24 @@ const PersonalDetailsScreen = () => {
     }
 
     try {
-      await firestore().collection("User_Accounts").doc(user.uid).update({
-        fname,
-        sname,
-        username,
-        age: parseInt(age),
-        profileComplete: true,
-      });
+      await firestore()
+        .collection("User_Accounts")
+        .doc(user.uid)
+        .update({
+          fname,
+          sname,
+          username,
+          age: parseInt(age),
+          profileComplete: true,
+        });
 
       Alert.alert("Success", "Profile updated successfully!");
+
+      // Navigate back to LandingPage (which now listens for updates)
+      navigation.reset({
+        index: 0,
+        routes: [{ name: "MainApp" }],
+      });
     } catch (error) {
       Alert.alert("Error", "Failed to update profile.");
     }
@@ -38,8 +47,19 @@ const PersonalDetailsScreen = () => {
       <Text style={styles.title}>Complete Your Profile</Text>
       <TextInput style={styles.input} placeholder="First Name" value={fname} onChangeText={setFname} />
       <TextInput style={styles.input} placeholder="Surname" value={sname} onChangeText={setSname} />
-      <TextInput style={styles.input} placeholder="Username" value={username} onChangeText={setUsername} />
-      <TextInput style={styles.input} placeholder="Age" value={age} onChangeText={setAge} keyboardType="numeric" />
+      <TextInput
+        style={styles.input}
+        placeholder="Username"
+        value={username}
+        onChangeText={setUsername}
+      />
+      <TextInput
+        style={styles.input}
+        placeholder="Age"
+        value={age}
+        onChangeText={setAge}
+        keyboardType="numeric"
+      />
       <TouchableOpacity style={styles.button} onPress={handleSave}>
         <Text style={styles.buttonText}>Save & Continue</Text>
       </TouchableOpacity>
