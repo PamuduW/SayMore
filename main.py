@@ -4,6 +4,7 @@ from google.cloud.firestore_v1 import ArrayUnion
 from src.logic import analysing_audio
 from pydantic import BaseModel
 import os
+import json
 
 app = FastAPI()
 
@@ -42,7 +43,7 @@ async def test(request_body: RequestBody):
 
         doc_ref = db.collection("User_Accounts").document(acc_id)
         if test_type:
-            doc_ref.update({"results.PS_Check": ArrayUnion([analysis_result])})
+            doc_ref.update({"results.PS_Check": ArrayUnion([json.loads(json.dumps(analysis_result))])})
         else:
             doc_ref.update({"results.Stuttering_Check": ArrayUnion([analysis_result])})
 
