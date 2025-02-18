@@ -6,8 +6,17 @@ import TabNavigator from "../components/TabNavigator";
 import SignInScreen from "../screens/SignInScreen";
 import SignUpScreen from "../screens/SignUpScreen";
 import WelcomeScreen from "../screens/WelcomeScreen";
+import PersonalDetailsScreen from "../screens/PersonalDetailsScreen";
 
 const Stack = createNativeStackNavigator();
+
+const SignUpStack = () => (
+  <Stack.Navigator screenOptions={{ headerShown: false }}>
+    <Stack.Screen name="SignUp" component={SignUpScreen} />
+
+    <Stack.Screen name="PersonalDetails" component={PersonalDetailsScreen} />
+  </Stack.Navigator>
+);
 
 /**
  * LandingPage component manages the initial navigation flow of the app.
@@ -36,7 +45,7 @@ const LandingPage = () => {
           // If user is not authenticated, show SignIn and SignUp screens
           <>
             <Stack.Screen name="SignIn" component={SignInScreen} />
-            <Stack.Screen name="SignUp" component={SignUpScreen} />
+            <Stack.Screen name="SignUp" component={SignUpStack} />
           </>
         )}
       </Stack.Navigator>
