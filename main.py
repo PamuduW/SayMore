@@ -1,7 +1,7 @@
 from firebase_admin import credentials, initialize_app, storage, firestore
 from fastapi import FastAPI, UploadFile, File, HTTPException
 from google.cloud.firestore_v1 import ArrayUnion
-from Model.model import stutter_test
+from src.logic import analysing_audio
 from pydantic import BaseModel
 import os
 
@@ -38,7 +38,7 @@ async def test(request_body: RequestBody):
         blob = bucket.blob(file_name)
         blob.download_to_filename(file_name)
 
-        analysis_result = stutter_test(file_name, test_type)
+        analysis_result = analysing_audio(file_name, test_type)
 
         doc_ref = db.collection("User_Accounts").document(acc_id)
         if test_type:
