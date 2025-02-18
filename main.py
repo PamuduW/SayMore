@@ -46,7 +46,7 @@ async def test(request_body: RequestBody):
         else:
             doc_ref.update({"results.Stuttering_Check": ArrayUnion([analysis_result])})
 
-        blob.delete()
+        # blob.delete()
         os.remove(file_name)
         return {"result": analysis_result}
     except Exception as e:

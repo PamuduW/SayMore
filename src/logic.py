@@ -1,4 +1,5 @@
 from Model.stutteringModel import stutter_test
+from src.ps_test import ps_test
 
 def analysing_audio(file_name, test_type):
     try:
