@@ -41,6 +41,7 @@ def analyze_intensity(audio_path, segment_duration=2.0):
         intensity_data[int(t)] = float(round(segment_intensity, 4)) if not np.isnan(segment_intensity) else 0
     return intensity_data
 
+
 def analyze_formants(audio_path, segment_duration=2.0):
     y, sr = librosa.load(audio_path, sr=None)
     duration = librosa.get_duration(y=y, sr=sr)
@@ -55,6 +56,7 @@ def analyze_formants(audio_path, segment_duration=2.0):
         formant_data[int(t)] = {"F1": round(f1, 2), "F2": round(f2, 2), "F3": round(f3, 2)}
     return formant_data
 
+
 def analyze_jitter(audio_path):
     y, sr = librosa.load(audio_path, sr=None)
     pitches, _ = librosa.piptrack(y=y, sr=sr)
@@ -62,13 +64,15 @@ def analyze_jitter(audio_path):
     jitter = np.std(np.diff(pitch_values)) / np.mean(pitch_values) if len(pitch_values) > 1 else 0
     return float(round(jitter, 4))
 
-# def analyze_shimmer(audio_path):
-#     y, sr = librosa.load(audio_path, sr=None)
-#     pitches, _ = librosa.piptrack(y=y, sr=sr)
-#     pitch_values = pitches[pitches > 0]
-#     shimmer = np.std(pitch_values) / np.mean(pitch_values) if len(pitch_values) > 1 else 0
-#     return round(shimmer, 4)
-#
+
+def analyze_shimmer(audio_path):
+    y, sr = librosa.load(audio_path, sr=None)
+    pitches, _ = librosa.piptrack(y=y, sr=sr)
+    pitch_values = pitches[pitches > 0]
+    shimmer = np.std(pitch_values) / np.mean(pitch_values) if len(pitch_values) > 1 else 0
+    return float(round(shimmer, 4))
+
+
 # def analyze_hnr(audio_path):
 #     y, sr = librosa.load(audio_path, sr=None)
 #     _f0, sp, ap = pw.wav2world(y.astype(np.float64), sr)
@@ -148,7 +152,7 @@ def ps_test(audio_path):
         "Intensity_data": analyze_intensity(audio_path),
         "Formant_data": analyze_formants(audio_path),
         "Jitter_data": analyze_jitter(audio_path),
-        # "Shimmer_data": analyze_shimmer(audio_path),
+        "Shimmer_data": analyze_shimmer(audio_path),
         # "HNR_data": analyze_hnr(audio_path),
         # "Duration_data": analyze_duration(audio_path),
         # "Energy_data": analyze_energy(audio_path),
