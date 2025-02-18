@@ -42,9 +42,9 @@ async def test(request_body: RequestBody):
 
         doc_ref = db.collection("User_Accounts").document(acc_id)
         if test_type:
-            doc_ref.update({"results": {"PS_Check": ArrayUnion([analysis_result])}})
+            doc_ref.update({"results.PS_Check": ArrayUnion([analysis_result])})
         else:
-            doc_ref.update({"results": {"Stuttering_Check": ArrayUnion([analysis_result])}})
+            doc_ref.update({"results.Stuttering_Check": ArrayUnion([analysis_result])})
 
         blob.delete()
         os.remove(file_name)
