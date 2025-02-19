@@ -1,11 +1,7 @@
 import React from "react";
-import { View, Text, ScrollView, StyleSheet, Button } from "react-native";
+import { View, Text, ScrollView, StyleSheet } from "react-native";
 
-const TermsAndConditionsScreen = ({ navigation }) => {
-  const handleAccept = () => {
-    console.log("Accepted");
-  };
-
+const TermsAndConditionsScreen = () => {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Terms and Conditions</Text>
@@ -28,9 +24,6 @@ const TermsAndConditionsScreen = ({ navigation }) => {
           offensive, or harmful content, attempting unauthorized access, or using the app for
           commercial purposes.
         </Text>
-        <View style={styles.buttonContainer}>
-          <Button title="Go Back" onPress={() => navigation.navigate("MoreScreen")} />
-        </View>
       </ScrollView>
     </View>
   );

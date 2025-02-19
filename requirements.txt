@@ -6,3 +6,6 @@ librosa
 numpy
 python-multipart
 pydantic
+torchaudio
+webrtcvad
+pyworld

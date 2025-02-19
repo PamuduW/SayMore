@@ -16,10 +16,6 @@ import MoreInfoIcon from "../assets/more-info.png";
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
 
-/**
- * Stack navigator for the "More" tab.
- * Contains the MoreScreen and LessonsScreen.
- */
 const MoreStack = () => (
   <Stack.Navigator screenOptions={{ headerShown: false }}>
     <Stack.Screen name="MoreScreen" component={MoreScreen} />
@@ -27,10 +23,6 @@ const MoreStack = () => (
   </Stack.Navigator>
 );
 
-/**
- * Stack navigator for the "Home" tab.
- * Contains the HomeScreen, AudioScreen, and AnalysisScreen.
- */
 const HomeStack = () => (
   <Stack.Navigator screenOptions={{ headerShown: false }}>
     <Stack.Screen name="HomeScreen" component={HomeScreen} />
@@ -39,12 +31,6 @@ const HomeStack = () => (
   </Stack.Navigator>
 );
 
-/**
- * Function to get screen options for the tab navigator.
- * Sets the tabBarIcon, tabBarActiveTintColor, tabBarInactiveTintColor, tabBarStyle, and headerShown.
- * @param {Object} route - The route object.
- * @returns {Object} The screen options.
- */
 const getScreenOptions = ({ route }) => ({
   tabBarIcon: ({ focused }) => {
     const icons = {
@@ -69,10 +55,6 @@ const getScreenOptions = ({ route }) => ({
   headerShown: false,
 });
 
-/**
- * Tab navigator component.
- * Contains the HomeStack, MoreStack, and AccountScreen.
- */
 const TabNavigator = () => (
   <Tab.Navigator screenOptions={getScreenOptions}>
     <Tab.Screen name="Home" component={HomeStack} />

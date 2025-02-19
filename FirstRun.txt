@@ -1,6 +1,7 @@
 In CMD run >>> (for powerShell. not needed for cmd)
     python -m venv .venv
     .venv\Scripts\activate
+    pip install -r requirements.txt
 
 Go to File > Settings > Project: <Your Project Name> > Python Interpreter.
 Select the interpreter located at D:\OneDrive\Pamudu-other\Github\SayMore\.venv\Scripts\python.exe.
