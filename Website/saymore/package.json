@@ -72,5 +72,9 @@
     "@eslint/eslintrc": "^3",
     "eslint-config-prettier": "^10.0.1",
     "eslint-plugin-prettier": "^5.2.3"
-  }
+  },
+  "eslintIgnore": [
+    ".next",
+    "node_modules"
+  ]
 }
