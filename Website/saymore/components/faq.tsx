@@ -33,6 +33,22 @@ export default function FAQSection() {
               are encrypted and stored securely on our servers.
             </AccordionContent>
           </AccordionItem>
+          <AccordionItem value="item-4">
+            <AccordionTrigger>Does SayMore provide personalized feedback?</AccordionTrigger>
+            <AccordionContent>
+              Yes, SayMore provides personalized feedback based on your speech recordings.
+              After each practice session, the app analyzes your speech and provides insights into areas
+              where you can improve, helping you to focus on specific aspects of your speech.
+            </AccordionContent>
+          </AccordionItem>
+          <AccordionItem value="item-5">
+            <AccordionTrigger>Can I track my progress over time?</AccordionTrigger>
+            <AccordionContent>
+              Yes, SayMore tracks your progress and provides detailed analytics,
+              so you can monitor improvements in your speaking skills over time.
+              You’ll be able to see trends in areas like pacing, clarity, and confidence.
+            </AccordionContent>
+          </AccordionItem>
         </Accordion>
       </div>
     </section>
