@@ -8,7 +8,7 @@ export default function CTASection() {
         <p className="text-xl mb-8">
           Join thousands of users who have improved their public speaking confidence with SayMore.
         </p>
-        <Button size="lg" className="bg-orange-500 hover:bg-orange-600">
+        <Button size="lg" className="bg-blue-600 hover:bg-blue-700">
           Start Your Journey
         </Button>
       </div>

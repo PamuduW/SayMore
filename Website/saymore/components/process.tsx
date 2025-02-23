@@ -7,7 +7,7 @@ export default function ProcessSection() {
         <h2 className="text-3xl font-bold text-center mb-16">How It Works</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           <div className="text-center">
-            <div className="bg-orange-500 text-white w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-4">
+            <div className="bg-blue-800 text-white w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-4">
               1
             </div>
             <h3 className="text-xl font-semibold mb-2">Record Your Speech</h3>
@@ -16,7 +16,7 @@ export default function ProcessSection() {
             </p>
           </div>
           <div className="text-center">
-            <div className="bg-orange-500 text-white w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-4">
+            <div className="bg-blue-800 text-white w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-4">
               2
             </div>
             <h3 className="text-xl font-semibold mb-2">Get AI Analysis</h3>
@@ -25,7 +25,7 @@ export default function ProcessSection() {
             </p>
           </div>
           <div className="text-center">
-            <div className="bg-orange-500 text-white w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-4">
+            <div className="bg-blue-800 text-white w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-4">
               3
             </div>
             <h3 className="text-xl font-semibold mb-2">Practice & Improve</h3>
