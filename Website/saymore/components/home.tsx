@@ -4,7 +4,7 @@ import { Mic, Brain, LineChart } from "lucide-react";
 export default function HomeSection() {
   return (
     <section
-        id="home"
+      id="home"
       className="relative min-h-screen flex items-center justify-center pt-32 pb-20 px-4 sm:px-6 lg:px-8 overflow-hidden bg-gradient-to-r from-purple-50 via-white to-pink-50">
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute top-20 left-20 w-20 h-20 bg-purple-200 rounded-full blur-2xl opacity-20"></div>

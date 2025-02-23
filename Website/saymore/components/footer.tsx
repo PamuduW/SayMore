@@ -25,42 +25,53 @@ export default function Footer() {
           <div>
             <h4 className="font-semibold mb-4">Links</h4>
             <ul className="space-y-2">
-              <li>            <a
+              <li>
+                {" "}
+                <a
                   href="#home"
                   className="text-gray-700 hover:text-gray-900"
                   onClick={e => {
-                      e.preventDefault();
-                      document.getElementById("home")?.scrollIntoView({ behavior: "smooth" });
+                    e.preventDefault();
+                    document.getElementById("home")?.scrollIntoView({ behavior: "smooth" });
                   }}>
                   Home
-              </a></li>
-              <li><a
+                </a>
+              </li>
+              <li>
+                <a
                   href="#features"
                   className="text-gray-700 hover:text-gray-900"
                   onClick={e => {
-                      e.preventDefault();
-                      document.getElementById("features")?.scrollIntoView({ behavior: "smooth" });
+                    e.preventDefault();
+                    document.getElementById("features")?.scrollIntoView({ behavior: "smooth" });
                   }}>
                   Features
-              </a></li>
-              <li>            <a
+                </a>
+              </li>
+              <li>
+                {" "}
+                <a
                   href="#process"
                   className="text-gray-700 hover:text-gray-900"
                   onClick={e => {
-                      e.preventDefault();
-                      document.getElementById("process")?.scrollIntoView({ behavior: "smooth" });
+                    e.preventDefault();
+                    document.getElementById("process")?.scrollIntoView({ behavior: "smooth" });
                   }}>
                   Process
-              </a></li>
-              <li>            <a
+                </a>
+              </li>
+              <li>
+                {" "}
+                <a
                   href="#team"
                   className="text-gray-700 hover:text-gray-900"
                   onClick={e => {
-                      e.preventDefault();
-                      document.getElementById("team")?.scrollIntoView({ behavior: "smooth" });
+                    e.preventDefault();
+                    document.getElementById("team")?.scrollIntoView({ behavior: "smooth" });
                   }}>
                   Team
-              </a></li>
+                </a>
+              </li>
             </ul>
           </div>
           <div>
@@ -69,15 +80,18 @@ export default function Footer() {
               <li>Privacy Policy</li>
               <li>Terms & Conditions</li>
               <li>Support</li>
-              <li>            <a
+              <li>
+                {" "}
+                <a
                   href="#faq"
                   className="text-gray-700 hover:text-gray-900"
                   onClick={e => {
-                      e.preventDefault();
-                      document.getElementById("faq")?.scrollIntoView({ behavior: "smooth" });
+                    e.preventDefault();
+                    document.getElementById("faq")?.scrollIntoView({ behavior: "smooth" });
                   }}>
                   FAQ
-              </a></li>
+                </a>
+              </li>
             </ul>
           </div>
           <div>

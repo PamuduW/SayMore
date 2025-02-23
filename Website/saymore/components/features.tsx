@@ -4,8 +4,8 @@ import { Mic, Brain, Target, LineChart } from "lucide-react";
 export default function FeaturesSection() {
   return (
     <section
-        id="features"
-        className="relative min-h-screen flex items-center justify-center py-20 px-4 sm:px-6 lg:px-8 overflow-hidden bg-gradient-to-r from-purple-600 via-white to-pink-400">
+      id="features"
+      className="relative min-h-screen flex items-center justify-center py-20 px-4 sm:px-6 lg:px-8 overflow-hidden bg-gradient-to-r from-purple-600 via-white to-pink-400">
       <div>
         <h2 className="text-3xl font-bold text-center mb-16">
           Powerful features to enhance your speaking

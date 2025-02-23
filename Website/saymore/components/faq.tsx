@@ -7,9 +7,7 @@ import {
 
 export default function FAQSection() {
   return (
-    <section
-        id="faq"
-        className="py-20 px-4 sm:px-6 lg:px-8">
+    <section id="faq" className="py-20 px-4 sm:px-6 lg:px-8">
       <div className="max-w-3xl mx-auto">
         <h2 className="text-3xl font-bold text-center mb-16">Frequently Asked Questions</h2>
         <Accordion type="single" collapsible>

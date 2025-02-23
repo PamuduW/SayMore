@@ -28,7 +28,7 @@ export default function Home() {
       <TeamSection />
 
       {/* CTA Section */}
-        <CTASection />
+      <CTASection />
 
       {/* FAQ Section */}
       <FAQSection />

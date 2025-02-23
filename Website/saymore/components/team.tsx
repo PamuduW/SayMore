@@ -5,8 +5,8 @@ import Image from "next/image";
 export default function TeamSection() {
   return (
     <section
-        id="team"
-        className="relative min-h-screen flex items-center justify-center py-20 px-4 sm:px-6 lg:px-8 overflow-hidden bg-gradient-to-r from-purple-600 via-white to-pink-400">
+      id="team"
+      className="relative min-h-screen flex items-center justify-center py-20 px-4 sm:px-6 lg:px-8 overflow-hidden bg-gradient-to-r from-purple-600 via-white to-pink-400">
       <div className="max-w-7xl mx-auto">
         <div className="flex justify-between items-center mb-16">
           <h2 className="text-3xl font-bold">Meet Our Team</h2>
