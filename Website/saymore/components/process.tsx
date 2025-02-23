@@ -1,6 +1,8 @@
 export default function ProcessSection() {
   return (
-    <section className="relative min-h-screen flex items-center justify-center py-20 px-4 sm:px-6 lg:px-8 overflow-hidden bg-gradient-to-r from-purple-50 via-white to-pink-50">
+    <section
+        id="process"
+        className="relative min-h-screen flex items-center justify-center py-20 px-4 sm:px-6 lg:px-8 overflow-hidden bg-gradient-to-r from-purple-50 via-white to-pink-50">
       <div className="max-w-7xl mx-auto">
         <h2 className="text-3xl font-bold text-center mb-16">How It Works</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">

@@ -23,16 +23,40 @@ export default function Navigation() {
               }}>
               Home
             </a>
-            <a href="#" className="text-gray-700 hover:text-gray-900">
+            <a
+              href="#features"
+              className="text-gray-700 hover:text-gray-900"
+              onClick={e => {
+                e.preventDefault();
+                document.getElementById("features")?.scrollIntoView({ behavior: "smooth" });
+              }}>
               Features
             </a>
-            <a href="#" className="text-gray-700 hover:text-gray-900">
+            <a
+              href="#process"
+              className="text-gray-700 hover:text-gray-900"
+              onClick={e => {
+                e.preventDefault();
+                document.getElementById("process")?.scrollIntoView({ behavior: "smooth" });
+              }}>
               Process
             </a>
-            <a href="#" className="text-gray-700 hover:text-gray-900">
+            <a
+              href="#team"
+              className="text-gray-700 hover:text-gray-900"
+              onClick={e => {
+                e.preventDefault();
+                document.getElementById("team")?.scrollIntoView({ behavior: "smooth" });
+              }}>
               Team
             </a>
-            <a href="#" className="text-gray-700 hover:text-gray-900">
+            <a
+              href="#faq"
+              className="text-gray-700 hover:text-gray-900"
+              onClick={e => {
+                e.preventDefault();
+                document.getElementById("faq")?.scrollIntoView({ behavior: "smooth" });
+              }}>
               FAQ
             </a>
             <Button className="bg-orange-500 hover:bg-orange-600">Contact Us</Button>
