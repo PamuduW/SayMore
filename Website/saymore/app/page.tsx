@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Mic, Brain, Target, LineChart, Facebook, Twitter, Instagram } from "lucide-react";
+import { Mic, Brain, Target, LineChart, Instagram, Linkedin } from "lucide-react";
 import {
   Accordion,
   AccordionContent,
@@ -18,29 +18,35 @@ export default function Home() {
       <nav className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
+            <a href="#" className="text-gray-700 hover:text-gray-900">
+              SayMore
+            </a>
             <div className="flex items-center">
               <span className="text-2xl font-bold">
                 <span></span>
               </span>
             </div>
             <div className="hidden md:flex items-center space-x-8">
-              <a href="#" className="text-gray-700 hover:text-gray-900">
+              <a
+                href="#home"
+                className="text-gray-700 hover:text-gray-900"
+                onClick={e => {
+                  e.preventDefault();
+                  document.getElementById("home")?.scrollIntoView({ behavior: "smooth" });
+                }}>
                 Home
-              </a>
-              <a href="#" className="text-gray-700 hover:text-gray-900">
-                About us
               </a>
               <a href="#" className="text-gray-700 hover:text-gray-900">
                 Features
               </a>
               <a href="#" className="text-gray-700 hover:text-gray-900">
+                Process
+              </a>
+              <a href="#" className="text-gray-700 hover:text-gray-900">
                 Team
               </a>
               <a href="#" className="text-gray-700 hover:text-gray-900">
-                Review
-              </a>
-              <a href="#" className="text-gray-700 hover:text-gray-900">
-                Pricing
+                FAQ
               </a>
               <Button className="bg-orange-500 hover:bg-orange-600">Contact Us</Button>
             </div>
@@ -48,9 +54,10 @@ export default function Home() {
         </div>
       </nav>
 
-      {/* Hero Section */}
-      <section className="relative pt-32 pb-20 px-4 sm:px-6 lg:px-8 overflow-hidden bg-gradient-to-r from-purple-50 via-white to-pink-50">
-        {/* Floating Elements */}
+      {/* Home Section */}
+      <section
+        id="home"
+        className="relative min-h-screen flex items-center justify-center pt-32 pb-20 px-4 sm:px-6 lg:px-8 overflow-hidden bg-gradient-to-r from-purple-50 via-white to-pink-50">
         <div className="absolute inset-0 overflow-hidden">
           <div className="absolute top-20 left-20 w-20 h-20 bg-purple-200 rounded-full blur-2xl opacity-20"></div>
           <div className="absolute bottom-20 right-20 w-32 h-32 bg-orange-200 rounded-full blur-2xl opacity-20"></div>
@@ -104,36 +111,42 @@ export default function Home() {
       </section>
 
       {/* Features Section */}
-      <section className="py-20 px-4 sm:px-6 lg:px-8">
-        <h2 className="text-3xl font-bold text-center mb-16">
-          Powerful features to enhance your speaking
-        </h2>
-        <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-          <Card className="p-6">
-            <Mic className="w-12 h-12 text-orange-500 mb-4" />
-            <h3 className="text-xl font-semibold mb-2">Real-time Analysis</h3>
-            <p className="text-gray-600">Get instant feedback on your speech patterns and delivery</p>
-          </Card>
-          <Card className="p-6">
-            <Brain className="w-12 h-12 text-orange-500 mb-4" />
-            <h3 className="text-xl font-semibold mb-2">AI-Powered Insights</h3>
-            <p className="text-gray-600">Advanced AI technology analyzes your speaking patterns</p>
-          </Card>
-          <Card className="p-6">
-            <Target className="w-12 h-12 text-orange-500 mb-4" />
-            <h3 className="text-xl font-semibold mb-2">Personalized Goals</h3>
-            <p className="text-gray-600">Set and track your speaking improvement goals</p>
-          </Card>
-          <Card className="p-6">
-            <LineChart className="w-12 h-12 text-orange-500 mb-4" />
-            <h3 className="text-xl font-semibold mb-2">Progress Tracking</h3>
-            <p className="text-gray-600">Monitor your improvement over time with detailed analytics</p>
-          </Card>
+      <section className="relative min-h-screen flex items-center justify-center py-20 px-4 sm:px-6 lg:px-8 overflow-hidden bg-gradient-to-r from-purple-600 via-white to-pink-400">
+        <div>
+          <h2 className="text-3xl font-bold text-center mb-16">
+            Powerful features to enhance your speaking
+          </h2>
+          <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            <Card className="p-6">
+              <Mic className="w-12 h-12 text-orange-500 mb-4" />
+              <h3 className="text-xl font-semibold mb-2">Real-time Analysis</h3>
+              <p className="text-gray-600">
+                Get instant feedback on your speech patterns and delivery
+              </p>
+            </Card>
+            <Card className="p-6">
+              <Brain className="w-12 h-12 text-orange-500 mb-4" />
+              <h3 className="text-xl font-semibold mb-2">AI-Powered Insights</h3>
+              <p className="text-gray-600">Advanced AI technology analyzes your speaking patterns</p>
+            </Card>
+            <Card className="p-6">
+              <Target className="w-12 h-12 text-orange-500 mb-4" />
+              <h3 className="text-xl font-semibold mb-2">Personalized Goals</h3>
+              <p className="text-gray-600">Set and track your speaking improvement goals</p>
+            </Card>
+            <Card className="p-6">
+              <LineChart className="w-12 h-12 text-orange-500 mb-4" />
+              <h3 className="text-xl font-semibold mb-2">Progress Tracking</h3>
+              <p className="text-gray-600">
+                Monitor your improvement over time with detailed analytics
+              </p>
+            </Card>
+          </div>
         </div>
       </section>
 
       {/* How It Works */}
-      <section className="bg-gray-50 py-20 px-4 sm:px-6 lg:px-8">
+      <section className="relative min-h-screen flex items-center justify-center py-20 px-4 sm:px-6 lg:px-8 overflow-hidden bg-gradient-to-r from-purple-50 via-white to-pink-50">
         <div className="max-w-7xl mx-auto">
           <h2 className="text-3xl font-bold text-center mb-16">How It Works</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -169,7 +182,7 @@ export default function Home() {
       </section>
 
       {/* Team Section */}
-      <section className="py-20 px-4 sm:px-6 lg:px-8">
+      <section className="relative min-h-screen flex items-center justify-center py-20 px-4 sm:px-6 lg:px-8 overflow-hidden bg-gradient-to-r from-purple-600 via-white to-pink-400">
         <div className="max-w-7xl mx-auto">
           <div className="flex justify-between items-center mb-16">
             <h2 className="text-3xl font-bold">Meet Our Team</h2>
@@ -265,9 +278,18 @@ export default function Home() {
             <div>
               <h3 className="text-xl font-semibold mb-4">SayMore</h3>
               <div className="flex space-x-4">
-                <Facebook className="w-6 h-6" />
-                <Twitter className="w-6 h-6" />
-                <Instagram className="w-6 h-6" />
+                <a
+                  href="https://www.linkedin.com/in/saymore-official-1b5b3b344/"
+                  target="_blank"
+                  rel="noopener noreferrer">
+                  <Linkedin className="w-6 h-6" />
+                </a>
+                <a
+                  href="https://www.instagram.com/say.more_official/"
+                  target="_blank"
+                  rel="noopener noreferrer">
+                  <Instagram className="w-6 h-6" />
+                </a>
               </div>
             </div>
             <div>
@@ -275,8 +297,8 @@ export default function Home() {
               <ul className="space-y-2">
                 <li>Home</li>
                 <li>Features</li>
-                <li>About Us</li>
-                <li>Contact</li>
+                <li>Process</li>
+                <li>Team</li>
               </ul>
             </div>
             <div>
@@ -285,6 +307,7 @@ export default function Home() {
                 <li>Privacy Policy</li>
                 <li>Terms & Conditions</li>
                 <li>Support</li>
+                <li>FAQ</li>
               </ul>
             </div>
             <div>
