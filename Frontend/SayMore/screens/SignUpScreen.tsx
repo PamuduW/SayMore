@@ -16,12 +16,6 @@ import { useNavigation } from "@react-navigation/native";
 import { GoogleSignin } from "@react-native-google-signin/google-signin";
 import firestore from "@react-native-firebase/firestore";
 
-/**
- * SignUpScreen component.
- * Allows users to sign up using email/password or Google Sign-In.
- *
- * @returns {JSX.Element} The rendered SignUpScreen component.
- */
 export default function SignUpScreen() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -35,10 +29,6 @@ export default function SignUpScreen() {
     });
   }, []);
 
-  /**
-   * Handles the sign-up process using email and password.
-   * Displays an alert if fields are empty, passwords do not match, or if there is an error during sign-up.
-   */
   const handleSignUp = async () => {
     if (!email || !password || !confirmPassword) {
       Alert.alert("Error", "Please fill in all fields");
@@ -65,12 +55,8 @@ export default function SignUpScreen() {
       await firestore().collection("User_Accounts").doc(user.uid).set({
         email: user.email,
         createdAt: firestore.FieldValue.serverTimestamp(),
+        profileComplete: false, // Ensure profileComplete is set to false initially
       });
-
-      Alert.alert(
-        "Success",
-        "Account created successfully! Please check your email for verification.",
-      );
     } catch (error) {
       const errorMessage =
         {
@@ -85,10 +71,6 @@ export default function SignUpScreen() {
     }
   };
 
-  /**
-   * Handles the Google Sign-In process.
-   * Displays an alert if there is an error during Google Sign-In.
-   */
   const handleGoogleSignIn = async () => {
     try {
       await GoogleSignin.hasPlayServices({ showPlayServicesUpdateDialog: true });
@@ -103,10 +85,9 @@ export default function SignUpScreen() {
         await firestore().collection("User_Accounts").doc(user.uid).set({
           email: user.email,
           createdAt: firestore.FieldValue.serverTimestamp(),
+          profileComplete: false, // Ensure profileComplete is set to false initially
         });
       }
-
-      Alert.alert("Success", "Account created successfully!");
     } catch (error) {
       Alert.alert("Authentication Error", error.message || "An error occurred during Google Sign In");
     }
