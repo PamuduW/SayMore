@@ -40,7 +40,7 @@ export default function TeamSection() {
                 name: "Kanila Gunasekara",
                 role: "Design Lead",
                 image:
-                    "/kanila.jpg",
+                    "/Kanila.jpg",
               },
               {
                 name: "Himara Anne",
@@ -54,7 +54,7 @@ export default function TeamSection() {
                     className="overflow-hidden transform transition-transform duration-300 hover:scale-105 hover:shadow-lg"
                 >
                   <Card>
-                    <img
+                    <Image
                         src={member.image}
                         alt={member.name}
                         className="w-full h-64 object-cover"

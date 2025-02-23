@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Mic, Brain, LineChart } from "lucide-react";
+import Image from "next/image";
 
 export default function HomeSection() {
   return (
@@ -9,8 +10,8 @@ export default function HomeSection() {
 
         <div className="absolute inset-0 overflow-hidden">
           {/* Background Image */}
-          <img
-              src="/banner.jpg"
+          <Image
+              src="/Banner.jpg"
               alt="Background"
               className="w-full h-full object-cover opacity-100"
           />
