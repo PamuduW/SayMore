@@ -9,6 +9,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import Image from "next/image";
 
 export default function Home() {
   return (
@@ -19,9 +20,7 @@ export default function Home() {
           <div className="flex items-center justify-between h-16">
             <div className="flex items-center">
               <span className="text-2xl font-bold">
-                <span>
-                  <span className="text-blue-600">SayMore</span>
-                </span>
+                <span></span>
               </span>
             </div>
             <div className="hidden md:flex items-center space-x-8">
@@ -198,7 +197,13 @@ export default function Home() {
               },
             ].map((member, index) => (
               <Card key={index} className="overflow-hidden">
-                <img src={member.image} alt={member.name} className="w-full h-64 object-cover" />
+                <Image
+                  src={member.image}
+                  alt={member.name}
+                  width={600}
+                  height={256}
+                  className="w-full h-64 object-cover"
+                />
                 <div className="p-6">
                   <h3 className="text-xl font-semibold mb-1">{member.name}</h3>
                   <p className="text-gray-600">{member.role}</p>
@@ -228,7 +233,7 @@ export default function Home() {
           <h2 className="text-3xl font-bold text-center mb-16">Frequently Asked Questions</h2>
           <Accordion type="single" collapsible>
             <AccordionItem value="item-1">
-              <AccordionTrigger>How does SayMore's AI analysis work?</AccordionTrigger>
+              <AccordionTrigger>How does SayMore&rsquo;s AI analysis work?</AccordionTrigger>
               <AccordionContent>
                 Our AI technology analyzes various aspects of your speech, including pace, clarity,
                 filler words, and patterns. It provides real-time feedback and suggestions for

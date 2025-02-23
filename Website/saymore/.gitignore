@@ -1,0 +1,115 @@
+# macOS
+.DS_Store
+*.AppleDouble
+._*
+
+# Xcode (iOS)
+build/
+*.pbxuser
+!default.pbxuser
+*.mode1v3
+!default.mode1v3
+*.mode2v3
+!default.mode2v3
+*.perspectivev3
+!default.perspectivev3
+xcuserdata/
+*.xccheckout
+*.moved-aside
+DerivedData/
+*.hmap
+*.ipa
+*.xcuserstate
+**/.xcode.env.local
+
+# Android (React Native)
+build/
+.idea/
+.gradle/
+local.properties
+*.iml
+*.hprof
+.cxx/
+*.keystore
+!debug.keystore
+
+# Node.js (Next.js, React Native)
+node_modules/
+.pnp/
+.pnp.*
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# Next.js
+.next/
+out/
+.vercel/
+
+# React Native / Expo
+.expo/
+dist/
+web-build/
+expo-env.d.ts
+
+# Bundle artifacts
+*.jsbundle
+
+# FastAPI (Python)
+__pycache__/
+*.py[cod]
+venv/
+.venv/
+pip-log.txt
+pip-delete-this-directory.txt
+instance/
+*.sqlite3
+*.db
+
+# Fastlane (iOS automation)
+**/fastlane/report.xml
+**/fastlane/Preview.html
+**/fastlane/screenshots
+**/fastlane/test_output
+
+# Ruby / CocoaPods
+**/Pods/
+vendor/bundle/
+
+# Temporary files (Metro, Debugging, Logs)
+.metro-health-check*
+npm-debug.*
+yarn-debug.*
+yarn-error.*
+
+# Coverage & Testing
+/coverage
+
+# Production builds
+/build/
+
+# TypeScript
+*.tsbuildinfo
+next-env.d.ts
+
+# Sensitive files
+.env*
+.env*.local
+*.pem
+
+# Native app signing keys & certificates
+*.orig.*
+*.jks
+*.p8
+*.p12
+*.key
+*.mobileprovision
+
+# Yarn (Ensuring proper tracking for specific directories)
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/sdks
+!.yarn/versions
