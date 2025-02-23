@@ -45,12 +45,12 @@ export default function HomeSection() {
               IF YOU CAN
               <div className="relative inline-block mx-4">
               <span className="relative z-10 bg-orange-500 text-white px-6 py-2 rounded-lg">
-                IMAGINE IT
+                THINK IT
               </span>
                 <div className="absolute inset-0 bg-orange-300 rounded-lg transform rotate-3"></div>
               </div>
               <br />
-              WE CAN MAKE IT
+              WE CAN HELP YOU SAY IT
             </h1>
             <p className="text-xl text-gray-600 mb-12 max-w-2xl mx-auto">
               Transform your public speaking journey with AI-powered coaching and real-time feedback
