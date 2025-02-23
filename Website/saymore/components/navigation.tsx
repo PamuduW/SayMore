@@ -59,7 +59,15 @@ export default function Navigation() {
               }}>
               FAQ
             </a>
-            <Button className="bg-orange-500 hover:bg-orange-600">Contact Us</Button>
+              <Button
+                  className="bg-orange-500 hover:bg-orange-600"
+                  onClick={e => {
+                      e.preventDefault();
+                      document.getElementById("footer")?.scrollIntoView({ behavior: "smooth" });
+                  }}
+              >
+                  Contact Us
+              </Button>
           </div>
         </div>
       </div>
