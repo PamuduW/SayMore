@@ -13,6 +13,8 @@ export default function HomeSection() {
           <Image
               src="/Banner.jpg"
               alt="Background"
+              width={5500}
+              height={3093}
               className="w-full h-full object-cover opacity-100"
           />
 

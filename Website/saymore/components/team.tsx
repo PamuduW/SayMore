@@ -17,36 +17,48 @@ export default function TeamSection() {
                 role: "Team Lead",
                 image:
                     "/Pamudu.jpg",
+                width: 339,
+                height: 313,
               },
               {
                 name: "Disini Hettige",
                 role: "Frontend Lead",
                 image:
                     "/Disini.jpg",
+                width: 1077,
+                height: 895,
               },
               {
                 name: "Janindu Sandanayake",
                 role: "Outreach Lead",
                 image:
                     "/Janindu.jpg",
+                width: 338,
+                height: 302,
               },
               {
                 name: "Arani Weerathunga",
                 role: "Research Lead",
                 image:
                     "/Arani.jpg",
+                width: 336,
+                height: 316,
               },
               {
                 name: "Kanila Gunasekara",
                 role: "Design Lead",
                 image:
                     "/Kanila.jpg",
+                width: 339,
+                height: 310,
               },
               {
                 name: "Himara Anne",
                 role: "Document Lead",
                 image:
                     "/Himara.jpg",
+                width: 337,
+                height: 316,
               },
             ].map((member, index) => (
                 <div
@@ -57,6 +69,8 @@ export default function TeamSection() {
                     <Image
                         src={member.image}
                         alt={member.name}
+                        width={member.width}
+                        height={member.height}
                         className="w-full h-64 object-cover"
                     />
                     <div className="p-6">
