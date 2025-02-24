@@ -68,11 +68,13 @@ export default function TeamSection() {
                   <Card>
                     <Image
                         src={member.image}
+                        // src={`/SayMore-Web${member.image}`}
                         alt={member.name}
                         width={member.width}
                         height={member.height}
                         className="w-full h-64 object-cover"
                     />
+
                     <div className="p-6">
                       <h3 className="text-xl font-semibold mb-1">{member.name}</h3>
                       <p className="text-gray-600">{member.role}</p>

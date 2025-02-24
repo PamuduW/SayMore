@@ -12,6 +12,7 @@ export default function HomeSection() {
           {/* Background Image */}
           <Image
               src="/Banner.jpg"
+              // src="/SayMore-Web/Banner.jpg"
               alt="Background"
               width={5500}
               height={3093}
