@@ -1,13 +1,15 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faGithub, faInstagram, faLinkedinIn } from "@fortawesome/free-brands-svg-icons";
+import Image from "next/image";
 
 export default function Footer() {
   return (
     <footer id="footer" className="bg-blue-50 pt-12 pb-4 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-          <div>
-            <h3 className="text-xl font-semibold mb-4">SayMore</h3>
+          <div className="text-left items-center pt-5">
+            <Image src={"/saymore_logo.png"} alt={"Logo"} width={1563} height={484} className="w-40 h-14 -ml-7"/>
+            <h3 className="text-gray-700">Your one stop shop for all <br/> your communication needs !</h3>
           </div>
           <div>
             <h4 className="font-semibold mb-4">Links</h4>
