@@ -2,7 +2,10 @@
 import Image from "next/image";
 import React, { useState } from "react";
 import { cn } from "@/lib/utils";
-import { Linkedin, Mail } from "lucide-react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faGithub, faLinkedinIn } from "@fortawesome/free-brands-svg-icons";
+import { faEnvelope } from "@fortawesome/free-solid-svg-icons";
+
 
 export const Card = React.memo(
     ({
@@ -11,7 +14,7 @@ export const Card = React.memo(
          hovered,
          setHovered,
      }: {
-        card: any;
+        card: Card;
         index: number;
         hovered: number | null;
         setHovered: React.Dispatch<React.SetStateAction<number | null>>;
@@ -39,23 +42,36 @@ export const Card = React.memo(
                 <div className="text-xl md:text-2xl font-medium text-white">
                     {card.title}
                 </div>
+                <div className="text-l md:text-xl font-medium text-gray-400">
+                    {card.subtitle}
+                </div>
                 <div className="mt-2 flex space-x-4">
                     {card.linkedin && (
                         <a
                             href={card.linkedin}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="text-white hover:text-blue-400 transition-colors duration-300"
+                            className="text-gray-400 hover:text-blue-400 transition-colors duration-300"
                         >
-                            <Linkedin className="inline-block w-6 h-6" />
+                            <FontAwesomeIcon icon={faLinkedinIn} className="w-8 h-8 hover:text-blue-500" />
+                        </a>
+                    )}
+                    {card.github && (
+                        <a
+                            href={card.github}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-gray-400 hover:text-blue-400 transition-colors duration-300"
+                        >
+                            <FontAwesomeIcon icon={faGithub} className="w-8 h-8 hover:text-blue-500" />
                         </a>
                     )}
                     {card.email && (
                         <a
                             href={`mailto:${card.email}`}
-                            className="text-white hover:text-red-400 transition-colors duration-300"
+                            className="text-gray-400 hover:text-red-400 transition-colors duration-300"
                         >
-                            <Mail className="inline-block w-6 h-6" />
+                            <FontAwesomeIcon icon={faEnvelope} className="w-8 h-8 hover:text-blue-500" />
                         </a>
                     )}
                 </div>
@@ -68,9 +84,11 @@ Card.displayName = "Card";
 
 type Card = {
     title: string;
+    subtitle: string;
     src: string;
-    linkedin?: string;
-    email?: string;
+    linkedin: string;
+    github: string;
+    email: string;
 };
 
 export function FocusCards({ cards }: { cards: Card[] }) {
