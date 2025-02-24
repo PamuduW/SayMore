@@ -59,15 +59,14 @@ export default function Navigation() {
               }}>
               FAQ
             </a>
-              <Button
-                  className="bg-blue-900 text-white"
-                  onClick={e => {
-                      e.preventDefault();
-                      document.getElementById("footer")?.scrollIntoView({ behavior: "smooth" });
-                  }}
-              >
-                  Contact Us
-              </Button>
+            <Button
+              className="bg-blue-900 text-white"
+              onClick={e => {
+                e.preventDefault();
+                document.getElementById("footer")?.scrollIntoView({ behavior: "smooth" });
+              }}>
+              Contact Us
+            </Button>
           </div>
         </div>
       </div>
