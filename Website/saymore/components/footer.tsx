@@ -8,8 +8,16 @@ export default function Footer() {
       <div className="max-w-7xl mx-auto">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div className="text-left items-center pt-5">
-            <Image src={"/saymore_logo.png"} alt={"Logo"} width={1563} height={484} className="w-40 h-14 -ml-7"/>
-            <h3 className="text-gray-700">Your one stop shop for all <br/> your communication needs !</h3>
+            <Image
+              src={"/saymore_logo.png"}
+              alt={"Logo"}
+              width={1563}
+              height={484}
+              className="w-40 h-14 -ml-7"
+            />
+            <h3 className="text-gray-700">
+              Your one stop shop for all <br /> your communication needs !
+            </h3>
           </div>
           <div>
             <h4 className="font-semibold mb-4">Links</h4>
@@ -86,7 +94,11 @@ export default function Footer() {
           <div className="space-y-2">
             <h4 className="font-semibold mb-4">Contact Us</h4>
             <p className="pb-2">+45 3411-4411</p>
-            <a href="mailto:info@saymore.com" target="_blank" rel="noopener noreferrer" className="text-gray-700 hover:text-blue-500">
+            <a
+              href="mailto:info@saymore.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-gray-700 hover:text-blue-500">
               info@saymore.com
             </a>
             <div className="flex space-x-4 pt-2">
