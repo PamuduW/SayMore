@@ -43,7 +43,7 @@ export default function CTASection() {
       <h2 className={cn("md:text-4xl text-xl text-white relative z-20")}>
         <TypewriterEffectSmooth words={words} />
       </h2>
-      <p className="text-center mt-2 text-neutral-300 relative z-20">
+      <p className="text-center mt-2 text-neutral-300 relative z-20 mb-10">
         Join thousands of users who have improved their public speaking confidence with SayMore.
       </p>
       <Button

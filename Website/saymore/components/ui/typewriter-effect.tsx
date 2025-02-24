@@ -130,7 +130,7 @@ export const TypewriterEffectSmooth = ({
   };
 
   return (
-    <div className={cn("flex space-x-1 my-6", className)}>
+    <div className={cn("flex space-x-1 mt-6", className)}>
       <motion.div
         className="overflow-hidden pb-2"
         initial={{
@@ -145,7 +145,7 @@ export const TypewriterEffectSmooth = ({
           delay: 1,
         }}>
         <div
-          className="text-xs sm:text-base md:text-xl lg:text:3xl xl:text-5xl font-bold"
+            className="text-lg sm:text-2xl md:text-3xl lg:text-4xl font-bold"
           style={{
             whiteSpace: "nowrap",
           }}>
