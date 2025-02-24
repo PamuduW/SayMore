@@ -109,3 +109,12 @@
   animation: float-delayed 5s ease-in-out infinite;
   animation-delay: 2s;
 }
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
