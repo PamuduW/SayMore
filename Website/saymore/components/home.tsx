@@ -22,23 +22,6 @@ export default function HomeSection() {
         <div className="absolute top-20 left-20 w-20 h-20 bg-purple-200 rounded-full blur-2xl opacity-20"></div>
         <div className="absolute bottom-20 right-20 w-32 h-32 bg-white rounded-full blur-2xl opacity-20"></div>
         <div className="absolute top-40 right-1/4 w-24 h-24 bg-blue-200 rounded-full blur-2xl opacity-20"></div>
-
-        {/* Floating Icons */}
-        <div className="absolute top-1/4 left-1/4 transform -translate-x-1/2 animate-float">
-          <div className="w-12 h-12 bg-white rounded-xl shadow-lg flex items-center justify-center">
-            <Mic className="w-6 h-6 text-red-300" />
-          </div>
-        </div>
-        <div className="absolute top-1/3 right-1/4 transform translate-x-1/2 animate-float-delayed">
-          <div className="w-12 h-12 bg-white rounded-xl shadow-lg flex items-center justify-center">
-            <Brain className="w-6 h-6 text-blue-500" />
-          </div>
-        </div>
-        <div className="absolute bottom-1/4 left-1/3 transform -translate-x-1/2 animate-float">
-          <div className="w-12 h-12 bg-white rounded-xl shadow-lg flex items-center justify-center">
-            <LineChart className="w-6 h-6 text-purple-500" />
-          </div>
-        </div>
       </div>
 
       {/* Main Content */}

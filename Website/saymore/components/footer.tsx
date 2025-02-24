@@ -1,4 +1,5 @@
-import { Linkedin, Instagram } from "lucide-react";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {faGithub, faInstagram, faLinkedinIn} from "@fortawesome/free-brands-svg-icons";
 
 export default function Footer() {
   return (
@@ -7,20 +8,6 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div>
             <h3 className="text-xl font-semibold mb-4">SayMore</h3>
-            <div className="flex space-x-4">
-              <a
-                href="https://www.linkedin.com/in/saymore-official-1b5b3b344/"
-                target="_blank"
-                rel="noopener noreferrer">
-                <Linkedin className="w-6 h-6" />
-              </a>
-              <a
-                href="https://www.instagram.com/say.more_official/"
-                target="_blank"
-                rel="noopener noreferrer">
-                <Instagram className="w-6 h-6" />
-              </a>
-            </div>
           </div>
           <div>
             <h4 className="font-semibold mb-4">Links</h4>
@@ -95,11 +82,29 @@ export default function Footer() {
             </ul>
           </div>
           <div>
-            <h4 className="font-semibold mb-4">Contact</h4>
-            <p>925 Filbert Street</p>
-            <p>Pennsylvania 18072</p>
+            <h4 className="font-semibold mb-4">Contact Us</h4>
             <p>+45 3411-4411</p>
             <p>info@saymore.com</p>
+            <div className="flex space-x-4">
+              <a
+                  href="https://www.linkedin.com/in/saymore-official-1b5b3b344/"
+                  target="_blank"
+                  rel="noopener noreferrer">
+                <FontAwesomeIcon icon={faLinkedinIn} className="w-8 h-8"/>
+              </a>
+              <a
+                  href="https://www.instagram.com/say.more_official/"
+                  target="_blank"
+                  rel="noopener noreferrer">
+                <FontAwesomeIcon icon={faInstagram} className="w-8 h-8"/>
+              </a>
+              <a
+                  href="https://www.instagram.com/say.more_official/"
+                  target="_blank"
+                  rel="noopener noreferrer">
+                <FontAwesomeIcon icon={faGithub} className="w-8 h-8"/>
+              </a>
+            </div>
           </div>
         </div>
         <div className="border-t border-gray-200 mt-8 pt-8 text-center">
