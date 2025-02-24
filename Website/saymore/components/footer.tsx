@@ -1,9 +1,9 @@
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faGithub, faInstagram, faLinkedinIn} from "@fortawesome/free-brands-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faGithub, faInstagram, faLinkedinIn } from "@fortawesome/free-brands-svg-icons";
 
 export default function Footer() {
   return (
-    <footer id="footer" className="bg-blue-50 py-12 px-4 sm:px-6 lg:px-8">
+    <footer id="footer" className="bg-blue-50 pt-12 pb-4 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div>
@@ -16,7 +16,7 @@ export default function Footer() {
                 {" "}
                 <a
                   href="#home"
-                  className="text-gray-700 hover:text-gray-900"
+                  className="text-gray-700 hover:text-blue-500"
                   onClick={e => {
                     e.preventDefault();
                     document.getElementById("home")?.scrollIntoView({ behavior: "smooth" });
@@ -27,7 +27,7 @@ export default function Footer() {
               <li>
                 <a
                   href="#features"
-                  className="text-gray-700 hover:text-gray-900"
+                  className="text-gray-700 hover:text-blue-500"
                   onClick={e => {
                     e.preventDefault();
                     document.getElementById("features")?.scrollIntoView({ behavior: "smooth" });
@@ -39,7 +39,7 @@ export default function Footer() {
                 {" "}
                 <a
                   href="#process"
-                  className="text-gray-700 hover:text-gray-900"
+                  className="text-gray-700 hover:text-blue-500"
                   onClick={e => {
                     e.preventDefault();
                     document.getElementById("process")?.scrollIntoView({ behavior: "smooth" });
@@ -51,7 +51,7 @@ export default function Footer() {
                 {" "}
                 <a
                   href="#team"
-                  className="text-gray-700 hover:text-gray-900"
+                  className="text-gray-700 hover:text-blue-500"
                   onClick={e => {
                     e.preventDefault();
                     document.getElementById("team")?.scrollIntoView({ behavior: "smooth" });
@@ -71,7 +71,7 @@ export default function Footer() {
                 {" "}
                 <a
                   href="#faq"
-                  className="text-gray-700 hover:text-gray-900"
+                  className="text-gray-700 hover:text-blue-500"
                   onClick={e => {
                     e.preventDefault();
                     document.getElementById("faq")?.scrollIntoView({ behavior: "smooth" });
@@ -81,33 +81,32 @@ export default function Footer() {
               </li>
             </ul>
           </div>
-          <div>
+          <div className="space-y-2">
             <h4 className="font-semibold mb-4">Contact Us</h4>
-            <p>+45 3411-4411</p>
-            <p>info@saymore.com</p>
-            <div className="flex space-x-4">
+            <p className="pb-2">+45 3411-4411</p>
+            <a href="mailto:info@saymore.com" target="_blank" rel="noopener noreferrer" className="text-gray-700 hover:text-blue-500">
+              info@saymore.com
+            </a>
+            <div className="flex space-x-4 pt-2">
               <a
-                  href="https://www.linkedin.com/in/saymore-official-1b5b3b344/"
-                  target="_blank"
-                  rel="noopener noreferrer">
-                <FontAwesomeIcon icon={faLinkedinIn} className="w-8 h-8"/>
+                href="https://www.linkedin.com/in/saymore-official-1b5b3b344/"
+                target="_blank"
+                rel="noopener noreferrer">
+                <FontAwesomeIcon icon={faLinkedinIn} className="w-8 h-8 hover:text-blue-500" />
               </a>
               <a
-                  href="https://www.instagram.com/say.more_official/"
-                  target="_blank"
-                  rel="noopener noreferrer">
-                <FontAwesomeIcon icon={faInstagram} className="w-8 h-8"/>
+                href="https://www.instagram.com/say.more_official/"
+                target="_blank"
+                rel="noopener noreferrer">
+                <FontAwesomeIcon icon={faInstagram} className="w-8 h-8 hover:text-blue-500" />
               </a>
-              <a
-                  href="https://www.instagram.com/say.more_official/"
-                  target="_blank"
-                  rel="noopener noreferrer">
-                <FontAwesomeIcon icon={faGithub} className="w-8 h-8"/>
+              <a href="https://github.com/SayMore-Global/" target="_blank" rel="noopener noreferrer">
+                <FontAwesomeIcon icon={faGithub} className="w-8 h-8 hover:text-blue-500" />
               </a>
             </div>
           </div>
         </div>
-        <div className="border-t border-gray-200 mt-8 pt-8 text-center">
+        <div className="border-t border-gray-200 mt-6 pt-6 text-center">
           <p>© 2024 SayMore. All rights reserved.</p>
         </div>
       </div>

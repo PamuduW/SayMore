@@ -48,7 +48,7 @@ export default function CTASection() {
       </p>
       <Button
         size="lg"
-        className="text-center mt-2 text-neutral-300 relative z-20 bg-blue-600 hover:bg-blue-700">
+        className="text-center mt-2 text-neutral-300 relative z-20 bg-blue-700 hover:bg-blue-950">
         Start Your Journey
       </Button>
     </div>
