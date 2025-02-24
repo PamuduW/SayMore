@@ -1,83 +1,51 @@
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import Image from "next/image";
+import { FocusCards } from "@/components/ui/focus-cards";
 
 export default function TeamSection() {
-  return (
-    <section className="py-20 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-7xl mx-auto">
-        <div className="flex justify-between items-center mb-16">
-          <h2 className="text-3xl font-bold">Meet Our Team</h2>
-          <Button variant="outline">Explore All Members</Button>
-        </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-          {[
-            // Add three more members here
-            {
-              name: "Pamudu Wijesinghe",
-              role: "Team Lead",
-              image: "/Pamudu.jpg",
-              width: 339,
-              height: 313,
-            },
-            {
-              name: "Disini Hettige",
-              role: "Frontend Lead",
-              image: "/Disini.jpg",
-              width: 1077,
-              height: 895,
-            },
-            {
-              name: "Janindu Sandanayake",
-              role: "Outreach Lead",
-              image: "/Janindu.jpg",
-              width: 338,
-              height: 302,
-            },
-            {
-              name: "Arani Weerathunga",
-              role: "Research Lead",
-              image: "/Arani.jpg",
-              width: 336,
-              height: 316,
-            },
-            {
-              name: "Kanila Gunasekara",
-              role: "Design Lead",
-              image: "/Kanila.jpg",
-              width: 339,
-              height: 310,
-            },
-            {
-              name: "Himara Anne",
-              role: "Document Lead",
-              image: "/Himara.jpg",
-              width: 337,
-              height: 316,
-            },
-          ].map((member, index) => (
-            <div
-              key={index}
-              className="overflow-hidden transform transition-transform duration-300 hover:scale-105 hover:shadow-lg">
-              <Card>
-                <Image
-                  src={member.image}
-                  // src={`/SayMore-Web${member.image}`}
-                  alt={member.name}
-                  width={member.width}
-                  height={member.height}
-                  className="w-full h-64 object-cover"
-                />
+    const cards = [
+        {
+            title: "Pamudu Wijesinghe - Team Lead",
+            src: "/Pamudu.jpg",
+            linkedin: "https://www.linkedin.com/in/pamudu-wijesingha-837104294/",
+            email: "pamudu.20232412@iit.ac.lk",
+        },
+        {
+            title: "Disini Hettige - Frontend Lead",
+            src: "/Disini.jpg",
+            linkedin: "https://www.linkedin.com/in/disini-hettige-7a57a1270/",
+            email: "disiniruhansa@gmail.com",
+        },
+        {
+            title: "Janindu Sandanayake - Outreach Lead",
+            src: "/Janindu.jpg",
+            linkedin: "https://www.linkedin.com/in/janindu-sandanayaka/",
+            email: "janindu2204@gmail.com",
+        },
+        {
+            title: "Arani Weerathunga - Research Lead",
+            src: "/Arani.jpg",
+            linkedin: "https://www.linkedin.com/in/arani-weerathunga-8983b9295/",
+            email: "araniweerathunga@gmail.com",
+        },
+        {
+            title: "Kanila Gunasekara - Design Lead",
+            src: "/Kanila.jpg",
+            linkedin: "https://www.linkedin.com/in/kanila-gunasekara-4409021a7/",
+            email: "kanilagroyal@gmail.com",
+        },
+        {
+            title: "Himara Anne - Document Lead",
+            src: "/Himara.jpg",
+            linkedin: "https://www.linkedin.com/in/himara-joseph-607608297/",
+            email: "himara.20231617@iit.ac.lk",
+        },
+    ];
 
-                <div className="p-6">
-                  <h3 className="text-xl font-semibold mb-1">{member.name}</h3>
-                  <p className="text-gray-600">{member.role}</p>
-                </div>
-              </Card>
+    return (
+        <section id="team" className="py-20 px-4 sm:px-6 lg:px-8">
+            <div className="max-w-7xl mx-auto">
+                <h2 className="text-3xl font-bold text-center mb-16">Meet Our Team</h2>
+                <FocusCards cards={cards} />
             </div>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
+        </section>
+    );
 }
