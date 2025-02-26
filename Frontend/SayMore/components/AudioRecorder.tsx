@@ -1,5 +1,3 @@
-// AudioRecorder.js
-
 import React, { useState, useEffect } from "react";
 import {
   View,
@@ -14,21 +12,18 @@ import AudioRecord from "react-native-audio-record";
 import Sound from "react-native-sound";
 import storage from "@react-native-firebase/storage";
 import auth from "@react-native-firebase/auth";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, NavigationProp } from "@react-navigation/native";
 import { request, PERMISSIONS } from "react-native-permissions";
 
-/**
- * AudioRecorder component allows users to record, play, and upload audio files.
- * It handles permissions, recording, playback, and uploading to Firebase.
- *
- * @param {object} props - The component props.
- * @param {boolean} props.isPublicSpeaking - Boolean indicating if the test is for public speaking.
- */
-const AudioRecorder = ({ isPublicSpeaking }) => {
-  const [isRecording, setIsRecording] = useState(false);
+interface AudioRecorderProps {
+  isPublicSpeaking: boolean;
+}
+
+const AudioRecorder: React.FC<AudioRecorderProps> = ({ isPublicSpeaking }) => {
+  const [isRecording, setIsRecording] = useState<boolean>(false);
   const [audioPath, setAudioPath] = useState<string | null>(null);
   const [sound, setSound] = useState<Sound | null>(null);
-  const navigation = useNavigation();
+  const navigation = useNavigation<NavigationProp<any>>();
 
   useEffect(() => {
     requestPermissions();
@@ -94,7 +89,7 @@ const AudioRecorder = ({ isPublicSpeaking }) => {
     }
     const folder = isPublicSpeaking ? "PS_Check" : "Stuttering_Check";
     const date = new Date().toISOString().replace(/[-:.]/g, "").slice(0, 15);
-    const filename = `recordings/${folder}/${currentUser.uid}+${date}.wav`;
+    const filename = `recordings/${folder}/${currentUser.uid}_${date}.wav`;
     const reference = storage().ref(filename);
     try {
       await reference.putFile(audioPath, { contentType: "audio/wav" });
@@ -113,12 +108,14 @@ const AudioRecorder = ({ isPublicSpeaking }) => {
       <Text style={styles.title}>Audio Recorder</Text>
       <TouchableOpacity
         onPress={isRecording ? stopRecording : startRecording}
-        style={[styles.button, isRecording ? styles.recording : styles.notRecording]}>
+        style={[styles.button, isRecording ? styles.recording : styles.notRecording]}
+      >
         <Text style={styles.buttonText}>{isRecording ? "Stop Recording" : "Start Recording"}</Text>
       </TouchableOpacity>
       <TouchableOpacity
         onPress={sound ? stopAudio : playAudio}
-        style={[styles.button, sound ? styles.playing : styles.notPlaying]}>
+        style={[styles.button, sound ? styles.playing : styles.notPlaying]}
+      >
         <Text style={styles.buttonText}>{sound ? "Stop Playback" : "Play Audio"}</Text>
       </TouchableOpacity>
       <TouchableOpacity onPress={uploadAudio} style={[styles.button, styles.upload]}>
@@ -157,19 +154,19 @@ const styles = StyleSheet.create({
     fontWeight: "600",
   },
   recording: {
-    backgroundColor: "#f44336", // Red color for recording
+    backgroundColor: "#f44336",
   },
   notRecording: {
-    backgroundColor: "#4CAF50", // Green color for not recording
+    backgroundColor: "#4CAF50",
   },
   playing: {
-    backgroundColor: "#FF9800", // Orange color for playing
+    backgroundColor: "#FF9800",
   },
   notPlaying: {
-    backgroundColor: "#2196F3", // Blue color for not playing
+    backgroundColor: "#2196F3",
   },
   upload: {
-    backgroundColor: "#9C27B0", // Purple color for uploading
+    backgroundColor: "#9C27B0",
   },
 });
 
