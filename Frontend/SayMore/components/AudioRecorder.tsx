@@ -25,6 +25,7 @@ const AudioRecorder: React.FC<AudioRecorderProps> = ({ isPublicSpeaking }) => {
   const [isRecording, setIsRecording] = useState<boolean>(false);
   const [audioPath, setAudioPath] = useState<string | null>(null);
   const [sound, setSound] = useState<Sound | null>(null);
+  const [uploadMessage, setUploadMessage] = useState<string | null>(null);
   const navigation = useNavigation<NavigationProp<any>>();
 
   useEffect(() => {
@@ -49,6 +50,7 @@ const AudioRecorder: React.FC<AudioRecorderProps> = ({ isPublicSpeaking }) => {
 
   const startRecording = () => {
     setIsRecording(true);
+    setUploadMessage(null);
     AudioRecord.start();
   };
 
@@ -95,6 +97,7 @@ const AudioRecorder: React.FC<AudioRecorderProps> = ({ isPublicSpeaking }) => {
     const reference = storage().ref(filename);
     try {
       await reference.putFile(audioPath, { contentType: "audio/wav" });
+      setUploadMessage("✅ Audio successfully uploaded!");
       navigation.navigate("AnalysisScreen", {
         filename,
         acc_id: currentUser.uid,
@@ -140,6 +143,8 @@ const AudioRecorder: React.FC<AudioRecorderProps> = ({ isPublicSpeaking }) => {
         <TouchableOpacity onPress={uploadAudio} style={[styles.button, styles.upload]}>
           <Text style={styles.buttonText}>Upload to Firebase</Text>
         </TouchableOpacity>
+
+        {uploadMessage && <Text style={styles.successMessage}>{uploadMessage}</Text>}
       </View>
     </ImageBackground>
   );
@@ -161,7 +166,7 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: "bold",
     marginBottom: 20,
-    color: "#fff", // White text for better contrast
+    color: "#fff",
   },
   description: {
     fontSize: 18,
@@ -185,9 +190,9 @@ const styles = StyleSheet.create({
     fontWeight: "600",
   },
   recordingButton: {
-    width: 80, // Same size as the icon
-    height: 80, // Same size as the icon
-    borderRadius: 40, // Circular background
+    width: 80,
+    height: 80,
+    borderRadius: 40,
     justifyContent: "center",
     alignItems: "center",
   },
@@ -203,13 +208,19 @@ const styles = StyleSheet.create({
     backgroundColor: "#2196F3",
   },
   playing: {
-    backgroundColor: "#FF9800",
+    backgroundColor: "#A0C878",
   },
   notPlaying: {
     backgroundColor: "#27667B",
   },
   upload: {
     backgroundColor: "#DF6D14",
+  },
+  successMessage: {
+    marginTop: 15,
+    fontSize: 16,
+    color: "green",
+    fontWeight: "bold",
   },
 });
 
