@@ -8,6 +8,7 @@ import {
   Alert,
   StyleSheet,
   Image,
+  ImageBackground,
 } from "react-native";
 import AudioRecord from "react-native-audio-record";
 import Sound from "react-native-sound";
@@ -105,50 +106,60 @@ const AudioRecorder: React.FC<AudioRecorderProps> = ({ isPublicSpeaking }) => {
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Audio Recorder</Text>
+    <ImageBackground
+      source={require("../assets/recordScreen.jpg")}
+      style={styles.background}
+      resizeMode="cover"
+    >
+      <View style={styles.container}>
+        <Text style={styles.title}>Audio Recorder</Text>
 
-      {/* Updated recording button */}
-      <TouchableOpacity
-        onPress={isRecording ? stopRecording : startRecording}
-        style={[
-          styles.recordingButton,
-          isRecording ? styles.recording : styles.notRecording,
-        ]}
-      >
-        <Image
-          source={require("../assets/mic.png")}
-          style={styles.recordingIcon}
-        />
-      </TouchableOpacity>
+        {/* Recording button */}
+        <TouchableOpacity
+          onPress={isRecording ? stopRecording : startRecording}
+          style={[
+            styles.recordingButton,
+            isRecording ? styles.recording : styles.notRecording,
+          ]}
+        >
+          <Image
+            source={require("../assets/mic.png")}
+            style={styles.recordingIcon}
+          />
+        </TouchableOpacity>
 
-      <TouchableOpacity
-        onPress={sound ? stopAudio : playAudio}
-        style={[styles.button, sound ? styles.playing : styles.notPlaying]}
-      >
-        <Text style={styles.buttonText}>{sound ? "Stop Playback" : "Play Audio"}</Text>
-      </TouchableOpacity>
+        <TouchableOpacity
+          onPress={sound ? stopAudio : playAudio}
+          style={[styles.button, sound ? styles.playing : styles.notPlaying]}
+        >
+          <Text style={styles.buttonText}>{sound ? "Stop Playback" : "Play Audio"}</Text>
+        </TouchableOpacity>
 
-      <TouchableOpacity onPress={uploadAudio} style={[styles.button, styles.upload]}>
-        <Text style={styles.buttonText}>Upload to Firebase</Text>
-      </TouchableOpacity>
-    </View>
+        <TouchableOpacity onPress={uploadAudio} style={[styles.button, styles.upload]}>
+          <Text style={styles.buttonText}>Upload to Firebase</Text>
+        </TouchableOpacity>
+      </View>
+    </ImageBackground>
   );
 };
 
 const styles = StyleSheet.create({
+  background: {
+    flex: 1,
+    width: "100%",
+    height: "100%",
+  },
   container: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
     padding: 20,
-    backgroundColor: "#f7f7f7",
   },
   title: {
     fontSize: 24,
     fontWeight: "bold",
     marginBottom: 20,
-    color: "#333",
+    color: "#fff", // White text for better contrast
   },
   button: {
     paddingVertical: 15,
