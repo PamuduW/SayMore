@@ -128,6 +128,8 @@ const AudioRecorder: React.FC<AudioRecorderProps> = ({ isPublicSpeaking }) => {
           />
         </TouchableOpacity>
 
+        <Text style={styles.description}>Tap the microphone to start recording, and tap again to stop</Text>
+
         <TouchableOpacity
           onPress={sound ? stopAudio : playAudio}
           style={[styles.button, sound ? styles.playing : styles.notPlaying]}
@@ -160,6 +162,13 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     marginBottom: 20,
     color: "#fff", // White text for better contrast
+  },
+  description: {
+    fontSize: 18,
+    color: "#000",
+    textAlign: "center",
+    fontWeight: "bold",
+    marginBottom: 20,
   },
   button: {
     paddingVertical: 15,
@@ -197,10 +206,10 @@ const styles = StyleSheet.create({
     backgroundColor: "#FF9800",
   },
   notPlaying: {
-    backgroundColor: "#2196F3",
+    backgroundColor: "#27667B",
   },
   upload: {
-    backgroundColor: "#9C27B0",
+    backgroundColor: "#DF6D14",
   },
 });
 
