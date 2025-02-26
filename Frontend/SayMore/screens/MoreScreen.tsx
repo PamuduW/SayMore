@@ -2,54 +2,48 @@ import React from "react";
 import { View, Text, TouchableOpacity, Image, StyleSheet } from "react-native";
 
 /**
- * Array of screen titles.
+ * Array of lesson titles.
  */
-const NewScreens = [
-  "Activity",
-  "Lesson",
-  "Quizzes and Challenges",
-  "Progress",
-  "Points",
-  "Leaderboard",
-  "Speech Therapy",
+const lessons = [
+  "Speech Exercises",
+  "Understanding Stuttering",
+  "Building Confidence",
+  "Communication Tips",
+  "Techniques for Overcoming Stuttering",
+  "Managing Stage Fright",
 ];
 
-/**
- * MoreScreen component.
- * Displays a grid of options for different screens.
- *
- * @param {Object} navigation - The navigation object used to navigate between screens.
- * @returns {JSX.Element} The rendered MoreScreen component.
- */
-const MoreScreen = ({ navigation }) => {
-  /**
-   * Handles the press event for the screen options.
-   * Navigates to the Lessons screen if the selected option is "Lesson".
-   *
-   * @param {string} title - The selected screen title.
-   */
-  const handlePress = title => {
-    if (title === "Lesson") {
-      navigation.navigate("Lessons");
-    }
-  };
+interface LessonsScreenProps {}
 
-  return (
-    <View style={styles.container}>
-      <View style={styles.gridContainer}>
-        {NewScreens.map((title, index) => (
-          <TouchableOpacity key={index} style={styles.lessonButton} onPress={() => handlePress(title)}>
-            <Image source={require("../assets/videoicon.png")} style={styles.lessonIcon} />
-            <Text style={styles.lessonText}>{title}</Text>
-          </TouchableOpacity>
-        ))}
-      </View>
+/**
+ * LessonsScreen component.
+ * Displays a list of lessons with educational videos, tips, and techniques.
+ *
+ * @returns {JSX.Element} The rendered LessonsScreen component.
+ */
+const LessonsScreen: React.FC<LessonsScreenProps> = () => (
+  <View style={styles.container}>
+    <Text style={styles.headerText}>Hi, Aria</Text>
+    <Text style={styles.subText}>
+      Unlock your potential as a confident speaker. Explore our educational videos, tips, and
+      techniques designed to help you overcome stuttering, build confidence, and communicate with
+      clarity to become the speaker you’ve always wanted to be!
+    </Text>
+    <View style={styles.gridContainer}>
+      {lessons.map((title, index) => (
+        <TouchableOpacity key={index} style={styles.lessonButton}>
+          <Image source={require("../assets/videoicon.png")} style={styles.lessonIcon} />
+          <Text style={styles.lessonText}>{title}</Text>
+        </TouchableOpacity>
+      ))}
     </View>
-  );
-};
+  </View>
+);
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: "#F0F8FF", padding: 20 },
+  headerText: { fontSize: 24, fontWeight: "bold", color: "#003366", marginBottom: 10 },
+  subText: { fontSize: 16, color: "#003366", marginBottom: 20 },
   gridContainer: { flexDirection: "row", flexWrap: "wrap", justifyContent: "space-between" },
   lessonButton: {
     width: "48%",
@@ -68,4 +62,4 @@ const styles = StyleSheet.create({
   lessonText: { fontSize: 14, fontWeight: "bold", color: "#003366", textAlign: "center" },
 });
 
-export default MoreScreen;
+export default LessonsScreen;
