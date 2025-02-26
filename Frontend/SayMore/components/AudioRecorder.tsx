@@ -1,3 +1,5 @@
+// AudioRecorder.js
+
 import React, { useState, useEffect } from "react";
 import {
   View,
@@ -131,34 +133,43 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
+    padding: 20,
+    backgroundColor: "#f7f7f7",
   },
   title: {
-    fontSize: 20,
-    marginBottom: 10,
+    fontSize: 24,
+    fontWeight: "bold",
+    marginBottom: 20,
+    color: "#333",
   },
   button: {
-    padding: 10,
-    margin: 10,
-    borderRadius: 5,
+    paddingVertical: 15,
+    paddingHorizontal: 30,
+    margin: 12,
+    borderRadius: 10,
+    alignItems: "center",
+    width: "80%",
+    justifyContent: "center",
   },
   buttonText: {
-    color: "white",
-    textAlign: "center",
+    color: "#fff",
+    fontSize: 16,
+    fontWeight: "600",
   },
   recording: {
-    backgroundColor: "red",
+    backgroundColor: "#f44336", // Red color for recording
   },
   notRecording: {
-    backgroundColor: "green",
+    backgroundColor: "#4CAF50", // Green color for not recording
   },
   playing: {
-    backgroundColor: "orange",
+    backgroundColor: "#FF9800", // Orange color for playing
   },
   notPlaying: {
-    backgroundColor: "blue",
+    backgroundColor: "#2196F3", // Blue color for not playing
   },
   upload: {
-    backgroundColor: "purple",
+    backgroundColor: "#9C27B0", // Purple color for uploading
   },
 });
 

@@ -52,7 +52,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
       {/* Header Section */}
       <View style={styles.header}>
         <Image style={styles.icon} source={require("../assets/icon.png")} />
-        <Text style={styles.greeting}>Welcome to Say More</Text>
+        <Text style={styles.greeting}>Welcome to Say More!</Text>
         <Text style={styles.welcomeMessage}>Enhance your speech & confidence!</Text>
       </View>
 
