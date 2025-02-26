@@ -7,6 +7,7 @@ import {
   Platform,
   Alert,
   StyleSheet,
+  Image,
 } from "react-native";
 import AudioRecord from "react-native-audio-record";
 import Sound from "react-native-sound";
@@ -106,18 +107,28 @@ const AudioRecorder: React.FC<AudioRecorderProps> = ({ isPublicSpeaking }) => {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Audio Recorder</Text>
+
+      {/* Updated recording button */}
       <TouchableOpacity
         onPress={isRecording ? stopRecording : startRecording}
-        style={[styles.button, isRecording ? styles.recording : styles.notRecording]}
+        style={[
+          styles.recordingButton,
+          isRecording ? styles.recording : styles.notRecording,
+        ]}
       >
-        <Text style={styles.buttonText}>{isRecording ? "Stop Recording" : "Start Recording"}</Text>
+        <Image
+          source={require("../assets/mic.png")}
+          style={styles.recordingIcon}
+        />
       </TouchableOpacity>
+
       <TouchableOpacity
         onPress={sound ? stopAudio : playAudio}
         style={[styles.button, sound ? styles.playing : styles.notPlaying]}
       >
         <Text style={styles.buttonText}>{sound ? "Stop Playback" : "Play Audio"}</Text>
       </TouchableOpacity>
+
       <TouchableOpacity onPress={uploadAudio} style={[styles.button, styles.upload]}>
         <Text style={styles.buttonText}>Upload to Firebase</Text>
       </TouchableOpacity>
@@ -153,11 +164,23 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "600",
   },
+  recordingButton: {
+    width: 80, // Same size as the icon
+    height: 80, // Same size as the icon
+    borderRadius: 40, // Circular background
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  recordingIcon: {
+    width: 80,
+    height: 80,
+    resizeMode: "contain",
+  },
   recording: {
     backgroundColor: "#f44336",
   },
   notRecording: {
-    backgroundColor: "#4CAF50",
+    backgroundColor: "#2196F3",
   },
   playing: {
     backgroundColor: "#FF9800",
