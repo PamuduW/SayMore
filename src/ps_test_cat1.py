@@ -188,7 +188,8 @@ def analyze_speech_1(audio_path):
 ##########################################################################################################################
 
 
-########################################################################################################################## def analyze_duration(audio_path):
+#########################################################################################################################
+# def analyze_duration(audio_path):
 #     y, sr = librosa.load(audio_path, sr=None)
 #     return float(round(librosa.get_duration(y=y, sr=sr), 2))
 #
@@ -267,26 +268,25 @@ def analyze_speech_1(audio_path):
 #############################################################################################
 
 
-def ps_test(audio_path):
-    return {
-        # Voice Quality & Stability
-        # "Voice Quality & Stability Data": analyze_speech_1(audio_path),
-        # "Pitch_data": analyze_pitch(audio_path),
-        # "Jitter_data": analyze_jitter(audio_path),
-        # "Shimmer_data": analyze_shimmer(audio_path),
-        # "HNR_data": analyze_hnr(audio_path),
 
-        # # Speech Intensity & Energy
-        "Speech Intensity & Energy": analyze_speech_2(audio_path),
-        # "Intensity_data": analyze_intensity(audio_path),
-        # "Energy_data": analyze_energy(audio_path),
-        # "Volume_data": analyze_volume(audio_path),
-        #
+
+
+
+
+
+
         # # Speech Timing & Rhythm
         # "Duration_data": analyze_duration(audio_path),
         #
+
+
+
+
         # # Advanced Prosodic & Fluency Analysis
         # "Formant_data": analyze_formants(audio_path),
+
+
+
 
         # "Pause_data": analyze_pause(audio_path),
         # "Rhythm_data": analyze_rhythm(audio_path),
@@ -294,9 +294,12 @@ def ps_test(audio_path):
         # "Fluency_data": analyze_fluency(audio_path),
         # "Clarity_data": analyze_clarity(audio_path),
 
+
+
+
+
         # "Rate_data": analyze_rate(audio_path),
         # "Pronunciation_data": analyze_pronunciation(audio_path),
         # "Accent_data": analyze_accent(audio_path),
         # "Emotion_data": analyze_emotion(audio_path),
         # "Stress_data": analyze_stress(audio_path)
-    }

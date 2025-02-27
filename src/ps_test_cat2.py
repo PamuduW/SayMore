@@ -17,9 +17,9 @@ def analyze_intensity(audio_path, segment_duration=2.0):
 
         if segment_rms.size > 0:
             segment_intensity = np.mean(segment_rms)
-            intensity_data[round(t, 2)] = round(segment_intensity * 100, 4)  # Normalize (0-100)
+            intensity_data[float(round(t, 2))] = float(round(segment_intensity * 100, 4))  # Normalize (0-100)
         else:
-            intensity_data[round(t, 2)] = 0.0  # Handle empty segment case
+            intensity_data[float(round(t, 2))] = 0.0  # Handle empty segment case
 
     return intensity_data
 
@@ -36,26 +36,22 @@ def analyze_energy(audio_path, segment_duration=2.0):
         if segment.size > 0:
             energy = np.sum(segment ** 2)
             log_energy = np.log10(energy + 1e-8)  # Convert to dB-like scale
-            energy_data[round(t, 2)] = round(log_energy * 10, 2)  # Normalize (0-100)
+            energy_data[float(round(t, 2))] = float(round(log_energy * 10, 2))  # Normalize (0-100)
         else:
-            energy_data[round(t, 2)] = 0.0  # Handle empty segment case
+            energy_data[float(round(t, 2))] = 0.0  # Handle empty segment case
 
     return energy_data
 
 
 def analyze_speech_2(audio_path, segment_duration=2.0):
     intensity_data = analyze_intensity(audio_path, segment_duration)
-    print(intensity_data)
     energy_data = analyze_energy(audio_path, segment_duration)
-    print(energy_data)
 
     intensity_values = list(intensity_data.values())
-    print(intensity_values)
     energy_values = list(energy_data.values())
-    print(energy_values)
 
-    if not intensity_values or not energy_values:
-        return {"error": "No valid intensity or energy data detected."}
+    if all(v == 0 for v in intensity_values) and all(v == 0 for v in energy_values):
+        return {"error": "No meaningful speech intensity or energy detected. Ensure audio is clear and loud enough."}
 
     # Calculate overall intensity & energy score
     avg_intensity = np.mean(intensity_values)
@@ -66,9 +62,9 @@ def analyze_speech_2(audio_path, segment_duration=2.0):
     energy_variation = np.std(energy_values)
 
     # Normalize final scores (0-100)
-    intensity_score = round(np.clip(avg_intensity, 0, 100), 2)
-    energy_score = round(np.clip(avg_energy, 0, 100), 2)
-    variation_score = round(np.clip((intensity_variation + energy_variation) * 10, 0, 100), 2)
+    intensity_score = float(round(np.clip(avg_intensity, 0, 100), 2))
+    energy_score = float(round(np.clip(avg_energy, 0, 100), 2))
+    variation_score = float(round(np.clip((intensity_variation + energy_variation) * 5, 0, 100), 2))
 
     # Interpretation & feedback
     if variation_score > 50:
