@@ -1,5 +1,6 @@
 import React from "react";
 import { View, Text, TouchableOpacity, Image, StyleSheet } from "react-native";
+import { NavigationProp } from "@react-navigation/native";
 
 /**
  * Array of screen titles.
@@ -14,21 +15,25 @@ const NewScreens = [
   "Speech Therapy",
 ];
 
+interface MoreScreenProps {
+  navigation: NavigationProp<any>;
+}
+
 /**
  * MoreScreen component.
  * Displays a grid of options for different screens.
  *
- * @param {Object} navigation - The navigation object used to navigate between screens.
+ * @param {MoreScreenProps} props - The props for the component.
  * @returns {JSX.Element} The rendered MoreScreen component.
  */
-const MoreScreen = ({ navigation }) => {
+const MoreScreen: React.FC<MoreScreenProps> = ({ navigation }) => {
   /**
    * Handles the press event for the screen options.
    * Navigates to the Lessons screen if the selected option is "Lesson".
    *
    * @param {string} title - The selected screen title.
    */
-  const handlePress = title => {
+  const handlePress = (title: string) => {
     if (title === "Lesson") {
       navigation.navigate("Lessons");
     }
