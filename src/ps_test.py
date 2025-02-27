@@ -5,7 +5,6 @@ import webrtcvad
 import pyworld as pw
 import parselmouth
 import re
-from parselmouth.praat import call
 
 
 ############################################################################################
@@ -105,12 +104,19 @@ def generate_speaking_score(monotony_score, speaking_speed, clarity, jitter, shi
 
 # Main function to analyze speech
 def analyze_speech(audio_path):
+    print("a")
     pitch_data = analyze_pitch(audio_path)
+    print("b")
     speaking_speed = analyze_speaking_speed(audio_path)
+    print("c")
     clarity = analyze_clarity(audio_path)
+    print("d")
     jitter_data = analyze_jitter(audio_path)
+    print("e")
     shimmer_data = analyze_shimmer(audio_path)
+    print("f")
     hnr_data = analyze_hnr(audio_path)
+    print("g")
 
     final_score = generate_speaking_score(
         pitch_data["monotony_score"], speaking_speed, clarity,
@@ -130,50 +136,71 @@ def analyze_speech(audio_path):
     }
 
 
-# Analyze Jitter (Measures frequency instability)
+# ✅ Fixed Jitter Calculation
 def analyze_jitter(audio_path, segment_duration=2.0):
     snd = parselmouth.Sound(audio_path)
     duration = snd.get_total_duration()
-    pitch = snd.to_pitch()
-    time_stamps = pitch.xs()
 
     jitter_data = {}
+
     for t in np.arange(0, duration, segment_duration):
         segment = snd.extract_part(from_time=t, to_time=min(t + segment_duration, duration))
-        point_process = segment.to_point_process()
-        jitter_local = call(segment, "Get jitter (local)", 0, 0.02, 1.3, 1.6)
-        jitter_data[round(t, 2)] = float(round(jitter_local, 4))
+        point_process = parselmouth.praat.call(segment, "To PointProcess (periodic, cc)", 75, 500)
+        jitter_local = parselmouth.praat.call(point_process, "Get jitter (local)",  0, 0, 0.0001, 0.02, 1.3)
+
+        # ✅ Replace NaN with 0.0
+        jitter_value = float(round(jitter_local, 6)) if not np.isnan(jitter_local) else 0.0
+        jitter_data[float(round(t, 2))] = jitter_value
 
     overall_jitter = np.mean(list(jitter_data.values()))
+    print("jitter_data", jitter_data)
     return {"jitter_data": jitter_data, "overall_jitter": overall_jitter}
 
-# Analyze Shimmer (Measures amplitude instability)
+# ✅ Fixed Shimmer Calculation
 def analyze_shimmer(audio_path, segment_duration=2.0):
     snd = parselmouth.Sound(audio_path)
     duration = snd.get_total_duration()
 
     shimmer_data = {}
+
     for t in np.arange(0, duration, segment_duration):
         segment = snd.extract_part(from_time=t, to_time=min(t + segment_duration, duration))
-        shimmer_local = call(segment, "Get shimmer (local)", 0, 0.02, 1.3, 1.6, 0.03, 0.45)
-        shimmer_data[round(t, 2)] = float(round(shimmer_local, 4))
+        point_process = parselmouth.praat.call(segment, "To PointProcess (periodic, cc)", 75, 500)
+
+        # ✅ Pass both Sound & PointProcess objects
+        shimmer_local = parselmouth.praat.call([segment, point_process], "Get shimmer (local)", 0, 0, 0.0001, 0.02, 1.3, 1.6)
+
+        # ✅ Replace NaN with 0.0
+        shimmer_value = float(round(shimmer_local, 4)) if not np.isnan(shimmer_local) else 0.0
+        shimmer_data[float(round(t, 2))] = shimmer_value
 
     overall_shimmer = np.mean(list(shimmer_data.values()))
+    print("shimmer_data", shimmer_data)
     return {"shimmer_data": shimmer_data, "overall_shimmer": overall_shimmer}
 
-# Analyze Harmonic-to-Noise Ratio (HNR) (Measures voice clarity)
+# ✅ Fixed HNR Calculation (Clipped at 0)
 def analyze_hnr(audio_path, segment_duration=2.0):
     snd = parselmouth.Sound(audio_path)
     duration = snd.get_total_duration()
 
     hnr_data = {}
+
     for t in np.arange(0, duration, segment_duration):
         segment = snd.extract_part(from_time=t, to_time=min(t + segment_duration, duration))
-        hnr_value = call(segment, "Get harmonicity", 0.01, 75, 0.1, 0.99, 0.1)
-        hnr_data[round(t, 2)] = float(round(hnr_value, 2))
+        harmonicity = parselmouth.praat.call(segment, "To Harmonicity (cc)", 0.01, 75, 0.1, 1.0)
+        hnr_value = parselmouth.praat.call(harmonicity, "Get mean", 0, 0)
+
+        # ✅ Replace NaN with 0.0 and clip negative values
+        hnr_value = max(float(round(hnr_value, 2)), 0.0)
+        hnr_data[float(round(t, 2))] = hnr_value
 
     overall_hnr = np.mean(list(hnr_data.values()))
+    print("hnr_data", hnr_data)
     return {"hnr_data": hnr_data, "overall_hnr": overall_hnr}
+
+
+
+
 
 
 ############################################################################################
