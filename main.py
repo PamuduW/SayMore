@@ -3,8 +3,9 @@ from fastapi import FastAPI, UploadFile, File, HTTPException
 from google.cloud.firestore_v1 import ArrayUnion
 from src.logic import analysing_audio
 from pydantic import BaseModel
-import os
+from datetime import datetime
 import json
+import os
 
 app = FastAPI()
 
@@ -30,6 +31,7 @@ async def test(request_body: RequestBody):
         file_name = request_body.file_name
         acc_id = request_body.acc_id
         test_type = request_body.test_type
+        test_tag = datetime.now().strftime("%Y%m%d%H%M%S")
 
         os.makedirs("recordings", exist_ok=True)
         os.makedirs("recordings/PS_Check", exist_ok=True)
@@ -43,9 +45,9 @@ async def test(request_body: RequestBody):
 
         doc_ref = db.collection("User_Accounts").document(acc_id)
         if test_type:
-            doc_ref.update({"results.PS_Check": ArrayUnion([json.loads(json.dumps(analysis_result))])})
+            doc_ref.update({f"results.PS_Check.{test_tag}": json.loads(json.dumps(analysis_result))})
         else:
-            doc_ref.update({"results.Stuttering_Check": ArrayUnion([analysis_result])})
+            doc_ref.update({f"results.Stuttering_Check.{test_tag}": json.loads(json.dumps(analysis_result))})
 
         # blob.delete()
         os.remove(file_name)
