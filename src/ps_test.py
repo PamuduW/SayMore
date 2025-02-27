@@ -1,13 +1,14 @@
 import librosa
 import numpy as np
+import parselmouth
+import re
 import torchaudio
 import webrtcvad
 import pyworld as pw
-import parselmouth
-import re
 
 
-############################################################################################
+
+######################################################Voice Quality & Stability####################################################################
 # Convert Hz to semitones for normalization
 def hz_to_semitones(pitch_hz, reference_pitch=100.0):
     return 12 * np.log2(pitch_hz / reference_pitch)
@@ -78,7 +79,7 @@ def analyze_jitter(audio_path, segment_duration=2.0):
         jitter_value = float(round(jitter_local, 6)) if not np.isnan(jitter_local) else 0.0
         jitter_data[float(round(t, 2))] = jitter_value
 
-    overall_jitter = np.mean(list(jitter_data.values()))
+    overall_jitter = np.nan_to_num(np.mean(list(jitter_data.values())))
     return {"jitter_data": jitter_data, "overall_jitter": overall_jitter}
 
 
@@ -97,7 +98,7 @@ def analyze_shimmer(audio_path, segment_duration=2.0):
         shimmer_value = float(round(shimmer_local, 4)) if not np.isnan(shimmer_local) else 0.0
         shimmer_data[float(round(t, 2))] = shimmer_value
 
-    overall_shimmer = np.mean(list(shimmer_data.values()))
+    overall_shimmer = np.nan_to_num(np.mean(list(shimmer_data.values())))
     return {"shimmer_data": shimmer_data, "overall_shimmer": overall_shimmer}
 
 
@@ -149,7 +150,7 @@ def generate_speaking_score(monotony_score, speaking_speed, clarity, jitter, shi
 
     final_score = (
             (monotony_score * weights["monotony"]) +
-            (speaking_speed * weights["speed"] / 200 * 100) +
+            (speaking_speed * weights["speed"] / 200 * 100) if speaking_speed > 0 else 0 +
             (clarity * weights["clarity"]) +
             (stability_score * weights["stability"])
     )
@@ -157,13 +158,16 @@ def generate_speaking_score(monotony_score, speaking_speed, clarity, jitter, shi
 
 
 # Main function to analyze speech
-def ps_test(audio_path):
+def analyze_speech_1(audio_path):
     pitch_data = analyze_pitch(audio_path)
     speaking_speed = analyze_speaking_speed(audio_path)
     clarity = analyze_clarity(audio_path)
     jitter_data = analyze_jitter(audio_path)
     shimmer_data = analyze_shimmer(audio_path)
     hnr_data = analyze_hnr(audio_path)
+
+    if "error" in pitch_data:
+        return {"error": pitch_data["error"]}
 
     final_score = generate_speaking_score(
         pitch_data["monotony_score"], speaking_speed, clarity,
@@ -181,48 +185,97 @@ def ps_test(audio_path):
         "final_public_speaking_score": final_score,
         "pitch_analysis": pitch_data["pitch_analysis"]
     }
+##########################################################################################################################
 
 
 
+#######################################################Speech Intensity & Energy###################################################################
+def analyze_intensity(audio_path, segment_duration=2.0):
+    y, sr = librosa.load(audio_path, sr=None)
+    rms_energy = librosa.feature.rms(y=y)[0]
+    duration = librosa.get_duration(y=y, sr=sr)
+
+    frame_times = np.linspace(0, duration, num=len(rms_energy))
+    intensity_data = {}
+
+    for t in np.arange(0, duration, segment_duration):
+        mask = (frame_times >= t) & (frame_times < t + segment_duration)
+        segment_rms = rms_energy[mask]
+
+        if segment_rms.size > 0:
+            segment_intensity = np.mean(segment_rms)
+            intensity_data[round(t, 2)] = round(segment_intensity * 100, 4)  # Normalize (0-100)
+        else:
+            intensity_data[round(t, 2)] = 0.0  # Handle empty segment case
+
+    return intensity_data
+
+
+def analyze_energy(audio_path, segment_duration=2.0):
+    y, sr = librosa.load(audio_path, sr=None)
+    duration = librosa.get_duration(y=y, sr=sr)
+
+    energy_data = {}
+    for t in np.arange(0, duration, segment_duration):
+        start, end = int(t * sr), min(int((t + segment_duration) * sr), len(y))  # Avoid OOB index
+        segment = y[start:end]
+
+        if segment.size > 0:
+            energy = np.sum(segment ** 2)
+            log_energy = np.log10(energy + 1e-8)  # Convert to dB-like scale
+            energy_data[round(t, 2)] = round(log_energy * 10, 2)  # Normalize (0-100)
+        else:
+            energy_data[round(t, 2)] = 0.0  # Handle empty segment case
+
+    return energy_data
+
+def analyze_speech_2(audio_path, segment_duration=2.0):
+    print("a")
+    intensity_data = analyze_intensity(audio_path, segment_duration)
+    print("b")
+    energy_data = analyze_energy(audio_path, segment_duration)
+    print("c")
+
+    intensity_values = list(intensity_data.values())
+    energy_values = list(energy_data.values())
+
+    if not intensity_values or not energy_values:
+        return {"error": "No valid intensity or energy data detected."}
+
+    # Calculate overall intensity & energy score
+    avg_intensity = np.mean(intensity_values)
+    avg_energy = np.mean(energy_values)
+
+    # Calculate variation to measure expressiveness
+    intensity_variation = np.std(intensity_values)
+    energy_variation = np.std(energy_values)
+
+    # Normalize final scores (0-100)
+    intensity_score = round(np.clip(avg_intensity, 0, 100), 2)
+    energy_score = round(np.clip(avg_energy, 0, 100), 2)
+    variation_score = round(np.clip((intensity_variation + energy_variation) * 10, 0, 100), 2)
+
+    # Interpretation & feedback
+    if variation_score > 50:
+        feedback = "Great job! Your speech has dynamic intensity and energy, making it engaging."
+    elif variation_score > 25:
+        feedback = "You're doing well, but adding more intensity variation will improve engagement."
+    else:
+        feedback = "Your speech lacks variation. Try emphasizing key points with more energy shifts."
+
+    return {
+        "intensity_score": intensity_score,
+        "energy_score": energy_score,
+        "variation_score": variation_score,
+        "feedback": feedback,
+        "intensity_analysis": intensity_data,
+        "energy_analysis": energy_data
+    }
+##########################################################################################################################
 
 
 
-
-
-############################################################################################
-# def analyze_intensity(audio_path, segment_duration=2.0):
-#     y, sr = librosa.load(audio_path, sr=None)
-#     rms_energy = librosa.feature.rms(y=y)[0]
-#     duration = librosa.get_duration(y=y, sr=sr)
-#
-#     intensity_data = {}
-#     frame_length = len(rms_energy) // (duration / segment_duration)
-#     for t in np.arange(0, duration, segment_duration):
-#         idx = int(t / segment_duration * frame_length)
-#         segment_intensity = np.mean(rms_energy[idx:idx + int(frame_length)])
-#         intensity_data[int(t)] = float(round(segment_intensity, 4)) if not np.isnan(segment_intensity) else 0
-#     return intensity_data
-#
-#
-# def analyze_energy(audio_path, segment_duration=2.0):
-#     y, sr = librosa.load(audio_path, sr=None)
-#     duration = librosa.get_duration(y=y, sr=sr)
-#
-#     energy_data = {}
-#     for t in np.arange(0, duration, segment_duration):
-#         start, end = int(t * sr), int((t + segment_duration) * sr)
-#         segment = y[start:end]
-#         energy = np.sum(segment ** 2)
-#         energy_data[int(t)] = float(round(energy, 2))
-#     return energy_data
-#
-#
-# def analyze_volume(audio_path):
-#     return analyze_intensity(audio_path)
-#
-#
-# # #############################################################################################
-# def analyze_duration(audio_path):
+########################################################################################################################## def analyze_duration(audio_path):
 #     y, sr = librosa.load(audio_path, sr=None)
 #     return float(round(librosa.get_duration(y=y, sr=sr), 2))
 #
@@ -301,16 +354,17 @@ def ps_test(audio_path):
 #############################################################################################
 
 
-# def ps_test(audio_path):
-#     return {
+def ps_test(audio_path):
+    return {
         # Voice Quality & Stability
+        # "Voice Quality & Stability Data": analyze_speech_1(audio_path),
         # "Pitch_data": analyze_pitch(audio_path),
-        # "speech_data": analyze_speech(audio_path),
         # "Jitter_data": analyze_jitter(audio_path),
         # "Shimmer_data": analyze_shimmer(audio_path),
         # "HNR_data": analyze_hnr(audio_path),
 
         # # Speech Intensity & Energy
+        "Speech Intensity & Energy": analyze_speech_2(audio_path),
         # "Intensity_data": analyze_intensity(audio_path),
         # "Energy_data": analyze_energy(audio_path),
         # "Volume_data": analyze_volume(audio_path),
@@ -332,4 +386,4 @@ def ps_test(audio_path):
         # "Accent_data": analyze_accent(audio_path),
         # "Emotion_data": analyze_emotion(audio_path),
         # "Stress_data": analyze_stress(audio_path)
-    # }
+    }
