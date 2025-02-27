@@ -4,7 +4,7 @@ import torchaudio
 import webrtcvad
 import pyworld as pw
 
-
+############################################################################################
 def analyze_pitch(audio_path, segment_duration=2.0):
     y, sr = librosa.load(audio_path, sr=None)
     duration = librosa.get_duration(y=y, sr=sr)
@@ -27,7 +27,28 @@ def analyze_pitch(audio_path, segment_duration=2.0):
 
     return pitch_data
 
+def analyze_jitter(audio_path):
+    y, sr = librosa.load(audio_path, sr=None)
+    pitches, _ = librosa.piptrack(y=y, sr=sr)
+    pitch_values = pitches[pitches > 0]
+    jitter = np.std(np.diff(pitch_values)) / np.mean(pitch_values) if len(pitch_values) > 1 else 0
+    return float(round(jitter, 4))
 
+def analyze_shimmer(audio_path):
+    y, sr = librosa.load(audio_path, sr=None)
+    pitches, _ = librosa.piptrack(y=y, sr=sr)
+    pitch_values = pitches[pitches > 0]
+    shimmer = np.std(pitch_values) / np.mean(pitch_values) if len(pitch_values) > 1 else 0
+    return float(round(shimmer, 4))
+
+def analyze_hnr(audio_path):
+    y, sr = librosa.load(audio_path, sr=None)
+    _f0, sp, ap = pw.wav2world(y.astype(np.float64), sr)
+    hnr = np.mean(10 * np.log10(sp / (ap + 1e-10)))  # Harmonic-to-noise ratio
+    return float(round(hnr, 2))
+
+
+############################################################################################
 def analyze_intensity(audio_path, segment_duration=2.0):
     y, sr = librosa.load(audio_path, sr=None)
     rms_energy = librosa.feature.rms(y=y)[0]
@@ -41,6 +62,26 @@ def analyze_intensity(audio_path, segment_duration=2.0):
         intensity_data[int(t)] = float(round(segment_intensity, 4)) if not np.isnan(segment_intensity) else 0
     return intensity_data
 
+def analyze_energy(audio_path, segment_duration=2.0):
+    y, sr = librosa.load(audio_path, sr=None)
+    duration = librosa.get_duration(y=y, sr=sr)
+
+    energy_data = {}
+    for t in np.arange(0, duration, segment_duration):
+        start, end = int(t * sr), int((t + segment_duration) * sr)
+        segment = y[start:end]
+        energy = np.sum(segment ** 2)
+        energy_data[int(t)] = float(round(energy, 2))
+    return energy_data
+
+def analyze_volume(audio_path):
+    return analyze_intensity(audio_path)
+
+
+#############################################################################################
+def analyze_duration(audio_path):
+    y, sr = librosa.load(audio_path, sr=None)
+    return float(round(librosa.get_duration(y=y, sr=sr), 2))
 
 def analyze_formants(audio_path, segment_duration=2.0):
     y, sr = librosa.load(audio_path, sr=None)
@@ -56,55 +97,24 @@ def analyze_formants(audio_path, segment_duration=2.0):
         formant_data[int(t)] = {"F1": round(f1, 2), "F2": round(f2, 2), "F3": round(f3, 2)}
     return formant_data
 
-
-def analyze_jitter(audio_path):
-    y, sr = librosa.load(audio_path, sr=None)
-    pitches, _ = librosa.piptrack(y=y, sr=sr)
-    pitch_values = pitches[pitches > 0]
-    jitter = np.std(np.diff(pitch_values)) / np.mean(pitch_values) if len(pitch_values) > 1 else 0
-    return float(round(jitter, 4))
-
-
-def analyze_shimmer(audio_path):
-    y, sr = librosa.load(audio_path, sr=None)
-    pitches, _ = librosa.piptrack(y=y, sr=sr)
-    pitch_values = pitches[pitches > 0]
-    shimmer = np.std(pitch_values) / np.mean(pitch_values) if len(pitch_values) > 1 else 0
-    return float(round(shimmer, 4))
-
-
-def analyze_hnr(audio_path):
-    y, sr = librosa.load(audio_path, sr=None)
-    _f0, sp, ap = pw.wav2world(y.astype(np.float64), sr)
-    hnr = np.mean(10 * np.log10(sp / (ap + 1e-10)))  # Harmonic-to-noise ratio
-    return float(round(hnr, 2))
-
-def analyze_duration(audio_path):
-    y, sr = librosa.load(audio_path, sr=None)
-    return float(round(librosa.get_duration(y=y, sr=sr), 2))
-
-def analyze_energy(audio_path, segment_duration=2.0):
-    y, sr = librosa.load(audio_path, sr=None)
-    duration = librosa.get_duration(y=y, sr=sr)
-
-    energy_data = {}
-    for t in np.arange(0, duration, segment_duration):
-        start, end = int(t * sr), int((t + segment_duration) * sr)
-        segment = y[start:end]
-        energy = np.sum(segment ** 2)
-        energy_data[int(t)] = float(round(energy, 2))
-    return energy_data
-
 # def analyze_pause(audio_path):
 #     vad = webrtcvad.Vad(2)
 #     y, sr = librosa.load(audio_path, sr=16000)  # WebRTC VAD works best at 16kHz
 #     frame_length = int(0.03 * sr)  # 30ms frames
 #     frames = [y[i:i + frame_length] for i in range(0, len(y), frame_length)]
-#     pauses = sum(1 for frame in frames if not vad.is_speech(frame.tobytes(), sr))
+#
+#     print("aaa")
+#     pauses = 0
+#     for frame in frames:
+#         try:
+#             print("bbbb")
+#             if not vad.is_speech(frame.tobytes(), sr):
+#                 print("cccc")
+#                 pauses += 1
+#         except Exception as e:
+#             return {"result": {"error": f"Error while processing frame: {str(e)}"}}
+#
 #     return pauses
-
-def analyze_volume(audio_path):
-    return analyze_intensity(audio_path)
 
 # def analyze_rhythm(audio_path):
 #     y, sr = librosa.load(audio_path, sr=None)
@@ -148,16 +158,24 @@ def analyze_volume(audio_path):
 
 def ps_test(audio_path):
     return {
+        # Voice Quality & Stability
         "Pitch_data": analyze_pitch(audio_path),
-        "Intensity_data": analyze_intensity(audio_path),
-        "Formant_data": analyze_formants(audio_path),
         "Jitter_data": analyze_jitter(audio_path),
         "Shimmer_data": analyze_shimmer(audio_path),
         "HNR_data": analyze_hnr(audio_path),
-        "Duration_data": analyze_duration(audio_path),
+
+        # Speech Intensity & Energy
+        "Intensity_data": analyze_intensity(audio_path),
         "Energy_data": analyze_energy(audio_path),
-        # "Pause_data": analyze_pause(audio_path),
         "Volume_data": analyze_volume(audio_path),
+
+        # Speech Timing & Rhythm
+        "Duration_data": analyze_duration(audio_path),
+
+        # Advanced Prosodic & Fluency Analysis
+        "Formant_data": analyze_formants(audio_path),
+
+        # "Pause_data": analyze_pause(audio_path),
         # "Rhythm_data": analyze_rhythm(audio_path),
         # "Prosody_data": analyze_prosody(audio_path),
         # "Fluency_data": analyze_fluency(audio_path),
