@@ -20,5 +20,5 @@ def ps_test(audio_path):
     return {
         # "Voice Quality & Stability Data": analyze_speech_1(audio_path),
         # "Speech Intensity & Energy Data": analyze_speech_2(audio_path)
-        "text": transcribe_gcs(gcs_uri,True)
+        "text": transcribe_gcs(gcs_uri,True, "si")
     }
