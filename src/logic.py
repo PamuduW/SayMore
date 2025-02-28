@@ -17,8 +17,15 @@ def analysing_audio(file_name, test_type):
 
 def ps_test(audio_path):
     gcs_uri = f"gs://saymore-340e9.firebasestorage.app/{audio_path}"
+
+    transcribe = transcribe_gcs(gcs_uri, True, "en")
+    text = ""
+    for t in transcribe:
+        text += t["transcript"]
+
     return {
-        # "Voice Quality & Stability Data": analyze_speech_1(audio_path),
-        # "Speech Intensity & Energy Data": analyze_speech_2(audio_path)
-        "text": transcribe_gcs(gcs_uri,True, "si")
+        "transcription": transcribe,
+        "Voice Quality & Stability Data": analyze_speech_1(audio_path, text),
+        "Speech Intensity & Energy Data": analyze_speech_2(audio_path)
+
     }

@@ -121,10 +121,10 @@ def analyze_hnr(audio_path, segment_duration=2.0):
 
 
 # Analyze speaking speed
-def analyze_speaking_speed(audio_path):
+def analyze_speaking_speed(audio_path, text):
     y, sr = librosa.load(audio_path, sr=None)
     duration = librosa.get_duration(y=y, sr=sr)
-    transcript = "your transcript text here"  # Replace with actual transcript text#####################################################################
+    transcript = text
     words = len(re.findall(r'\b\w+\b', transcript))
     words_per_minute = words / (duration / 60)
     return round(words_per_minute, 2)
@@ -158,9 +158,9 @@ def generate_speaking_score(monotony_score, speaking_speed, clarity, jitter, shi
 
 
 # Main function to analyze speech
-def analyze_speech_1(audio_path):
+def analyze_speech_1(audio_path, text):
     pitch_data = analyze_pitch(audio_path)
-    speaking_speed = analyze_speaking_speed(audio_path)
+    speaking_speed = analyze_speaking_speed(audio_path, text)
     clarity = analyze_clarity(audio_path)
     jitter_data = analyze_jitter(audio_path)
     shimmer_data = analyze_shimmer(audio_path)
