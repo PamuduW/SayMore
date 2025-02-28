@@ -15,14 +15,7 @@ import auth from "@react-native-firebase/auth";
 import { useNavigation } from "@react-navigation/native";
 import { request, PERMISSIONS } from "react-native-permissions";
 
-/**
- * AudioRecorder component allows users to record, play, and upload audio files.
- * It handles permissions, recording, playback, and uploading to Firebase.
- *
- * @param {object} props - The component props.
- * @param {boolean} props.isPublicSpeaking - Boolean indicating if the test is for public speaking.
- */
-const AudioRecorder = ({ isPublicSpeaking }) => {
+const AudioRecorder = ({ isPublicSpeaking, language }) => {
   const [isRecording, setIsRecording] = useState(false);
   const [audioPath, setAudioPath] = useState<string | null>(null);
   const [sound, setSound] = useState<Sound | null>(null);
@@ -100,6 +93,7 @@ const AudioRecorder = ({ isPublicSpeaking }) => {
         filename,
         acc_id: currentUser.uid,
         type: isPublicSpeaking,
+        language,
       });
     } catch (error) {
       Alert.alert("Upload Failed", error.message);

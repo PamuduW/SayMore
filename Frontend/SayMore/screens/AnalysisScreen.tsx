@@ -2,16 +2,21 @@ import React, { useEffect, useState } from "react";
 import { View, Text, StyleSheet } from "react-native";
 
 const AnalysisScreen = ({ route }) => {
-  const { filename, acc_id, type } = route.params;
+  const { filename, acc_id, type, language } = route.params;
   const [responseData, setResponseData] = useState(null);
 
   useEffect(() => {
     const sendPostRequest = async () => {
       try {
-        const response = await fetch("https://saymore-ec85c1fe019f.herokuapp.com/test", {
+        const response = await fetch("https://saymore-monorepo-8d4fc9b224ef.herokuapp.com/test", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ file_name: filename, acc_id: acc_id, test_type: type }),
+          body: JSON.stringify({
+            file_name: filename,
+            acc_id: acc_id,
+            test_type: type,
+            lan_flag: language,
+          }),
         });
 
         if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
@@ -25,7 +30,7 @@ const AnalysisScreen = ({ route }) => {
     };
 
     sendPostRequest();
-  }, [filename, acc_id, type]);
+  }, [filename, acc_id, type, language]);
 
   return (
     <View style={styles.container}>
