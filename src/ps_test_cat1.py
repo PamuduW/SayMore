@@ -145,16 +145,23 @@ def analyze_clarity(audio_path):
 # Generate final public speaking score
 def generate_speaking_score(monotony_score, speaking_speed, clarity, jitter, shimmer, hnr):
     weights = {"monotony": 0.25, "speed": 0.25, "clarity": 0.25, "stability": 0.25}
-    stability_score = 100 - ((jitter * 100) + (shimmer * 100) - (hnr * 2))  # Normalize stability score
-    stability_score = max(0, min(100, round(stability_score, 2)))
 
+    # Fix stability score calculation
+    stability_score = 100 - ((jitter * 100) + (shimmer * 100) - (hnr * 2))
+    stability_score = max(0, min(100, round(stability_score, 2)))  # Clamp to 0-100
+
+    # Fix speaking speed scaling
+    speed_score = min(100, (speaking_speed / 150) * 100)  # Normalize to 100 max
+
+    # Fix final score summation logic
     final_score = (
             (monotony_score * weights["monotony"]) +
-            (speaking_speed * weights["speed"] / 200 * 100) if speaking_speed > 0 else 0 +
+            (speed_score * weights["speed"]) +
             (clarity * weights["clarity"]) +
             (stability_score * weights["stability"])
     )
-    return max(0, min(100, round(final_score, 2)))
+
+    return max(0, min(100, round(final_score, 2)))  # Clamp between 0-100
 
 
 # Main function to analyze speech

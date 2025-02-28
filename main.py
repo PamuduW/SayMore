@@ -18,6 +18,7 @@ class RequestBody(BaseModel):
     file_name: str
     acc_id: str
     test_type: bool
+    lan_flag: str
 
 
 @app.get("/")
@@ -32,6 +33,7 @@ async def test(request_body: RequestBody):
         acc_id = request_body.acc_id
         test_type = request_body.test_type
         test_tag = datetime.now().strftime("%Y%m%d%H%M%S")
+        lan_flag = request_body.lan_flag
 
         os.makedirs("recordings", exist_ok=True)
         os.makedirs("recordings/PS_Check", exist_ok=True)
@@ -41,7 +43,7 @@ async def test(request_body: RequestBody):
         blob = bucket.blob(file_name)
         blob.download_to_filename(file_name)
 
-        analysis_result = analysing_audio(file_name, test_type)
+        analysis_result = analysing_audio(file_name, test_type, lan_flag)
 
         doc_ref = db.collection("User_Accounts").document(acc_id)
         if test_type:
