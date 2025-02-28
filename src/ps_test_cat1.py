@@ -175,6 +175,7 @@ def analyze_speech_1(audio_path):
     )
 
     return {
+        "final_public_speaking_score": final_score,
         "monotony_score": pitch_data["monotony_score"],
         "feedback": pitch_data["feedback"],
         "speaking_speed": speaking_speed,
@@ -182,7 +183,6 @@ def analyze_speech_1(audio_path):
         "jitter": jitter_data,
         "shimmer": shimmer_data,
         "hnr": hnr_data,
-        "final_public_speaking_score": final_score,
         "pitch_analysis": pitch_data["pitch_analysis"]
     }
 ##########################################################################################################################
