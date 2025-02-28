@@ -3,16 +3,16 @@ import { View, Text, TouchableOpacity, Image, StyleSheet } from "react-native";
 import { NavigationProp } from "@react-navigation/native";
 
 /**
- * Array of screen titles.
+ * Array of screen titles with corresponding icons.
  */
 const NewScreens = [
-  "Activity",
-  "Lesson",
-  "Quizzes and Challenges",
-  "Progress",
-  "Points",
-  "Leaderboard",
-  "Speech Therapy",
+  { title: "Activity", icon: require("../assets/activity2.png") },
+  { title: "Lesson", icon: require("../assets/lesson.jpg") },
+  { title: "Quizzes and Challenges", icon: require("../assets/quiz.jpg") },
+  { title: "Progress", icon: require("../assets/progress.jpg") },
+  { title: "Points", icon: require("../assets/points.jpg")},
+  { title: "Leaderboard", icon: require("../assets/leaderboard.jpg")},
+  { title: "Speech Therapy", icon:require("../assets/speech.jpg")},
 ];
 
 interface MoreScreenProps {
@@ -29,7 +29,7 @@ interface MoreScreenProps {
 const MoreScreen: React.FC<MoreScreenProps> = ({ navigation }) => {
   /**
    * Handles the press event for the screen options.
-   * Navigates to the Lessons screen if the selected option is "Lesson".
+   * Navigates to the appropriate screen.
    *
    * @param {string} title - The selected screen title.
    */
@@ -42,10 +42,10 @@ const MoreScreen: React.FC<MoreScreenProps> = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <View style={styles.gridContainer}>
-        {NewScreens.map((title, index) => (
-          <TouchableOpacity key={index} style={styles.lessonButton} onPress={() => handlePress(title)}>
-            <Image source={require("../assets/videoicon.png")} style={styles.lessonIcon} />
-            <Text style={styles.lessonText}>{title}</Text>
+        {NewScreens.map((item, index) => (
+          <TouchableOpacity key={index} style={styles.lessonButton} onPress={() => handlePress(item.title)}>
+            {item.icon ? <Image source={item.icon} style={styles.lessonIcon} /> : null}
+            <Text style={styles.lessonText}>{item.title}</Text>
           </TouchableOpacity>
         ))}
       </View>
@@ -69,7 +69,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.2,
     shadowRadius: 3,
   },
-  lessonIcon: { width: 40, height: 40, marginBottom: 10 },
+  lessonIcon: { width: 50, height: 50, marginBottom: 10 },
   lessonText: { fontSize: 14, fontWeight: "bold", color: "#003366", textAlign: "center" },
 });
 
