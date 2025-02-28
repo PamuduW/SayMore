@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, ScrollView } from "react-native";
 
 const AnalysisScreen = ({ route }) => {
   const { filename, acc_id, type, language } = route.params;
@@ -33,15 +33,15 @@ const AnalysisScreen = ({ route }) => {
   }, [filename, acc_id, type, language]);
 
   return (
-    <View style={styles.container}>
+    <ScrollView contentContainerStyle={styles.container}>
       <Text>Analysis Screen</Text>
       {responseData && <Text style={styles.responseText}>{responseData}</Text>}
-    </View>
+    </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
-  container: { flex: 1, justifyContent: "center", alignItems: "center" },
+  container: { flexGrow: 1, justifyContent: "center", alignItems: "center", padding: 16 },
   responseText: { marginTop: 10, padding: 10 },
 });
 
