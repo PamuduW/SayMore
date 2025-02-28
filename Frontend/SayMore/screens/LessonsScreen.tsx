@@ -13,13 +13,15 @@ const lessons = [
   "Managing Stage Fright",
 ];
 
+interface LessonsScreenProps {}
+
 /**
  * LessonsScreen component.
  * Displays a list of lessons with educational videos, tips, and techniques.
  *
  * @returns {JSX.Element} The rendered LessonsScreen component.
  */
-const LessonsScreen = () => (
+const LessonsScreen: React.FC<LessonsScreenProps> = () => (
   <View style={styles.container}>
     <Text style={styles.headerText}>Hi, Aria</Text>
     <Text style={styles.subText}>
