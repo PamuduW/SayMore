@@ -1,7 +1,6 @@
 fastapi
 uvicorn
 firebase-admin
-
 librosa
 numpy
 torchvision
@@ -10,3 +9,4 @@ torchaudio
 webrtcvad
 pyworld
 praat-parselmouth
+google-cloud-speech
