@@ -32,9 +32,7 @@ const HomeStack = () => (
   </Stack.Navigator>
 );
 
-const getScreenOptions = ({ route }) => {
-  const theme = useTheme(); // Ensure this hook is called at the top level
-
+const screenOptions = (route, theme) => {
   const icons = {
     Home: HomeIcon,
     More: MoreInfoIcon,
@@ -59,13 +57,17 @@ const getScreenOptions = ({ route }) => {
   };
 };
 
-const TabNavigator = () => (
-  <Tab.Navigator screenOptions={getScreenOptions}>
-    <Tab.Screen name="Home" component={HomeStack} />
-    <Tab.Screen name="More" component={MoreStack} />
-    <Tab.Screen name="Account" component={AccountScreen} />
-  </Tab.Navigator>
-);
+const TabNavigator = () => {
+  const theme = useTheme();
+
+  return (
+    <Tab.Navigator screenOptions={({ route }) => screenOptions(route, theme)}>
+      <Tab.Screen name="Home" component={HomeStack} />
+      <Tab.Screen name="More" component={MoreStack} />
+      <Tab.Screen name="Account" component={AccountScreen} />
+    </Tab.Navigator>
+  );
+};
 
 const styles = StyleSheet.create({
   icon: {

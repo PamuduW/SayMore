@@ -19,8 +19,11 @@ const AudioScreen: React.FC<AudioScreenProps> = ({ route }) => {
 
   if (!language) {
     return (
-      <View style={theme === 'dark' ? styles.darkContainer : styles.lightContainer}>
-        <Text style={theme === 'dark' ? styles.darkText : styles.lightText}>Select a language:</Text>
+      <View
+        style={theme === 'dark' ? styles.darkContainer : styles.lightContainer}>
+        <Text style={theme === 'dark' ? styles.darkText : styles.lightText}>
+          Select a language:
+        </Text>
         <Button title="English" onPress={() => selectLanguage('en')} />
         <Button title="Sinhala" onPress={() => selectLanguage('si')} />
         <Button title="Tamil" onPress={() => selectLanguage('ta')} />
@@ -29,11 +32,18 @@ const AudioScreen: React.FC<AudioScreenProps> = ({ route }) => {
   }
 
   return (
-    <View style={theme === 'dark' ? styles.darkContainer : styles.lightContainer}>
-      <Text style={theme === 'dark' ? styles.darkHeaderText : styles.lightHeaderText}>
+    <View
+      style={theme === 'dark' ? styles.darkContainer : styles.lightContainer}>
+      <Text
+        style={
+          theme === 'dark' ? styles.darkHeaderText : styles.lightHeaderText
+        }>
         {isPublicSpeaking ? 'Public Speaking' : 'Stuttering'}
       </Text>
-      <Text style={theme === 'dark' ? styles.darkHeaderText : styles.lightHeaderText}>
+      <Text
+        style={
+          theme === 'dark' ? styles.darkHeaderText : styles.lightHeaderText
+        }>
         {language ? language : 'choose'}
       </Text>
       <AudioRecorder isPublicSpeaking={isPublicSpeaking} language={language} />

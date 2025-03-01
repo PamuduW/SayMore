@@ -15,7 +15,8 @@ const MainApp: React.FC = () => {
   const theme = useTheme();
 
   return (
-    <View style={theme === 'dark' ? styles.darkContainer : styles.lightContainer}>
+    <View
+      style={theme === 'dark' ? styles.darkContainer : styles.lightContainer}>
       <Landing />
     </View>
   );

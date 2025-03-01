@@ -6,9 +6,7 @@ const ThemeContext = createContext('light');
 export const ThemeProvider: React.FC = ({ children }) => {
   const theme = useColorScheme();
   return (
-    <ThemeContext.Provider value={theme}>
-      {children}
-    </ThemeContext.Provider>
+    <ThemeContext.Provider value={theme}>{children}</ThemeContext.Provider>
   );
 };
 

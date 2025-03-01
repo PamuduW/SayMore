@@ -46,7 +46,10 @@ export default function AccountScreen() {
     <View style={styles.container}>
       <View style={theme === 'dark' ? styles.darkSidebar : styles.lightSidebar}>
         <Image source={require('../assets/avatar.png')} style={styles.avatar} />
-        <Text style={theme === 'dark' ? styles.darkUsername : styles.lightUsername}>Aria Davis</Text>
+        <Text
+          style={theme === 'dark' ? styles.darkUsername : styles.lightUsername}>
+          Aria Davis
+        </Text>
         {[
           'Activity',
           'Quizzes and Challenges',
@@ -62,7 +65,11 @@ export default function AccountScreen() {
             }>
             <Text
               style={
-                item === 'Progress' ? styles.menuTextActive : (theme === 'dark' ? styles.darkMenuText : styles.lightMenuText)
+                item === 'Progress'
+                  ? styles.menuTextActive
+                  : theme === 'dark'
+                    ? styles.darkMenuText
+                    : styles.lightMenuText
               }>
               {item}
             </Text>

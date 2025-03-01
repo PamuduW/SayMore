@@ -44,9 +44,10 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
 
   return (
     <LinearGradient
-      colors={theme === 'dark' ? ['#1C1C1C', '#3A3A3A'] : ['#2A2D57', '#577BC1']}
-      style={styles.container}
-    >
+      colors={
+        theme === 'dark' ? ['#1C1C1C', '#3A3A3A'] : ['#2A2D57', '#577BC1']
+      }
+      style={styles.container}>
       <View style={styles.header}>
         <Image style={styles.icon} source={require('../assets/icon.png')} />
         <Text style={styles.greeting}>Welcome to Say More!</Text>
@@ -69,12 +70,14 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
               style={[
                 styles.optionButtonWrapper,
                 { borderColor: borderInterpolation },
-              ]}
-            >
+              ]}>
               <LinearGradient
-                colors={theme === 'dark' ? ['#1C1C1C', '#3A3A3A'] : ['#3B5998', '#577BC1']}
-                style={styles.optionButton}
-              >
+                colors={
+                  theme === 'dark'
+                    ? ['#1C1C1C', '#3A3A3A']
+                    : ['#3B5998', '#577BC1']
+                }
+                style={styles.optionButton}>
                 <TouchableOpacity onPress={() => handlePress(option)}>
                   <Text style={styles.optionText}>{option}</Text>
                 </TouchableOpacity>
