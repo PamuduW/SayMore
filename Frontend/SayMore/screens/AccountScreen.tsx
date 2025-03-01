@@ -9,16 +9,11 @@ import {
 } from 'react-native';
 import auth from '@react-native-firebase/auth';
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
+import { useTheme } from '../components/ThemeContext';
 
-/**
- * AccountScreen component.
- * Displays user account information and provides sign-out functionality.
- */
 export default function AccountScreen() {
-  /**
-   * Handles the sign-out process.
-   * Signs out from Google and Firebase authentication.
-   */
+  const theme = useTheme();
+
   const handleSignOut = async () => {
     try {
       await GoogleSignin.signOut();
@@ -35,10 +30,6 @@ export default function AccountScreen() {
     }
   };
 
-  /**
-   * Confirms the sign-out action with the user.
-   * Displays an alert dialog to confirm the sign-out.
-   */
   const confirmSignOut = () => {
     Alert.alert(
       'Sign Out',
@@ -53,9 +44,9 @@ export default function AccountScreen() {
 
   return (
     <View style={styles.container}>
-      <View style={styles.sidebar}>
+      <View style={theme === 'dark' ? styles.darkSidebar : styles.lightSidebar}>
         <Image source={require('../assets/avatar.png')} style={styles.avatar} />
-        <Text style={styles.username}>Aria Davis</Text>
+        <Text style={theme === 'dark' ? styles.darkUsername : styles.lightUsername}>Aria Davis</Text>
         {[
           'Activity',
           'Quizzes and Challenges',
@@ -71,7 +62,7 @@ export default function AccountScreen() {
             }>
             <Text
               style={
-                item === 'Progress' ? styles.menuTextActive : styles.menuText
+                item === 'Progress' ? styles.menuTextActive : (theme === 'dark' ? styles.darkMenuText : styles.lightMenuText)
               }>
               {item}
             </Text>
@@ -86,23 +77,38 @@ export default function AccountScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, flexDirection: 'row' },
-  sidebar: {
+  darkContainer: { flex: 1, backgroundColor: '#000000', padding: 20 },
+  lightContainer: { flex: 1, backgroundColor: '#FFFFFF', padding: 20 },
+  lightSidebar: {
     width: '75%',
     height: '100%',
     backgroundColor: '#BDE0FE',
     padding: 20,
     alignItems: 'flex-start',
   },
+  darkSidebar: {
+    width: '75%',
+    height: '100%',
+    backgroundColor: '#333333',
+    padding: 20,
+    alignItems: 'flex-start',
+  },
   avatar: { width: 60, height: 60, borderRadius: 30, marginBottom: 10 },
-  username: {
+  lightUsername: {
     fontSize: 20,
     fontWeight: 'bold',
     color: '#003366',
     marginBottom: 20,
   },
+  darkUsername: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#FFFFFF',
+    marginBottom: 20,
+  },
   menuItem: { paddingVertical: 10 },
-  menuText: { fontSize: 16, color: '#003366' },
+  lightMenuText: { fontSize: 16, color: '#003366' },
+  darkMenuText: { fontSize: 16, color: '#FFFFFF' },
   menuItemActive: {
     paddingVertical: 10,
     backgroundColor: '#0080FF',
