@@ -39,8 +39,8 @@ const PersonalDetailsScreen = () => {
             dob: dob.toISOString(), // Save as Firestore-compatible string
             profileComplete: true,
             results: {
-              PS_Check: firestore.FieldValue.arrayUnion(), // Ensures it's an empty array if not present
-              Stuttering_Check: firestore.FieldValue.arrayUnion(),
+              PS_Check: firestore.FieldValue.arrayUnion(''), // Ensures it's an empty array if not present
+              Stuttering_Check: firestore.FieldValue.arrayUnion(''),
             },
           },
           { merge: true } // Prevents overwriting existing data
@@ -62,18 +62,21 @@ const PersonalDetailsScreen = () => {
     <View style={styles.container}>
       <Text style={styles.title}>Complete Your Profile</Text>
       <TextInput
+        key="fname"
         style={styles.input}
         placeholder="First Name"
         value={fname}
         onChangeText={setFname}
       />
       <TextInput
+        key="sname"
         style={styles.input}
         placeholder="Surname"
         value={sname}
         onChangeText={setSname}
       />
       <TextInput
+        key="username"
         style={styles.input}
         placeholder="Username"
         value={username}

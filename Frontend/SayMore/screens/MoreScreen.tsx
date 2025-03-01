@@ -59,7 +59,7 @@ const MoreScreen: React.FC<MoreScreenProps> = ({ navigation }) => {
 };
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#F0F8FF', padding: 20 },
+  container: { flex: 1, backgroundColor: '#000000', padding: 20 },
   gridContainer: {
     flexDirection: 'row',
     flexWrap: 'wrap',
