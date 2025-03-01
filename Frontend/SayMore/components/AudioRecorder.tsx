@@ -7,19 +7,27 @@ import {
   Platform,
   Alert,
   StyleSheet,
+  Image,
+  ImageBackground,
 } from "react-native";
 import AudioRecord from "react-native-audio-record";
 import Sound from "react-native-sound";
 import storage from "@react-native-firebase/storage";
 import auth from "@react-native-firebase/auth";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, NavigationProp } from "@react-navigation/native";
 import { request, PERMISSIONS } from "react-native-permissions";
 
-const AudioRecorder = ({ isPublicSpeaking, language }) => {
-  const [isRecording, setIsRecording] = useState(false);
+interface AudioRecorderProps {
+  isPublicSpeaking: boolean;
+  language: string;
+}
+
+const AudioRecorder: React.FC<AudioRecorderProps> = ({ isPublicSpeaking, language }) => {
+  const [isRecording, setIsRecording] = useState<boolean>(false);
   const [audioPath, setAudioPath] = useState<string | null>(null);
   const [sound, setSound] = useState<Sound | null>(null);
-  const navigation = useNavigation();
+  const [uploadMessage, setUploadMessage] = useState<string | null>(null);
+  const navigation = useNavigation<NavigationProp<any>>();
 
   useEffect(() => {
     requestPermissions();
@@ -43,6 +51,7 @@ const AudioRecorder = ({ isPublicSpeaking, language }) => {
 
   const startRecording = () => {
     setIsRecording(true);
+    setUploadMessage(null);
     AudioRecord.start();
   };
 
@@ -85,10 +94,11 @@ const AudioRecorder = ({ isPublicSpeaking, language }) => {
     }
     const folder = isPublicSpeaking ? "PS_Check" : "Stuttering_Check";
     const date = new Date().toISOString().replace(/[-:.]/g, "").slice(0, 15);
-    const filename = `recordings/${folder}/${currentUser.uid}+${date}.wav`;
+    const filename = `recordings/${folder}/${currentUser.uid}_${date}.wav`;
     const reference = storage().ref(filename);
     try {
       await reference.putFile(audioPath, { contentType: "audio/wav" });
+      setUploadMessage("✅ Audio successfully uploaded!");
       navigation.navigate("AnalysisScreen", {
         filename,
         acc_id: currentUser.uid,
@@ -101,58 +111,118 @@ const AudioRecorder = ({ isPublicSpeaking, language }) => {
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Audio Recorder</Text>
-      <TouchableOpacity
-        onPress={isRecording ? stopRecording : startRecording}
-        style={[styles.button, isRecording ? styles.recording : styles.notRecording]}>
-        <Text style={styles.buttonText}>{isRecording ? "Stop Recording" : "Start Recording"}</Text>
-      </TouchableOpacity>
-      <TouchableOpacity
-        onPress={sound ? stopAudio : playAudio}
-        style={[styles.button, sound ? styles.playing : styles.notPlaying]}>
-        <Text style={styles.buttonText}>{sound ? "Stop Playback" : "Play Audio"}</Text>
-      </TouchableOpacity>
-      <TouchableOpacity onPress={uploadAudio} style={[styles.button, styles.upload]}>
-        <Text style={styles.buttonText}>Upload to Firebase</Text>
-      </TouchableOpacity>
-    </View>
+    <ImageBackground
+      source={require("../assets/recordScreen.jpg")}
+      style={styles.background}
+      resizeMode="cover"
+    >
+      <View style={styles.container}>
+        <Text style={styles.title}>Audio Recorder</Text>
+
+        {/* Recording button */}
+        <TouchableOpacity
+          onPress={isRecording ? stopRecording : startRecording}
+          style={[
+            styles.recordingButton,
+            isRecording ? styles.recording : styles.notRecording,
+          ]}
+        >
+          <Image
+            source={require("../assets/mic.png")}
+            style={styles.recordingIcon}
+          />
+        </TouchableOpacity>
+
+        <Text style={styles.description}>Tap the microphone to start recording, and tap again to stop</Text>
+
+        <TouchableOpacity
+          onPress={sound ? stopAudio : playAudio}
+          style={[styles.button, sound ? styles.playing : styles.notPlaying]}
+        >
+          <Text style={styles.buttonText}>{sound ? "Stop Playback" : "Play Audio"}</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity onPress={uploadAudio} style={[styles.button, styles.upload]}>
+          <Text style={styles.buttonText}>Upload to Firebase</Text>
+        </TouchableOpacity>
+
+        {uploadMessage && <Text style={styles.successMessage}>{uploadMessage}</Text>}
+      </View>
+    </ImageBackground>
   );
 };
 
 const styles = StyleSheet.create({
+  background: {
+    flex: 1,
+    width: "100%",
+    height: "100%",
+  },
   container: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
+    padding: 20,
   },
   title: {
-    fontSize: 20,
-    marginBottom: 10,
+    fontSize: 24,
+    fontWeight: "bold",
+    marginBottom: 20,
+    color: "#fff",
+  },
+  description: {
+    fontSize: 18,
+    color: "#000",
+    textAlign: "center",
+    fontWeight: "bold",
+    marginBottom: 20,
   },
   button: {
-    padding: 10,
-    margin: 10,
-    borderRadius: 5,
+    paddingVertical: 15,
+    paddingHorizontal: 30,
+    margin: 12,
+    borderRadius: 10,
+    alignItems: "center",
+    width: "80%",
+    justifyContent: "center",
   },
   buttonText: {
-    color: "white",
-    textAlign: "center",
+    color: "#fff",
+    fontSize: 16,
+    fontWeight: "600",
+  },
+  recordingButton: {
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  recordingIcon: {
+    width: 80,
+    height: 80,
+    resizeMode: "contain",
   },
   recording: {
-    backgroundColor: "red",
+    backgroundColor: "#f44336",
   },
   notRecording: {
-    backgroundColor: "green",
+    backgroundColor: "#2196F3",
   },
   playing: {
-    backgroundColor: "orange",
+    backgroundColor: "#A0C878",
   },
   notPlaying: {
-    backgroundColor: "blue",
+    backgroundColor: "#27667B",
   },
   upload: {
-    backgroundColor: "purple",
+    backgroundColor: "#DF6D14",
+  },
+  successMessage: {
+    marginTop: 15,
+    fontSize: 16,
+    color: "green",
+    fontWeight: "bold",
   },
 });
 
