@@ -1,5 +1,5 @@
-import React from "react";
-import Landing from "./components/LandingPage";
+import React from 'react';
+import Landing from './components/LandingPage';
 
 /**
  * App component.

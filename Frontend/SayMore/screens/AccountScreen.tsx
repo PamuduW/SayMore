@@ -1,7 +1,14 @@
-import React from "react";
-import { View, Text, TouchableOpacity, StyleSheet, Image, Alert } from "react-native";
-import auth from "@react-native-firebase/auth";
-import { GoogleSignin } from "@react-native-google-signin/google-signin";
+import React from 'react';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+  Image,
+  Alert,
+} from 'react-native';
+import auth from '@react-native-firebase/auth';
+import { GoogleSignin } from '@react-native-google-signin/google-signin';
 
 /**
  * AccountScreen component.
@@ -16,12 +23,15 @@ export default function AccountScreen() {
     try {
       await GoogleSignin.signOut();
     } catch (googleError) {
-      console.log("Google sign out error:", googleError);
+      console.log('Google sign out error:', googleError);
     }
     try {
       await auth().signOut();
     } catch (error) {
-      Alert.alert("Error", "An error occurred while signing out. Please try again.");
+      Alert.alert(
+        'Error',
+        'An error occurred while signing out. Please try again.'
+      );
     }
   };
 
@@ -31,33 +41,40 @@ export default function AccountScreen() {
    */
   const confirmSignOut = () => {
     Alert.alert(
-      "Sign Out",
-      "Are you sure you want to sign out?",
+      'Sign Out',
+      'Are you sure you want to sign out?',
       [
-        { text: "Cancel", style: "cancel" },
-        { text: "Sign Out", onPress: handleSignOut, style: "destructive" },
+        { text: 'Cancel', style: 'cancel' },
+        { text: 'Sign Out', onPress: handleSignOut, style: 'destructive' },
       ],
-      { cancelable: true },
+      { cancelable: true }
     );
   };
 
   return (
     <View style={styles.container}>
       <View style={styles.sidebar}>
-        <Image source={require("../assets/avatar.png")} style={styles.avatar} />
+        <Image source={require('../assets/avatar.png')} style={styles.avatar} />
         <Text style={styles.username}>Aria Davis</Text>
         {[
-          "Activity",
-          "Quizzes and Challenges",
-          "Progress",
-          "Points",
-          "Leaderboard",
-          "Speech Therapy",
+          'Activity',
+          'Quizzes and Challenges',
+          'Progress',
+          'Points',
+          'Leaderboard',
+          'Speech Therapy',
         ].map((item, index) => (
           <TouchableOpacity
             key={index}
-            style={item === "Progress" ? styles.menuItemActive : styles.menuItem}>
-            <Text style={item === "Progress" ? styles.menuTextActive : styles.menuText}>{item}</Text>
+            style={
+              item === 'Progress' ? styles.menuItemActive : styles.menuItem
+            }>
+            <Text
+              style={
+                item === 'Progress' ? styles.menuTextActive : styles.menuText
+              }>
+              {item}
+            </Text>
           </TouchableOpacity>
         ))}
         <TouchableOpacity style={styles.logoutButton} onPress={confirmSignOut}>
@@ -69,30 +86,30 @@ export default function AccountScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, flexDirection: "row" },
+  container: { flex: 1, flexDirection: 'row' },
   sidebar: {
-    width: "75%",
-    height: "100%",
-    backgroundColor: "#BDE0FE",
+    width: '75%',
+    height: '100%',
+    backgroundColor: '#BDE0FE',
     padding: 20,
-    alignItems: "flex-start",
+    alignItems: 'flex-start',
   },
   avatar: { width: 60, height: 60, borderRadius: 30, marginBottom: 10 },
   username: {
     fontSize: 20,
-    fontWeight: "bold",
-    color: "#003366",
+    fontWeight: 'bold',
+    color: '#003366',
     marginBottom: 20,
   },
   menuItem: { paddingVertical: 10 },
-  menuText: { fontSize: 16, color: "#003366" },
+  menuText: { fontSize: 16, color: '#003366' },
   menuItemActive: {
     paddingVertical: 10,
-    backgroundColor: "#0080FF",
+    backgroundColor: '#0080FF',
     borderRadius: 10,
     paddingHorizontal: 10,
   },
-  menuTextActive: { fontSize: 16, color: "#FFFFFF" },
+  menuTextActive: { fontSize: 16, color: '#FFFFFF' },
   logoutButton: { marginTop: 20 },
-  logoutText: { fontSize: 16, color: "#FF0000" },
+  logoutText: { fontSize: 16, color: '#FF0000' },
 });

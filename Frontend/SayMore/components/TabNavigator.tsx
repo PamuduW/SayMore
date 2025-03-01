@@ -1,17 +1,17 @@
-import React from "react";
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { Image, StyleSheet } from "react-native";
+import React from 'react';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { Image, StyleSheet } from 'react-native';
 
-import HomeScreen from "../screens/HomeScreen";
-import MoreScreen from "../screens/MoreScreen";
-import LessonsScreen from "../screens/LessonsScreen";
-import AccountScreen from "../screens/AccountScreen";
-import AudioScreen from "../screens/AudioScreen";
-import AnalysisScreen from "../screens/AnalysisScreen";
+import HomeScreen from '../screens/HomeScreen';
+import MoreScreen from '../screens/MoreScreen';
+import LessonsScreen from '../screens/LessonsScreen';
+import AccountScreen from '../screens/AccountScreen';
+import AudioScreen from '../screens/AudioScreen';
+import AnalysisScreen from '../screens/AnalysisScreen';
 
-import HomeIcon from "../assets/home.png";
-import MoreInfoIcon from "../assets/more-info.png";
+import HomeIcon from '../assets/home.png';
+import MoreInfoIcon from '../assets/more-info.png';
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -45,10 +45,10 @@ const getScreenOptions = ({ route }) => ({
       />
     );
   },
-  tabBarActiveTintColor: "#003366",
-  tabBarInactiveTintColor: "gray",
+  tabBarActiveTintColor: '#003366',
+  tabBarInactiveTintColor: 'gray',
   tabBarStyle: {
-    backgroundColor: "#F0F8FF",
+    backgroundColor: '#F0F8FF',
     borderTopWidth: 0,
     elevation: 0,
   },
@@ -69,10 +69,10 @@ const styles = StyleSheet.create({
     height: 25,
   },
   activeIcon: {
-    tintColor: "#003366",
+    tintColor: '#003366',
   },
   inactiveIcon: {
-    tintColor: "gray",
+    tintColor: 'gray',
   },
 });
 

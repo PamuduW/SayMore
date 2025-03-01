@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { View, StyleSheet, Animated } from "react-native";
+import React, { useEffect, useState } from 'react';
+import { View, StyleSheet, Animated } from 'react-native';
 
 /**
  * WelcomeScreen component.
@@ -23,7 +23,7 @@ const WelcomeScreen = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <Animated.Image
-        source={require("../assets/applogo.jpg")}
+        source={require('../assets/applogo.jpg')}
         style={[styles.logo, { opacity: fadeAnim }]}
       />
     </View>
@@ -33,9 +33,9 @@ const WelcomeScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#FFFFFF",
-    justifyContent: "center",
-    alignItems: "center",
+    backgroundColor: '#FFFFFF',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   logo: {
     width: 200,
