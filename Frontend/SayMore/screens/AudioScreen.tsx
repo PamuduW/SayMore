@@ -15,7 +15,7 @@ const AudioScreen: React.FC<AudioScreenProps> = ({ route }) => {
     setLanguage(lang);
   };
 
-  if (isPublicSpeaking && !language) {
+  if (!language) {
     return (
       <View style={styles.container}>
         <Text>Select a language:</Text>
@@ -29,6 +29,7 @@ const AudioScreen: React.FC<AudioScreenProps> = ({ route }) => {
   return (
     <View style={styles.container}>
       <Text style={styles.headerText}>{isPublicSpeaking ? "Public Speaking" : "Stuttering"}</Text>
+      <Text style={styles.headerText}>{language ? language : "choose"}</Text>
       <AudioRecorder isPublicSpeaking={isPublicSpeaking} language={language} />
     </View>
   );
