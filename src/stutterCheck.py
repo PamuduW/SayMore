@@ -1,7 +1,7 @@
 import librosa
 import numpy as np
-import torch
 from safetensors.torch import load_file
+import torch
 
 # Load the model
 MODEL_PATH = r"D:\Downloads\model.safetensors"
