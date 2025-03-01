@@ -19,9 +19,10 @@ import { request, PERMISSIONS } from "react-native-permissions";
 
 interface AudioRecorderProps {
   isPublicSpeaking: boolean;
+  language: string;
 }
 
-const AudioRecorder: React.FC<AudioRecorderProps> = ({ isPublicSpeaking }) => {
+const AudioRecorder: React.FC<AudioRecorderProps> = ({ isPublicSpeaking, language }) => {
   const [isRecording, setIsRecording] = useState<boolean>(false);
   const [audioPath, setAudioPath] = useState<string | null>(null);
   const [sound, setSound] = useState<Sound | null>(null);
@@ -102,6 +103,7 @@ const AudioRecorder: React.FC<AudioRecorderProps> = ({ isPublicSpeaking }) => {
         filename,
         acc_id: currentUser.uid,
         type: isPublicSpeaking,
+        language,
       });
     } catch (error) {
       Alert.alert("Upload Failed", error.message);
