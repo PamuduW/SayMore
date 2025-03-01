@@ -77,8 +77,7 @@ export default function AccountScreen() {
 }
 
 const styles = StyleSheet.create({
-  darkContainer: { flex: 1, backgroundColor: '#000000', padding: 20 },
-  lightContainer: { flex: 1, backgroundColor: '#FFFFFF', padding: 20 },
+  container: { flex: 1, flexDirection: 'row' },
   lightSidebar: {
     width: '75%',
     height: '100%',

@@ -10,22 +10,16 @@ import {
 import { useNotifications } from '../components/Notifications';
 import { NavigationProp } from '@react-navigation/native';
 import LinearGradient from 'react-native-linear-gradient';
+import { useTheme } from '../components/ThemeContext';
 
-/**
- * HomeScreen component.
- * Displays a welcome message and options for starting tests.
- *
- * @param {Object} navigation - The navigation object used to navigate between screens.
- * @returns {JSX.Element} The rendered HomeScreen component.
- */
 interface HomeScreenProps {
   navigation: NavigationProp<any>;
 }
 
 const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
   useNotifications();
+  const theme = useTheme();
 
-  // Animated border effect
   const borderAnimation = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
@@ -40,23 +34,19 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
 
   const borderInterpolation = borderAnimation.interpolate({
     inputRange: [0, 1],
-    outputRange: ['#2D336B', '#7886C7'], // Gradient transition colors
+    outputRange: ['#2D336B', '#7886C7'],
   });
 
-  /**
-   * Handles the press event for the test options.
-   * Navigates to the Audio screen if the selected option is "Public Speaking" or "Stuttering".
-   *
-   * @param {string} option - The selected test option.
-   */
   const handlePress = (option: string) => {
     const isPublicSpeaking = option === 'Public Speaking';
     navigation.navigate('Audio', { isPublicSpeaking });
   };
 
   return (
-    <LinearGradient colors={['#2A2D57', '#577BC1']} style={styles.container}>
-      {/* Header Section */}
+    <LinearGradient
+      colors={theme === 'dark' ? ['#1C1C1C', '#3A3A3A'] : ['#2A2D57', '#577BC1']}
+      style={styles.container}
+    >
       <View style={styles.header}>
         <Image style={styles.icon} source={require('../assets/icon.png')} />
         <Text style={styles.greeting}>Welcome to Say More!</Text>
@@ -65,7 +55,6 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
         </Text>
       </View>
 
-      {/* Test Section */}
       <View style={styles.testContainer}>
         <Text style={styles.testHeading}>Start Your Test</Text>
         <Image
@@ -80,10 +69,12 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
               style={[
                 styles.optionButtonWrapper,
                 { borderColor: borderInterpolation },
-              ]}>
+              ]}
+            >
               <LinearGradient
-                colors={['#3B5998', '#577BC1']}
-                style={styles.optionButton}>
+                colors={theme === 'dark' ? ['#1C1C1C', '#3A3A3A'] : ['#3B5998', '#577BC1']}
+                style={styles.optionButton}
+              >
                 <TouchableOpacity onPress={() => handlePress(option)}>
                   <Text style={styles.optionText}>{option}</Text>
                 </TouchableOpacity>

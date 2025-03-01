@@ -2,6 +2,7 @@ import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { Image, StyleSheet } from 'react-native';
+import { useTheme } from '../components/ThemeContext';
 
 import HomeScreen from '../screens/HomeScreen';
 import MoreScreen from '../screens/MoreScreen';
@@ -31,29 +32,32 @@ const HomeStack = () => (
   </Stack.Navigator>
 );
 
-const getScreenOptions = ({ route }) => ({
-  tabBarIcon: ({ focused }) => {
-    const icons = {
-      Home: HomeIcon,
-      More: MoreInfoIcon,
-      Account: MoreInfoIcon,
-    };
-    return (
+const getScreenOptions = ({ route }) => {
+  const theme = useTheme(); // Ensure this hook is called at the top level
+
+  const icons = {
+    Home: HomeIcon,
+    More: MoreInfoIcon,
+    Account: MoreInfoIcon,
+  };
+
+  return {
+    tabBarIcon: ({ focused }) => (
       <Image
         source={icons[route.name]}
         style={[styles.icon, focused ? styles.activeIcon : styles.inactiveIcon]}
       />
-    );
-  },
-  tabBarActiveTintColor: '#003366',
-  tabBarInactiveTintColor: 'gray',
-  tabBarStyle: {
-    backgroundColor: '#F0F8FF',
-    borderTopWidth: 0,
-    elevation: 0,
-  },
-  headerShown: false,
-});
+    ),
+    tabBarActiveTintColor: '#003366',
+    tabBarInactiveTintColor: 'gray',
+    tabBarStyle: {
+      backgroundColor: theme === 'dark' ? '#333333' : '#F0F8FF',
+      borderTopWidth: 0,
+      elevation: 0,
+    },
+    headerShown: false,
+  };
+};
 
 const TabNavigator = () => (
   <Tab.Navigator screenOptions={getScreenOptions}>
