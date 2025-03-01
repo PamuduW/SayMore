@@ -7,12 +7,12 @@ import { NavigationProp } from "@react-navigation/native";
  */
 const NewScreens = [
   { title: "Activity", icon: require("../assets/activity2.png") },
-  { title: "Lesson", icon: require("../assets/lesson.jpg") },
-  { title: "Quizzes and Challenges", icon: require("../assets/quiz.jpg") },
-  { title: "Progress", icon: require("../assets/progress.jpg") },
-  { title: "Points", icon: require("../assets/points.jpg")},
-  { title: "Leaderboard", icon: require("../assets/leaderboard.jpg")},
-  { title: "Speech Therapy", icon:require("../assets/speech.jpg")},
+  { title: "Lesson", icon: require("../assets/lesson.png") },
+  { title: "Quizzes and Challenges", icon: require("../assets/quiz.png") },
+  { title: "Progress", icon: require("../assets/progress.png") },
+  { title: "Points", icon: require("../assets/points.png")},
+  { title: "Leaderboard", icon: require("../assets/leaderboard.png")},
+  { title: "Speech Therapy", icon:require("../assets/speech.png")},
 ];
 
 interface MoreScreenProps {
