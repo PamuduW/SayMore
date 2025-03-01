@@ -1,17 +1,22 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, ScrollView } from "react-native";
 
 const AnalysisScreen = ({ route }) => {
-  const { filename, acc_id, type } = route.params;
+  const { filename, acc_id, type, language } = route.params;
   const [responseData, setResponseData] = useState(null);
 
   useEffect(() => {
     const sendPostRequest = async () => {
       try {
-        const response = await fetch("https://saymore-ec85c1fe019f.herokuapp.com/test", {
+        const response = await fetch("https://saymore-monorepo-8d4fc9b224ef.herokuapp.com/test", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ file_name: filename, acc_id: acc_id, test_type: type }),
+          body: JSON.stringify({
+            file_name: filename,
+            acc_id: acc_id,
+            test_type: type,
+            lan_flag: language,
+          }),
         });
 
         if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
@@ -25,18 +30,18 @@ const AnalysisScreen = ({ route }) => {
     };
 
     sendPostRequest();
-  }, [filename, acc_id, type]);
+  }, [filename, acc_id, type, language]);
 
   return (
-    <View style={styles.container}>
+    <ScrollView contentContainerStyle={styles.container}>
       <Text>Analysis Screen</Text>
       {responseData && <Text style={styles.responseText}>{responseData}</Text>}
-    </View>
+    </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
-  container: { flex: 1, justifyContent: "center", alignItems: "center" },
+  container: { flexGrow: 1, justifyContent: "center", alignItems: "center", padding: 16 },
   responseText: { marginTop: 10, padding: 10 },
 });
 
