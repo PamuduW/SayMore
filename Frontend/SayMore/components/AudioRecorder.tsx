@@ -14,6 +14,7 @@ import AudioRecord from "react-native-audio-record";
 import Sound from "react-native-sound";
 import storage from "@react-native-firebase/storage";
 import auth from "@react-native-firebase/auth";
+import RNFS from "react-native-fs";
 import { useNavigation, NavigationProp } from "@react-navigation/native";
 import { request, PERMISSIONS } from "react-native-permissions";
 
@@ -31,22 +32,29 @@ const AudioRecorder: React.FC<AudioRecorderProps> = ({ isPublicSpeaking, languag
 
   useEffect(() => {
     requestPermissions();
-    AudioRecord.init({
-      sampleRate: 44100,
-      channels: 1,
-      bitsPerSample: 16,
-      audioSource: 6,
-      wavFile: "recordedAudio.wav",
-    });
+    initRecorder();
   }, []);
 
   const requestPermissions = async () => {
     if (Platform.OS === "android") {
-      await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.RECORD_AUDIO);
-      await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE);
+      await PermissionsAndroid.requestMultiple([
+        PermissionsAndroid.PERMISSIONS.RECORD_AUDIO,
+        PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
+        PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
+      ]);
     } else {
       await request(PERMISSIONS.IOS.MICROPHONE);
     }
+  };
+
+  const initRecorder = () => {
+    AudioRecord.init({
+      sampleRate: 16000, // 16kHz
+      channels: 1, // Mono
+      bitsPerSample: 16, // 16-bit PCM
+      audioSource: 6, // Default audio source
+      wavFile: "recordedAudio.wav", // Output file
+    });
   };
 
   const startRecording = () => {
@@ -57,7 +65,17 @@ const AudioRecorder: React.FC<AudioRecorderProps> = ({ isPublicSpeaking, languag
 
   const stopRecording = async () => {
     setIsRecording(false);
-    setAudioPath(await AudioRecord.stop());
+    const rawAudioPath = await AudioRecord.stop();
+
+    // Ensure correct WAV format
+    const wavFilePath = `${RNFS.DocumentDirectoryPath}/recordedAudio.wav`;
+    try {
+      await RNFS.moveFile(rawAudioPath, wavFilePath);
+      console.log("Recording saved to:", wavFilePath);
+      setAudioPath(wavFilePath);
+    } catch (error) {
+      console.error("Error saving WAV file:", error);
+    }
   };
 
   const playAudio = () => {
@@ -94,8 +112,9 @@ const AudioRecorder: React.FC<AudioRecorderProps> = ({ isPublicSpeaking, languag
     }
     const folder = isPublicSpeaking ? "PS_Check" : "Stuttering_Check";
     const date = new Date().toISOString().replace(/[-:.]/g, "").slice(0, 15);
-    const filename = `recordings/${folder}/${currentUser.uid}_${date}.wav`;
+    const filename = `recordings/${folder}/${currentUser.uid}+${date}.wav`;
     const reference = storage().ref(filename);
+
     try {
       await reference.putFile(audioPath, { contentType: "audio/wav" });
       setUploadMessage("✅ Audio successfully uploaded!");
