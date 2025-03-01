@@ -17,7 +17,9 @@ def analyze_intensity(audio_path, segment_duration=2.0):
 
         if segment_rms.size > 0:
             segment_intensity = np.mean(segment_rms)
-            intensity_data[float(round(t, 2))] = float(round(segment_intensity * 200, 4))  # Normalize (0-100)
+            intensity_data[float(round(t, 2))] = float(
+                round(segment_intensity * 200, 4)
+            )  # Normalize (0-100)
         else:
             intensity_data[float(round(t, 2))] = 0.0  # Handle empty segment case
 
@@ -30,13 +32,19 @@ def analyze_energy(audio_path, segment_duration=2.0):
 
     energy_data = {}
     for t in np.arange(0, duration, segment_duration):
-        start, end = int(t * sr), min(int((t + segment_duration) * sr), len(y))  # Avoid OOB index
+        start, end = int(t * sr), min(
+            int((t + segment_duration) * sr), len(y)
+        )  # Avoid OOB index
         segment = y[start:end]
 
         if segment.size > 0:
-            energy = np.sum(segment ** 2)
-            log_energy = max(np.log10(energy + 1e-8) * 10, 0)  # Convert to dB-like scale
-            energy_data[float(round(t, 2))] = float(round(log_energy * 10, 2))  # Normalize (0-100)
+            energy = np.sum(segment**2)
+            log_energy = max(
+                np.log10(energy + 1e-8) * 10, 0
+            )  # Convert to dB-like scale
+            energy_data[float(round(t, 2))] = float(
+                round(log_energy * 10, 2)
+            )  # Normalize (0-100)
         else:
             energy_data[float(round(t, 2))] = 0.0  # Handle empty segment case
 
@@ -69,7 +77,9 @@ def analyze_speech_2(audio_path, segment_duration=2.0):
     intensity_score = float(round(np.clip(scaled_intensity, 5, 100), 2))
 
     max_variation = 50  # Keep this as the reference max
-    normalized_variation = np.log1p((intensity_variation + energy_variation) / max_variation) * 100
+    normalized_variation = (
+        np.log1p((intensity_variation + energy_variation) / max_variation) * 100
+    )
     variation_score = float(round(np.clip(normalized_variation, 5, 100), 2))
 
     if variation_score > 50:
@@ -85,7 +95,8 @@ def analyze_speech_2(audio_path, segment_duration=2.0):
         "variation_score": variation_score,
         "feedback": feedback,
         "intensity_analysis": intensity_data,
-        "energy_analysis": energy_data
+        "energy_analysis": energy_data,
     }
+
 
 ##########################################################################################################################

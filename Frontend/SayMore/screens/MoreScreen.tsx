@@ -1,10 +1,8 @@
-import React from "react";
-import { View, Text, TouchableOpacity, Image, StyleSheet } from "react-native";
-import { NavigationProp } from "@react-navigation/native";
+import React from 'react';
+import { View, Text, TouchableOpacity, Image, StyleSheet } from 'react-native';
+import { NavigationProp } from '@react-navigation/native';
+import { useTheme } from '../components/ThemeContext';
 
-/**
- * Array of screen titles with corresponding icons.
- */
 const NewScreens = [
   { title: "Activity", icon: require("../assets/activity2.png") },
   { title: "Lesson", icon: require("../assets/lesson.png") },
@@ -19,32 +17,32 @@ interface MoreScreenProps {
   navigation: NavigationProp<any>;
 }
 
-/**
- * MoreScreen component.
- * Displays a grid of options for different screens.
- *
- * @param {MoreScreenProps} props - The props for the component.
- * @returns {JSX.Element} The rendered MoreScreen component.
- */
 const MoreScreen: React.FC<MoreScreenProps> = ({ navigation }) => {
-  /**
-   * Handles the press event for the screen options.
-   * Navigates to the appropriate screen.
-   *
-   * @param {string} title - The selected screen title.
-   */
+  const theme = useTheme();
+
   const handlePress = (title: string) => {
-    if (title === "Lesson") {
-      navigation.navigate("Lessons");
+    if (title === 'Lesson') {
+      navigation.navigate('Lessons');
     }
   };
 
   return (
-    <View style={styles.container}>
+    <View
+      style={theme === 'dark' ? styles.darkContainer : styles.lightContainer}>
       <View style={styles.gridContainer}>
         {NewScreens.map((item, index) => (
-          <TouchableOpacity key={index} style={styles.lessonButton} onPress={() => handlePress(item.title)}>
-            {item.icon ? <Image source={item.icon} style={styles.lessonIcon} /> : null}
+          <TouchableOpacity
+            key={index}
+            style={[
+              styles.lessonButton,
+              theme === 'dark'
+                ? styles.darkLessonButton
+                : styles.lightLessonButton,
+            ]}
+            onPress={() => handlePress(item.title)}>
+            {item.icon ? (
+              <Image source={item.icon} style={styles.lessonIcon} />
+            ) : null}
             <Text style={styles.lessonText}>{item.title}</Text>
           </TouchableOpacity>
         ))}
@@ -54,23 +52,34 @@ const MoreScreen: React.FC<MoreScreenProps> = ({ navigation }) => {
 };
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: "#F0F8FF", padding: 20 },
-  gridContainer: { flexDirection: "row", flexWrap: "wrap", justifyContent: "space-between" },
+  darkContainer: { flex: 1, backgroundColor: '#000000', padding: 20 },
+  lightContainer: { flex: 1, backgroundColor: '#FFFFFF', padding: 20 },
+  gridContainer: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
+  },
   lessonButton: {
-    width: "48%",
-    backgroundColor: "#E6F7FF",
+    width: '48%',
     borderRadius: 10,
     padding: 20,
-    alignItems: "center",
+    alignItems: 'center',
     marginBottom: 15,
     elevation: 3,
-    shadowColor: "#000",
+    shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.2,
     shadowRadius: 3,
   },
+  darkLessonButton: { backgroundColor: '#4a4a4a' },
+  lightLessonButton: { backgroundColor: '#E6F7FF' },
   lessonIcon: { width: 50, height: 50, marginBottom: 10 },
-  lessonText: { fontSize: 14, fontWeight: "bold", color: "#003366", textAlign: "center" },
+  lessonText: {
+    fontSize: 14,
+    fontWeight: 'bold',
+    color: '#003366',
+    textAlign: 'center',
+  },
 });
 
 export default MoreScreen;

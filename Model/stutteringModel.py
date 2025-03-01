@@ -1,7 +1,7 @@
-import torch
 import librosa
-import torch.nn as nn
 import numpy as np
+import torch
+import torch.nn as nn
 
 
 # Define your model architecture
@@ -15,7 +15,7 @@ class StutterDetector(nn.Module):
             nn.Linear(128, 64),
             nn.ReLU(),
             nn.Dropout(0.3),
-            nn.Linear(64, 2)
+            nn.Linear(64, 2),
         )
 
     def forward(self, x):
@@ -24,7 +24,7 @@ class StutterDetector(nn.Module):
 
 # Initialize the model and load the state dictionary
 model = StutterDetector(40)
-model.load_state_dict(torch.load('Model/stutter_detector.pth', weights_only=True))
+model.load_state_dict(torch.load("Model/stutter_detector.pth", weights_only=True))
 model.eval()
 
 

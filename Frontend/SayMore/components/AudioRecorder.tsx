@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -9,20 +9,24 @@ import {
   StyleSheet,
   Image,
   ImageBackground,
-} from "react-native";
-import AudioRecord from "react-native-audio-record";
-import Sound from "react-native-sound";
-import storage from "@react-native-firebase/storage";
-import auth from "@react-native-firebase/auth";
-import { useNavigation, NavigationProp } from "@react-navigation/native";
-import { request, PERMISSIONS } from "react-native-permissions";
+} from 'react-native';
+import AudioRecord from 'react-native-audio-record';
+import Sound from 'react-native-sound';
+import storage from '@react-native-firebase/storage';
+import auth from '@react-native-firebase/auth';
+import RNFS from 'react-native-fs';
+import { useNavigation, NavigationProp } from '@react-navigation/native';
+import { request, PERMISSIONS } from 'react-native-permissions';
 
 interface AudioRecorderProps {
   isPublicSpeaking: boolean;
   language: string;
 }
 
-const AudioRecorder: React.FC<AudioRecorderProps> = ({ isPublicSpeaking, language }) => {
+const AudioRecorder: React.FC<AudioRecorderProps> = ({
+  isPublicSpeaking,
+  language,
+}) => {
   const [isRecording, setIsRecording] = useState<boolean>(false);
   const [audioPath, setAudioPath] = useState<string | null>(null);
   const [sound, setSound] = useState<Sound | null>(null);
@@ -31,22 +35,29 @@ const AudioRecorder: React.FC<AudioRecorderProps> = ({ isPublicSpeaking, languag
 
   useEffect(() => {
     requestPermissions();
-    AudioRecord.init({
-      sampleRate: 44100,
-      channels: 1,
-      bitsPerSample: 16,
-      audioSource: 6,
-      wavFile: "recordedAudio.wav",
-    });
+    initRecorder();
   }, []);
 
   const requestPermissions = async () => {
-    if (Platform.OS === "android") {
-      await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.RECORD_AUDIO);
-      await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE);
+    if (Platform.OS === 'android') {
+      await PermissionsAndroid.requestMultiple([
+        PermissionsAndroid.PERMISSIONS.RECORD_AUDIO,
+        PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
+        PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
+      ]);
     } else {
       await request(PERMISSIONS.IOS.MICROPHONE);
     }
+  };
+
+  const initRecorder = () => {
+    AudioRecord.init({
+      sampleRate: 16000, // 16kHz
+      channels: 1, // Mono
+      bitsPerSample: 16, // 16-bit PCM
+      audioSource: 6, // Default audio source
+      wavFile: 'recordedAudio.wav', // Output file
+    });
   };
 
   const startRecording = () => {
@@ -57,17 +68,27 @@ const AudioRecorder: React.FC<AudioRecorderProps> = ({ isPublicSpeaking, languag
 
   const stopRecording = async () => {
     setIsRecording(false);
-    setAudioPath(await AudioRecord.stop());
+    const rawAudioPath = await AudioRecord.stop();
+
+    // Ensure correct WAV format
+    const wavFilePath = `${RNFS.DocumentDirectoryPath}/recordedAudio.wav`;
+    try {
+      await RNFS.moveFile(rawAudioPath, wavFilePath);
+      console.log('Recording saved to:', wavFilePath);
+      setAudioPath(wavFilePath);
+    } catch (error) {
+      console.error('Error saving WAV file:', error);
+    }
   };
 
   const playAudio = () => {
     if (!audioPath) {
-      Alert.alert("No Audio", "Please record audio before playing.");
+      Alert.alert('No Audio', 'Please record audio before playing.');
       return;
     }
     const soundInstance = new Sound(audioPath, Sound.MAIN_BUNDLE, error => {
       if (error) {
-        Alert.alert("Playback Error", error.message);
+        Alert.alert('Playback Error', error.message);
         return;
       }
       soundInstance.play(() => {
@@ -84,38 +105,38 @@ const AudioRecorder: React.FC<AudioRecorderProps> = ({ isPublicSpeaking, languag
 
   const uploadAudio = async () => {
     if (!audioPath) {
-      Alert.alert("No Audio", "Please record audio before uploading.");
+      Alert.alert('No Audio', 'Please record audio before uploading.');
       return;
     }
     const currentUser = auth().currentUser;
     if (!currentUser) {
-      Alert.alert("Error", "User not authenticated");
+      Alert.alert('Error', 'User not authenticated');
       return;
     }
-    const folder = isPublicSpeaking ? "PS_Check" : "Stuttering_Check";
-    const date = new Date().toISOString().replace(/[-:.]/g, "").slice(0, 15);
-    const filename = `recordings/${folder}/${currentUser.uid}_${date}.wav`;
+    const folder = isPublicSpeaking ? 'PS_Check' : 'Stuttering_Check';
+    const date = new Date().toISOString().replace(/[-:.]/g, '').slice(0, 15);
+    const filename = `recordings/${folder}/${currentUser.uid}+${date}.wav`;
     const reference = storage().ref(filename);
+
     try {
-      await reference.putFile(audioPath, { contentType: "audio/wav" });
-      setUploadMessage("✅ Audio successfully uploaded!");
-      navigation.navigate("AnalysisScreen", {
+      await reference.putFile(audioPath, { contentType: 'audio/wav' });
+      setUploadMessage('✅ Audio successfully uploaded!');
+      navigation.navigate('AnalysisScreen', {
         filename,
         acc_id: currentUser.uid,
         type: isPublicSpeaking,
         language,
       });
     } catch (error) {
-      Alert.alert("Upload Failed", error.message);
+      Alert.alert('Upload Failed', error.message);
     }
   };
 
   return (
     <ImageBackground
-      source={require("../assets/recordScreen.jpg")}
+      source={require('../assets/recordScreen.jpg')}
       style={styles.background}
-      resizeMode="cover"
-    >
+      resizeMode="cover">
       <View style={styles.container}>
         <Text style={styles.title}>Audio Recorder</Text>
 
@@ -125,28 +146,34 @@ const AudioRecorder: React.FC<AudioRecorderProps> = ({ isPublicSpeaking, languag
           style={[
             styles.recordingButton,
             isRecording ? styles.recording : styles.notRecording,
-          ]}
-        >
+          ]}>
           <Image
-            source={require("../assets/mic.png")}
+            source={require('../assets/mic.png')}
             style={styles.recordingIcon}
           />
         </TouchableOpacity>
 
-        <Text style={styles.description}>Tap the microphone to start recording, and tap again to stop</Text>
+        <Text style={styles.description}>
+          Tap the microphone to start recording, and tap again to stop
+        </Text>
 
         <TouchableOpacity
           onPress={sound ? stopAudio : playAudio}
-          style={[styles.button, sound ? styles.playing : styles.notPlaying]}
-        >
-          <Text style={styles.buttonText}>{sound ? "Stop Playback" : "Play Audio"}</Text>
+          style={[styles.button, sound ? styles.playing : styles.notPlaying]}>
+          <Text style={styles.buttonText}>
+            {sound ? 'Stop Playback' : 'Play Audio'}
+          </Text>
         </TouchableOpacity>
 
-        <TouchableOpacity onPress={uploadAudio} style={[styles.button, styles.upload]}>
+        <TouchableOpacity
+          onPress={uploadAudio}
+          style={[styles.button, styles.upload]}>
           <Text style={styles.buttonText}>Upload to Firebase</Text>
         </TouchableOpacity>
 
-        {uploadMessage && <Text style={styles.successMessage}>{uploadMessage}</Text>}
+        {uploadMessage && (
+          <Text style={styles.successMessage}>{uploadMessage}</Text>
+        )}
       </View>
     </ImageBackground>
   );
@@ -155,26 +182,26 @@ const AudioRecorder: React.FC<AudioRecorderProps> = ({ isPublicSpeaking, languag
 const styles = StyleSheet.create({
   background: {
     flex: 1,
-    width: "100%",
-    height: "100%",
+    width: '100%',
+    height: '100%',
   },
   container: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: 'center',
+    alignItems: 'center',
     padding: 20,
   },
   title: {
     fontSize: 24,
-    fontWeight: "bold",
+    fontWeight: 'bold',
     marginBottom: 20,
-    color: "#fff",
+    color: '#fff',
   },
   description: {
     fontSize: 18,
-    color: "#000",
-    textAlign: "center",
-    fontWeight: "bold",
+    color: '#000',
+    textAlign: 'center',
+    fontWeight: 'bold',
     marginBottom: 20,
   },
   button: {
@@ -182,47 +209,47 @@ const styles = StyleSheet.create({
     paddingHorizontal: 30,
     margin: 12,
     borderRadius: 10,
-    alignItems: "center",
-    width: "80%",
-    justifyContent: "center",
+    alignItems: 'center',
+    width: '80%',
+    justifyContent: 'center',
   },
   buttonText: {
-    color: "#fff",
+    color: '#fff',
     fontSize: 16,
-    fontWeight: "600",
+    fontWeight: '600',
   },
   recordingButton: {
     width: 80,
     height: 80,
     borderRadius: 40,
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   recordingIcon: {
     width: 80,
     height: 80,
-    resizeMode: "contain",
+    resizeMode: 'contain',
   },
   recording: {
-    backgroundColor: "#f44336",
+    backgroundColor: '#f44336',
   },
   notRecording: {
-    backgroundColor: "#2196F3",
+    backgroundColor: '#2196F3',
   },
   playing: {
-    backgroundColor: "#A0C878",
+    backgroundColor: '#A0C878',
   },
   notPlaying: {
-    backgroundColor: "#27667B",
+    backgroundColor: '#27667B',
   },
   upload: {
-    backgroundColor: "#DF6D14",
+    backgroundColor: '#DF6D14',
   },
   successMessage: {
     marginTop: 15,
     fontSize: 16,
-    color: "green",
-    fontWeight: "bold",
+    color: 'green',
+    fontWeight: 'bold',
   },
 });
 

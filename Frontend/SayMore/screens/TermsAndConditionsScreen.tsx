@@ -1,5 +1,5 @@
-import React from "react";
-import { View, Text, ScrollView, StyleSheet } from "react-native";
+import React from 'react';
+import { View, Text, ScrollView, StyleSheet } from 'react-native';
 
 const TermsAndConditionsScreen = () => {
   return (
@@ -9,20 +9,22 @@ const TermsAndConditionsScreen = () => {
       <ScrollView style={styles.scrollView}>
         <Text style={styles.text}>
           By using SayMore, you agree to the following:
-          {"\n\n"}
-          1. Account Information: Provide accurate and truthful personal information during
-          registration and ensure your account remains secure.
-          {"\n\n"}
-          2. App Usage: Use the app solely for personal speech improvement and not as a substitute for
-          professional therapy, diagnosis, or advice.
-          {"\n\n"}
-          3. Data Usage: Allow secure processing of your data, such as audio recordings and progress
-          metrics, for personalized feedback and service improvement. Your data will be handled in
-          accordance with our Privacy Policy.
-          {"\n\n"}
-          4. Prohibited Actions: Refrain from misuse of the app, including sharing inappropriate,
-          offensive, or harmful content, attempting unauthorized access, or using the app for
-          commercial purposes.
+          {'\n\n'}
+          1. Account Information: Provide accurate and truthful personal
+          information during registration and ensure your account remains
+          secure.
+          {'\n\n'}
+          2. App Usage: Use the app solely for personal speech improvement and
+          not as a substitute for professional therapy, diagnosis, or advice.
+          {'\n\n'}
+          3. Data Usage: Allow secure processing of your data, such as audio
+          recordings and progress metrics, for personalized feedback and service
+          improvement. Your data will be handled in accordance with our Privacy
+          Policy.
+          {'\n\n'}
+          4. Prohibited Actions: Refrain from misuse of the app, including
+          sharing inappropriate, offensive, or harmful content, attempting
+          unauthorized access, or using the app for commercial purposes.
         </Text>
       </ScrollView>
     </View>
@@ -32,46 +34,46 @@ const TermsAndConditionsScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#F0F8FF",
+    backgroundColor: '#F0F8FF',
     padding: 20,
   },
   scrollView: {
     padding: 20,
-    backgroundColor: "#FFFFFF",
+    backgroundColor: '#FFFFFF',
     borderRadius: 20,
   },
   title: {
     fontSize: 24,
-    fontWeight: "bold",
-    color: "#003366",
+    fontWeight: 'bold',
+    color: '#003366',
     marginBottom: 0,
-    textAlign: "center",
+    textAlign: 'center',
   },
   date: {
     fontSize: 12,
-    fontWeight: "bold",
-    color: "#003366",
+    fontWeight: 'bold',
+    color: '#003366',
     marginBottom: 20,
-    textAlign: "center",
+    textAlign: 'center',
   },
   text: {
     fontSize: 16,
-    color: "#333333",
+    color: '#333333',
     marginBottom: 15,
     lineHeight: 24,
   },
   buttonContainer: {
     marginTop: 20,
-    alignItems: "center",
+    alignItems: 'center',
   },
   button: {
-    backgroundColor: "#003366",
+    backgroundColor: '#003366',
     padding: 10,
     borderRadius: 30,
   },
   buttonText: {
-    color: "#FFFFFF",
+    color: '#FFFFFF',
     fontSize: 16,
-    fontWeight: "bold",
+    fontWeight: 'bold',
   },
 });

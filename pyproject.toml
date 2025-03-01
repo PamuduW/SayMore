@@ -1,0 +1,33 @@
+[tool.ruff]
+line-length = 88  # Black's default
+target-version = "py311"
+
+[tool.ruff.lint]
+select = [
+    "E",    # Pycodestyle errors
+    "F",    # Pyflakes (common mistakes)
+    "I",    # isort (import sorting)
+    "B",    # Bugbear (security improvements)
+    "D",    # Pydocstyle (docstrings)
+    "W",    # Pycodestyle warnings
+    "C90",  # McCabe complexity checks
+    "N",    # Naming conventions
+]
+ignore = ["E501", "D100", "D101", "D102", "D203", "D213", "D103", "D107",]  # Ignore long lines & some docstring rules
+# for now d103, d1o7
+
+[tool.ruff.isort]
+known-first-party = ["SayMore"]  # Change to your FastAPI project name
+combine-as-imports = true
+force-sort-within-sections = true
+
+[tool.black]
+line-length = 88  # Match Ruff
+target-version = ['py311']
+skip-string-normalization = false
+include = '\.pyi?$'
+
+[tool.mypy]
+python_version = "3.11"
+ignore_missing_imports = true
+strict = true

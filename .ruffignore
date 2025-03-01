@@ -1,0 +1,8 @@
+__pycache__/
+venv/
+.env
+.mypy_cache/
+Frontend/
+.venv/
+Website/
+node_modules/

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect } from 'react';
 import {
   Text,
   TextInput,
@@ -10,11 +10,11 @@ import {
   KeyboardAvoidingView,
   Platform,
   ScrollView,
-} from "react-native";
-import auth from "@react-native-firebase/auth";
-import { useNavigation } from "@react-navigation/native";
-import { GoogleSignin } from "@react-native-google-signin/google-signin";
-import firestore from "@react-native-firebase/firestore";
+} from 'react-native';
+import auth from '@react-native-firebase/auth';
+import { useNavigation } from '@react-navigation/native';
+import { GoogleSignin } from '@react-native-google-signin/google-signin';
+import firestore from '@react-native-firebase/firestore';
 
 /**
  * SignInScreen component.
@@ -23,13 +23,14 @@ import firestore from "@react-native-firebase/firestore";
  * @returns {JSX.Element} The rendered SignInScreen component.
  */
 export default function SignInScreen() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const navigation = useNavigation();
 
   useEffect(() => {
     GoogleSignin.configure({
-      webClientId: "290999401549-28sv0ta1mhh68drtsi40nr5vmlvnpoa6.apps.googleusercontent.com",
+      webClientId:
+        '290999401549-28sv0ta1mhh68drtsi40nr5vmlvnpoa6.apps.googleusercontent.com',
     });
   }, []);
 
@@ -39,29 +40,36 @@ export default function SignInScreen() {
    */
   const handleSignIn = async () => {
     if (!email || !password) {
-      Alert.alert("Error", "Please fill in all fields");
+      Alert.alert('Error', 'Please fill in all fields');
       return;
     }
 
     try {
-      const userCredential = await auth().signInWithEmailAndPassword(email, password);
+      const userCredential = await auth().signInWithEmailAndPassword(
+        email,
+        password
+      );
 
       if (!userCredential.user.emailVerified) {
-        Alert.alert("Email Not Verified", "Please verify your email before signing in.", [
-          { text: "OK" },
-          {
-            text: "Resend Email",
-            onPress: () => userCredential.user.sendEmailVerification(),
-          },
-        ]);
+        Alert.alert(
+          'Email Not Verified',
+          'Please verify your email before signing in.',
+          [
+            { text: 'OK' },
+            {
+              text: 'Resend Email',
+              onPress: () => userCredential.user.sendEmailVerification(),
+            },
+          ]
+        );
         await auth().signOut();
       }
     } catch (error) {
       const errorMessage =
-        error.code === "auth/invalid-credential"
-          ? "Username or password is incorrect. Please check your credentials and try again."
+        error.code === 'auth/invalid-credential'
+          ? 'Username or password is incorrect. Please check your credentials and try again.'
           : error.message;
-      Alert.alert("Error", errorMessage);
+      Alert.alert('Error', errorMessage);
     }
   };
 
@@ -71,30 +79,41 @@ export default function SignInScreen() {
    */
   const handleGoogleSignIn = async () => {
     try {
-      await GoogleSignin.hasPlayServices({ showPlayServicesUpdateDialog: true });
+      await GoogleSignin.hasPlayServices({
+        showPlayServicesUpdateDialog: true,
+      });
       const signInResult = await GoogleSignin.signIn();
-      const googleCredential = auth.GoogleAuthProvider.credential(signInResult.data.idToken);
-      const userCredential = await auth().signInWithCredential(googleCredential);
+      const googleCredential = auth.GoogleAuthProvider.credential(
+        signInResult.data.idToken
+      );
+      const userCredential =
+        await auth().signInWithCredential(googleCredential);
       const user = userCredential.user;
 
-      const userDoc = await firestore().collection("User_Accounts").doc(user.uid).get();
+      const userDoc = await firestore()
+        .collection('User_Accounts')
+        .doc(user.uid)
+        .get();
 
       if (!userDoc.exists) {
-        await firestore().collection("User_Accounts").doc(user.uid).set({
+        await firestore().collection('User_Accounts').doc(user.uid).set({
           email: user.email,
           createdAt: firestore.FieldValue.serverTimestamp(),
         });
-        Alert.alert("Success", "Account created successfully!");
+        Alert.alert('Success', 'Account created successfully!');
       }
     } catch (error) {
-      Alert.alert("Authentication Error", error.message || "An error occurred during Google Sign In");
+      Alert.alert(
+        'Authentication Error',
+        error.message || 'An error occurred during Google Sign In'
+      );
     }
   };
 
   return (
     <SafeAreaView style={styles.container}>
       <KeyboardAvoidingView
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         style={styles.keyboardAvoidingView}>
         <ScrollView contentContainerStyle={styles.scrollView}>
           <Text style={styles.title}>Welcome Back</Text>
@@ -121,12 +140,17 @@ export default function SignInScreen() {
             <Text style={styles.buttonText}>Sign In</Text>
           </TouchableOpacity>
           <Text style={styles.Text}>OR</Text>
-          <TouchableOpacity style={styles.googleButton} onPress={handleGoogleSignIn}>
-            <Image source={require("../assets/google-icon.png")} style={styles.googleIcon} />
+          <TouchableOpacity
+            style={styles.googleButton}
+            onPress={handleGoogleSignIn}>
+            <Image
+              source={require('../assets/google-icon.png')}
+              style={styles.googleIcon}
+            />
             <Text style={styles.googleButtonText}>Sign in with Google</Text>
           </TouchableOpacity>
           <Text style={styles.LongText}>Don't have an account? </Text>
-          <TouchableOpacity onPress={() => navigation.navigate("SignUp")}>
+          <TouchableOpacity onPress={() => navigation.navigate('SignUp')}>
             <Text style={styles.linkText}>Sign Up</Text>
           </TouchableOpacity>
         </ScrollView>
@@ -138,70 +162,70 @@ export default function SignInScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#F0F8FF",
+    backgroundColor: '#F0F8FF',
     padding: 20,
-    justifyContent: "center",
+    justifyContent: 'center',
   },
   keyboardAvoidingView: {
     flex: 1,
   },
   scrollView: {
     flexGrow: 1,
-    justifyContent: "center",
+    justifyContent: 'center',
   },
   title: {
     fontSize: 28,
-    fontWeight: "bold",
-    color: "#003366",
+    fontWeight: 'bold',
+    color: '#003366',
     marginBottom: 20,
-    textAlign: "center",
+    textAlign: 'center',
   },
   subtitle: {
     fontSize: 16,
-    color: "#666",
+    color: '#666',
     marginBottom: 30,
-    textAlign: "center",
+    textAlign: 'center',
   },
   input: {
-    backgroundColor: "white",
+    backgroundColor: 'white',
     borderRadius: 10,
     padding: 15,
     marginBottom: 15,
     fontSize: 16,
   },
   button: {
-    backgroundColor: "#87CEEB",
+    backgroundColor: '#87CEEB',
     borderRadius: 10,
     padding: 15,
-    width: "100%",
-    alignItems: "center",
+    width: '100%',
+    alignItems: 'center',
     marginVertical: 15,
   },
   buttonText: {
-    color: "#003366",
+    color: '#003366',
     fontSize: 16,
-    fontWeight: "bold",
+    fontWeight: 'bold',
   },
   Text: {
-    textAlign: "center",
+    textAlign: 'center',
     marginVertical: 20,
     fontSize: 16,
   },
   LongText: {
-    textAlign: "center",
+    textAlign: 'center',
     marginTop: 20,
     fontSize: 16,
   },
   googleButton: {
-    backgroundColor: "white",
+    backgroundColor: 'white',
     borderRadius: 10,
     padding: 15,
-    alignItems: "center",
-    flexDirection: "row",
-    justifyContent: "center",
+    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'center',
     marginBottom: 20,
     borderWidth: 1,
-    borderColor: "#ddd",
+    borderColor: '#ddd',
   },
   googleIcon: {
     width: 24,
@@ -209,12 +233,12 @@ const styles = StyleSheet.create({
     marginRight: 10,
   },
   googleButtonText: {
-    color: "#666",
+    color: '#666',
     fontSize: 16,
-    fontWeight: "500",
+    fontWeight: '500',
   },
   linkText: {
-    color: "#003366",
-    textAlign: "center",
+    color: '#003366',
+    textAlign: 'center',
   },
 });

@@ -1,8 +1,8 @@
-import { useEffect } from "react";
-import { Platform, PermissionsAndroid } from "react-native";
-import messaging from "@react-native-firebase/messaging";
-import notifee from "@notifee/react-native";
-import inAppMessaging from "@react-native-firebase/in-app-messaging";
+import { useEffect } from 'react';
+import { Platform, PermissionsAndroid } from 'react-native';
+import messaging from '@react-native-firebase/messaging';
+import notifee from '@notifee/react-native';
+import inAppMessaging from '@react-native-firebase/in-app-messaging';
 
 /**
  * Custom hook to manage notifications.
@@ -16,8 +16,10 @@ export const useNotifications = () => {
      * On Android 13 and above, requests POST_NOTIFICATIONS permission.
      */
     const requestUserPermission = async () => {
-      if (Platform.OS === "android" && Platform.Version >= 33) {
-        await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS);
+      if (Platform.OS === 'android' && Platform.Version >= 33) {
+        await PermissionsAndroid.request(
+          PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS
+        );
       }
       await messaging().requestPermission();
     };
@@ -44,7 +46,7 @@ export const useNotifications = () => {
       await notifee.displayNotification({
         title: remoteMessage.notification?.title,
         body: remoteMessage.notification?.body,
-        android: { channelId: "default" },
+        android: { channelId: 'default' },
       });
     };
 
@@ -56,11 +58,11 @@ export const useNotifications = () => {
     const unsubscribeOnMessage = messaging().onMessage(handleForegroundMessage);
 
     // Create a default notification channel
-    notifee.createChannel({ id: "default", name: "Default Channel" });
+    notifee.createChannel({ id: 'default', name: 'Default Channel' });
 
     // Set up background message handler
     messaging().setBackgroundMessageHandler(async remoteMessage => {
-      console.log("Message handled in the background!", remoteMessage);
+      console.log('Message handled in the background!', remoteMessage);
     });
 
     // Cleanup subscription on unmount

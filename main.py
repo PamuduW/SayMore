@@ -1,11 +1,12 @@
-from firebase_admin import credentials, initialize_app, storage, firestore
-from fastapi import FastAPI, UploadFile, File, HTTPException
-from google.cloud.firestore_v1 import ArrayUnion
-from src.logic import analysing_audio
-from pydantic import BaseModel
-from datetime import datetime
 import json
 import os
+from datetime import datetime
+
+from fastapi import FastAPI, HTTPException
+from firebase_admin import credentials, firestore, initialize_app, storage
+from pydantic import BaseModel
+
+from src.logic import analysing_audio
 
 app = FastAPI()
 
@@ -47,12 +48,24 @@ async def test(request_body: RequestBody):
 
         doc_ref = db.collection("User_Accounts").document(acc_id)
         if test_type:
-            doc_ref.update({f"results.PS_Check.{test_tag}": json.loads(json.dumps(analysis_result))})
+            doc_ref.update(
+                {
+                    f"results.PS_Check.{test_tag}": json.loads(
+                        json.dumps(analysis_result)
+                    )
+                }
+            )
         else:
-            doc_ref.update({f"results.Stuttering_Check.{test_tag}": json.loads(json.dumps(analysis_result))})
+            doc_ref.update(
+                {
+                    f"results.Stuttering_Check.{test_tag}": json.loads(
+                        json.dumps(analysis_result)
+                    )
+                }
+            )
 
         # blob.delete()
         os.remove(file_name)
         return {"result": analysis_result}
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        raise HTTPException(status_code=500, detail=str(e)) from e

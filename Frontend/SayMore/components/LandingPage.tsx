@@ -1,14 +1,14 @@
-import React, { useState, useEffect } from "react";
-import { NavigationContainer } from "@react-navigation/native";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { useAuth } from "../components/Authentication";
-import firestore from "@react-native-firebase/firestore";
+import React, { useState, useEffect } from 'react';
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { useAuth } from '../components/Authentication';
+import firestore from '@react-native-firebase/firestore';
 
-import TabNavigator from "../components/TabNavigator";
-import SignInScreen from "../screens/SignInScreen";
-import SignUpScreen from "../screens/SignUpScreen";
-import WelcomeScreen from "../screens/WelcomeScreen";
-import PersonalDetailsScreen from "../screens/PersonalDetailsScreen";
+import TabNavigator from '../components/TabNavigator';
+import SignInScreen from '../screens/SignInScreen';
+import SignUpScreen from '../screens/SignUpScreen';
+import WelcomeScreen from '../screens/WelcomeScreen';
+import PersonalDetailsScreen from '../screens/PersonalDetailsScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -26,7 +26,7 @@ const LandingPage = () => {
   useEffect(() => {
     if (user) {
       const unsubscribe = firestore()
-        .collection("User_Accounts")
+        .collection('User_Accounts')
         .doc(user.uid)
         .onSnapshot(
           doc => {
@@ -34,9 +34,9 @@ const LandingPage = () => {
             setLoadingProfile(false);
           },
           error => {
-            console.error("Error fetching profile data: ", error);
+            console.error('Error fetching profile data: ', error);
             setLoadingProfile(false);
-          },
+          }
         );
 
       return () => unsubscribe();
@@ -54,7 +54,10 @@ const LandingPage = () => {
           profileComplete ? (
             <Stack.Screen name="MainApp" component={TabNavigator} />
           ) : (
-            <Stack.Screen name="PersonalDetailsScreen" component={PersonalDetailsScreen} />
+            <Stack.Screen
+              name="PersonalDetailsScreen"
+              component={PersonalDetailsScreen}
+            />
           )
         ) : (
           <>
