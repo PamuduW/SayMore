@@ -1,20 +1,23 @@
-from google.cloud import speech
 import os
 
+from google.cloud import speech
 
-def transcribe_gcs(gcs_uri: str, long_flag: bool, lan_flag: str) -> list[dict[str, str]]:
-    os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "saymore-340e9-firebase-adminsdk-aaxo4-2e6ac8d48e.json"
+
+def transcribe_gcs(
+    gcs_uri: str, long_flag: bool, lan_flag: str
+) -> list[dict[str, str]]:
+    os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = (
+        "saymore-340e9-firebase-adminsdk-aaxo4-2e6ac8d48e.json"
+    )
 
     try:
         client = speech.SpeechClient()
 
         # Language mapping with default fallback
-        language_mapping = {
-            "en": "en-US",
-            "si": "si-LK",
-            "ta": "ta-LK"
-        }
-        first_language = language_mapping.get(lan_flag, "en-US")  # Default to English if unknown
+        language_mapping = {"en": "en-US", "si": "si-LK", "ta": "ta-LK"}
+        first_language = language_mapping.get(
+            lan_flag, "en-US"
+        )  # Default to English if unknown
 
         # Set up audio config
         audio = speech.RecognitionAudio(uri=gcs_uri)
@@ -27,7 +30,9 @@ def transcribe_gcs(gcs_uri: str, long_flag: bool, lan_flag: str) -> list[dict[st
 
         # Choose recognition mode based on file length
         if long_flag:
-            operation = client.long_running_recognize(config=config, audio=audio)
+            operation = client.long_running_recognize(
+                config=config, audio=audio
+            )
             print("Waiting for operation to complete...")
             response = operation.result(timeout=300)
         else:
@@ -37,7 +42,9 @@ def transcribe_gcs(gcs_uri: str, long_flag: bool, lan_flag: str) -> list[dict[st
         result_list = [
             {
                 "transcript": result.alternatives[0].transcript,
-                "confidence": round(result.alternatives[0].confidence * 100, 2)  # Convert confidence to percentage
+                "confidence": round(
+                    result.alternatives[0].confidence * 100, 2
+                ),  # Convert confidence to percentage
             }
             for result in response.results
         ]

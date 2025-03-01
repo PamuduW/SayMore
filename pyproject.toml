@@ -1,0 +1,17 @@
+[tool.ruff]
+line-length = 80
+target-version = "py311"  # Adjust based on your Python version
+
+[tool.ruff.lint]
+select = ["E", "F", "I"]  # Enable essential linting rules (E = errors, F = flakes, I = import sorting)
+ignore = ["E501"]  # Ignore long line warnings (Black handles formatting)
+
+[tool.ruff.isort]
+known-first-party = ["SayMore"]  # Change "SayMore" to your FastAPI app folder name
+combine-as-imports = true  # Merges `as` imports
+
+[tool.black]
+line-length = 80
+target-version = ['py311']
+skip-string-normalization = false
+include = '\.pyi?$'

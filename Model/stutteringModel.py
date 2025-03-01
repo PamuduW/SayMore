@@ -1,7 +1,7 @@
-import torch
 import librosa
-import torch.nn as nn
 import numpy as np
+import torch
+import torch.nn as nn
 
 
 # Define your model architecture
@@ -15,7 +15,7 @@ class StutterDetector(nn.Module):
             nn.Linear(128, 64),
             nn.ReLU(),
             nn.Dropout(0.3),
-            nn.Linear(64, 2)
+            nn.Linear(64, 2),
         )
 
     def forward(self, x):
@@ -24,7 +24,9 @@ class StutterDetector(nn.Module):
 
 # Initialize the model and load the state dictionary
 model = StutterDetector(40)
-model.load_state_dict(torch.load('Model/stutter_detector.pth', weights_only=True))
+model.load_state_dict(
+    torch.load("Model/stutter_detector.pth", weights_only=True)
+)
 model.eval()
 
 
@@ -34,7 +36,9 @@ def stutter_test(local_file):
         mfccs = librosa.feature.mfcc(y=audio, sr=sample_rate, n_mfcc=40)
         mfccs_mean = np.mean(mfccs.T, axis=0)
 
-        input_tensor = torch.tensor(mfccs_mean, dtype=torch.float32).unsqueeze(0)
+        input_tensor = torch.tensor(mfccs_mean, dtype=torch.float32).unsqueeze(
+            0
+        )
         with torch.no_grad():
             output = model(input_tensor)
             prediction = torch.argmax(output, dim=1).item()

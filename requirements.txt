@@ -10,3 +10,7 @@ webrtcvad
 pyworld
 praat-parselmouth
 google-cloud-speech
+black
+ruff
+isort
+safetensors
