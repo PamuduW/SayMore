@@ -13,7 +13,8 @@ select = [
     "C90",  # McCabe complexity checks
     "N",    # Naming conventions
 ]
-ignore = ["E501", "D100", "D101", "D102", "D203", "D213"]  # Ignore long lines & some docstring rules
+ignore = ["E501", "D100", "D101", "D102", "D203", "D213", "D103", "D107",]  # Ignore long lines & some docstring rules
+# for now d103, d1o7
 
 [tool.ruff.isort]
 known-first-party = ["SayMore"]  # Change to your FastAPI project name

@@ -30,9 +30,7 @@ def transcribe_gcs(
 
         # Choose recognition mode based on file length
         if long_flag:
-            operation = client.long_running_recognize(
-                config=config, audio=audio
-            )
+            operation = client.long_running_recognize(config=config, audio=audio)
             print("Waiting for operation to complete...")
             response = operation.result(timeout=300)
         else:

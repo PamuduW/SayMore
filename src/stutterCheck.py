@@ -1,7 +1,7 @@
 import librosa
 import numpy as np
-from safetensors.torch import load_file
 import torch
+from safetensors.torch import load_file
 
 # Load the model
 MODEL_PATH = r"D:\Downloads\model.safetensors"
@@ -30,9 +30,7 @@ def extract_mfcc(audio_path):
     y, sr = librosa.load(audio_path, sr=16000)  # Load audio
     mfcc = librosa.feature.mfcc(y=y, sr=sr, n_mfcc=128)  # Extract MFCCs
     mfcc = np.mean(mfcc, axis=1)  # Take mean across time axis
-    return torch.tensor(mfcc, dtype=torch.float32).unsqueeze(
-        0
-    )  # Add batch dimension
+    return torch.tensor(mfcc, dtype=torch.float32).unsqueeze(0)  # Add batch dimension
 
 
 # Function to predict stuttering type

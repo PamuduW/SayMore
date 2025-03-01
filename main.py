@@ -1,6 +1,6 @@
-from datetime import datetime
 import json
 import os
+from datetime import datetime
 
 from fastapi import FastAPI, HTTPException
 from firebase_admin import credentials, firestore, initialize_app, storage
@@ -10,9 +10,7 @@ from src.logic import analysing_audio
 
 app = FastAPI()
 
-cred = credentials.Certificate(
-    "saymore-340e9-firebase-adminsdk-aaxo4-2e6ac8d48e.json"
-)
+cred = credentials.Certificate("saymore-340e9-firebase-adminsdk-aaxo4-2e6ac8d48e.json")
 initialize_app(cred, {"storageBucket": "saymore-340e9.firebasestorage.app"})
 db = firestore.client()
 
@@ -26,9 +24,7 @@ class RequestBody(BaseModel):
 
 @app.get("/")
 async def root():
-    return {
-        "message": "Backend with the Deep Learning model of the SayMore app"
-    }
+    return {"message": "Backend with the Deep Learning model of the SayMore app"}
 
 
 @app.post("/test")
@@ -72,4 +68,4 @@ async def test(request_body: RequestBody):
         os.remove(file_name)
         return {"result": analysis_result}
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        raise HTTPException(status_code=500, detail=str(e)) from e

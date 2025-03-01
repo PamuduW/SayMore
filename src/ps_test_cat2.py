@@ -21,9 +21,7 @@ def analyze_intensity(audio_path, segment_duration=2.0):
                 round(segment_intensity * 200, 4)
             )  # Normalize (0-100)
         else:
-            intensity_data[float(round(t, 2))] = (
-                0.0  # Handle empty segment case
-            )
+            intensity_data[float(round(t, 2))] = 0.0  # Handle empty segment case
 
     return intensity_data
 

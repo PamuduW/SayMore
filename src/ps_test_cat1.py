@@ -46,24 +46,18 @@ def analyze_pitch(audio_path, segment_duration=2.0):
 
         pitch_data = {}
         for t in np.arange(0, duration, segment_duration):
-            segment_indices = (time_stamps >= t) & (
-                time_stamps < t + segment_duration
-            )
+            segment_indices = (time_stamps >= t) & (time_stamps < t + segment_duration)
             segment_pitches = semitone_values[segment_indices]
 
             if segment_pitches.size > 0:
                 pitch_data[round(t, 2)] = {
                     "mean_pitch_ST": float(round(np.mean(segment_pitches), 2)),
-                    "median_pitch_ST": float(
-                        round(np.median(segment_pitches), 2)
-                    ),
+                    "median_pitch_ST": float(round(np.median(segment_pitches), 2)),
                     "min_pitch_ST": float(round(np.min(segment_pitches), 2)),
                     "max_pitch_ST": float(round(np.max(segment_pitches), 2)),
                     "std_pitch_ST": float(round(np.std(segment_pitches), 2)),
                     "pitch_range_ST": float(
-                        round(
-                            np.max(segment_pitches) - np.min(segment_pitches), 2
-                        )
+                        round(np.max(segment_pitches) - np.min(segment_pitches), 2)
                     ),
                 }
             else:
@@ -137,9 +131,7 @@ def analyze_shimmer(audio_path, segment_duration=2.0):
             1.6,
         )
         shimmer_value = (
-            float(round(shimmer_local, 4))
-            if not np.isnan(shimmer_local)
-            else 0.0
+            float(round(shimmer_local, 4)) if not np.isnan(shimmer_local) else 0.0
         )
         shimmer_data[float(round(t, 2))] = shimmer_value
 
@@ -214,9 +206,7 @@ def generate_speaking_score(
 
     # Fix stability score calculation
     stability_score = 100 - ((jitter * 100) + (shimmer * 100) - (hnr * 2))
-    stability_score = max(
-        0, min(100, round(stability_score, 2))
-    )  # Clamp to 0-100
+    stability_score = max(0, min(100, round(stability_score, 2)))  # Clamp to 0-100
 
     # Fix speaking speed scaling
     speed_score = min(100, (speaking_speed / 150) * 100)  # Normalize to 100 max
