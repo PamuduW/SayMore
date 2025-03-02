@@ -1,3 +1,4 @@
+// src/screens/MoreScreen.tsx
 import React from 'react';
 import { View, Text, TouchableOpacity, Image, StyleSheet } from 'react-native';
 import { NavigationProp } from '@react-navigation/native';
@@ -5,7 +6,7 @@ import { useTheme } from '../components/ThemeContext';
 
 const NewScreens = [
   { title: "Activity", icon: require("../assets/activity2.png") },
-  { title: "Lesson", icon: require("../assets/lesson.png") },
+  { title: "Lessons", icon: require("../assets/lesson.png") }, // Changed title here
   { title: "Quizzes and Challenges", icon: require("../assets/quiz.png") },
   { title: "Progress", icon: require("../assets/progress.png") },
   { title: "Points", icon: require("../assets/points.png")},
@@ -21,7 +22,7 @@ const MoreScreen: React.FC<MoreScreenProps> = ({ navigation }) => {
   const theme = useTheme();
 
   const handlePress = (title: string) => {
-    if (title === 'Lesson') {
+    if (title === 'Lessons') { // Changed title here
       navigation.navigate('Lessons');
     }
   };
