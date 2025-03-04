@@ -25,13 +25,10 @@
 #     frame_length = int(0.03 * sr)  # 30ms frames
 #     frames = [y[i:i + frame_length] for i in range(0, len(y), frame_length)]
 #
-#     print("aaa")
 #     pauses = 0
 #     for frame in frames:
 #         try:
-#             print("bbbb")
 #             if not vad.is_speech(frame.tobytes(), sr):
-#                 print("cccc")
 #                 pauses += 1
 #         except Exception as e:
 #             return {"result": {"error": f"Error while processing frame: {str(e)}"}}
