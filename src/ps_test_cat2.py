@@ -72,39 +72,49 @@ def analyze_speech_2(audio_path, segment_duration=2.0):
     # Combine the scores using weighted averages.
     final_energy_score = float(round(0.4 * intensity_score + 0.4 * energy_score + 0.2 * variation_score, 2))
 
-    # Generate dynamic feedback based on the final energy score.
+    # Base feedback based on the final energy score.
     if final_energy_score >= 85:
-        feedback = (
-            "Excellent! Your speech exhibits outstanding dynamic energy, intensity, "
-            "and variation—highly engaging and captivating."
+        base_feedback = (
+            "Excellent! Your speech exhibits outstanding dynamic energy, intensity, and variation—highly engaging and captivating."
         )
     elif final_energy_score >= 70:
-        feedback = (
-            "Very good! Your speech energy is dynamic, though slight improvements in "
-            "intensity variation could elevate your delivery even further."
+        base_feedback = (
+            "Very good! Your speech energy is dynamic, though slight improvements could elevate your delivery even further."
         )
     elif final_energy_score >= 55:
-        feedback = (
-            "Good effort! Your energy and intensity are on the right track, but adding "
-            "more variation might boost your overall impact."
+        base_feedback = (
+            "Good effort! Your energy and intensity are on the right track, but more variation might boost your overall impact."
         )
     elif final_energy_score >= 40:
-        feedback = (
-            "Fair performance. Consider working on both your intensity and energy dynamics "
-            "to better engage your audience."
+        base_feedback = (
+            "Fair performance. Consider working on both your intensity and energy dynamics to better engage your audience."
         )
     else:
-        feedback = (
-            "Needs improvement. Your speech lacks sufficient dynamic energy and variation. "
-            "Try emphasizing key points with more pronounced changes in volume and intensity."
+        base_feedback = (
+            "Needs improvement. Your speech lacks sufficient dynamic energy and variation."
         )
+
+    # Specific dynamic feedback based on individual scores.
+    specific_feedbacks = []
+    if intensity_score < 50:
+        specific_feedbacks.append("Try projecting your voice more and varying your volume to enhance intensity.")
+    if energy_score < 50:
+        specific_feedbacks.append("Inject more enthusiasm into your delivery to boost overall energy.")
+    if variation_score < 50:
+        specific_feedbacks.append("Incorporate more pauses or changes in pace to create greater variation in your speech.")
+
+    # Combine base and specific feedback.
+    if specific_feedbacks:
+        dynamic_feedback = f"{base_feedback} Additionally, " + " ".join(specific_feedbacks)
+    else:
+        dynamic_feedback = base_feedback
 
     return {
         "final_energy_score": final_energy_score,
         "intensity_score": intensity_score,
         "energy_score": energy_score,
         "variation_score": variation_score,
-        "feedback": feedback,
+        "feedback": dynamic_feedback,
         "intensity_analysis": intensity_data,
         "energy_analysis": energy_data,
     }
