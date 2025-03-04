@@ -175,22 +175,27 @@ def analyze_speaking_speed(audio_path, text):
 def analyze_clarity(audio_path):
     snd = parselmouth.Sound(audio_path)
     formants = snd.to_formant_burg()
-    f1 = np.mean(
-        [
-            formants.get_value_at_time(1, t)
-            for t in np.arange(0, snd.get_total_duration(), 0.01)
-            if formants.get_value_at_time(1, t) is not None
-        ]
-    )
-    f2 = np.mean(
-        [
-            formants.get_value_at_time(2, t)
-            for t in np.arange(0, snd.get_total_duration(), 0.01)
-            if formants.get_value_at_time(2, t) is not None
-        ]
-    )
-    clarity_score = 100 - abs(f1 - f2) / 20  # Normalize clarity score
-    return max(0, min(100, round(clarity_score, 2)))
+
+    formant_values = {i: [] for i in range(1, 4)}  # Store F1, F2, and F3
+    times = np.arange(0, snd.get_total_duration(), 0.01)
+
+    for t in times:
+        for i in range(1, 4):
+            value = formants.get_value_at_time(i, t)
+            if value is not None:
+                formant_values[i].append(value)
+
+    means = {i: np.mean(formant_values[i]) for i in formant_values}
+    std_devs = {i: np.std(formant_values[i]) for i in formant_values}
+
+    clarity_score = 1 - (
+            abs(means[1] - means[2]) +
+            abs(means[2] - means[3]) +
+            abs(means[1] - means[3]) +
+            std_devs[1] + std_devs[2] + std_devs[3]
+    ) / 6000
+
+    return max(0, min(1, round(clarity_score, 4)))
 
 
 # Generate final public speaking score
