@@ -39,7 +39,7 @@ def analyze_pitch(audio_path, segment_duration=2.0):
         semitone_values = hz_to_semitones(pitch_values)
         overall_std = np.std(semitone_values)
         overall_range = np.max(semitone_values) - np.min(semitone_values)
-        # Higher monotony means less variation.
+        # Monotony score: higher means more monotone (less variation)
         monotony_score = 100 * (1 - (overall_std / (overall_range + 1e-5)))
         monotony_score = float(max(0, min(100, round(monotony_score, 2))))
 
@@ -65,12 +65,10 @@ def analyze_pitch(audio_path, segment_duration=2.0):
                     "std_pitch_ST": 0.0,
                     "pitch_range_ST": 0.0,
                 }
-
         return {
             "monotony_score": monotony_score,
             "pitch_analysis": pitch_data,
         }
-
     except Exception as e:
         return {"error": str(e)}
 
@@ -144,9 +142,10 @@ def analyze_clarity(audio_path):
     clarity_score = float(max(0, min(100, round(clarity_score, 2))))
     return clarity_score
 
-def generate_speaking_score(monotony_score, speaking_speed, clarity, jitter, shimmer, hnr):
+# Now, final_voice_score is calculated using variation_score (100 - monotony_score)
+def generate_speaking_score(variation_score, speaking_speed, clarity, jitter, shimmer, hnr):
     weights = {
-        "monotony": 0.25,
+        "variation": 0.25,
         "speed": 0.20,
         "clarity": 0.30,
         "stability": 0.25,
@@ -156,7 +155,7 @@ def generate_speaking_score(monotony_score, speaking_speed, clarity, jitter, shi
     stability_score = float(max(0, min(100, round(stability_score, 2))))
     speed_score = float(max(0, 100 - abs(speaking_speed - 130)))
     final_score = (
-            monotony_score * weights["monotony"]
+            variation_score * weights["variation"]
             + speed_score * weights["speed"]
             + clarity * weights["clarity"]
             + stability_score * weights["stability"]
@@ -166,63 +165,64 @@ def generate_speaking_score(monotony_score, speaking_speed, clarity, jitter, shi
 
 def generate_base_feedback(final_voice_score):
     if final_voice_score >= 85:
-        return "Excellent! Your vocal delivery is outstanding in expressiveness and control."
+        return "Excellent work! Your vocal delivery is engaging and expressive, showing outstanding control and versatility."
     elif final_voice_score >= 70:
-        return "Very good! Your voice is dynamic overall, though there is room for further enhancement."
+        return "Good effort! Your vocal delivery is strong overall, though refining a few aspects could make your performance even more compelling."
     elif final_voice_score >= 55:
-        return "Good effort! Your voice quality is adequate, but some areas could benefit from improvement."
+        return "Fair performance. Your vocal quality is adequate, but there are noticeable areas for improvement to enhance your impact."
     elif final_voice_score >= 40:
-        return "Fair performance. Consider working on key aspects to enhance your vocal delivery."
+        return "Needs improvement. Your vocal delivery lacks some dynamic range; focusing on tone and expressiveness may help."
     else:
-        return "Needs improvement. Your vocal delivery requires significant work."
+        return "Significant improvement is needed. Consider working on your tone, pace, and articulation to elevate your performance."
 
-def generate_dynamic_feedback(monotony_score, stability_score, speaking_speed, clarity):
-    if monotony_score >= 85:
-        monotony_feedback = "Your pitch variation is excellent."
-    elif monotony_score >= 70:
-        monotony_feedback = "Your pitch variation is very good; a bit more variation could enhance expressiveness."
-    elif monotony_score >= 55:
-        monotony_feedback = "Your pitch variation is moderate; consider adding more variation to capture attention."
-    elif monotony_score >= 40:
-        monotony_feedback = "Your pitch variation is low; work on incorporating more tonal shifts."
+def generate_dynamic_feedback(variation_score, stability_score, speaking_speed, clarity):
+    if variation_score >= 85:
+        variation_feedback = "Your pitch variation is excellent, keeping your delivery lively."
+    elif variation_score >= 70:
+        variation_feedback = "Your pitch variation is very good; a bit more dynamism could further captivate your audience."
+    elif variation_score >= 55:
+        variation_feedback = "Your pitch variation is moderate; consider adding more tonal shifts for expressiveness."
+    elif variation_score >= 40:
+        variation_feedback = "Your pitch variation is low; increasing vocal variation can make your speech more engaging."
     else:
-        monotony_feedback = "Your pitch variation is minimal; significant variation is needed."
+        variation_feedback = "Your pitch variation is minimal; significant improvement in vocal variation is needed."
 
     if stability_score >= 85:
-        stability_feedback = "Your voice stability is excellent."
+        stability_feedback = "Your voice stability is excellent, indicating strong vocal control."
     elif stability_score >= 70:
         stability_feedback = "Your voice stability is very good; slight inconsistencies are observed."
     elif stability_score >= 55:
-        stability_feedback = "Your voice stability is moderate; consider practicing control techniques."
+        stability_feedback = "Your voice stability is moderate; practicing consistent control might help."
     elif stability_score >= 40:
-        stability_feedback = "Your voice stability is low; focus on reducing fluctuations."
+        stability_feedback = "Your voice stability is low; focusing on steady control can enhance your delivery."
     else:
-        stability_feedback = "Your voice stability is poor; significant improvement is needed."
+        stability_feedback = "Your voice stability is poor; significant improvement is needed to maintain consistency."
 
-    speed_score = float(max(0, 100 - abs(speaking_speed - 130)))
-    if speed_score >= 85:
+    if speaking_speed >= 140:
+        speed_feedback = "Your speaking speed is a bit fast; consider slowing down for clarity."
+    elif speaking_speed >= 120:
         speed_feedback = "Your speaking speed is ideal."
-    elif speed_score >= 70:
-        speed_feedback = "Your speaking speed is good; slight adjustments could enhance clarity."
-    elif speed_score >= 55:
-        speed_feedback = "Your speaking speed is moderate; try to optimize your pace for better comprehension."
-    elif speed_score >= 40:
-        speed_feedback = "Your speaking speed is suboptimal; work on finding a balanced pace."
+    elif speaking_speed >= 100:
+        speed_feedback = "Your speaking speed is good, though a slight increase could boost engagement."
+    elif speaking_speed >= 80:
+        speed_feedback = "Your speaking speed is a bit slow; try to increase your pace for a more dynamic delivery."
     else:
-        speed_feedback = "Your speaking speed needs significant improvement."
+        speed_feedback = "Your speaking speed is too slow; working on a more energetic pace may help."
 
     if clarity >= 85:
-        clarity_feedback = "Your clarity is exceptional."
+        clarity_feedback = "Your clarity is exceptional, making your speech easily understandable."
     elif clarity >= 70:
-        clarity_feedback = "Your clarity is very good."
+        clarity_feedback = "Your clarity is very good; minor improvements could sharpen your articulation even more."
     elif clarity >= 55:
-        clarity_feedback = "Your clarity is moderate; clearer articulation would help."
+        clarity_feedback = "Your clarity is moderate; focusing on enunciation could enhance your message."
     elif clarity >= 40:
-        clarity_feedback = "Your clarity is low; focus on enunciating more distinctly."
+        clarity_feedback = "Your clarity is low; work on pronunciation and articulation to improve understanding."
     else:
-        clarity_feedback = "Your clarity needs major improvement."
+        clarity_feedback = "Your clarity needs significant improvement; consider vocal exercises to enhance articulation."
 
-    dynamic_feedback = f"Additionally, {monotony_feedback} {stability_feedback} {speed_feedback} {clarity_feedback}"
+    dynamic_feedback = (
+        f"Additionally, {variation_feedback} {stability_feedback} {speed_feedback} {clarity_feedback}"
+    )
     return dynamic_feedback
 
 def analyze_speech_1(audio_path, text):
@@ -236,8 +236,11 @@ def analyze_speech_1(audio_path, text):
     if "error" in pitch_data:
         return {"error": pitch_data["error"]}
 
+    # Calculate variation_score from monotony_score (higher variation is better)
+    variation_score = float(max(0, min(100, round(100 - pitch_data["monotony_score"], 2))))
+
     final_voice_score = generate_speaking_score(
-        pitch_data["monotony_score"],
+        variation_score,
         speaking_speed,
         clarity,
         jitter_data["overall_jitter"],
@@ -251,20 +254,20 @@ def analyze_speech_1(audio_path, text):
 
     base_feedback = generate_base_feedback(final_voice_score)
     dynamic_feedback = generate_dynamic_feedback(
-        monotony_score=pitch_data["monotony_score"],
+        variation_score=variation_score,
         stability_score=stability_score,
         speaking_speed=speaking_speed,
         clarity=clarity
     )
 
-    # Normalize overall jitter, shimmer, and HNR to a 0–100 range.
+    # Normalize overall jitter, shimmer, and HNR to a 0–100 scale.
     normalized_jitter = normalize_metric(jitter_data["overall_jitter"], best=0, worst=0.1, invert=True)
     normalized_shimmer = normalize_metric(shimmer_data["overall_shimmer"], best=0, worst=0.3, invert=True)
     normalized_hnr = normalize_metric(hnr_data["overall_hnr"], best=0, worst=30, invert=False)
 
     return {
         "final_voice_score": final_voice_score,
-        "monotony_score": pitch_data["monotony_score"],
+        "variation_score": variation_score,
         "stability_score": stability_score,
         "speaking_speed": speaking_speed,
         "clarity": clarity,
