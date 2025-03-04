@@ -141,7 +141,7 @@ def analyze_speech_2(audio_path, segment_duration=2.0):
 
     # Combine base feedback with detailed, stage-specific suggestions.
     dynamic_feedback = (
-        f"{base_feedback} Additionally, {intensity_feedback} {energy_feedback} {variation_feedback}"
+        f"Additionally, {intensity_feedback} {energy_feedback} {variation_feedback}"
     )
 
     return {
@@ -149,7 +149,8 @@ def analyze_speech_2(audio_path, segment_duration=2.0):
         "intensity_score": intensity_score,
         "energy_score": energy_score,
         "variation_score": variation_score,
-        "feedback": dynamic_feedback,
+        "base_feedback": base_feedback,
+        "dynamic_feedback": dynamic_feedback,
         "intensity_analysis": intensity_data,
         "energy_analysis": energy_data,
     }
