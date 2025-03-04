@@ -16,6 +16,7 @@ def analyze_pitch(audio_path, segment_duration=2.0):
         pitch_values = pitch.selected_array["frequency"]
         time_stamps = pitch.xs()
 
+        # Only consider voiced segments.
         voiced_indices = pitch_values > 0
         pitch_values = pitch_values[voiced_indices]
         time_stamps = time_stamps[voiced_indices]
@@ -26,10 +27,12 @@ def analyze_pitch(audio_path, segment_duration=2.0):
         semitone_values = hz_to_semitones(pitch_values)
         overall_std = np.std(semitone_values)
         overall_range = np.max(semitone_values) - np.min(semitone_values)
+        # Normalize monotony score to 0-100; higher means less variation (monotone)
         monotony_score = 100 * (1 - (overall_std / (overall_range + 1e-5)))
         monotony_score = float(max(0, min(100, round(monotony_score, 2))))
 
-        feedback = (
+        # Base feedback solely for pitch variation (will be enhanced later)
+        base_pitch_feedback = (
             "Great job! Your voice is dynamic and expressive!"
             if monotony_score > 70
             else (
@@ -65,7 +68,7 @@ def analyze_pitch(audio_path, segment_duration=2.0):
 
         return {
             "monotony_score": monotony_score,
-            "feedback": feedback,
+            "pitch_feedback": base_pitch_feedback,
             "pitch_analysis": pitch_data,
         }
 
@@ -97,7 +100,8 @@ def analyze_shimmer(audio_path, segment_duration=2.0):
     for t in np.arange(0, duration, segment_duration):
         segment = snd.extract_part(from_time=t, to_time=min(t + segment_duration, duration))
         point_process = parselmouth.praat.call(segment, "To PointProcess (periodic, cc)", 75, 500)
-        shimmer_local = parselmouth.praat.call([segment, point_process], "Get shimmer (local)", 0, 0, 0.0001, 0.02, 1.3, 1.6)
+        shimmer_local = parselmouth.praat.call([segment, point_process],
+                                               "Get shimmer (local)", 0, 0, 0.0001, 0.02, 1.3, 1.6)
         shimmer_value = float(round(shimmer_local, 4)) if not np.isnan(shimmer_local) else 0.0
         shimmer_data[round(t, 2)] = shimmer_value
 
@@ -132,7 +136,7 @@ def analyze_speaking_speed(audio_path, text):
 def analyze_clarity(audio_path):
     """
     Compute clarity based on the coefficient of variation (CV) of formant frequencies.
-    A lower CV suggests more stable articulation.
+    Lower CV suggests more stable articulation.
     """
     snd = parselmouth.Sound(audio_path)
     formants = snd.to_formant_burg()
@@ -159,11 +163,11 @@ def analyze_clarity(audio_path):
 
 def generate_speaking_score(monotony_score, speaking_speed, clarity, jitter, shimmer, hnr):
     """
-    Generate a voice quality score using updated weights:
+    Generate a voice quality score based on:
       - Monotony: 25%
       - Speaking speed: 20%
       - Clarity: 30%
-      - Stability (from jitter, shimmer, HNR): 25%
+      - Stability (derived from jitter, shimmer, HNR): 25%
     """
     weights = {
         "monotony": 0.25,
@@ -172,12 +176,12 @@ def generate_speaking_score(monotony_score, speaking_speed, clarity, jitter, shi
         "stability": 0.25,
     }
 
-    # Compute stability: lower jitter and shimmer are better.
+    # Compute stability: Lower jitter and shimmer are better.
     stability_score = 100 - ((jitter * 100) + (shimmer * 100))
     stability_score += hnr / 2  # Bonus for higher harmonicity.
     stability_score = float(max(0, min(100, round(stability_score, 2))))
 
-    # Normalize speaking speed by assuming 130 words per minute is ideal.
+    # Normalize speaking speed assuming an ideal of 130 words per minute.
     speed_score = float(max(0, 100 - abs(speaking_speed - 130)))
 
     final_score = (
@@ -188,6 +192,65 @@ def generate_speaking_score(monotony_score, speaking_speed, clarity, jitter, shi
     )
     final_score = float(max(0, min(100, round(final_score, 2))))
     return final_score
+
+
+def generate_voice_feedback(monotony_score, speaking_speed, clarity, stability_score):
+    """
+    Generate detailed dynamic feedback based on individual metrics.
+    """
+    # Dynamic feedback for pitch variation (monotony).
+    if monotony_score >= 85:
+        monotony_feedback = "Your pitch variation is excellent."
+    elif monotony_score >= 70:
+        monotony_feedback = "Your pitch variation is very good, though a bit more variation could enhance expressiveness."
+    elif monotony_score >= 55:
+        monotony_feedback = "Your pitch variation is moderate; consider adding more variation to capture attention."
+    elif monotony_score >= 40:
+        monotony_feedback = "Your pitch variation is low; try incorporating more tonal shifts."
+    else:
+        monotony_feedback = "Your pitch variation is minimal; focus on varying your tone for greater impact."
+
+    # Speaking speed feedback.
+    speed_score = float(max(0, 100 - abs(speaking_speed - 130)))
+    if speed_score >= 85:
+        speed_feedback = "Your speaking speed is ideal."
+    elif speed_score >= 70:
+        speed_feedback = "Your speaking speed is good, though slight adjustments might improve clarity."
+    elif speed_score >= 55:
+        speed_feedback = "Your speaking speed is a bit off; try moderating your pace for better comprehension."
+    elif speed_score >= 40:
+        speed_feedback = "Your speaking speed is far from ideal; consider adjusting your pace."
+    else:
+        speed_feedback = "Your speaking speed needs significant improvement; aim for a more balanced pace."
+
+    # Clarity feedback.
+    if clarity >= 85:
+        clarity_feedback = "Your articulation is exceptionally clear."
+    elif clarity >= 70:
+        clarity_feedback = "Your clarity is strong; minor improvements could make it even better."
+    elif clarity >= 55:
+        clarity_feedback = "Your clarity is moderate; work on enunciating more distinctly."
+    elif clarity >= 40:
+        clarity_feedback = "Your clarity is low; focus on pronunciation to improve understanding."
+    else:
+        clarity_feedback = "Your clarity needs major improvement; concentrate on articulation techniques."
+
+    # Stability feedback.
+    if stability_score >= 85:
+        stability_feedback = "Your voice stability is excellent, showing great control."
+    elif stability_score >= 70:
+        stability_feedback = "Your voice stability is very good; slight improvements could enhance consistency."
+    elif stability_score >= 55:
+        stability_feedback = "Your voice stability is moderate; consider techniques to reduce variability."
+    elif stability_score >= 40:
+        stability_feedback = "Your voice stability is low; more control in your delivery would be beneficial."
+    else:
+        stability_feedback = "Your voice stability needs significant improvement; focus on controlling pitch fluctuations."
+
+    dynamic_feedback = (
+        f"{monotony_feedback} {speed_feedback} {clarity_feedback} {stability_feedback}"
+    )
+    return dynamic_feedback
 
 
 def analyze_speech_1(audio_path, text):
@@ -201,6 +264,7 @@ def analyze_speech_1(audio_path, text):
     if "error" in pitch_data:
         return {"error": pitch_data["error"]}
 
+    # Compute final voice score.
     final_voice_score = generate_speaking_score(
         pitch_data["monotony_score"],
         speaking_speed,
@@ -210,14 +274,30 @@ def analyze_speech_1(audio_path, text):
         hnr_data["overall_hnr"],
     )
 
+    # Recompute stability and speed scores for detailed feedback.
+    stability_score = 100 - ((jitter_data["overall_jitter"] * 100) + (shimmer_data["overall_shimmer"] * 100))
+    stability_score += hnr_data["overall_hnr"] / 2
+    stability_score = float(max(0, min(100, round(stability_score, 2))))
+    # Speed score using the ideal value.
+    speed_score = float(max(0, 100 - abs(speaking_speed - 130)))
+
+    dynamic_feedback = generate_voice_feedback(
+        monotony_score=pitch_data["monotony_score"],
+        speaking_speed=speaking_speed,
+        clarity=clarity,
+        stability_score=stability_score
+    )
+
     return {
         "final_voice_score": final_voice_score,
         "monotony_score": pitch_data["monotony_score"],
-        "feedback": pitch_data["feedback"],
+        "base_pitch_feedback": pitch_data["pitch_feedback"],
         "speaking_speed": speaking_speed,
         "clarity": clarity,
+        "stability_score": stability_score,
         "jitter": jitter_data,
         "shimmer": shimmer_data,
         "hnr": hnr_data,
         "pitch_analysis": pitch_data["pitch_analysis"],
+        "dynamic_feedback": dynamic_feedback,
     }
