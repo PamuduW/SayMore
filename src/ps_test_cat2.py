@@ -69,14 +69,35 @@ def analyze_speech_2(audio_path, segment_duration=2.0):
     normalized_variation = np.log1p((intensity_variation + energy_variation) / max_variation) * 100
     variation_score = float(round(np.clip(normalized_variation, 5, 100), 2))
 
-    if variation_score > 50:
-        feedback = "Great job! Your speech has dynamic intensity and energy, making it engaging."
-    elif variation_score > 25:
-        feedback = "You're doing well, but adding more intensity variation will improve engagement."
-    else:
-        feedback = "Your speech lacks variation. Try emphasizing key points with more energy shifts."
-
+    # Combine the scores using weighted averages.
     final_energy_score = float(round(0.4 * intensity_score + 0.4 * energy_score + 0.2 * variation_score, 2))
+
+    # Generate dynamic feedback based on the final energy score.
+    if final_energy_score >= 85:
+        feedback = (
+            "Excellent! Your speech exhibits outstanding dynamic energy, intensity, "
+            "and variation—highly engaging and captivating."
+        )
+    elif final_energy_score >= 70:
+        feedback = (
+            "Very good! Your speech energy is dynamic, though slight improvements in "
+            "intensity variation could elevate your delivery even further."
+        )
+    elif final_energy_score >= 55:
+        feedback = (
+            "Good effort! Your energy and intensity are on the right track, but adding "
+            "more variation might boost your overall impact."
+        )
+    elif final_energy_score >= 40:
+        feedback = (
+            "Fair performance. Consider working on both your intensity and energy dynamics "
+            "to better engage your audience."
+        )
+    else:
+        feedback = (
+            "Needs improvement. Your speech lacks sufficient dynamic energy and variation. "
+            "Try emphasizing key points with more pronounced changes in volume and intensity."
+        )
 
     return {
         "final_energy_score": final_energy_score,

@@ -16,7 +16,6 @@ def analyze_pitch(audio_path, segment_duration=2.0):
         pitch_values = pitch.selected_array["frequency"]
         time_stamps = pitch.xs()
 
-        # Consider only voiced segments.
         voiced_indices = pitch_values > 0
         pitch_values = pitch_values[voiced_indices]
         time_stamps = time_stamps[voiced_indices]
