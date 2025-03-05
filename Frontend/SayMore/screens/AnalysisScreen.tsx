@@ -1,5 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { Text, StyleSheet, ScrollView, Button, View, Dimensions } from 'react-native';
+import {
+  Text,
+  StyleSheet,
+  ScrollView,
+  Button,
+  View,
+  Dimensions,
+} from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { ProgressChart } from 'react-native-chart-kit';
 
@@ -10,18 +17,22 @@ const AnalysisScreen = ({ route }) => {
   const [responseData, setResponseData] = useState(null);
   const navigation = useNavigation();
   const [data, setData] = useState({
-    labels: ["final_energy_score", "final_voice_score", "final_public_speaking_score"],
-    data: [0, 0, 0]
+    labels: [
+      'final_energy_score',
+      'final_voice_score',
+      'final_public_speaking_score',
+    ],
+    data: [0, 0, 0],
   });
   const chartConfig = {
-    backgroundGradientFrom: "#1E2923",
+    backgroundGradientFrom: '#1E2923',
     backgroundGradientFromOpacity: 0,
-    backgroundGradientTo: "#08130D",
+    backgroundGradientTo: '#08130D',
     backgroundGradientToOpacity: 0.5,
     color: (opacity = 1) => `rgba(26, 255, 146, ${opacity})`,
     strokeWidth: 2, // optional, default 3
     barPercentage: 0.5,
-    useShadowColorFromDataset: false // optional
+    useShadowColorFromDataset: false, // optional
   };
 
   useEffect(() => {
@@ -47,12 +58,18 @@ const AnalysisScreen = ({ route }) => {
         const data = await response.json();
         setResponseData(data);
         setData({
-          labels: ["final_energy_score", "final_voice_score", "final_public_speaking_score"],
+          labels: [
+            'final_energy_score',
+            'final_voice_score',
+            'final_public_speaking_score',
+          ],
           data: [
-            data.result['Voice_Quality_&_Stability_Data'].final_energy_score / 100,
-            data.result['Voice_Quality_&_Stability_Data'].final_voice_score / 100,
-            data.result.final_public_speaking_score / 100
-          ]
+            data.result['Speech_Intensity_&_Energy_Data'].final_energy_score /
+              100,
+            data.result['Voice_Quality_&_Stability_Data'].final_voice_score /
+              100,
+            data.result.final_public_speaking_score / 100,
+          ],
         });
       } catch (error) {
         console.error('Error sending POST request:', error);
@@ -60,7 +77,7 @@ const AnalysisScreen = ({ route }) => {
     };
 
     sendPostRequest();
-  }, [filename, acc_id, type, language, responseData]);
+  }, [filename, acc_id, type, language]);
 
   const handleNext = () => {
     if (responseData) {
@@ -210,31 +227,31 @@ const AnalysisScreen = ({ route }) => {
           <Text>
             final_energy_score:{' '}
             {
-              responseData.result['Voice_Quality_&_Stability_Data']
+              responseData.result['Speech_Intensity_&_Energy_Data']
                 .final_energy_score
             }
           </Text>
           <Text>
             intensity_score:{' '}
             {
-              responseData.result['Voice_Quality_&_Stability_Data']
+              responseData.result['Speech_Intensity_&_Energy_Data']
                 .intensity_score
             }
           </Text>
           <Text>
             energy_score:{' '}
-            {responseData.result['Voice_Quality_&_Stability_Data'].energy_score}
+            {responseData.result['Speech_Intensity_&_Energy_Data'].energy_score}
           </Text>
           <Text>
             variation_score:{' '}
             {
-              responseData.result['Voice_Quality_&_Stability_Data']
+              responseData.result['Speech_Intensity_&_Energy_Data']
                 .variation_score
             }
           </Text>
 
           <Text style={styles.scoreText}>Transcription</Text>
-          <Text>{responseData.result['transcription'][0].transcript}</Text>
+          <Text>{responseData.result.transcription[0].transcript}</Text>
 
           <Button title="Next" onPress={handleNext} style={styles.button} />
           <Button
