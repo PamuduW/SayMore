@@ -1,4 +1,3 @@
-// src/navigation/TabNavigator.tsx
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -13,7 +12,7 @@ import AudioScreen from '../screens/AudioScreen';
 import AnalysisScreen from '../screens/AnalysisScreen';
 import VideoListScreen from '../screens/VideoListScreen';
 import VideoPlayerScreen from '../screens/VideoPlayerScreen';
-import HistoryScreen from '../screens/HistoryScreen'; // <--- Import HistoryScreen
+import HistoryScreen from '../screens/HistoryScreen';
 
 import HomeIcon from '../assets/home.png';
 import MoreInfoIcon from '../assets/more-info.png';

@@ -1,4 +1,3 @@
-// src/screens/VideoListScreen.tsx
 import React, { useState, useEffect, useCallback } from 'react';
 import {
     View,
@@ -7,10 +6,11 @@ import {
     TouchableOpacity,
     StyleSheet,
     ActivityIndicator,
-    Image
+    Image,
+    SafeAreaView
 } from 'react-native';
-import { useRoute, useIsFocused, useNavigation } from '@react-navigation/native'; // Import useNavigation
-import { Lesson, VideoItem } from '../types/types'; // Import types
+import { useRoute, useIsFocused, useNavigation } from '@react-navigation/native';
+import { Lesson, VideoItem } from '../types/types';
 import firestore from '@react-native-firebase/firestore';
 
 interface RouteParams {
@@ -101,65 +101,87 @@ const VideoListScreen = () => {
     ), [handleVideoPress]);
 
     return (
-        <View style={styles.container}>
-            <View style={styles.header}>
-                <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
-                    <Text style={styles.backButtonText}>←</Text>
-                </TouchableOpacity>
-                <Text style={styles.title}>{lesson.title}</Text>
-            </View>
-
-
-            {loading ? (
-                <View style={styles.loadingContainer}>
-                    <ActivityIndicator size="large" color="#0000ff" />
+        <SafeAreaView style={styles.safeArea}>
+            <View style={styles.container}>
+                <View style={styles.header}>
+                    <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
+                        <Text style={styles.backButtonText}>←</Text>
+                    </TouchableOpacity>
+                    <Text style={styles.title}>{lesson.title}</Text>
                 </View>
-            ) : (
-                <FlatList
-                    data={videos}
-                    keyExtractor={(item, index) => String(index)}
-                    renderItem={renderItem}
-                    removeClippedSubviews={false}
-                    maxToRenderPerBatch={5}
-                    windowSize={5}
-                    initialNumToRender={5}
-                    showsVerticalScrollIndicator={false}
-                />
-            )}
-        </View>
+
+                {loading ? (
+                    <View style={styles.loadingContainer}>
+                        <ActivityIndicator size="large" color="#003366" />
+                    </View>
+                ) : (
+                    <FlatList
+                        data={videos}
+                        keyExtractor={(item, index) => String(index)}
+                        renderItem={renderItem}
+                        removeClippedSubviews={false}
+                        maxToRenderPerBatch={5}
+                        windowSize={5}
+                        initialNumToRender={5}
+                        showsVerticalScrollIndicator={false}
+                        contentContainerStyle={styles.listContentContainer}
+                    />
+                )}
+            </View>
+        </SafeAreaView>
     );
 };
 
 const styles = StyleSheet.create({
+    safeArea: {
+        flex: 1,
+        backgroundColor: '#F0F8FF',
+    },
     container: {
         flex: 1,
         padding: 20,
+        backgroundColor: '#F0F8FF',
     },
     header: {
         flexDirection: 'row',
         alignItems: 'center',
-        marginBottom: 20,
+        marginBottom: 15,
     },
     backButton: {
         marginRight: 10,
+        backgroundColor: '#E6F7FF',
+        padding: 8,
+        borderRadius: 5,
     },
     backButtonText: {
         fontSize: 24,
         fontWeight: 'bold',
+        color: '#003366',
     },
     title: {
         fontSize: 24,
         fontWeight: 'bold',
+        color: '#003366',
+        flex: 1,
+        textAlign: 'center',
     },
     videoItem: {
         flexDirection: 'row',
-        padding: 10,
-        borderBottomWidth: 1,
-        borderBottomColor: '#ccc',
+        padding: 15,
+        backgroundColor: '#E6F7FF',
+        borderRadius: 12,
+        marginBottom: 10,
         alignItems: 'center',
+        elevation: 4,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 3 },
+        shadowOpacity: 0.25,
+        shadowRadius: 3,
     },
     videoTitle: {
         fontSize: 18,
+        color: '#003366',
+        flex: 1,
     },
     loadingContainer: {
         flex: 1,
@@ -169,19 +191,24 @@ const styles = StyleSheet.create({
     thumbnail: {
         width: 100,
         height: 70,
-        marginRight: 10,
+        marginRight: 15,
+        borderRadius: 10,
     },
     noThumbnail: {
         width: 100,
         height: 70,
-        backgroundColor: '#eee',
-        marginRight: 10,
+        backgroundColor: '#ADD8E6',
+        marginRight: 15,
         justifyContent: 'center',
         alignItems: 'center',
+        borderRadius: 10,
     },
     noThumbnailText: {
         fontSize: 12,
-        color: '#666',
+        color: '#003366',
+    },
+    listContentContainer: {
+        paddingBottom: 20,
     },
 });
 

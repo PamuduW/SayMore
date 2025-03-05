@@ -1,6 +1,6 @@
 export interface Lesson {
   title: string;
-  icon: any;  /
+  icon: any;
   documentId: string;
 }
 
@@ -13,8 +13,10 @@ export interface VideoItem {
 }
 
 export interface WatchedVideo {
-    videoId: string;       // ID of the watched video
-    title: string;         // Name of the video that was watched
-    lessonTitle: string; // name of the lesson
-    timestamp: string;     // Date and time the video was watched (as a string)
+    videoId: string;
+    title: string;
+    lessonTitle: string;
+    timestamp: string;
+    thumbnail: string;
+    id: string;
 }

@@ -1,4 +1,3 @@
-// src/screens/VideoPlayerScreen.tsx
 import React, { useEffect } from 'react';
 import {
     View,
@@ -66,20 +65,38 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = ({ route, navigation
                 title: video.title,
                 lessonTitle: lessonTitle,
                 timestamp: timestamp,
+                thumbnail: video.thumbnail || '',
+                id: `${video.videoId}-${timestamp}`,
             };
 
             try {
-                console.log("Saving Data");
-                console.log(userId);
-                console.log(watchedVideoData);
-                await firestore()
-                    .collection('watched_videos')
+                // Fetch existing watchedVideos data
+                const userDoc = await firestore()
+                    .collection('User_Accounts')
                     .doc(userId)
-                    .collection('user_watched_videos')
-                    .add(watchedVideoData);
-                console.log('Watched video saved:', watchedVideoData);
+                    .get();
+
+                let watchedVideos = userDoc.data()?.watchedVideos || [];
+
+                // Check if the video already exists in the array
+                const videoAlreadyWatched = watchedVideos.some(
+                    (watchedVideo) => watchedVideo.videoId === video.videoId
+                );
+
+                if (!videoAlreadyWatched) {
+                    // Add the video to the array only if it doesn't exist
+                    await firestore()
+                        .collection('User_Accounts')
+                        .doc(userId)
+                        .update({
+                            watchedVideos: firestore.FieldValue.arrayUnion(watchedVideoData),
+                        });
+                    console.log('Watched video saved to User_Accounts:', watchedVideoData);
+                } else {
+                    console.log('Video already watched. Not adding to history.');
+                }
             } catch (error) {
-                console.error('Error saving watched video:', error);
+                console.error('Error saving watched video to User_Accounts:', error);
             }
         };
         saveWatchedVideo();
@@ -116,10 +133,11 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = ({ route, navigation
 };
 
 const styles = StyleSheet.create({
+    scrollContainer: { paddingBottom: 20 },
     container: {
         flex: 1,
         backgroundColor: '#F0F8FF',
-        padding: 20,
+        //padding: 20,
     },
     header: {
         flexDirection: 'row',

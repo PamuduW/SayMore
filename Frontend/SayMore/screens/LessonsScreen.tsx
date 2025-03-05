@@ -1,18 +1,59 @@
-import React from 'react';
-import { View, Text, TouchableOpacity, Image, StyleSheet, ScrollView } from 'react-native';
-import { useNavigation } from '@react-navigation/native'; // Import useNavigation
-import { Lesson } from '../types/types'; // Import the Lesson type
+import React, { useState, useEffect } from 'react';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  Image,
+  StyleSheet,
+  ScrollView,
+  SafeAreaView,
+  Dimensions
+} from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import { Lesson } from '../types/types';
+import auth from '@react-native-firebase/auth';
+import firestore from '@react-native-firebase/firestore';
 
 interface LessonsScreenProps {}
 
-/**
- * LessonsScreen component.
- * Displays a list of lessons with educational videos, tips, and techniques.
- *
- * @returns {JSX.Element} The rendered LessonsScreen component.
- */
+const { width } = Dimensions.get('window');
+const itemWidth = (width - 60) / 2;
+
 const LessonsScreen: React.FC<LessonsScreenProps> = () => {
-  const navigation = useNavigation(); // Use the navigation hook
+  const navigation = useNavigation();
+  const [firstName, setFirstName] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchFirstName = async () => {
+      const user = auth().currentUser;
+      if (user) {
+        try {
+          const userDoc = await firestore()
+            .collection('User_Accounts')
+            .doc(user.uid)
+            .get();
+
+          if (userDoc.exists) {
+            const data = userDoc.data();
+            if (data && data.fname) {
+              setFirstName(data.fname);
+            } else {
+              setFirstName('there');
+            }
+          } else {
+            setFirstName('there');
+          }
+        } catch (error) {
+          console.error('Error fetching first name:', error);
+          setFirstName('there');
+        }
+      } else {
+        setFirstName('there');
+      }
+    };
+
+    fetchFirstName();
+  }, []);
 
   const lessons: Lesson[] = [
     { title: 'Speech Exercises', icon: require('../assets/speech-exercises.png'), documentId: 'speech_exercises' },
@@ -33,65 +74,90 @@ const LessonsScreen: React.FC<LessonsScreenProps> = () => {
   };
 
   return (
-    <ScrollView contentContainerStyle={styles.scrollContainer}>
-      <View style={styles.container}>
-        <Text style={styles.headerText}>Hi there,</Text>
-        <Text style={styles.subText}>
-          Unlock your potential as a confident speaker. Explore our educational
-          videos, tips, and techniques designed to help you overcome stuttering,
-          build confidence, and communicate with clarity to become the speaker
-          you’ve always wanted to be!
-        </Text>
-        <View style={styles.gridContainer}>
-          {lessons.map((lesson, index) => (
-            <TouchableOpacity
-              key={index}
-              style={styles.lessonButton}
-              onPress={() => handleLessonPress(lesson)}
-            >
-              <Image source={lesson.icon} style={styles.lessonIcon} />
-              <Text style={styles.lessonText}>{lesson.title}</Text>
-            </TouchableOpacity>
-          ))}
+    <SafeAreaView style={styles.safeArea}>
+      <ScrollView contentContainerStyle={styles.scrollContainer}>
+        <View style={styles.container}>
+          <Text style={styles.headerText}>Hi {firstName},</Text>
+          <Text style={styles.subText}>
+            Unlock your potential as a confident speaker. Explore our educational videos, tips, and techniques designed to help you overcome stuttering, build confidence, and communicate with clarity to become the speaker you've always wanted to be!
+          </Text>
+          <View style={styles.gridContainer}>
+            {lessons.map((lesson, index) => (
+              <TouchableOpacity
+                key={index}
+                style={[styles.lessonButton, { width: itemWidth }]}
+                onPress={() => handleLessonPress(lesson)}
+              >
+                <View style={styles.imageContainer}>
+                  <Image source={lesson.icon} style={styles.lessonIcon} resizeMode="contain" />
+                </View>
+                <Text style={styles.lessonText}>{lesson.title}</Text>
+              </TouchableOpacity>
+            ))}
+          </View>
         </View>
-      </View>
-    </ScrollView>
+      </ScrollView>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
-  scrollContainer: { paddingBottom: 20 },
-  container: { flex: 1, backgroundColor: '#F0F8FF', padding: 20 },
-  headerText: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#003366',
-    marginBottom: 10,
+  safeArea: {
+    flex: 1,
+    backgroundColor: '#F9FBFC',
   },
-  subText: { fontSize: 16, color: '#003366', marginBottom: 20 },
+  scrollContainer: {
+    paddingBottom: 20,
+  },
+  container: {
+    flex: 1,
+    backgroundColor: '#F0F8FF',
+    padding: 20,
+  },
+  headerText: {
+    fontSize: 28,
+    fontWeight: 'bold',
+    color: '#2C3E50',
+    marginBottom: 12,
+  },
+  subText: {
+    fontSize: 17,
+    color: 'black',
+    marginBottom: 24,
+    lineHeight: 24,
+  },
   gridContainer: {
     flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'space-between',
   },
   lessonButton: {
-    width: '48%',
-    backgroundColor: '#E6F7FF',
-    borderRadius: 10,
-    padding: 20,
-    alignItems: 'center',
-    marginBottom: 15,
-    elevation: 3,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 16,
+    paddingVertical: 12,
+    paddingHorizontal: 8,
+    marginBottom: 16,
+    elevation: 5,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.2,
-    shadowRadius: 3,
+    shadowRadius: 4,
+    alignItems: 'center',
   },
-  lessonIcon: { width: 40, height: 40, marginBottom: 10 },
+  imageContainer: {
+    height: 100,
+    width: '100%',
+    marginBottom: 8,
+    overflow: 'hidden',
+  },
+  lessonIcon: {
+    width: '100%',
+    height: '100%',
+  },
   lessonText: {
-    fontSize: 14,
-    fontWeight: 'bold',
-    color: '#003366',
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#34495E',
     textAlign: 'center',
   },
 });
