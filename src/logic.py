@@ -76,6 +76,7 @@ def ps_test(audio_path, lan_flag):
     return {
         "final_public_speaking_score": overall_score,
         "final_public_speaking_feedback": final_feedback,
+        "overall_confidence": avg_confidence,
         "transcription": transcribe,
         "Voice Quality & Stability Data": voice_data,
         "Speech Intensity & Energy Data": energy_data,

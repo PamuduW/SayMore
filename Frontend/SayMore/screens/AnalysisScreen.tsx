@@ -65,16 +65,150 @@ const AnalysisScreen = ({ route }) => {
     }
   };
 
+  const handleDetails = () => {
+    if (responseData) {
+      const { result } = responseData;
+      const {
+        final_public_speaking_score,
+        final_public_speaking_feedback,
+        'Voice_Quality_&_Stability_Data': {
+          base_feedback: voiceBaseFeedback,
+          dynamic_feedback: voiceDynamicFeedback,
+          pitch_data,
+          hnr_data,
+          shimmer_data,
+          jitter_data,
+        },
+        'Speech_Intensity_&_Energy_Data': {
+          base_feedback: speechBaseFeedback,
+          dynamic_feedback: speechDynamicFeedback,
+          intensity_analysis,
+          energy_analysis,
+        },
+      } = result;
+
+      navigation.navigate('AdditionalDetailsScreen', {
+        final_public_speaking_score,
+        final_public_speaking_feedback,
+        voiceBaseFeedback,
+        voiceDynamicFeedback,
+        speechBaseFeedback,
+        speechDynamicFeedback,
+        pitch_data,
+        hnr_data,
+        shimmer_data,
+        jitter_data,
+        intensity_analysis,
+        energy_analysis,
+      });
+    }
+  };
+
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <Text>Analysis Screen</Text>
       {responseData && (
         <View>
           <Text style={styles.scoreText}>
-            Public Speaking Score:{' '}
+            Final Public Speaking Score:{' '}
             {responseData.result.final_public_speaking_score}
           </Text>
-          <Button title="Next" onPress={handleNext} />
+          <Text style={styles.scoreText}>
+            Overall Confidence Score:{' '}
+            {responseData.result.final_public_speaking_score}
+          </Text>
+
+          <Text style={styles.scoreText}>Voice Quality & Stability Data</Text>
+          <Text>
+            Final Voice Score:{' '}
+            {
+              responseData.result['Voice_Quality_&_Stability_Data']
+                .final_voice_score
+            }
+          </Text>
+          <Text>
+            variation_score:{' '}
+            {
+              responseData.result['Voice_Quality_&_Stability_Data']
+                .variation_score
+            }
+          </Text>
+          <Text>
+            stability_score:{' '}
+            {
+              responseData.result['Voice_Quality_&_Stability_Data']
+                .stability_score
+            }
+          </Text>
+          <Text>
+            speaking_speed:{' '}
+            {
+              responseData.result['Voice_Quality_&_Stability_Data']
+                .speaking_speed
+            }
+          </Text>
+          <Text>
+            clarity:{' '}
+            {responseData.result['Voice_Quality_&_Stability_Data'].clarity}
+          </Text>
+          <Text>
+            overall_jitter_score:{' '}
+            {
+              responseData.result['Voice_Quality_&_Stability_Data']
+                .overall_jitter_score
+            }
+          </Text>
+          <Text>
+            overall_shimmer_score:{' '}
+            {
+              responseData.result['Voice_Quality_&_Stability_Data']
+                .overall_shimmer_score
+            }
+          </Text>
+          <Text>
+            overall_hnr_score:{' '}
+            {
+              responseData.result['Voice_Quality_&_Stability_Data']
+                .overall_hnr_score
+            }
+          </Text>
+
+          <Text style={styles.scoreText}>Speech Intensity & Energy Data</Text>
+          <Text>
+            final_energy_score:{' '}
+            {
+              responseData.result['Voice_Quality_&_Stability_Data']
+                .final_energy_score
+            }
+          </Text>
+          <Text>
+            intensity_score:{' '}
+            {
+              responseData.result['Voice_Quality_&_Stability_Data']
+                .intensity_score
+            }
+          </Text>
+          <Text>
+            energy_score:{' '}
+            {responseData.result['Voice_Quality_&_Stability_Data'].energy_score}
+          </Text>
+          <Text>
+            variation_score:{' '}
+            {
+              responseData.result['Voice_Quality_&_Stability_Data']
+                .variation_score
+            }
+          </Text>
+
+          <Text style={styles.scoreText}>Transcription</Text>
+          <Text>{responseData.result['transcription'][0].transcript}</Text>
+
+          <Button title="Next" onPress={handleNext} style={styles.button} />
+          <Button
+            title="Additional Details"
+            onPress={handleDetails}
+            style={styles.button}
+          />
         </View>
       )}
     </ScrollView>
