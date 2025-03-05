@@ -1,11 +1,28 @@
 import React, { useEffect, useState } from 'react';
-import { Text, StyleSheet, ScrollView, Button, View } from 'react-native';
+import { Text, StyleSheet, ScrollView, Button, View, Dimensions } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { ProgressChart } from 'react-native-chart-kit';
+
+const screenWidth = Dimensions.get('window').width;
 
 const AnalysisScreen = ({ route }) => {
   const { filename, acc_id, type, language } = route.params;
   const [responseData, setResponseData] = useState(null);
   const navigation = useNavigation();
+  const [data, setData] = useState({
+    labels: ["final_energy_score", "final_voice_score", "final_public_speaking_score"],
+    data: [0, 0, 0]
+  });
+  const chartConfig = {
+    backgroundGradientFrom: "#1E2923",
+    backgroundGradientFromOpacity: 0,
+    backgroundGradientTo: "#08130D",
+    backgroundGradientToOpacity: 0.5,
+    color: (opacity = 1) => `rgba(26, 255, 146, ${opacity})`,
+    strokeWidth: 2, // optional, default 3
+    barPercentage: 0.5,
+    useShadowColorFromDataset: false // optional
+  };
 
   useEffect(() => {
     const sendPostRequest = async () => {
@@ -28,15 +45,22 @@ const AnalysisScreen = ({ route }) => {
           throw new Error(`HTTP error! status: ${response.status}`);
 
         const data = await response.json();
-        console.log('Response data:', data);
         setResponseData(data);
+        setData({
+          labels: ["final_energy_score", "final_voice_score", "final_public_speaking_score"],
+          data: [
+            data.result['Voice_Quality_&_Stability_Data'].final_energy_score / 100,
+            data.result['Voice_Quality_&_Stability_Data'].final_voice_score / 100,
+            data.result.final_public_speaking_score / 100
+          ]
+        });
       } catch (error) {
         console.error('Error sending POST request:', error);
       }
     };
 
     sendPostRequest();
-  }, [filename, acc_id, type, language]);
+  }, [filename, acc_id, type, language, responseData]);
 
   const handleNext = () => {
     if (responseData) {
@@ -107,6 +131,15 @@ const AnalysisScreen = ({ route }) => {
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <Text>Analysis Screen</Text>
+      <ProgressChart
+        data={data}
+        width={screenWidth}
+        height={220}
+        strokeWidth={16}
+        radius={32}
+        chartConfig={chartConfig}
+        hideLegend={false}
+      />
       {responseData && (
         <View>
           <Text style={styles.scoreText}>
