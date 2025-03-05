@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Text, StyleSheet, ScrollView, Button, Dimensions } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { LineChart } from 'react-native-chart-kit';
@@ -6,14 +6,14 @@ import { LineChart } from 'react-native-chart-kit';
 const screenWidth = Dimensions.get('window').width;
 
 const chartConfig = {
-  backgroundGradientFrom: "#1E2923",
+  backgroundGradientFrom: '#1E2923',
   backgroundGradientFromOpacity: 0,
-  backgroundGradientTo: "#08130D",
+  backgroundGradientTo: '#08130D',
   backgroundGradientToOpacity: 0.5,
   color: (opacity = 1) => `rgba(26, 255, 146, ${opacity})`,
   strokeWidth: 2, // optional, default 3
   barPercentage: 0.5,
-  useShadowColorFromDataset: false // optional
+  useShadowColorFromDataset: false, // optional
 };
 
 const AdditionalDetailsScreen = ({ route }) => {
@@ -24,25 +24,45 @@ const AdditionalDetailsScreen = ({ route }) => {
     voiceDynamicFeedback = '',
     speechBaseFeedback = '',
     speechDynamicFeedback = '',
-    pitch_data = [],
-    hnr_data = [],
-    shimmer_data = [],
-    jitter_data = [],
-    intensity_analysis = [],
-    energy_analysis = [],
+    pitch_data = {},
+    hnr_data = {},
+    shimmer_data = {},
+    jitter_data = {},
+    intensity_analysis = {},
+    energy_analysis = {},
   } = route.params || {};
 
   const [data, setData] = useState({
-    labels: ["January", "February", "March", "April", "May", "June"],
+    labels: [],
     datasets: [
       {
-        data: [20, 45, 28, 80, 199, 43],
+        data: [],
         color: (opacity = 1) => `rgba(134, 65, 244, ${opacity})`, // optional
-        strokeWidth: 2 // optional
-      }
+        strokeWidth: 2, // optional
+      },
     ],
-    legend: ["Rainy Days"] // optional
+    legend: ['Mean Pitch (ST)'], // optional
   });
+
+  useEffect(() => {
+    const labels = Object.keys(pitch_data);
+    const dataset = labels.map(key => pitch_data[key].mean_pitch_ST);
+
+    console.log('Labels:', labels);
+    console.log('Dataset:', dataset);
+
+    setData({
+      labels,
+      datasets: [
+        {
+          data: dataset,
+          color: (opacity = 1) => `rgba(134, 65, 244, ${opacity})`, // optional
+          strokeWidth: 2, // optional
+        },
+      ],
+      legend: ['Mean Pitch (ST)'], // optional
+    });
+  }, [pitch_data]);
 
   const navigation = useNavigation();
 
