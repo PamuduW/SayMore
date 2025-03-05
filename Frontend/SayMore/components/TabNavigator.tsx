@@ -11,8 +11,9 @@ import LessonsScreen from '../screens/LessonsScreen';
 import AccountScreen from '../screens/AccountScreen';
 import AudioScreen from '../screens/AudioScreen';
 import AnalysisScreen from '../screens/AnalysisScreen';
-import VideoListScreen from '../screens/VideoListScreen';  // Import VideoListScreen
-import VideoPlayerScreen from '../screens/VideoPlayerScreen';// Import VideoPlayerScreen
+import VideoListScreen from '../screens/VideoListScreen';
+import VideoPlayerScreen from '../screens/VideoPlayerScreen';
+import HistoryScreen from '../screens/HistoryScreen'; // <--- Import HistoryScreen
 
 import HomeIcon from '../assets/home.png';
 import MoreInfoIcon from '../assets/more-info.png';
@@ -26,6 +27,7 @@ const MoreStack = () => (
     <Stack.Screen name="Lessons" component={LessonsScreen} />
     <Stack.Screen name="VideoList" component={VideoListScreen} />
     <Stack.Screen name="VideoPlayer" component={VideoPlayerScreen} />
+    <Stack.Screen name="History" component={HistoryScreen} />
   </Stack.Navigator>
 );
 

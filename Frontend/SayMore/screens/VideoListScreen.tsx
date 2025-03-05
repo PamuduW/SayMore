@@ -19,9 +19,9 @@ interface RouteParams {
 
 const VideoListScreen = () => {
     const navigation = useNavigation();
-    const route = useRoute<any>(); // Explicitly use the type
+    const route = useRoute<any>();
     const isFocused = useIsFocused();
-    const { lesson } = route.params as RouteParams; // Type assertion
+    const { lesson } = route.params as RouteParams;
 
     const [videos, setVideos] = useState<VideoItem[]>([]);
     const [loading, setLoading] = useState(true);
@@ -68,7 +68,7 @@ const VideoListScreen = () => {
 
         return () => {
             isSubscribed = false;
-            setVideos([]); // Clear videos on unmount
+            setVideos([]);
         };
     }, [fetchVideos]);
 

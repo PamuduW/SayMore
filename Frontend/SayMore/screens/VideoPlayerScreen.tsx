@@ -1,18 +1,21 @@
 // src/screens/VideoPlayerScreen.tsx
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
     View,
     StyleSheet,
     Dimensions,
     Text,
     ScrollView,
-    Image,
-    TouchableOpacity
+    TouchableOpacity,
+    Image
 } from 'react-native';
 import YoutubeIframe from 'react-native-youtube-iframe';
 import { useRoute, useNavigation } from '@react-navigation/native';
 import { RouteProp } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
+import { WatchedVideo } from '../types/types';
+import firestore from '@react-native-firebase/firestore';
+import auth from '@react-native-firebase/auth';
 
 type RootStackParamList = {
     VideoPlayer: {
@@ -44,13 +47,52 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = ({ route, navigation
 
     const combinedTitle = `${lessonTitle} - ${video.title}`;
 
+    useEffect(() => {
+        const saveWatchedVideo = async () => {
+            const now = new Date();
+            const timestamp = now.toLocaleString();
+            const user = auth().currentUser;
+
+            if (!user) {
+                console.log('No user is currently signed in. Aborting saveWatchedVideo.');
+                return;
+            }
+
+            const userId = user.uid;
+            console.log('Signed in User ID:', userId);
+
+            const watchedVideoData: WatchedVideo = {
+                videoId: video.videoId,
+                title: video.title,
+                lessonTitle: lessonTitle,
+                timestamp: timestamp,
+            };
+
+            try {
+                console.log("Saving Data");
+                console.log(userId);
+                console.log(watchedVideoData);
+                await firestore()
+                    .collection('watched_videos')
+                    .doc(userId)
+                    .collection('user_watched_videos')
+                    .add(watchedVideoData);
+                console.log('Watched video saved:', watchedVideoData);
+            } catch (error) {
+                console.error('Error saving watched video:', error);
+            }
+        };
+        saveWatchedVideo();
+    }, []);
+
     return (
         <ScrollView style={styles.container}>
-            <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
-                <Text style={styles.backButtonText}>← Back</Text>
-            </TouchableOpacity>
-
-            <Text style={styles.lessonHeader}>{combinedTitle}</Text>
+            <View style={styles.header}>
+                <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
+                    <Text style={styles.backButtonText}>←</Text>
+                </TouchableOpacity>
+                <Text style={styles.lessonHeader}>{combinedTitle}</Text>
+            </View>
 
             <View style={{ ...styles.videoContainer, width: playerWidth, marginHorizontal: playerMarginHorizontal }}>
                 <YoutubeIframe
@@ -77,29 +119,24 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: '#F0F8FF',
+        padding: 20,
     },
-    backButton: {
+    header: {
         flexDirection: 'row',
         alignItems: 'center',
-        marginBottom: 10,
-        marginTop: 10,
-        marginLeft: 10
+        marginBottom: 20,
+    },
+    backButton: {
+        marginRight: 10,
     },
     backButtonText: {
-        fontSize: 16,
+        fontSize: 24,
         fontWeight: 'bold',
     },
     lessonHeader: {
         fontSize: 20,
         fontWeight: 'bold',
         color: '#003366',
-        padding: 20,
-        textAlign: 'center',
-    },
-    videoHeader: {
-        fontSize: 18,
-        color: '#003366',
-        padding: 10,
         textAlign: 'center',
     },
     videoContainer: {
