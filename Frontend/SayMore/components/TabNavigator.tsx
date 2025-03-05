@@ -10,6 +10,7 @@ import LessonsScreen from '../screens/LessonsScreen';
 import AccountScreen from '../screens/AccountScreen';
 import AudioScreen from '../screens/AudioScreen';
 import AnalysisScreen from '../screens/AnalysisScreen';
+import FeedbackScreen from '../screens/FeedbackScreen';
 
 import HomeIcon from '../assets/home.png';
 import MoreInfoIcon from '../assets/more-info.png';
@@ -29,6 +30,7 @@ const HomeStack = () => (
     <Stack.Screen name="HomeScreen" component={HomeScreen} />
     <Stack.Screen name="Audio" component={AudioScreen} />
     <Stack.Screen name="AnalysisScreen" component={AnalysisScreen} />
+    <Stack.Screen name="FeedbackScreen" component={FeedbackScreen} />
   </Stack.Navigator>
 );
 
