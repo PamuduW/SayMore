@@ -65,7 +65,6 @@ const LessonsScreen: React.FC<LessonsScreenProps> = () => {
     { title: 'How to get a deeper voice', icon: require('../assets/deeper-voice.png'), documentId: 'deeper_voice' },
     { title: 'Clarity in Speech', icon: require('../assets/clarity.png'), documentId: 'clarity' },
     { title: 'Perfecting Your Pitch', icon: require('../assets/pitch.png'), documentId: 'pitch' },
-    { title: 'Mastering Speech Intensity', icon: require('../assets/intensity.png'), documentId: 'intensity' },
     { title: 'Speaking with Energy', icon: require('../assets/energy.png'), documentId: 'energy' },
   ];
 
@@ -147,12 +146,13 @@ const styles = StyleSheet.create({
   imageContainer: {
     height: 100,
     width: '100%',
-    marginBottom: 8,
+    marginBottom: 10,
     overflow: 'hidden',
   },
   lessonIcon: {
     width: '100%',
     height: '100%',
+    borderRadius: 15,
   },
   lessonText: {
     fontSize: 16,
