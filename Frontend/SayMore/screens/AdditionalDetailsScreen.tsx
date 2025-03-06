@@ -32,7 +32,7 @@ const AdditionalDetailsScreen = ({ route }) => {
     energy_analysis = {},
   } = route.params || {};
 
-  const [data, setData] = useState({
+  const [pitch_graph_data, setPitch_graph_data] = useState({
     labels: ['0.0'],
     datasets: [
       {
@@ -44,25 +44,168 @@ const AdditionalDetailsScreen = ({ route }) => {
     legend: ['Mean Pitch (ST)'],
   });
 
+  const [hnr_graph_data, setHnr_graph_data] = useState({
+    labels: ['0.0'],
+    datasets: [
+      {
+        data: [0],
+        color: (opacity = 1) => `rgba(134, 65, 244, ${opacity})`,
+        strokeWidth: 2,
+      },
+    ],
+    legend: ['HNR'],
+  });
+
+  const [shimmer_graph_data, setShimmer_graph_data] = useState({
+    labels: ['0.0'],
+    datasets: [
+      {
+        data: [0],
+        color: (opacity = 1) => `rgba(134, 65, 244, ${opacity})`,
+        strokeWidth: 2,
+      },
+    ],
+    legend: ['Shimmer'],
+  });
+
+  const [jitter_graph_data, setJitter_graph_data] = useState({
+    labels: ['0.0'],
+    datasets: [
+      {
+        data: [0],
+        color: (opacity = 1) => `rgba(134, 65, 244, ${opacity})`,
+        strokeWidth: 2,
+      },
+    ],
+    legend: ['Jitter'],
+  });
+
+  const [intensity_graph_data, setIntensity_graph_data] = useState({
+    labels: ['0.0'],
+    datasets: [
+      {
+        data: [0],
+        color: (opacity = 1) => `rgba(134, 65, 244, ${opacity})`,
+        strokeWidth: 2,
+      },
+    ],
+    legend: ['Intensity'],
+  });
+
+  const [energy_graph_data, setEnergy_graph_data] = useState({
+    labels: ['0.0'],
+    datasets: [
+      {
+        data: [0],
+        color: (opacity = 1) => `rgba(134, 65, 244, ${opacity})`,
+        strokeWidth: 2,
+      },
+    ],
+    legend: ['Energy'],
+  });
+
   useEffect(() => {
-    const labelss = Object.keys(pitch_data);
-    const dataset = labelss.map(key => pitch_data[key].mean_pitch_ST);
+    const pitch_labels = Object.keys(pitch_data);
+    const pitch_dataset = pitch_labels.map(
+      key => pitch_data[key].mean_pitch_ST
+    );
 
-    console.log('Labels:', labelss);
-    console.log('Dataset:', dataset);
+    const hnr_labels = Object.keys(hnr_data);
+    const hnr_dataset = hnr_labels.map(key => hnr_data[key]);
 
-    setData(prevData => ({
+    const shimmer_labels = Object.keys(shimmer_data);
+    const shimmer_dataset = shimmer_labels.map(key => shimmer_data[key]);
+
+    const jitter_labels = Object.keys(jitter_data);
+    const jitter_dataset = jitter_labels.map(key => jitter_data[key]);
+
+    const intensity_labels = Object.keys(intensity_analysis);
+    const intensity_dataset = intensity_labels.map(
+      key => intensity_analysis[key]
+    );
+
+    const energy_labels = Object.keys(energy_analysis);
+    const energy_dataset = energy_labels.map(key => energy_analysis[key]);
+
+    setPitch_graph_data(prevData => ({
       ...prevData,
-      labels: labelss,
+      labels: pitch_labels,
       datasets: [
         {
-          data: dataset,
+          data: pitch_dataset,
           color: (opacity = 1) => `rgba(134, 65, 244, ${opacity})`,
           strokeWidth: 2,
         },
       ],
     }));
-  }, [pitch_data]);
+
+    setHnr_graph_data(prevData => ({
+      ...prevData,
+      labels: hnr_labels,
+      datasets: [
+        {
+          data: hnr_dataset,
+          color: (opacity = 1) => `rgba(134, 65, 244, ${opacity})`,
+          strokeWidth: 2,
+        },
+      ],
+    }));
+
+    setShimmer_graph_data(prevData => ({
+      ...prevData,
+      labels: shimmer_labels,
+      datasets: [
+        {
+          data: shimmer_dataset,
+          color: (opacity = 1) => `rgba(134, 65, 244, ${opacity})`,
+          strokeWidth: 2,
+        },
+      ],
+    }));
+
+    setJitter_graph_data(prevData => ({
+      ...prevData,
+      labels: jitter_labels,
+      datasets: [
+        {
+          data: jitter_dataset,
+          color: (opacity = 1) => `rgba(134, 65, 244, ${opacity})`,
+          strokeWidth: 2,
+        },
+      ],
+    }));
+
+    setIntensity_graph_data(prevData => ({
+      ...prevData,
+      labels: intensity_labels,
+      datasets: [
+        {
+          data: intensity_dataset,
+          color: (opacity = 1) => `rgba(134, 65, 244, ${opacity})`,
+          strokeWidth: 2,
+        },
+      ],
+    }));
+
+    setEnergy_graph_data(prevData => ({
+      ...prevData,
+      labels: energy_labels,
+      datasets: [
+        {
+          data: energy_dataset,
+          color: (opacity = 1) => `rgba(134, 65, 244, ${opacity})`,
+          strokeWidth: 2,
+        },
+      ],
+    }));
+  }, [
+    pitch_data,
+    hnr_data,
+    shimmer_data,
+    jitter_data,
+    intensity_analysis,
+    energy_analysis,
+  ]);
 
   const navigation = useNavigation();
 
@@ -81,7 +224,47 @@ const AdditionalDetailsScreen = ({ route }) => {
     <ScrollView contentContainerStyle={styles.container}>
       <Text style={styles.title}>Additional Details</Text>
       <LineChart
-        data={data}
+        data={pitch_graph_data}
+        width={screenWidth}
+        height={256}
+        verticalLabelRotation={30}
+        chartConfig={chartConfig}
+        bezier
+      />
+      <LineChart
+        data={hnr_graph_data}
+        width={screenWidth}
+        height={256}
+        verticalLabelRotation={30}
+        chartConfig={chartConfig}
+        bezier
+      />
+      <LineChart
+        data={shimmer_graph_data}
+        width={screenWidth}
+        height={256}
+        verticalLabelRotation={30}
+        chartConfig={chartConfig}
+        bezier
+      />
+      <LineChart
+        data={jitter_graph_data}
+        width={screenWidth}
+        height={256}
+        verticalLabelRotation={30}
+        chartConfig={chartConfig}
+        bezier
+      />
+      <LineChart
+        data={intensity_graph_data}
+        width={screenWidth}
+        height={256}
+        verticalLabelRotation={30}
+        chartConfig={chartConfig}
+        bezier
+      />
+      <LineChart
+        data={energy_graph_data}
         width={screenWidth}
         height={256}
         verticalLabelRotation={30}
