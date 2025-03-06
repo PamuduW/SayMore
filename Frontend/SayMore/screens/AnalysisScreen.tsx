@@ -55,8 +55,8 @@ const AnalysisScreen = ({ route }) => {
         if (!response.ok)
           throw new Error(`HTTP error! status: ${response.status}`);
 
-        const data = await response.json();
-        setResponseData(data);
+        const responseInfo = await response.json();
+        setResponseData(responseInfo);
         setData({
           labels: [
             'final_energy_score',
@@ -64,11 +64,11 @@ const AnalysisScreen = ({ route }) => {
             'final_public_speaking_score',
           ],
           data: [
-            data.result['Speech_Intensity_&_Energy_Data'].final_energy_score /
-              100,
-            data.result['Voice_Quality_&_Stability_Data'].final_voice_score /
-              100,
-            data.result.final_public_speaking_score / 100,
+            responseInfo.result['Speech_Intensity_&_Energy_Data']
+              .final_energy_score / 100,
+            responseInfo.result['Voice_Quality_&_Stability_Data']
+              .final_voice_score / 100,
+            responseInfo.result.final_public_speaking_score / 100,
           ],
         });
       } catch (error) {
