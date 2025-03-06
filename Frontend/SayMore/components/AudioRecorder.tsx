@@ -74,7 +74,6 @@ const AudioRecorder: React.FC<AudioRecorderProps> = ({
     const wavFilePath = `${RNFS.DocumentDirectoryPath}/recordedAudio.wav`;
     try {
       await RNFS.moveFile(rawAudioPath, wavFilePath);
-      console.log('Recording saved to:', wavFilePath);
       setAudioPath(wavFilePath);
     } catch (error) {
       console.error('Error saving WAV file:', error);
