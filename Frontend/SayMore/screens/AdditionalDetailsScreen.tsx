@@ -33,35 +33,35 @@ const AdditionalDetailsScreen = ({ route }) => {
   } = route.params || {};
 
   const [data, setData] = useState({
-    labels: [],
+    labels: ['0.0'],
     datasets: [
       {
-        data: [],
-        color: (opacity = 1) => `rgba(134, 65, 244, ${opacity})`, // optional
-        strokeWidth: 2, // optional
+        data: [0],
+        color: (opacity = 1) => `rgba(134, 65, 244, ${opacity})`,
+        strokeWidth: 2,
       },
     ],
-    legend: ['Mean Pitch (ST)'], // optional
+    legend: ['Mean Pitch (ST)'],
   });
 
   useEffect(() => {
-    const labels = Object.keys(pitch_data);
-    const dataset = labels.map(key => pitch_data[key].mean_pitch_ST);
+    const labelss = Object.keys(pitch_data);
+    const dataset = labelss.map(key => pitch_data[key].mean_pitch_ST);
 
-    console.log('Labels:', labels);
+    console.log('Labels:', labelss);
     console.log('Dataset:', dataset);
 
-    setData({
-      labels,
+    setData(prevData => ({
+      ...prevData,
+      labels: labelss,
       datasets: [
         {
           data: dataset,
-          color: (opacity = 1) => `rgba(134, 65, 244, ${opacity})`, // optional
-          strokeWidth: 2, // optional
+          color: (opacity = 1) => `rgba(134, 65, 244, ${opacity})`,
+          strokeWidth: 2,
         },
       ],
-      legend: ['Mean Pitch (ST)'], // optional
-    });
+    }));
   }, [pitch_data]);
 
   const navigation = useNavigation();
