@@ -64,7 +64,7 @@ async def test(request_body: RequestBody):
                 }
             )
 
-        # blob.delete()
+        blob.delete()
         os.remove(file_name)
         return {"result": analysis_result}
     except Exception as e:
