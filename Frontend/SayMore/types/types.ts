@@ -4,19 +4,21 @@ export interface Lesson {
   documentId: string;
 }
 
-export interface VideoItem {
-  thumbnail: string;
-  title: string;
-  videoId: string;
-  summary?: string;
-  summaryImage?: string;
-}
-
 export interface WatchedVideo {
+    id: string;
     videoId: string;
     title: string;
     lessonTitle: string;
     timestamp: string;
     thumbnail: string;
-    id: string;
+    summary?: string;
+    summaryImage?: string;
+}
+
+export interface VideoItem {
+    videoId: string;
+    title: string;
+    thumbnail?: string;
+    summary?: string;
+    summaryImage?: string;
 }

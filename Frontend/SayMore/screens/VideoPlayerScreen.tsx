@@ -6,7 +6,9 @@ import {
     Text,
     ScrollView,
     TouchableOpacity,
-    Image
+    Image,
+    StatusBar,
+    SafeAreaView
 } from 'react-native';
 import YoutubeIframe from 'react-native-youtube-iframe';
 import { useRoute, useNavigation } from '@react-navigation/native';
@@ -37,12 +39,13 @@ interface VideoPlayerScreenProps {
     navigation: VideoPlayerNavigationProp;
 }
 
-const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = ({ route, navigation }) => {
+const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = () => {
+    const route = useRoute<any>();
+    const navigation = useNavigation();
     const { video, lessonTitle } = route.params;
     const { width, height } = Dimensions.get('window');
-    const playerHeight = height / 2;
-    const playerWidth = width * 0.95;
-    const playerMarginHorizontal = width * 0.05;
+    const playerHeight = height * 0.3;
+    const playerWidth = width;
 
     const combinedTitle = `${lessonTitle} - ${video.title}`;
 
@@ -50,6 +53,7 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = ({ route, navigation
         const saveWatchedVideo = async () => {
             const now = new Date();
             const timestamp = now.toLocaleString();
+            const uniqueId = `${video.videoId}-${Date.now()}`; // Create a unique ID using current timestamp
             const user = auth().currentUser;
 
             if (!user) {
@@ -66,121 +70,172 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = ({ route, navigation
                 lessonTitle: lessonTitle,
                 timestamp: timestamp,
                 thumbnail: video.thumbnail || '',
-                id: `${video.videoId}-${timestamp}`,
+                id: uniqueId, // Use the unique ID
             };
 
             try {
-                // Fetch existing watchedVideos data
-                const userDoc = await firestore()
+                // Always add the new watch entry regardless of whether the video was watched before
+                await firestore()
                     .collection('User_Accounts')
                     .doc(userId)
-                    .get();
-
-                let watchedVideos = userDoc.data()?.watchedVideos || [];
-
-                // Check if the video already exists in the array
-                const videoAlreadyWatched = watchedVideos.some(
-                    (watchedVideo) => watchedVideo.videoId === video.videoId
-                );
-
-                if (!videoAlreadyWatched) {
-                    // Add the video to the array only if it doesn't exist
-                    await firestore()
-                        .collection('User_Accounts')
-                        .doc(userId)
-                        .update({
-                            watchedVideos: firestore.FieldValue.arrayUnion(watchedVideoData),
-                        });
-                    console.log('Watched video saved to User_Accounts:', watchedVideoData);
-                } else {
-                    console.log('Video already watched. Not adding to history.');
-                }
+                    .update({
+                        watchedVideos: firestore.FieldValue.arrayUnion(watchedVideoData),
+                    });
+                console.log('Watched video saved to User_Accounts:', watchedVideoData);
             } catch (error) {
                 console.error('Error saving watched video to User_Accounts:', error);
             }
         };
         saveWatchedVideo();
-    }, []);
+    }, [video.videoId, video.title, video.thumbnail, lessonTitle]);
 
     return (
-        <ScrollView style={styles.container}>
-            <View style={styles.header}>
-                <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
-                    <Text style={styles.backButtonText}>←</Text>
-                </TouchableOpacity>
-                <Text style={styles.lessonHeader}>{combinedTitle}</Text>
-            </View>
-
-            <View style={{ ...styles.videoContainer, width: playerWidth, marginHorizontal: playerMarginHorizontal }}>
-                <YoutubeIframe
-                    height={playerHeight}
-                    width={playerWidth}
-                    videoId={video.videoId}
-                />
-            </View>
-
-            {video.summary && (
-                <View style={styles.summaryContainer}>
-                    <Text style={styles.summaryTitle}>Summary</Text>
-                    {video.summaryImage && (
-                        <Image source={{ uri: video.summaryImage }} style={styles.summaryImage} />
-                    )}
-                    <Text style={styles.summaryText}>{video.summary}</Text>
+        <SafeAreaView style={styles.safeArea}>
+            <StatusBar barStyle="dark-content" backgroundColor="#F0F8FF" />
+            <View style={styles.container}>
+                <View style={styles.header}>
+                    <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
+                        <Text style={styles.backButtonText}>←</Text>
+                    </TouchableOpacity>
+                    <View style={styles.headerTextContainer}>
+                        <Text style={styles.headerText} numberOfLines={1} ellipsizeMode="tail">
+                            {combinedTitle}
+                        </Text>
+                    </View>
                 </View>
-            )}
-        </ScrollView>
+
+                <ScrollView style={styles.scrollContent} showsVerticalScrollIndicator={false}>
+                    <View style={styles.videoContainer}>
+                        <YoutubeIframe
+                            height={playerHeight}
+                            width={playerWidth}
+                            videoId={video.videoId}
+                        />
+                    </View>
+
+                    <View style={styles.videoInfoContainer}>
+                        <Text style={styles.videoTitle}>{video.title}</Text>
+                        <Text style={styles.lessonSubtitle}>{lessonTitle}</Text>
+                    </View>
+
+                    {video.summary && (
+                        <View style={styles.summaryOuterContainer}>
+                            <View style={styles.summaryHeaderContainer}>
+                                <Text style={styles.summaryHeaderText}>Summary</Text>
+                            </View>
+                            <View style={styles.summaryCardContainer}>
+                                {video.summaryImage && (
+                                    <Image source={{ uri: video.summaryImage }} style={styles.summaryImage} />
+                                )}
+                                <Text style={styles.summaryText}>{video.summary}</Text>
+                            </View>
+                        </View>
+                    )}
+                </ScrollView>
+            </View>
+        </SafeAreaView>
     );
 };
 
 const styles = StyleSheet.create({
-    scrollContainer: { paddingBottom: 20 },
+    safeArea: {
+        flex: 1,
+        backgroundColor: '#F0F8FF',
+    },
     container: {
         flex: 1,
         backgroundColor: '#F0F8FF',
-        //padding: 20,
     },
     header: {
         flexDirection: 'row',
         alignItems: 'center',
-        marginBottom: 20,
+        paddingHorizontal: 16,
+        paddingVertical: 12,
+        backgroundColor: '#F0F8FF',
+        borderBottomWidth: 1,
+        borderBottomColor: '#E1EEFB',
     },
     backButton: {
-        marginRight: 10,
+        padding: 4,
     },
     backButtonText: {
         fontSize: 24,
         fontWeight: 'bold',
+        color: '#0066CC',
     },
-    lessonHeader: {
-        fontSize: 20,
-        fontWeight: 'bold',
+    headerTextContainer: {
+        flex: 1,
+        marginHorizontal: 12,
+    },
+    headerText: {
+        fontSize: 18,
+        fontWeight: '600',
+        color: '#003366',
+    },
+    scrollContent: {
+        flex: 1,
+    },
+    videoContainer: {
+        alignItems: 'center',
+        backgroundColor: '#003366',
+        marginBottom: -45,
+    },
+    videoInfoContainer: {
+        padding: 16,
+        backgroundColor: '#FFFFFF',
+        borderBottomWidth: 1,
+        borderBottomColor: '#E1EEFB',
+        marginBottom: 16,
+    },
+    videoTitle: {
+        fontSize: 18,
+        fontWeight: '600',
+        color: '#003366',
+        marginBottom: 4,
+    },
+    lessonSubtitle: {
+        fontSize: 14,
+        color: '#4A6D8C',
+    },
+    summaryOuterContainer: {
+        marginHorizontal: 16,
+        marginBottom: 24,
+        borderRadius: 12,
+        backgroundColor: '#FFFFFF',
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.1,
+        shadowRadius: 4,
+        elevation: 3,
+        overflow: 'hidden',
+    },
+    summaryHeaderContainer: {
+        backgroundColor: '#E1EEFB',
+        paddingVertical: 12,
+        paddingHorizontal: 16,
+        borderTopLeftRadius: 12,
+        borderTopRightRadius: 12,
+    },
+    summaryHeaderText: {
+        fontSize: 16,
+        fontWeight: '600',
         color: '#003366',
         textAlign: 'center',
     },
-    videoContainer: {
-        alignSelf: 'center',
-    },
-    summaryContainer: {
-        padding: 10,
-        marginTop: -215,
-    },
-    summaryTitle: {
-        fontSize: 20,
-        fontWeight: 'bold',
-        color: '#003366',
-        marginBottom: 20,
-        textAlign: 'center'
-    },
-    summaryText: {
-        fontSize: 18,
-        color: '#003366',
+    summaryCardContainer: {
+        padding: 16,
     },
     summaryImage: {
         width: '100%',
-        height: 200,
-        resizeMode: 'cover',
-        marginBottom: 20,
-    }
+        height: 180,
+        borderRadius: 8,
+        marginBottom: 16,
+    },
+    summaryText: {
+        fontSize: 16,
+        lineHeight: 24,
+        color: '#003366',
+    },
 });
 
 export default VideoPlayerScreen;
