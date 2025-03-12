@@ -8,10 +8,11 @@ import {
     TouchableOpacity,
     Image,
     StatusBar,
-    SafeAreaView
+    SafeAreaView,
+    BackHandler
 } from 'react-native';
 import YoutubeIframe from 'react-native-youtube-iframe';
-import { useRoute, useNavigation } from '@react-navigation/native';
+import { useRoute, useNavigation, useFocusEffect, useIsFocused } from '@react-navigation/native';
 import { RouteProp } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { WatchedVideo } from '../types/types';
@@ -42,31 +43,43 @@ interface VideoPlayerScreenProps {
 const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = () => {
     const route = useRoute<any>();
     const navigation = useNavigation();
+    const isFocused = useIsFocused();
     const { video, lessonTitle } = route.params;
     const { width, height } = Dimensions.get('window');
     const playerHeight = height * 0.3;
     const playerWidth = width;
     const [playing, setPlaying] = useState(false);
-    const [videoSaved, setVideoSaved] = useState(false);
-    const playStartTimeRef = useRef<number | null>(null);
     const videoPlayerRef = useRef(null);
+
+    // Refs for tracking state that shouldn't trigger re-renders
+    const playStartTimeRef = useRef<number | null>(null);
+    const hasPlayedEnoughRef = useRef<boolean>(false);
+    const isSavingRef = useRef<boolean>(false);
+    const videoSavedRef = useRef<boolean>(false);
 
     const combinedTitle = `${lessonTitle} - ${video.title}`;
 
-    const saveWatchedVideo = async () => {
-        // If we've already saved this video view, don't save it again
-        if (videoSaved) return;
+    // Improved save function with better guard clauses and ref-based state tracking
+    const saveWatchedVideo = useCallback(async () => {
+        // Multiple guard clauses to prevent duplicate saves
+        if (videoSavedRef.current || isSavingRef.current || !hasPlayedEnoughRef.current) {
+            console.log('Skipping save: already saved, currently saving, or not played enough');
+            return;
+        }
 
-        const now = new Date();
-        const timestamp = now.toLocaleString();
-        const uniqueId = `${video.videoId}-${Date.now()}`; // Create a unique ID using current timestamp
         const user = auth().currentUser;
-
         if (!user) {
             console.log('No user is currently signed in. Aborting saveWatchedVideo.');
             return;
         }
 
+        // Set saving flag immediately to prevent concurrent save attempts
+        isSavingRef.current = true;
+        console.log('Starting to save video to history');
+
+        const now = new Date();
+        const timestamp = now.toLocaleString();
+        const uniqueId = `${video.videoId}-${Date.now()}`;
         const userId = user.uid;
         console.log('Saving video to history for User ID:', userId);
 
@@ -76,25 +89,67 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = () => {
             lessonTitle: lessonTitle,
             timestamp: timestamp,
             thumbnail: video.thumbnail || '',
-            id: uniqueId, // Use the unique ID
+            id: uniqueId,
         };
 
         try {
-            // Add the new watch entry to Firebase
-            await firestore()
+            // First check if this video already exists in the user's history
+            const userDoc = await firestore()
                 .collection('User_Accounts')
                 .doc(userId)
-                .update({
-                    watchedVideos: firestore.FieldValue.arrayUnion(watchedVideoData),
-                });
-            console.log('Video successfully saved to history:', watchedVideoData);
+                .get();
+
+            if (userDoc.exists) {
+                const userData = userDoc.data();
+                const existingVideos = userData?.watchedVideos || [];
+
+                // Check if we already have this exact video ID in the history within the last hour
+                // This is an extra safeguard against duplicates
+                const oneHourAgo = new Date();
+                oneHourAgo.setHours(oneHourAgo.getHours() - 1);
+
+                const recentExistingVideo = existingVideos.find((v: WatchedVideo) =>
+                    v.videoId === video.videoId &&
+                    new Date(v.timestamp) > oneHourAgo
+                );
+
+                if (recentExistingVideo) {
+                    console.log('Video was already saved recently, skipping duplicate save');
+                    videoSavedRef.current = true;
+                    isSavingRef.current = false;
+                    return;
+                }
+
+                // If we get here, it's safe to add to history
+                await firestore()
+                    .collection('User_Accounts')
+                    .doc(userId)
+                    .update({
+                        watchedVideos: firestore.FieldValue.arrayUnion(watchedVideoData),
+                    });
+                console.log('Video successfully saved to history:', uniqueId);
+            }
 
             // Mark video as saved to prevent duplicate saves
-            setVideoSaved(true);
+            videoSavedRef.current = true;
         } catch (error) {
             console.error('Error saving watched video to User_Accounts:', error);
+        } finally {
+            // Even if there's an error, mark saving as done to prevent infinite retry loops
+            isSavingRef.current = false;
         }
-    };
+    }, [video, lessonTitle]);
+
+    // Check if video has played enough to be considered "watched"
+    const checkPlayDuration = useCallback(() => {
+        if (playStartTimeRef.current !== null && !hasPlayedEnoughRef.current) {
+            const playDuration = Date.now() - playStartTimeRef.current;
+            if (playDuration >= 1000) { // 1 second threshold
+                console.log(`Video played for ${playDuration}ms - marking as watched`);
+                hasPlayedEnoughRef.current = true;
+            }
+        }
+    }, []);
 
     // This function will be called when the play state of the video changes
     const onStateChange = useCallback((state: string) => {
@@ -111,60 +166,89 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = () => {
         } else if (state === 'paused' || state === 'ended' || state === 'stopped') {
             setPlaying(false);
 
-            // If playback has started previously and we have a start time
-            if (playStartTimeRef.current !== null) {
-                // Calculate how long the video has played
-                const playDuration = Date.now() - playStartTimeRef.current;
-                console.log(`Video played for ${playDuration}ms before pausing/ending`);
+            // Check if we've played enough to mark as watched
+            checkPlayDuration();
 
-                // If the video played for at least 1000ms (1 second) and hasn't been saved yet
-                if (playDuration >= 1000 && !videoSaved) {
-                    console.log('Saving video to history after 1+ second of playback');
-                    saveWatchedVideo();
-                }
+            // If we've played enough and we're pausing/ending, try to save
+            if (hasPlayedEnoughRef.current && !videoSavedRef.current) {
+                saveWatchedVideo();
             }
         }
-    }, [videoSaved]);
+    }, [checkPlayDuration, saveWatchedVideo]);
 
-    // Alternative method to track video playback using a timer
+    // Handle back button press
     useEffect(() => {
-        let playbackTimer: NodeJS.Timeout | null = null;
-
-        if (playing && !videoSaved && playStartTimeRef.current === null) {
-            // If the onStateChange doesn't correctly capture the playing state
-            // use this as a fallback method
-            console.log('Fallback: Video appears to be playing, starting timer');
-            playStartTimeRef.current = Date.now();
-
-            playbackTimer = setTimeout(() => {
-                if (playing && !videoSaved) {
-                    console.log('Fallback: Saving video after 1 second of detected playback');
+        const backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
+            if (isFocused) {
+                // Final check before navigating away
+                checkPlayDuration();
+                if (hasPlayedEnoughRef.current && !videoSavedRef.current) {
                     saveWatchedVideo();
                 }
-            }, 1000);
-        }
-
-        return () => {
-            if (playbackTimer) {
-                clearTimeout(playbackTimer);
+                navigation.goBack();
+                return true;
             }
-        };
-    }, [playing, videoSaved]);
+            return false;
+        });
+
+        return () => backHandler.remove();
+    }, [isFocused, navigation, checkPlayDuration, saveWatchedVideo]);
+
+    // Save video when navigating away if it has been played enough
+    useFocusEffect(
+        useCallback(() => {
+            return () => {
+                console.log('VideoPlayer screen is losing focus');
+                checkPlayDuration();
+
+                // If we've played enough but haven't saved yet, save now
+                if (hasPlayedEnoughRef.current && !videoSavedRef.current) {
+                    console.log('Saving video on navigation away');
+                    saveWatchedVideo();
+                }
+            };
+        }, [checkPlayDuration, saveWatchedVideo])
+    );
+
+    // Set up a timer to periodically check if we should mark the video as watched
+    useEffect(() => {
+        const watchTimer = setInterval(() => {
+            if (playing && playStartTimeRef.current !== null) {
+                checkPlayDuration();
+            }
+        }, 1000);
+
+        return () => clearInterval(watchTimer);
+    }, [playing, checkPlayDuration]);
 
     // Cleanup when component unmounts
     useEffect(() => {
         return () => {
-            // Reset refs and state
-            playStartTimeRef.current = null;
+            console.log('Component unmounting, final save check');
+
+            // One final check to save the video if needed
+            if (hasPlayedEnoughRef.current && !videoSavedRef.current && !isSavingRef.current) {
+                saveWatchedVideo();
+            }
         };
-    }, []);
+    }, [saveWatchedVideo]);
 
     return (
         <SafeAreaView style={styles.safeArea}>
             <StatusBar barStyle="dark-content" backgroundColor="#F0F8FF" />
             <View style={styles.container}>
                 <View style={styles.header}>
-                    <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
+                    <TouchableOpacity
+                        style={styles.backButton}
+                        onPress={() => {
+                            // Check if we've played enough and save if needed before going back
+                            checkPlayDuration();
+                            if (hasPlayedEnoughRef.current && !videoSavedRef.current) {
+                                saveWatchedVideo();
+                            }
+                            navigation.goBack();
+                        }}
+                    >
                         <Text style={styles.backButtonText}>←</Text>
                     </TouchableOpacity>
                     <View style={styles.headerTextContainer}>
