@@ -1,25 +1,23 @@
-import React from "react";
-import { View, Text, StyleSheet, Button, Animated, Image } from "react-native";
-import { useEffect, useRef } from "react";
+import React from 'react';
+import { View, Text, Image, StyleSheet, Animated } from 'react-native';
 
-const PointsScreen = ({ route, navigation }) => {
+const PointsScreen = ({ route }) => {
   const { points, totalPoints } = route.params;
-  const fadeAnim = useRef(new Animated.Value(0)).current;
-  const scaleAnim = useRef(new Animated.Value(0)).current;
+  const fadeAnim = new Animated.Value(0);
+  const scaleAnim = new Animated.Value(0);
 
-  useEffect(() => {
-    Animated.parallel([
-      Animated.timing(fadeAnim, {
-        toValue: 1,
-        duration: 1500,
-        useNativeDriver: true,
-      }),
-      Animated.spring(scaleAnim, {
-        toValue: 1,
-        friction: 5,
-        useNativeDriver: true,
-      }),
-    ]).start();
+  React.useEffect(() => {
+    Animated.timing(fadeAnim, {
+      toValue: 1,
+      duration: 1000,
+      useNativeDriver: true,
+    }).start();
+
+    Animated.spring(scaleAnim, {
+      toValue: 1,
+      friction: 5,
+      useNativeDriver: true,
+    }).start();
   }, []);
 
   return (
@@ -28,9 +26,8 @@ const PointsScreen = ({ route, navigation }) => {
       <Animated.Text style={[styles.title, { opacity: fadeAnim }]}>Congratulations!</Animated.Text>
       <Animated.View style={{ transform: [{ scale: scaleAnim }] }}>
         <Text style={styles.pointsText}>You Scored:</Text>
-        <Text style={styles.pointsNumber}>{points} / {totalPoints}</Text>
+        <Text style={styles.points}>{points} / {totalPoints}</Text>
       </Animated.View>
-      <Button title="Go Home" onPress={() => navigation.navigate("Home")} color="#9ca1db" />
     </View>
   );
 };
@@ -38,35 +35,29 @@ const PointsScreen = ({ route, navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#292d61",
-    alignItems: "center",
-    justifyContent: "center",
-    padding: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'white',
   },
   trophyImage: {
-    width: 150,
-    height: 150,
+    width: 100,
+    height: 100,
     marginBottom: 20,
   },
   title: {
-    color: "#FFD700",
-    fontSize: 32,
-    fontWeight: "bold",
+    fontSize: 24,
+    fontWeight: 'bold',
     marginBottom: 20,
+    color: '#2c3e50',
   },
   pointsText: {
-    color: "#fff",
-    fontSize: 22,
-    fontWeight: "bold",
-    marginBottom: 10,
-    textAlign: "center",
+    fontSize: 18,
+    color: '#34495e',
   },
-  pointsNumber: {
-    color: "#FFD700",
-    fontSize: 48,
-    fontWeight: "bold",
-    marginBottom: 40,
-    textAlign: "center",
+  points: {
+    fontSize: 32,
+    fontWeight: 'bold',
+    color: '#4CAF50',
   },
 });
 
