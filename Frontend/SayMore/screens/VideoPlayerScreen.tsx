@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useState, useRef, useCallback, useEffect } from 'react';
 import {
     View,
     StyleSheet,
@@ -46,48 +46,118 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = () => {
     const { width, height } = Dimensions.get('window');
     const playerHeight = height * 0.3;
     const playerWidth = width;
+    const [playing, setPlaying] = useState(false);
+    const [videoSaved, setVideoSaved] = useState(false);
+    const playStartTimeRef = useRef<number | null>(null);
+    const videoPlayerRef = useRef(null);
 
     const combinedTitle = `${lessonTitle} - ${video.title}`;
 
-    useEffect(() => {
-        const saveWatchedVideo = async () => {
-            const now = new Date();
-            const timestamp = now.toLocaleString();
-            const uniqueId = `${video.videoId}-${Date.now()}`; // Create a unique ID using current timestamp
-            const user = auth().currentUser;
+    const saveWatchedVideo = async () => {
+        // If we've already saved this video view, don't save it again
+        if (videoSaved) return;
 
-            if (!user) {
-                console.log('No user is currently signed in. Aborting saveWatchedVideo.');
-                return;
+        const now = new Date();
+        const timestamp = now.toLocaleString();
+        const uniqueId = `${video.videoId}-${Date.now()}`; // Create a unique ID using current timestamp
+        const user = auth().currentUser;
+
+        if (!user) {
+            console.log('No user is currently signed in. Aborting saveWatchedVideo.');
+            return;
+        }
+
+        const userId = user.uid;
+        console.log('Saving video to history for User ID:', userId);
+
+        const watchedVideoData: WatchedVideo = {
+            videoId: video.videoId,
+            title: video.title,
+            lessonTitle: lessonTitle,
+            timestamp: timestamp,
+            thumbnail: video.thumbnail || '',
+            id: uniqueId, // Use the unique ID
+        };
+
+        try {
+            // Add the new watch entry to Firebase
+            await firestore()
+                .collection('User_Accounts')
+                .doc(userId)
+                .update({
+                    watchedVideos: firestore.FieldValue.arrayUnion(watchedVideoData),
+                });
+            console.log('Video successfully saved to history:', watchedVideoData);
+
+            // Mark video as saved to prevent duplicate saves
+            setVideoSaved(true);
+        } catch (error) {
+            console.error('Error saving watched video to User_Accounts:', error);
+        }
+    };
+
+    // This function will be called when the play state of the video changes
+    const onStateChange = useCallback((state: string) => {
+        console.log('YouTube player state changed:', state);
+
+        if (state === 'playing') {
+            setPlaying(true);
+
+            // Record the time when playback starts if not already set
+            if (playStartTimeRef.current === null) {
+                playStartTimeRef.current = Date.now();
+                console.log('Video playback started, starting timer');
             }
+        } else if (state === 'paused' || state === 'ended' || state === 'stopped') {
+            setPlaying(false);
 
-            const userId = user.uid;
-            console.log('Signed in User ID:', userId);
+            // If playback has started previously and we have a start time
+            if (playStartTimeRef.current !== null) {
+                // Calculate how long the video has played
+                const playDuration = Date.now() - playStartTimeRef.current;
+                console.log(`Video played for ${playDuration}ms before pausing/ending`);
 
-            const watchedVideoData: WatchedVideo = {
-                videoId: video.videoId,
-                title: video.title,
-                lessonTitle: lessonTitle,
-                timestamp: timestamp,
-                thumbnail: video.thumbnail || '',
-                id: uniqueId, // Use the unique ID
-            };
+                // If the video played for at least 1000ms (1 second) and hasn't been saved yet
+                if (playDuration >= 1000 && !videoSaved) {
+                    console.log('Saving video to history after 1+ second of playback');
+                    saveWatchedVideo();
+                }
+            }
+        }
+    }, [videoSaved]);
 
-            try {
-                // Always add the new watch entry regardless of whether the video was watched before
-                await firestore()
-                    .collection('User_Accounts')
-                    .doc(userId)
-                    .update({
-                        watchedVideos: firestore.FieldValue.arrayUnion(watchedVideoData),
-                    });
-                console.log('Watched video saved to User_Accounts:', watchedVideoData);
-            } catch (error) {
-                console.error('Error saving watched video to User_Accounts:', error);
+    // Alternative method to track video playback using a timer
+    useEffect(() => {
+        let playbackTimer: NodeJS.Timeout | null = null;
+
+        if (playing && !videoSaved && playStartTimeRef.current === null) {
+            // If the onStateChange doesn't correctly capture the playing state
+            // use this as a fallback method
+            console.log('Fallback: Video appears to be playing, starting timer');
+            playStartTimeRef.current = Date.now();
+
+            playbackTimer = setTimeout(() => {
+                if (playing && !videoSaved) {
+                    console.log('Fallback: Saving video after 1 second of detected playback');
+                    saveWatchedVideo();
+                }
+            }, 1000);
+        }
+
+        return () => {
+            if (playbackTimer) {
+                clearTimeout(playbackTimer);
             }
         };
-        saveWatchedVideo();
-    }, [video.videoId, video.title, video.thumbnail, lessonTitle]);
+    }, [playing, videoSaved]);
+
+    // Cleanup when component unmounts
+    useEffect(() => {
+        return () => {
+            // Reset refs and state
+            playStartTimeRef.current = null;
+        };
+    }, []);
 
     return (
         <SafeAreaView style={styles.safeArea}>
@@ -110,6 +180,10 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = () => {
                             height={playerHeight}
                             width={playerWidth}
                             videoId={video.videoId}
+                            play={playing}
+                            onChangeState={onStateChange}
+                            ref={videoPlayerRef}
+                            forceAndroidAutoplay={true}
                         />
                     </View>
 
