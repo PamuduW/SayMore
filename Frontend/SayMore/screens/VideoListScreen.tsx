@@ -104,10 +104,15 @@ const VideoListScreen = () => {
         <SafeAreaView style={styles.safeArea}>
             <View style={styles.container}>
                 <View style={styles.header}>
-                    <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
+                    <TouchableOpacity
+                        style={styles.backButton}
+                        onPress={() => navigation.goBack()}
+                    >
                         <Text style={styles.backButtonText}>←</Text>
                     </TouchableOpacity>
-                    <Text style={styles.title}>{lesson.title}</Text>
+                    <View style={styles.titleContainer}>
+                        <Text style={styles.title}>{lesson.title}</Text>
+                    </View>
                 </View>
 
                 {loading ? (
@@ -148,21 +153,36 @@ const styles = StyleSheet.create({
         marginBottom: 15,
     },
     backButton: {
-        marginRight: 10,
+        width: 48,
+        height: 48,
         backgroundColor: '#E6F7FF',
-        padding: 8,
-        borderRadius: 5,
+        borderRadius: 12,
+        justifyContent: 'center',
+        alignItems: 'center',
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.2,
+        shadowRadius: 3,
+        elevation: 4,
     },
     backButtonText: {
-        fontSize: 24,
+        fontSize: 28,
         fontWeight: 'bold',
-        color: '#003366',
+        color: '#2C3E50',
+        textAlign: 'center',
+        textAlignVertical: 'center',
+        includeFontPadding: false,
+        paddingBottom: 2,
+        lineHeight: 32,
+    },
+    titleContainer: {
+        flex: 1,
+        alignItems: 'center',
     },
     title: {
         fontSize: 24,
         fontWeight: 'bold',
         color: '#003366',
-        flex: 1,
         textAlign: 'center',
     },
     videoItem: {

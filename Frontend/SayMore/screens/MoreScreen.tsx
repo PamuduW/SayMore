@@ -11,7 +11,7 @@ const NewScreens = [
   { title: "Points", icon: require("../assets/points.png")},
   { title: "Leaderboard", icon: require("../assets/leaderboard.png")},
   { title: "Speech Therapy", icon: require("../assets/speech.png")},
-  { title: "History", icon: require("../assets/lesson.png")},
+  { title: "Watched Lessons", icon: require("../assets/lesson.png")},
 ];
 
 interface MoreScreenProps {
@@ -25,7 +25,7 @@ const MoreScreen: React.FC<MoreScreenProps> = ({ navigation }) => {
     if (title === 'Lessons') {
       navigation.navigate('Lessons');
     }
-    if (title === 'History') {
+    if (title === 'Watched Lessons') {
       navigation.navigate('History');
     }
   };

@@ -51,7 +51,6 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = () => {
     const [playing, setPlaying] = useState(false);
     const videoPlayerRef = useRef(null);
 
-    // Refs for tracking state that shouldn't trigger re-renders
     const playStartTimeRef = useRef<number | null>(null);
     const hasPlayedEnoughRef = useRef<boolean>(false);
     const isSavingRef = useRef<boolean>(false);
@@ -59,9 +58,7 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = () => {
 
     const combinedTitle = `${lessonTitle} - ${video.title}`;
 
-    // Improved save function with better guard clauses and ref-based state tracking
     const saveWatchedVideo = useCallback(async () => {
-        // Multiple guard clauses to prevent duplicate saves
         if (videoSavedRef.current || isSavingRef.current || !hasPlayedEnoughRef.current) {
             console.log('Skipping save: already saved, currently saving, or not played enough');
             return;
@@ -103,8 +100,6 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = () => {
                 const userData = userDoc.data();
                 const existingVideos = userData?.watchedVideos || [];
 
-                // Check if we already have this exact video ID in the history within the last hour
-                // This is an extra safeguard against duplicates
                 const oneHourAgo = new Date();
                 oneHourAgo.setHours(oneHourAgo.getHours() - 1);
 
@@ -120,7 +115,6 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = () => {
                     return;
                 }
 
-                // If we get here, it's safe to add to history
                 await firestore()
                     .collection('User_Accounts')
                     .doc(userId)
@@ -135,7 +129,6 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = () => {
         } catch (error) {
             console.error('Error saving watched video to User_Accounts:', error);
         } finally {
-            // Even if there's an error, mark saving as done to prevent infinite retry loops
             isSavingRef.current = false;
         }
     }, [video, lessonTitle]);
@@ -151,14 +144,12 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = () => {
         }
     }, []);
 
-    // This function will be called when the play state of the video changes
     const onStateChange = useCallback((state: string) => {
         console.log('YouTube player state changed:', state);
 
         if (state === 'playing') {
             setPlaying(true);
 
-            // Record the time when playback starts if not already set
             if (playStartTimeRef.current === null) {
                 playStartTimeRef.current = Date.now();
                 console.log('Video playback started, starting timer');
@@ -169,18 +160,15 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = () => {
             // Check if we've played enough to mark as watched
             checkPlayDuration();
 
-            // If we've played enough and we're pausing/ending, try to save
             if (hasPlayedEnoughRef.current && !videoSavedRef.current) {
                 saveWatchedVideo();
             }
         }
     }, [checkPlayDuration, saveWatchedVideo]);
 
-    // Handle back button press
     useEffect(() => {
         const backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
             if (isFocused) {
-                // Final check before navigating away
                 checkPlayDuration();
                 if (hasPlayedEnoughRef.current && !videoSavedRef.current) {
                     saveWatchedVideo();
@@ -194,14 +182,12 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = () => {
         return () => backHandler.remove();
     }, [isFocused, navigation, checkPlayDuration, saveWatchedVideo]);
 
-    // Save video when navigating away if it has been played enough
     useFocusEffect(
         useCallback(() => {
             return () => {
                 console.log('VideoPlayer screen is losing focus');
                 checkPlayDuration();
 
-                // If we've played enough but haven't saved yet, save now
                 if (hasPlayedEnoughRef.current && !videoSavedRef.current) {
                     console.log('Saving video on navigation away');
                     saveWatchedVideo();
@@ -210,7 +196,6 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = () => {
         }, [checkPlayDuration, saveWatchedVideo])
     );
 
-    // Set up a timer to periodically check if we should mark the video as watched
     useEffect(() => {
         const watchTimer = setInterval(() => {
             if (playing && playStartTimeRef.current !== null) {
@@ -221,12 +206,10 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = () => {
         return () => clearInterval(watchTimer);
     }, [playing, checkPlayDuration]);
 
-    // Cleanup when component unmounts
     useEffect(() => {
         return () => {
             console.log('Component unmounting, final save check');
 
-            // One final check to save the video if needed
             if (hasPlayedEnoughRef.current && !videoSavedRef.current && !isSavingRef.current) {
                 saveWatchedVideo();
             }
@@ -314,16 +297,31 @@ const styles = StyleSheet.create({
         borderBottomColor: '#E1EEFB',
     },
     backButton: {
-        padding: 4,
+        width: 48,
+        height: 48,
+        backgroundColor: '#E6F7FF',
+        borderRadius: 12,
+        justifyContent: 'center',
+        alignItems: 'center',
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.2,
+        shadowRadius: 3,
+        elevation: 4,
     },
     backButtonText: {
-        fontSize: 24,
+        fontSize: 28,
         fontWeight: 'bold',
-        color: '#0066CC',
+        color: '#2C3E50',
+        textAlign: 'center',
+        textAlignVertical: 'center',
+        includeFontPadding: false,
+        paddingBottom: 2,
+        lineHeight: 32,
     },
     headerTextContainer: {
         flex: 1,
-        marginHorizontal: 12,
+        marginLeft: 12,
     },
     headerText: {
         fontSize: 18,

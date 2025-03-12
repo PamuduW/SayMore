@@ -72,11 +72,25 @@ const LessonsScreen: React.FC<LessonsScreenProps> = () => {
     navigation.navigate('VideoList', { lesson });
   };
 
+  const handleBackPress = () => {
+    navigation.goBack();
+  };
+
   return (
     <SafeAreaView style={styles.safeArea}>
       <ScrollView contentContainerStyle={styles.scrollContainer}>
         <View style={styles.container}>
-          <Text style={styles.headerText}>Hi {firstName},</Text>
+          <View style={styles.headerContainer}>
+            <TouchableOpacity
+              style={styles.backButton}
+              onPress={handleBackPress}
+            >
+              <Text style={styles.backButtonText}>←</Text>
+            </TouchableOpacity>
+            <View style={styles.headerTextContainer}>
+              <Text style={styles.headerText}>Hi {firstName},</Text>
+            </View>
+          </View>
           <Text style={styles.subText}>
             Unlock your potential as a confident speaker. Explore our educational videos, tips, and techniques designed to help you overcome stuttering, build confidence, and communicate with clarity to become the speaker you've always wanted to be!
           </Text>
@@ -113,11 +127,42 @@ const styles = StyleSheet.create({
     backgroundColor: '#F0F8FF',
     padding: 20,
   },
+  headerContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 16,
+  },
+  headerTextContainer: {
+    flex: 1,
+    marginLeft: 10,
+  },
   headerText: {
     fontSize: 28,
     fontWeight: 'bold',
     color: '#2C3E50',
-    marginBottom: 12,
+  },
+  backButton: {
+    width: 48,
+    height: 48,
+    backgroundColor: '#E6F7FF',
+    borderRadius: 12,
+    justifyContent: 'center',
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 3,
+    elevation: 4,
+  },
+  backButtonText: {
+    fontSize: 28,
+    fontWeight: 'bold',
+    color: '#2C3E50',
+    textAlign: 'center',
+    textAlignVertical: 'center',
+    includeFontPadding: false,
+    paddingBottom: 2, // Fine-tune vertical centering
+    lineHeight: 32, // Control line height to center text
   },
   subText: {
     fontSize: 17,
