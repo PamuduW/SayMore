@@ -12,6 +12,7 @@ import AudioScreen from '../screens/AudioScreen';
 import AnalysisScreen from '../screens/AnalysisScreen';
 import VideoListScreen from '../screens/VideoListScreen';
 import VideoPlayerScreen from '../screens/VideoPlayerScreen';
+import PointsScreen from '../screens/PointsScreen';
 import HistoryScreen from '../screens/HistoryScreen';
 
 import HomeIcon from '../assets/home.png';
@@ -26,6 +27,7 @@ const MoreStack = () => (
     <Stack.Screen name="Lessons" component={LessonsScreen} />
     <Stack.Screen name="VideoList" component={VideoListScreen} />
     <Stack.Screen name="VideoPlayer" component={VideoPlayerScreen} />
+    <Stack.Screen name="PointsScreen" component={PointsScreen} />
     <Stack.Screen name="History" component={HistoryScreen} />
   </Stack.Navigator>
 );
