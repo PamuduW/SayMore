@@ -22,7 +22,7 @@ const PublicSpeakQuestionScreen: React.FC = ({ navigation, route }: any) => {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState<number>(0);
   const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
   const [isCorrect, setIsCorrect] = useState<boolean | null>(null);
-  const [shuffledOptions, setShuffledOptions] = useState<any[]>([]);
+  const [shuffledOptions, setShuffledOptions] = useState<string[]>([]);
   const [correctIndex, setCorrectIndex] = useState<number | null>(null);
   const [isNextButtonDisabled, setIsNextButtonDisabled] = useState(true);
   const [isConfirmButtonVisible, setIsConfirmButtonVisible] = useState(false);
@@ -45,7 +45,6 @@ const PublicSpeakQuestionScreen: React.FC = ({ navigation, route }: any) => {
           return;
         }
 
-        // Map difficulty levels to Firestore sets
         const difficultyMap = {
           Easy: "Set_1",
           Intermediate: "Set_2",
@@ -59,16 +58,14 @@ const PublicSpeakQuestionScreen: React.FC = ({ navigation, route }: any) => {
           return;
         }
 
-        // Extract only 10 questions
         const extractedQuestions = Object.keys(data.Set[selectedSetName])
-          .filter((key) => key.startsWith("Q")) // Get only question keys (Q1, Q2, etc.)
-          .slice(0, 10) // Take only first 10 questions
+          .filter((key) => key.startsWith("Q"))
+          .slice(0, 10)
           .map((key) => ({
             id: key,
             ...data.Set[selectedSetName][key],
           }));
 
-        console.log("Extracted Questions:", extractedQuestions);
         setQuestions(extractedQuestions);
       } catch (error) {
         console.error("Error fetching questions: ", error);
@@ -206,6 +203,19 @@ const styles = StyleSheet.create({
   question: { fontSize: 18, fontWeight: "bold", marginBottom: 15, textAlign: "center", color: "#2c3e50" },
   optionButton: { backgroundColor: "#3498db", padding: 15, marginVertical: 5, width: "90%", borderRadius: 5 },
   optionText: { color: "white", textAlign: "center", fontSize: 16 },
+  selectedOption: { backgroundColor: "#2980b9" },
+  defaultOption: { backgroundColor: "#3498db" },
+  correctOption: { backgroundColor: "#2ecc71" },
+  incorrectOption: { backgroundColor: "#e74c3c" },
+  confirmButton: { backgroundColor: "#f39c12", padding: 15, marginVertical: 10, borderRadius: 5 },
+  confirmButtonText: { color: "white", textAlign: "center", fontSize: 16 },
+  correctFeedback: { color: "#2ecc71", fontSize: 18, marginVertical: 10 },
+  incorrectFeedback: { color: "#e74c3c", fontSize: 18, marginVertical: 10 },
+  nextButton: { backgroundColor: "#3498db", padding: 15, marginVertical: 10, borderRadius: 5 },
+  nextButtonText: { color: "white", textAlign: "center", fontSize: 16 },
+  finishButton: { backgroundColor: "#2ecc71", padding: 15, marginVertical: 10, borderRadius: 5 },
+  finishButtonText: { color: "white", textAlign: "center", fontSize: 16 },
+  loadingText: { fontSize: 18, color: "#34495e", textAlign: "center", marginTop: 20 },
 });
 
 export default PublicSpeakQuestionScreen;
