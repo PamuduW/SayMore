@@ -142,7 +142,7 @@ const PublicSpeakQuestionScreen: React.FC = ({ navigation, route }: any) => {
         progress={(currentQuestionIndex + 1) / questions.length}
         width={330}
         height={12}
-        color="#27ae60"
+        color="#289e1b"
         style={styles.progressBar}
       />
 
@@ -195,21 +195,138 @@ const PublicSpeakQuestionScreen: React.FC = ({ navigation, route }: any) => {
 };
 
 const styles = StyleSheet.create({
-  container: { flex: 1, padding: 20, alignItems: "center", backgroundColor: "#eaf2f8" },
-  header: { fontSize: 24, fontWeight: "bold", marginBottom: 15, color: "#154360" },
-  categoryText: { fontSize: 18, marginBottom: 10, color: "#1a5276" },
-  progressText: { fontSize: 16, marginBottom: 10, color: "#1a5276" },
-  progressBar: { marginBottom: 15 },
-  question: { fontSize: 20, fontWeight: "bold", marginBottom: 20, textAlign: "center", color: "#154360" },
-  optionButton: { padding: 15, marginVertical: 6, width: "90%", borderRadius: 8, borderWidth: 1 },
-  optionText: { textAlign: "center", fontSize: 16 },
-  selectedOption: { backgroundColor: "#aed6f1", borderColor: "#3498db" },
-  defaultOption: { backgroundColor: "#d6eaf8", borderColor: "#2980b9" },
-  correctOption: { backgroundColor: "#2ecc71" },
-  incorrectOption: { backgroundColor: "#e74c3c" },
-  confirmButton: { backgroundColor: "#f39c12", padding: 15, marginVertical: 10, borderRadius: 5 },
-  confirmButtonText: { color: "white", textAlign: "center", fontSize: 16 },
-  loadingText: { fontSize: 18, color: "#34495e", textAlign: "center", marginTop: 20 },
+  container: {
+    flex: 1,
+    padding: 20,
+    alignItems: "center",
+    backgroundColor: "#f0f4f7",
+    justifyContent: "center",
+    borderRadius: 12,
+    boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+  },
+  header: {
+    fontSize: 30,
+    fontWeight: "bold",
+    marginBottom: 10,
+    color: "#000",
+  },
+  categoryText: {
+    fontSize: 25,
+    fontWeight: "bold",
+    marginBottom: 12,
+    color: "#1a5276",
+    fontStyle: "italic",
+  },
+  progressText: {
+    fontSize: 16,
+    marginBottom: 10,
+    color: "#2c3e50",
+  },
+  progressBar: {
+    marginBottom: 20,
+    borderRadius: 10,
+  },
+  question: {
+    fontSize: 23,
+    fontWeight: "bold",
+    marginBottom: 30,
+    textAlign: "center",
+    color: "#2980b9",
+    paddingHorizontal: 20,
+  },
+  optionButton: {
+    padding: 18,
+    marginVertical: 10,
+    width: "90%",
+    borderRadius: 8,
+    borderWidth: 2,
+    backgroundColor: "#eaf2f8",
+    borderColor: "#2980b9",
+    shadowColor: "#2980b9",
+    shadowOffset: { width: 0, height: 5 },
+    shadowOpacity: 0.2,
+    shadowRadius: 10,
+  },
+  optionText: {
+    textAlign: "center",
+    fontSize: 18,
+    fontWeight: "bold",
+    color: "#000",
+  },
+  selectedOption: {
+    backgroundColor: "#a6dff7",
+    borderColor: "#3498db",
+  },
+  defaultOption: {
+    backgroundColor: "#d6eaf8",
+    borderColor: "#2980b9",
+  },
+  correctOption: {
+    backgroundColor: "#27ae60",
+  },
+  incorrectOption: {
+    backgroundColor: "#e74c3c",
+  },
+  confirmButton: {
+    backgroundColor: "#f39c12",
+    padding: 13,
+    borderRadius: 10,
+    marginVertical: 15,
+    width: "90%",
+    shadowColor: "#f39c12",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.5,
+    shadowRadius: 5,
+  },
+  confirmButtonText: {
+    color: "white",
+    fontSize: 18,
+    textAlign: "center",
+    fontWeight: "bold",
+  },
+  correctFeedback: {
+    fontSize: 20,
+    color: "#27ae60",
+    fontWeight: "bold",
+  },
+  incorrectFeedback: {
+    fontSize: 20,
+    color: "#e74c3c",
+    fontWeight: "bold",
+  },
+  nextButton: {
+    backgroundColor: "#3498db",
+    padding: 13,
+    borderRadius: 10,
+    marginTop: 20,
+    width: "90%",
+  },
+  nextButtonText: {
+    color: "white",
+    fontSize: 18,
+    textAlign: "center",
+    fontWeight: "bold",
+  },
+  finishButton: {
+    backgroundColor: "#1abc9c",
+    padding: 13,
+    borderRadius: 10,
+    marginTop: 20,
+    width: "90%",
+  },
+  finishButtonText: {
+    color: "white",
+    fontSize: 18,
+    textAlign: "center",
+    fontWeight: "bold",
+  },
+  loadingText: {
+    fontSize: 20,
+    color: "#34495e",
+    textAlign: "center",
+    marginTop: 20,
+  },
 });
 
 export default PublicSpeakQuestionScreen;
+
