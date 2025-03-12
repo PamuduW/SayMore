@@ -38,10 +38,7 @@ const HomeStack = () => (
     <Stack.Screen name="Audio" component={AudioScreen} />
     <Stack.Screen name="AnalysisScreen" component={AnalysisScreen} />
     <Stack.Screen name="FeedbackScreen" component={FeedbackScreen} />
-    <Stack.Screen
-      name="AdditionalDetailsScreen"
-      component={AdditionalDetailsScreen}
-    />
+    <Stack.Screen name="AdditionalDetailsScreen" component={AdditionalDetailsScreen} />
   </Stack.Navigator>
 );
 

@@ -23,21 +23,20 @@ const MoreScreen: React.FC<MoreScreenProps> = ({ navigation }) => {
   const handlePress = (title: string) => {
     if (title === 'Lesson') {
       navigation.navigate('Lessons');
+    } else if (title === 'Quizzes and Challenges') {
+      navigation.navigate('Difficulty'); // Navigate to Difficulty screen
     }
   };
 
   return (
-    <View
-      style={theme === 'dark' ? styles.darkContainer : styles.lightContainer}>
+    <View style={theme === 'dark' ? styles.darkContainer : styles.lightContainer}>
       <View style={styles.gridContainer}>
         {NewScreens.map((item, index) => (
           <TouchableOpacity
             key={index}
             style={[
               styles.lessonButton,
-              theme === 'dark'
-                ? styles.darkLessonButton
-                : styles.lightLessonButton,
+              theme === 'dark' ? styles.darkLessonButton : styles.lightLessonButton,
             ]}
             onPress={() => handlePress(item.title)}>
             {item.icon ? (

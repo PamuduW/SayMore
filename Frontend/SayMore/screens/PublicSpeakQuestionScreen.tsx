@@ -17,7 +17,7 @@ interface Question {
 }
 
 const PublicSpeakQuestionScreen: React.FC = ({ navigation, route }: any) => {
-  const { difficultyLevel } = route.params;
+  const { difficulty } = route.params;
   const [questions, setQuestions] = useState<Question[]>([]);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState<number>(0);
   const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
@@ -46,24 +46,24 @@ const PublicSpeakQuestionScreen: React.FC = ({ navigation, route }: any) => {
         }
 
         const difficultyMap = {
-          Easy: "Set_1",
+          Easy: "Set",
           Intermediate: "Set_2",
           Hard: "Set_3",
         };
 
-        const selectedSetName = difficultyMap[difficultyLevel];
+        const selectedSetName = difficultyMap[difficulty];
 
-        if (!selectedSetName || !data.Set[selectedSetName]) {
-          console.error("No questions found for the selected difficulty:", difficultyLevel);
+        if (!selectedSetName || !data[selectedSetName]) {
+          console.error("No questions found for the selected difficulty:", difficulty);
           return;
         }
 
-        const extractedQuestions = Object.keys(data.Set[selectedSetName])
+        const extractedQuestions = Object.keys(data[selectedSetName])
           .filter((key) => key.startsWith("Q"))
           .slice(0, 10)
           .map((key) => ({
             id: key,
-            ...data.Set[selectedSetName][key],
+            ...data[selectedSetName][key],
           }));
 
         setQuestions(extractedQuestions);
@@ -75,7 +75,7 @@ const PublicSpeakQuestionScreen: React.FC = ({ navigation, route }: any) => {
     };
 
     fetchQuestions();
-  }, [difficultyLevel]);
+  }, [difficulty]);
 
   useEffect(() => {
     if (questions.length > 0) {
@@ -128,7 +128,7 @@ const PublicSpeakQuestionScreen: React.FC = ({ navigation, route }: any) => {
   }
 
   if (questions.length === 0) {
-    return <Text style={styles.loadingText}>No questions available for {difficultyLevel}.</Text>;
+    return <Text style={styles.loadingText}>No questions available for {difficulty}.</Text>;
   }
 
   const question = questions[currentQuestionIndex];
@@ -136,13 +136,13 @@ const PublicSpeakQuestionScreen: React.FC = ({ navigation, route }: any) => {
   return (
     <View style={styles.container}>
       <Text style={styles.header}>Public Speaking Quiz</Text>
-      <Text style={styles.categoryText}>{difficultyLevel}</Text>
+      <Text style={styles.categoryText}>{difficulty}</Text>
       <Text style={styles.progressText}>Question {currentQuestionIndex + 1} of {questions.length}</Text>
       <ProgressBar
         progress={(currentQuestionIndex + 1) / questions.length}
         width={330}
         height={12}
-        color="#4CAF50"
+        color="#27ae60"
         style={styles.progressBar}
       />
 
@@ -195,26 +195,20 @@ const PublicSpeakQuestionScreen: React.FC = ({ navigation, route }: any) => {
 };
 
 const styles = StyleSheet.create({
-  container: { flex: 1, padding: 20, alignItems: "center", backgroundColor: "white" },
-  header: { fontSize: 22, fontWeight: "bold", marginBottom: 10, color: "#2c3e50" },
-  categoryText: { fontSize: 18, marginBottom: 10, color: "#34495e" },
-  progressText: { fontSize: 16, marginBottom: 10, color: "#34495e" },
-  progressBar: { marginBottom: 10 },
-  question: { fontSize: 18, fontWeight: "bold", marginBottom: 15, textAlign: "center", color: "#2c3e50" },
-  optionButton: { backgroundColor: "#3498db", padding: 15, marginVertical: 5, width: "90%", borderRadius: 5 },
-  optionText: { color: "white", textAlign: "center", fontSize: 16 },
-  selectedOption: { backgroundColor: "#2980b9" },
-  defaultOption: { backgroundColor: "#3498db" },
+  container: { flex: 1, padding: 20, alignItems: "center", backgroundColor: "#eaf2f8" },
+  header: { fontSize: 24, fontWeight: "bold", marginBottom: 15, color: "#154360" },
+  categoryText: { fontSize: 18, marginBottom: 10, color: "#1a5276" },
+  progressText: { fontSize: 16, marginBottom: 10, color: "#1a5276" },
+  progressBar: { marginBottom: 15 },
+  question: { fontSize: 20, fontWeight: "bold", marginBottom: 20, textAlign: "center", color: "#154360" },
+  optionButton: { padding: 15, marginVertical: 6, width: "90%", borderRadius: 8, borderWidth: 1 },
+  optionText: { textAlign: "center", fontSize: 16 },
+  selectedOption: { backgroundColor: "#aed6f1", borderColor: "#3498db" },
+  defaultOption: { backgroundColor: "#d6eaf8", borderColor: "#2980b9" },
   correctOption: { backgroundColor: "#2ecc71" },
   incorrectOption: { backgroundColor: "#e74c3c" },
   confirmButton: { backgroundColor: "#f39c12", padding: 15, marginVertical: 10, borderRadius: 5 },
   confirmButtonText: { color: "white", textAlign: "center", fontSize: 16 },
-  correctFeedback: { color: "#2ecc71", fontSize: 18, marginVertical: 10 },
-  incorrectFeedback: { color: "#e74c3c", fontSize: 18, marginVertical: 10 },
-  nextButton: { backgroundColor: "#3498db", padding: 15, marginVertical: 10, borderRadius: 5 },
-  nextButtonText: { color: "white", textAlign: "center", fontSize: 16 },
-  finishButton: { backgroundColor: "#2ecc71", padding: 15, marginVertical: 10, borderRadius: 5 },
-  finishButtonText: { color: "white", textAlign: "center", fontSize: 16 },
   loadingText: { fontSize: 18, color: "#34495e", textAlign: "center", marginTop: 20 },
 });
 
