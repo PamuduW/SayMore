@@ -5,20 +5,20 @@ export interface Lesson {
 }
 
 export interface WatchedVideo {
-    id: string;
-    videoId: string;
-    title: string;
-    lessonTitle: string;
-    timestamp: string;
-    thumbnail: string;
-    summary?: string;
-    summaryImage?: string;
+  id: string;
+  videoId: string;
+  title: string;
+  lessonTitle: string;
+  timestamp: string;
+  thumbnail: string;
+  summary?: string;
+  summaryImage?: string;
 }
 
 export interface VideoItem {
-    videoId: string;
-    title: string;
-    thumbnail?: string;
-    summary?: string;
-    summaryImage?: string;
+  videoId: string;
+  title: string;
+  thumbnail?: string;
+  summary?: string;
+  summaryImage?: string;
 }

@@ -1,3 +1,4 @@
+// PointsScreen.tsx
 import React, { useEffect } from 'react';
 import {
   View,
@@ -7,7 +8,7 @@ import {
   SafeAreaView,
   StatusBar,
   Dimensions,
-  Animated
+  Animated,
 } from 'react-native';
 import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
 
@@ -27,7 +28,12 @@ const { width } = Dimensions.get('window');
 const PointsScreen: React.FC = () => {
   const navigation = useNavigation();
   const route = useRoute<PointsScreenRouteProp>();
-  const { points, videoTitle, milestones = [], maxPossiblePoints = 10 } = route.params;
+  const {
+    points,
+    videoTitle,
+    milestones = [],
+    maxPossiblePoints = 10,
+  } = route.params;
 
   // Animation values
   const pointsAnim = React.useRef(new Animated.Value(0)).current;
@@ -38,7 +44,7 @@ const PointsScreen: React.FC = () => {
     Animated.timing(pointsAnim, {
       toValue: points,
       duration: 1000,
-      useNativeDriver: false
+      useNativeDriver: false,
     }).start();
 
     // Animate scale bounce effect
@@ -46,7 +52,7 @@ const PointsScreen: React.FC = () => {
       toValue: 1,
       friction: 5,
       tension: 40,
-      useNativeDriver: true
+      useNativeDriver: true,
     }).start();
   }, [points]);
 
@@ -59,7 +65,7 @@ const PointsScreen: React.FC = () => {
     } else if (percentage >= 70) {
       return "Great job! You've earned most of the available points!";
     } else if (percentage >= 40) {
-      return "Good work! Keep watching to earn more points next time!";
+      return 'Good work! Keep watching to earn more points next time!';
     } else {
       return "You've earned some points! Complete the full video for maximum points.";
     }
@@ -68,11 +74,13 @@ const PointsScreen: React.FC = () => {
   // Get milestone details text
   const getMilestoneText = () => {
     if (milestones.length === 0) {
-      return "Watch more to reach milestones!";
+      return 'Watch more to reach milestones!';
     }
 
     let basePoints = milestones.length - (milestones.includes(100) ? 1 : 0);
-    let completionBonus = milestones.includes(100) ? (maxPossiblePoints - basePoints) : 0;
+    let completionBonus = milestones.includes(100)
+      ? maxPossiblePoints - basePoints
+      : 0;
 
     return milestones.includes(100)
       ? `${basePoints} points from milestones + ${completionBonus} completion bonus!`
@@ -82,7 +90,7 @@ const PointsScreen: React.FC = () => {
   // Animated points value for display
   const animatedPoints = pointsAnim.interpolate({
     inputRange: [0, points],
-    outputRange: [0, points]
+    outputRange: [0, points],
   });
 
   const continueToLesson = () => {
@@ -100,14 +108,13 @@ const PointsScreen: React.FC = () => {
         <Animated.View
           style={[
             styles.pointsContainer,
-            { transform: [{ scale: scaleAnim }] }
-          ]}
-        >
+            { transform: [{ scale: scaleAnim }] },
+          ]}>
           <View style={styles.pointsCircle}>
             <Animated.Text style={styles.pointsNumber}>
               {animatedPoints.interpolate({
                 inputRange: [0, points],
-                outputRange: ['0', points.toString()]
+                outputRange: ['0', points.toString()],
               })}
             </Animated.Text>
             <Text style={styles.pointsLabel}>POINTS</Text>
@@ -116,7 +123,10 @@ const PointsScreen: React.FC = () => {
 
         <View style={styles.messageContainer}>
           <Text style={styles.congratsText}>Congratulations!</Text>
-          <Text style={styles.videoTitle} numberOfLines={2} ellipsizeMode="tail">
+          <Text
+            style={styles.videoTitle}
+            numberOfLines={2}
+            ellipsizeMode="tail">
             You completed "{videoTitle}"
           </Text>
           <Text style={styles.messageText}>{getMessageText()}</Text>
@@ -124,29 +134,86 @@ const PointsScreen: React.FC = () => {
         </View>
 
         <View style={styles.progressContainer}>
-          <Text style={styles.progressText}>
-            {`You earned ${points} out of ${maxPossiblePoints} possible points`}
-          </Text>
+          <Text style={styles.progressText}>You earned {points} points</Text>
           <View style={styles.progressBar}>
-            <View style={[styles.progressFill, { width: `${(points / maxPossiblePoints) * 100}%` }]} />
+            <View
+              style={[
+                styles.progressFill,
+                { width: '100%', backgroundColor: 'white' },
+              ]}>
+              <View
+                style={[
+                  styles.progressSection,
+                  { width: '25%', backgroundColor: '#E91E63' },
+                ]}
+              />
+              <View
+                style={[
+                  styles.progressSection,
+                  { width: '25%', backgroundColor: '#9C27B0' },
+                ]}
+              />
+              <View
+                style={[
+                  styles.progressSection,
+                  { width: '25%', backgroundColor: '#3F51B5' },
+                ]}
+              />
+              <View
+                style={[
+                  styles.progressSection,
+                  { width: '25%', backgroundColor: '#2196F3' },
+                ]}
+              />
+            </View>
           </View>
 
           {/* Display milestone markers */}
           <View style={styles.milestoneMarkersContainer}>
             <View style={[styles.milestoneTick, { left: '10%' }]}>
-              <Text style={[styles.milestoneTickText, milestones.includes(10) ? styles.reachedMilestone : {}]}>10%</Text>
+              <Text
+                style={[
+                  styles.milestoneTickText,
+                  milestones.includes(10) ? styles.reachedMilestone : {},
+                ]}>
+                10%
+              </Text>
             </View>
             <View style={[styles.milestoneTick, { left: '25%' }]}>
-              <Text style={[styles.milestoneTickText, milestones.includes(25) ? styles.reachedMilestone : {}]}>25%</Text>
+              <Text
+                style={[
+                  styles.milestoneTickText,
+                  milestones.includes(25) ? styles.reachedMilestone : {},
+                ]}>
+                25%
+              </Text>
             </View>
             <View style={[styles.milestoneTick, { left: '50%' }]}>
-              <Text style={[styles.milestoneTickText, milestones.includes(50) ? styles.reachedMilestone : {}]}>50%</Text>
+              <Text
+                style={[
+                  styles.milestoneTickText,
+                  milestones.includes(50) ? styles.reachedMilestone : {},
+                ]}>
+                50%
+              </Text>
             </View>
             <View style={[styles.milestoneTick, { left: '75%' }]}>
-              <Text style={[styles.milestoneTickText, milestones.includes(75) ? styles.reachedMilestone : {}]}>75%</Text>
+              <Text
+                style={[
+                  styles.milestoneTickText,
+                  milestones.includes(75) ? styles.reachedMilestone : {},
+                ]}>
+                75%
+              </Text>
             </View>
             <View style={[styles.milestoneTick, { right: '0%' }]}>
-              <Text style={[styles.milestoneTickText, milestones.includes(100) ? styles.reachedMilestone : {}]}>100%</Text>
+              <Text
+                style={[
+                  styles.milestoneTickText,
+                  milestones.includes(100) ? styles.reachedMilestone : {},
+                ]}>
+                100%
+              </Text>
             </View>
           </View>
         </View>
@@ -154,15 +221,13 @@ const PointsScreen: React.FC = () => {
         <View style={styles.buttonsContainer}>
           <TouchableOpacity
             style={[styles.button, styles.primaryButton]}
-            onPress={continueToLesson}
-          >
+            onPress={continueToLesson}>
             <Text style={styles.primaryButtonText}>Continue Learning</Text>
           </TouchableOpacity>
 
           <TouchableOpacity
             style={[styles.button, styles.secondaryButton]}
-            onPress={goToHome}
-          >
+            onPress={goToHome}>
             <Text style={styles.secondaryButtonText}>Go to Home</Text>
           </TouchableOpacity>
         </View>
@@ -261,7 +326,10 @@ const styles = StyleSheet.create({
   },
   progressFill: {
     height: '100%',
-    backgroundColor: '#4CAF50',
+    flexDirection: 'row',
+  },
+  progressSection: {
+    height: '100%',
   },
   milestoneMarkersContainer: {
     position: 'relative',

@@ -1,3 +1,4 @@
+// VideoPlayerScreen.tsx
 import React, { useState, useRef, useCallback, useEffect } from 'react';
 import {
     View,
@@ -105,6 +106,21 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = () => {
         return maxPoints;
     };
 
+     // Calculate the points to be awarded for reaching 100%
+     const calculateCompletionPoints = useCallback(() => {
+        // Calculate length bonus based on video duration and adjust calculation
+        const maxCompletionPoints = calculateMaxPoints(videoDuration); // total for 100% video, may be 7, 8, or 10
+        // Points from milestone completion
+        let basePoints = reachedMilestonesRef.current.size - (reachedMilestonesRef.current.has(100) ? 1 : 0);
+        let completionBonus = maxCompletionPoints - basePoints; // calculate the amount
+
+        if(completionBonus < 0){
+            completionBonus = 0;
+        }
+
+        return completionBonus;
+    }, [videoDuration]);
+
     // Award points to user
     const awardPoints = useCallback(async (points: number, milestone: number) => {
         try {
@@ -182,9 +198,9 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = () => {
 
                     // Award points based on milestone
                     if (milestone === 100) {
-                        // For 100% completion, award max points based on video length
-                        const maxPoints = calculateMaxPoints(videoDuration);
-                        await awardPoints(maxPoints, milestone);
+                        // award points for percentage milestones completion, and the completion percentage
+                        const milestoneCompletionPoints = calculateCompletionPoints();
+                        await awardPoints(milestoneCompletionPoints, milestone);
 
                         // Mark as fully awarded
                         pointsAwardedRef.current = true;
@@ -206,7 +222,7 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = () => {
         } catch (error) {
             console.error('Error checking watching progress:', error);
         }
-    }, [playing, videoDuration, awardPoints, navigation, video.title]);
+    }, [playing, videoDuration, awardPoints, navigation, video.title, calculateCompletionPoints]);
 
     // Poll video position regularly to update progress
     const startPositionPolling = useCallback(() => {
@@ -400,11 +416,11 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = () => {
                 if (!reachedMilestonesRef.current.has(100)) {
                     reachedMilestonesRef.current.add(100);
 
-                    // Get max points based on video length
-                    const maxPoints = calculateMaxPoints(videoDuration);
+                    // Award completion points (adjust calculation to take prior milestones into account)
+                    const milestoneCompletionPoints = calculateCompletionPoints();
 
                     // Award points and navigate
-                    awardPoints(maxPoints, 100).then(() => {
+                    awardPoints(milestoneCompletionPoints, 100).then(() => {
                         setTimeout(() => {
                             navigation.navigate('PointsScreen', {
                                 points: totalPointsEarnedRef.current,
@@ -415,7 +431,7 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = () => {
                 }
             }
         }
-    }, [checkPlayDuration, saveWatchedVideo, checkWatchingProgress, videoDuration, navigation, video.title, awardPoints]);
+    }, [checkPlayDuration, saveWatchedVideo, checkWatchingProgress, videoDuration, navigation, video.title, awardPoints, calculateCompletionPoints]);
 
     // Set up regular interval to check watching progress for points
     useEffect(() => {
@@ -507,6 +523,27 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = () => {
         };
     }, [saveWatchedVideo, checkWatchingProgress]);
 
+    // Define the colors for the milestones
+    const milestoneColors = {
+        10: '#E91E63',   // Pink
+        25: '#9C27B0',   // Purple
+        50: '#3F51B5',   // Indigo
+        75: '#2196F3',   // Blue
+        100: '#4CAF50',  // Green
+    };
+
+    const getProgressFillColor = (percentage: number) => {
+        if (percentage <= 25) {
+            return milestoneColors[10]; // Pink
+        } else if (percentage <= 50) {
+            return milestoneColors[25]; // Purple
+        } else if (percentage <= 75) {
+            return milestoneColors[50]; // Indigo
+        } else {
+            return milestoneColors[75]; // Blue
+        }
+    };
+
     // Get text for milestone points
     const getMilestonePointsText = () => {
         if (reachedMilestonesRef.current.size === 0) {
@@ -517,7 +554,7 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = () => {
         const lastMilestone = milestones[milestones.length - 1];
 
         if (lastMilestone === 100) {
-            return "Completed! Maximum points earned.";
+            return "Completed! Points earned based on video duration.";
         } else {
             return `Points earned for reaching ${lastMilestone}% milestone`;
         }
@@ -578,7 +615,10 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = () => {
                                     : "Start watching to track progress"}
                             </Text>
                             <View style={styles.progressBar}>
-                                <View style={[styles.progressFill, { width: `${currentPercentage}%` }]} />
+                                <View style={[styles.progressFill, {
+                                    width: `${currentPercentage}%`,
+                                    backgroundColor: getProgressFillColor(currentPercentage)
+                                }]} />
                             </View>
                             {reachedMilestonesRef.current.size > 0 && (
                                 <Text style={styles.pointsText}>

@@ -7,7 +7,7 @@ import {
   StyleSheet,
   ScrollView,
   SafeAreaView,
-  Dimensions
+  Dimensions,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { Lesson } from '../types/types';
@@ -56,16 +56,56 @@ const LessonsScreen: React.FC<LessonsScreenProps> = () => {
   }, []);
 
   const lessons: Lesson[] = [
-    { title: 'Speech Exercises', icon: require('../assets/speech-exercises.png'), documentId: 'speech_exercises' },
-    { title: 'Understanding Stuttering', icon: require('../assets/understanding-stuttering.png'), documentId: 'understanding_stuttering' },
-    { title: 'Building Confidence', icon: require('../assets/building-confidence.png'), documentId: 'building_confidence' },
-    { title: 'Communication Tips', icon: require('../assets/communication-tips.png'), documentId: 'communication_tips' },
-    { title: 'Overcoming Stuttering', icon: require('../assets/overcoming-stuttering.png'), documentId: 'overcoming_stuttering' },
-    { title: 'Managing Stage Fright', icon: require('../assets/managing-stage-fright.png'), documentId: 'stage_fright' },
-    { title: 'How to get a deeper voice', icon: require('../assets/deeper-voice.png'), documentId: 'deeper_voice' },
-    { title: 'Clarity in Speech', icon: require('../assets/clarity.png'), documentId: 'clarity' },
-    { title: 'Perfecting Your Pitch', icon: require('../assets/pitch.png'), documentId: 'pitch' },
-    { title: 'Speaking with Energy', icon: require('../assets/energy.png'), documentId: 'energy' },
+    {
+      title: 'Speech Exercises',
+      icon: require('../assets/speech-exercises.png'),
+      documentId: 'speech_exercises',
+    },
+    {
+      title: 'Understanding Stuttering',
+      icon: require('../assets/understanding-stuttering.png'),
+      documentId: 'understanding_stuttering',
+    },
+    {
+      title: 'Building Confidence',
+      icon: require('../assets/building-confidence.png'),
+      documentId: 'building_confidence',
+    },
+    {
+      title: 'Communication Tips',
+      icon: require('../assets/communication-tips.png'),
+      documentId: 'communication_tips',
+    },
+    {
+      title: 'Overcoming Stuttering',
+      icon: require('../assets/overcoming-stuttering.png'),
+      documentId: 'overcoming_stuttering',
+    },
+    {
+      title: 'Managing Stage Fright',
+      icon: require('../assets/managing-stage-fright.png'),
+      documentId: 'stage_fright',
+    },
+    {
+      title: 'How to get a deeper voice',
+      icon: require('../assets/deeper-voice.png'),
+      documentId: 'deeper_voice',
+    },
+    {
+      title: 'Clarity in Speech',
+      icon: require('../assets/clarity.png'),
+      documentId: 'clarity',
+    },
+    {
+      title: 'Perfecting Your Pitch',
+      icon: require('../assets/pitch.png'),
+      documentId: 'pitch',
+    },
+    {
+      title: 'Speaking with Energy',
+      icon: require('../assets/energy.png'),
+      documentId: 'energy',
+    },
   ];
 
   const handleLessonPress = (lesson: Lesson) => {
@@ -83,8 +123,7 @@ const LessonsScreen: React.FC<LessonsScreenProps> = () => {
           <View style={styles.headerContainer}>
             <TouchableOpacity
               style={styles.backButton}
-              onPress={handleBackPress}
-            >
+              onPress={handleBackPress}>
               <Text style={styles.backButtonText}>←</Text>
             </TouchableOpacity>
             <View style={styles.headerTextContainer}>
@@ -92,17 +131,23 @@ const LessonsScreen: React.FC<LessonsScreenProps> = () => {
             </View>
           </View>
           <Text style={styles.subText}>
-            Unlock your potential as a confident speaker. Explore our educational videos, tips, and techniques designed to help you overcome stuttering, build confidence, and communicate with clarity to become the speaker you've always wanted to be!
+            Unlock your potential as a confident speaker. Explore our
+            educational videos, tips, and techniques designed to help you
+            overcome stuttering, build confidence, and communicate with clarity
+            to become the speaker you've always wanted to be!
           </Text>
           <View style={styles.gridContainer}>
             {lessons.map((lesson, index) => (
               <TouchableOpacity
                 key={index}
                 style={[styles.lessonButton, { width: itemWidth }]}
-                onPress={() => handleLessonPress(lesson)}
-              >
+                onPress={() => handleLessonPress(lesson)}>
                 <View style={styles.imageContainer}>
-                  <Image source={lesson.icon} style={styles.lessonIcon} resizeMode="contain" />
+                  <Image
+                    source={lesson.icon}
+                    style={styles.lessonIcon}
+                    resizeMode="contain"
+                  />
                 </View>
                 <Text style={styles.lessonText}>{lesson.title}</Text>
               </TouchableOpacity>
