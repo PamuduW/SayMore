@@ -15,6 +15,8 @@ type RootStackParamList = {
   PointsScreen: {
     points: number;
     videoTitle: string;
+    milestones?: number[];
+    maxPossiblePoints?: number;
   };
 };
 
@@ -25,7 +27,7 @@ const { width } = Dimensions.get('window');
 const PointsScreen: React.FC = () => {
   const navigation = useNavigation();
   const route = useRoute<PointsScreenRouteProp>();
-  const { points, videoTitle } = route.params;
+  const { points, videoTitle, milestones = [], maxPossiblePoints = 10 } = route.params;
 
   // Animation values
   const pointsAnim = React.useRef(new Animated.Value(0)).current;
@@ -46,19 +48,35 @@ const PointsScreen: React.FC = () => {
       tension: 40,
       useNativeDriver: true
     }).start();
-  }, []);
+  }, [points]);
 
   // Get messaging based on points earned
   const getMessageText = () => {
-    if (points >= 10) {
+    const percentage = (points / maxPossiblePoints) * 100;
+
+    if (percentage >= 100) {
       return "Perfect! You've earned all available points!";
-    } else if (points >= 7) {
+    } else if (percentage >= 70) {
       return "Great job! You've earned most of the available points!";
-    } else if (points >= 5) {
+    } else if (percentage >= 40) {
       return "Good work! Keep watching to earn more points next time!";
     } else {
       return "You've earned some points! Complete the full video for maximum points.";
     }
+  };
+
+  // Get milestone details text
+  const getMilestoneText = () => {
+    if (milestones.length === 0) {
+      return "Watch more to reach milestones!";
+    }
+
+    let basePoints = milestones.length - (milestones.includes(100) ? 1 : 0);
+    let completionBonus = milestones.includes(100) ? (maxPossiblePoints - basePoints) : 0;
+
+    return milestones.includes(100)
+      ? `${basePoints} points from milestones + ${completionBonus} completion bonus!`
+      : `${basePoints} points from reaching milestone${basePoints > 1 ? 's' : ''}: ${milestones.join('%, ')}%`;
   };
 
   // Animated points value for display
@@ -102,14 +120,34 @@ const PointsScreen: React.FC = () => {
             You completed "{videoTitle}"
           </Text>
           <Text style={styles.messageText}>{getMessageText()}</Text>
+          <Text style={styles.milestoneText}>{getMilestoneText()}</Text>
         </View>
 
         <View style={styles.progressContainer}>
           <Text style={styles.progressText}>
-            {`You earned ${points} points`}
+            {`You earned ${points} out of ${maxPossiblePoints} possible points`}
           </Text>
           <View style={styles.progressBar}>
-            <View style={[styles.progressFill, { width: `${(points / 10) * 100}%` }]} />
+            <View style={[styles.progressFill, { width: `${(points / maxPossiblePoints) * 100}%` }]} />
+          </View>
+
+          {/* Display milestone markers */}
+          <View style={styles.milestoneMarkersContainer}>
+            <View style={[styles.milestoneTick, { left: '10%' }]}>
+              <Text style={[styles.milestoneTickText, milestones.includes(10) ? styles.reachedMilestone : {}]}>10%</Text>
+            </View>
+            <View style={[styles.milestoneTick, { left: '25%' }]}>
+              <Text style={[styles.milestoneTickText, milestones.includes(25) ? styles.reachedMilestone : {}]}>25%</Text>
+            </View>
+            <View style={[styles.milestoneTick, { left: '50%' }]}>
+              <Text style={[styles.milestoneTickText, milestones.includes(50) ? styles.reachedMilestone : {}]}>50%</Text>
+            </View>
+            <View style={[styles.milestoneTick, { left: '75%' }]}>
+              <Text style={[styles.milestoneTickText, milestones.includes(75) ? styles.reachedMilestone : {}]}>75%</Text>
+            </View>
+            <View style={[styles.milestoneTick, { right: '0%' }]}>
+              <Text style={[styles.milestoneTickText, milestones.includes(100) ? styles.reachedMilestone : {}]}>100%</Text>
+            </View>
           </View>
         </View>
 
@@ -196,6 +234,13 @@ const styles = StyleSheet.create({
     color: '#4A6D8C',
     textAlign: 'center',
     lineHeight: 22,
+    marginBottom: 8,
+  },
+  milestoneText: {
+    fontSize: 14,
+    color: '#4CAF50',
+    textAlign: 'center',
+    fontWeight: '500',
   },
   progressContainer: {
     width: '100%',
@@ -212,10 +257,28 @@ const styles = StyleSheet.create({
     backgroundColor: '#E1EEFB',
     borderRadius: 5,
     overflow: 'hidden',
+    marginBottom: 20,
   },
   progressFill: {
     height: '100%',
     backgroundColor: '#4CAF50',
+  },
+  milestoneMarkersContainer: {
+    position: 'relative',
+    width: '100%',
+    height: 20,
+  },
+  milestoneTick: {
+    position: 'absolute',
+    alignItems: 'center',
+  },
+  milestoneTickText: {
+    fontSize: 12,
+    color: '#A0AEC0',
+  },
+  reachedMilestone: {
+    color: '#4CAF50',
+    fontWeight: 'bold',
   },
   buttonsContainer: {
     width: '100%',

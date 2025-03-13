@@ -35,7 +35,6 @@ type RootStackParamList = {
     };
     PointsScreen: {
         points: number;
-        totalPoints: number;
         videoTitle: string;
     };
 };
@@ -72,7 +71,7 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = () => {
     const watchedDurationRef = useRef<number>(0);
     const pointsAwardedRef = useRef<boolean>(false);
     const checkPointsIntervalRef = useRef<NodeJS.Timeout | null>(null);
-    const lastPointsPercentageRef = useRef<number>(0);
+    const reachedMilestonesRef = useRef<Set<number>>(new Set());
     const totalPointsEarnedRef = useRef<number>(0);
 
     // For video position polling
@@ -89,26 +88,25 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = () => {
         }
     };
 
-    // Calculate points based on percentage watched
-    const calculatePoints = (percentageWatched: number, durationInSeconds: number): number => {
-        // Base points - 1 point per 10% watched (rounded down)
-        const basePoints = Math.floor(percentageWatched / 10);
+    // Calculate maximum points based on video duration
+    const calculateMaxPoints = (durationInSeconds: number): number => {
+        // Base points for completion = 6
+        let maxPoints = 6;
 
         // Length multiplier
-        let lengthMultiplier = 1;
         if (durationInSeconds > 3600) { // > 60 minutes
-            lengthMultiplier = 2;
+            maxPoints = 10;
         } else if (durationInSeconds > 1800) { // > 30 minutes
-            lengthMultiplier = 1.5;
+            maxPoints = 8;
         } else if (durationInSeconds > 600) { // > 10 minutes
-            lengthMultiplier = 1.2;
+            maxPoints = 7;
         }
 
-        return Math.round(basePoints * lengthMultiplier);
+        return maxPoints;
     };
 
     // Award points to user
-    const awardPoints = useCallback(async (points: number) => {
+    const awardPoints = useCallback(async (points: number, milestone: number) => {
         try {
             const user = auth().currentUser;
             if (!user) {
@@ -131,12 +129,18 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = () => {
                         videoTitle: video.title,
                         lessonTitle: lessonTitle,
                         pointsEarned: points,
+                        milestone: milestone,
                         timestamp: new Date().toISOString()
                     })
                 });
 
-            showNotification(`You earned ${points} points!`);
-            console.log(`User ${userId} awarded ${points} points for watching ${video.title}`);
+            if (milestone === 100) {
+                showNotification(`Video completed! You earned ${points} points!`);
+            } else {
+                showNotification(`${milestone}% milestone reached! +${points} point`);
+            }
+
+            console.log(`User ${userId} awarded ${points} points for reaching ${milestone}% of ${video.title}`);
 
         } catch (error) {
             console.error('Error awarding points:', error);
@@ -167,43 +171,35 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = () => {
             const percentageWatched = Math.min(100, Math.round((watchedDurationRef.current / videoDuration) * 100));
             setCurrentPercentage(percentageWatched);
 
-            // Determine points based on percentage thresholds (10%, 25%, 50%, 75%, 100%)
-            const thresholds = [10, 25, 50, 75, 100];
+            // Define milestones for point awards
+            const milestones = [10, 25, 50, 75, 100];
 
-            // Find the highest threshold reached that we haven't awarded points for yet
-            let highestThresholdReached = 0;
-            for (const threshold of thresholds) {
-                if (percentageWatched >= threshold && lastPointsPercentageRef.current < threshold) {
-                    highestThresholdReached = threshold;
-                }
-            }
+            // Check for newly reached milestones
+            for (const milestone of milestones) {
+                if (percentageWatched >= milestone && !reachedMilestonesRef.current.has(milestone)) {
+                    // Add to reached milestones
+                    reachedMilestonesRef.current.add(milestone);
 
-            // Award points if we've reached a new threshold
-            if (highestThresholdReached > 0) {
-                const pointsEarned = calculatePoints(highestThresholdReached, videoDuration);
-                lastPointsPercentageRef.current = highestThresholdReached;
+                    // Award points based on milestone
+                    if (milestone === 100) {
+                        // For 100% completion, award max points based on video length
+                        const maxPoints = calculateMaxPoints(videoDuration);
+                        await awardPoints(maxPoints, milestone);
 
-                // If we've reached 100%, mark as fully awarded to prevent further checks
-                if (highestThresholdReached === 100) {
-                    pointsAwardedRef.current = true;
-                }
+                        // Mark as fully awarded
+                        pointsAwardedRef.current = true;
 
-                await awardPoints(pointsEarned);
-                console.log(`Awarded points for reaching ${highestThresholdReached}% of the video`);
-
-                // Special completion message at 100%
-                if (highestThresholdReached === 100) {
-                    showNotification(`Congratulations! You've completed this video.`);
-
-                    // Navigate to PointsScreen after a short delay
-                    const maxPossiblePoints = calculatePoints(100, videoDuration);
-                    setTimeout(() => {
-                        navigation.navigate('PointsScreen', {
-                            points: totalPointsEarnedRef.current,
-                            totalPoints: maxPossiblePoints,
-                            videoTitle: video.title
-                        });
-                    }, 1000);
+                        // Navigate to PointsScreen after a short delay
+                        setTimeout(() => {
+                            navigation.navigate('PointsScreen', {
+                                points: totalPointsEarnedRef.current,
+                                videoTitle: video.title
+                            });
+                        }, 1000);
+                    } else {
+                        // For other milestones, award 1 point each
+                        await awardPoints(1, milestone);
+                    }
                 }
             }
 
@@ -400,25 +396,26 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = () => {
                 watchedDurationRef.current = videoDuration;
                 setCurrentPercentage(100);
 
-                // Immediate check for points
-                checkWatchingProgress();
+                // Force add the 100% milestone
+                if (!reachedMilestonesRef.current.has(100)) {
+                    reachedMilestonesRef.current.add(100);
 
-                // If video ended but points weren't awarded for some reason
-                if (lastPointsPercentageRef.current < 100) {
-                    const maxPoints = calculatePoints(100, videoDuration);
+                    // Get max points based on video length
+                    const maxPoints = calculateMaxPoints(videoDuration);
 
-                    // Navigate to PointsScreen after a short delay
-                    setTimeout(() => {
-                        navigation.navigate('PointsScreen', {
-                            points: totalPointsEarnedRef.current > 0 ? totalPointsEarnedRef.current : maxPoints,
-                            totalPoints: maxPoints,
-                            videoTitle: video.title
-                        });
-                    }, 1000);
+                    // Award points and navigate
+                    awardPoints(maxPoints, 100).then(() => {
+                        setTimeout(() => {
+                            navigation.navigate('PointsScreen', {
+                                points: totalPointsEarnedRef.current,
+                                videoTitle: video.title
+                            });
+                        }, 1000);
+                    });
                 }
             }
         }
-    }, [checkPlayDuration, saveWatchedVideo, checkWatchingProgress, videoDuration, navigation, video.title]);
+    }, [checkPlayDuration, saveWatchedVideo, checkWatchingProgress, videoDuration, navigation, video.title, awardPoints]);
 
     // Set up regular interval to check watching progress for points
     useEffect(() => {
@@ -510,6 +507,22 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = () => {
         };
     }, [saveWatchedVideo, checkWatchingProgress]);
 
+    // Get text for milestone points
+    const getMilestonePointsText = () => {
+        if (reachedMilestonesRef.current.size === 0) {
+            return "";
+        }
+
+        const milestones = Array.from(reachedMilestonesRef.current).sort((a, b) => a - b);
+        const lastMilestone = milestones[milestones.length - 1];
+
+        if (lastMilestone === 100) {
+            return "Completed! Maximum points earned.";
+        } else {
+            return `Points earned for reaching ${lastMilestone}% milestone`;
+        }
+    };
+
     return (
         <SafeAreaView style={styles.safeArea}>
             <StatusBar barStyle="dark-content" backgroundColor="#F0F8FF" />
@@ -567,11 +580,21 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = () => {
                             <View style={styles.progressBar}>
                                 <View style={[styles.progressFill, { width: `${currentPercentage}%` }]} />
                             </View>
-                            {lastPointsPercentageRef.current > 0 && (
+                            {reachedMilestonesRef.current.size > 0 && (
                                 <Text style={styles.pointsText}>
-                                    Points earned for reaching {lastPointsPercentageRef.current}% milestone
+                                    {getMilestonePointsText()}
                                 </Text>
                             )}
+                            <View style={styles.milestonesContainer}>
+                                <Text style={styles.milestonesText}>
+                                    Milestones:
+                                    <Text style={reachedMilestonesRef.current.has(10) ? styles.reachedMilestone : styles.unreachedMilestone}> 10%</Text> |
+                                    <Text style={reachedMilestonesRef.current.has(25) ? styles.reachedMilestone : styles.unreachedMilestone}> 25%</Text> |
+                                    <Text style={reachedMilestonesRef.current.has(50) ? styles.reachedMilestone : styles.unreachedMilestone}> 50%</Text> |
+                                    <Text style={reachedMilestonesRef.current.has(75) ? styles.reachedMilestone : styles.unreachedMilestone}> 75%</Text> |
+                                    <Text style={reachedMilestonesRef.current.has(100) ? styles.reachedMilestone : styles.unreachedMilestone}> 100%</Text>
+                                </Text>
+                            </View>
                         </View>
                     </View>
 
@@ -699,6 +722,23 @@ const styles = StyleSheet.create({
     progressFill: {
         height: '100%',
         backgroundColor: '#4CAF50',
+    },
+    milestonesContainer: {
+        marginTop: 8,
+        paddingTop: 8,
+        borderTopWidth: 1,
+        borderTopColor: '#E1EEFB',
+    },
+    milestonesText: {
+        fontSize: 12,
+        color: '#003366',
+    },
+    reachedMilestone: {
+        color: '#4CAF50',
+        fontWeight: 'bold',
+    },
+    unreachedMilestone: {
+        color: '#A0AEC0',
     },
     summaryOuterContainer: {
         marginHorizontal: 16,
