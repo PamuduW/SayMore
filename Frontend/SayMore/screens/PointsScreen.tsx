@@ -1,4 +1,3 @@
-// PointsScreen.tsx
 import React, { useEffect } from 'react';
 import {
   View,
