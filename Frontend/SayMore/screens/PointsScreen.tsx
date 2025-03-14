@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import {
   View,
   Text,
@@ -10,8 +10,8 @@ import {
 
 const PointsScreen = ({ route, navigation }) => {
   const { points, totalPoints } = route.params;
-  const fadeAnim = new Animated.Value(0);
-  const scaleAnim = new Animated.Value(0);
+  const fadeAnim = useMemo(() => new Animated.Value(0), []);
+  const scaleAnim = useMemo(() => new Animated.Value(0), []);
 
   React.useEffect(() => {
     Animated.timing(fadeAnim, {
@@ -25,7 +25,7 @@ const PointsScreen = ({ route, navigation }) => {
       friction: 5,
       useNativeDriver: true,
     }).start();
-  }, []);
+  }, [fadeAnim, scaleAnim]);
 
   const handleGoHome = () => {
     navigation.navigate('Home', { screen: 'HomeScreen' });
