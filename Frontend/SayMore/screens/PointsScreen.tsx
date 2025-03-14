@@ -1,5 +1,12 @@
 import React from 'react';
-import { View, Text, Image, StyleSheet, Animated, TouchableOpacity } from 'react-native';
+import {
+  View,
+  Text,
+  Image,
+  StyleSheet,
+  Animated,
+  TouchableOpacity,
+} from 'react-native';
 
 const PointsScreen = ({ route, navigation }) => {
   const { points, totalPoints } = route.params;
@@ -26,11 +33,18 @@ const PointsScreen = ({ route, navigation }) => {
 
   return (
     <View style={styles.container}>
-      <Image source={require('../assets/trophy.png')} style={styles.trophyImage} />
-      <Animated.Text style={[styles.title, { opacity: fadeAnim }]}>Congratulations!</Animated.Text>
+      <Image
+        source={require('../assets/trophy.png')}
+        style={styles.trophyImage}
+      />
+      <Animated.Text style={[styles.title, { opacity: fadeAnim }]}>
+        Congratulations!
+      </Animated.Text>
       <Animated.View style={{ transform: [{ scale: scaleAnim }] }}>
         <Text style={styles.pointsText}>You Scored:</Text>
-        <Text style={styles.points}>{points} / {totalPoints}</Text>
+        <Text style={styles.points}>
+          {points} / {totalPoints}
+        </Text>
       </Animated.View>
       <TouchableOpacity onPress={handleGoHome} style={styles.homeButton}>
         <Text style={styles.homeButtonText}>Go Home</Text>

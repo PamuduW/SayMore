@@ -164,8 +164,7 @@ const AnalysisScreen = ({ route }) => {
             {responseData.result.final_public_speaking_score}
           </Text>
           <Text style={styles.scoreText}>
-            Overall Confidence Score:{' '}
-            {responseData.result.overall_confidence}
+            Overall Confidence Score: {responseData.result.overall_confidence}
           </Text>
 
           <Text style={styles.scoreText}>Voice Quality & Stability Data</Text>
