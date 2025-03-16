@@ -80,6 +80,8 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = () => {
     const [currentTime, setCurrentTime] = useState(0);
     const previousTimeRef = useRef(0);
     const [largestMilestone, setLargestMilestone] = useState(0);
+    const seekingRef = useRef(false);
+    const [allowSeeking, setAllowSeeking] = useState(false);
 
     const combinedTitle = `${lessonTitle} - ${video.title}`;
 
@@ -180,9 +182,7 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = () => {
             for (const milestone of milestones) {
                 if (percentageWatched >= milestone && !reachedMilestonesRef.current.has(milestone)) {
                     reachedMilestonesRef.current.add(milestone);
-
                     setLargestMilestone(milestone);
-
                     await awardPoints(1, milestone);
                 }
             }
@@ -190,8 +190,6 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = () => {
             if (largestMilestone < percentageWatched) {
                 setLargestMilestone(percentageWatched);
             }
-
-
         } catch (error) {
             console.error('Error checking watching progress:', error);
         }
@@ -204,7 +202,6 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = () => {
         []
     );
 
-    // Poll video position regularly to update progress
     const startPositionPolling = useCallback(() => {
         if (positionPollingRef.current) {
             clearInterval(positionPollingRef.current);
@@ -216,21 +213,16 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = () => {
                     const currentTime = await videoPlayerRef.current.getCurrentTime();
 
                     if (currentTime > previousTimeRef.current) {
-
                         let allowedSkip = false;
-
                         const largestMilestoneTime = (largestMilestone / 100) * videoDuration;
                         if (currentTime <= largestMilestoneTime) {
                             allowedSkip = true;
                         }
 
                         if (!allowedSkip && currentTime - previousTimeRef.current > 3) {
-
                             videoPlayerRef.current.seekTo(previousTimeRef.current);
                             console.log("Preventing forward skip!");
-
                             showNotification("Cannot skip forward. Watch the content sequentially.");
-
                             return;
                         }
                     }
@@ -238,9 +230,7 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = () => {
                     previousTimeRef.current = currentTime;
 
                     const percentageWatched = Math.min(100, Math.round((currentTime / videoDuration) * 100));
-
                     watchedDurationRef.current = currentTime;
-
                     throttledSetCurrentPercentage(percentageWatched);
 
                 } catch (error) {
@@ -264,13 +254,51 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = () => {
                 console.log('Video duration:', duration, 'seconds');
                 setVideoDuration(duration);
 
-                // Start position polling once we have duration
+                // Check previously watched percentage
+                const user = auth().currentUser;
+                if (user) {
+                    const userId = user.uid;
+                    const userDoc = await firestore()
+                        .collection('User_Accounts')
+                        .doc(userId)
+                        .get();
+
+                    if (userDoc.exists) {
+                        const userData = userDoc.data();
+                        const watchedVideos = userData?.watchedVideos || [];
+                        const currentVideoHistory = watchedVideos
+                            .filter((v: WatchedVideo) => v.videoId === video.videoId)
+                            .sort((a: WatchedVideo, b: WatchedVideo) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime())[0];
+
+                        if (currentVideoHistory) {
+                            const previouslyWatchedPercentage = currentVideoHistory.percentageWatched || 0;
+                            console.log(`Previously watched percentage: ${previouslyWatchedPercentage}%`);
+
+                            let closestMilestone = 0;
+                            const milestones = [10, 25, 50, 75, 100];
+                            for (const milestone of milestones) {
+                                if (previouslyWatchedPercentage >= milestone) {
+                                    closestMilestone = milestone;
+                                }
+                            }
+
+                            milestones.forEach(milestone => {
+                                if (closestMilestone >= milestone) {
+                                    reachedMilestonesRef.current.add(milestone);
+                                }
+                            });
+
+                            setLargestMilestone(closestMilestone);
+                            setAllowSeeking(true);
+                        }
+                    }
+                }
                 startPositionPolling();
             }
         } catch (error) {
             console.error('Error getting video duration:', error);
         }
-    }, [startPositionPolling]);
+    }, [startPositionPolling, video.videoId]);
 
     const saveWatchedVideo = useCallback(async () => {
         if (videoSavedRef.current || isSavingRef.current || !hasPlayedEnoughRef.current) {
@@ -294,9 +322,7 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = () => {
         const userId = user.uid;
         console.log('Saving video to history for User ID:', userId);
 
-        const percentageWatched = videoDuration > 0
-            ? Math.min(100, Math.round((watchedDurationRef.current / videoDuration) * 100))
-            : 0;
+        const percentageWatched = Math.min(100, Math.round((watchedDurationRef.current / videoDuration) * 100));
 
         const watchedVideoData: WatchedVideo = {
             videoId: video.videoId,
@@ -545,6 +571,28 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = () => {
         }
     };
 
+     const handleSeek = useCallback(async (newTime: number) => {
+        if (allowSeeking) {
+            try {
+                await videoPlayerRef.current?.seekTo(newTime, true);
+
+            } catch (error) {
+                console.error('Error seeking video:', error);
+            }
+        }
+        else{
+            showNotification("Video hasn't loaded yet");
+        }
+    }, [allowSeeking]);
+
+     const seekToAllowedPercentage = () => {
+        if (allowSeeking && largestMilestone > 0) {
+            const seekTime = (largestMilestone / 100) * videoDuration;
+            handleSeek(seekTime);
+
+        }
+    };
+
     return (
         <SafeAreaView style={styles.safeArea}>
             <StatusBar barStyle="dark-content" backgroundColor="#F0F8FF" />
@@ -615,12 +663,40 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = () => {
                             <View style={styles.milestonesContainer}>
                                 <Text style={styles.milestonesText}>
                                     Milestones:
-                                    <Text style={reachedMilestonesRef.current.has(10) ? styles.reachedMilestone : styles.unreachedMilestone}> 10%</Text> |
-                                    <Text style={reachedMilestonesRef.current.has(25) ? styles.reachedMilestone : styles.unreachedMilestone}> 25%</Text> |
-                                    <Text style={reachedMilestonesRef.current.has(50) ? styles.reachedMilestone : styles.unreachedMilestone}> 50%</Text> |
-                                    <Text style={reachedMilestonesRef.current.has(75) ? styles.reachedMilestone : styles.unreachedMilestone}> 75%</Text> |
-                                    <Text style={reachedMilestonesRef.current.has(100) ? styles.reachedMilestone : styles.unreachedMilestone}> 100%</Text>
+                                    {allowSeeking ? (
+                                        <>
+                                            <TouchableOpacity onPress={() => handleSeek((10 / 100) * videoDuration)}>
+                                                <Text style={reachedMilestonesRef.current.has(10) ? styles.reachedMilestone : styles.unreachedMilestone}> 10%</Text>
+                                            </TouchableOpacity>|
+                                             <TouchableOpacity onPress={() => handleSeek((25 / 100) * videoDuration)}>
+                                                <Text style={reachedMilestonesRef.current.has(25) ? styles.reachedMilestone : styles.unreachedMilestone}> 25%</Text>
+                                            </TouchableOpacity>|
+                                             <TouchableOpacity onPress={() => handleSeek((50 / 100) * videoDuration)}>
+                                                <Text style={reachedMilestonesRef.current.has(50) ? styles.reachedMilestone : styles.unreachedMilestone}> 50%</Text>
+                                            </TouchableOpacity>|
+                                             <TouchableOpacity onPress={() => handleSeek((75 / 100) * videoDuration)}>
+                                                <Text style={reachedMilestonesRef.current.has(75) ? styles.reachedMilestone : styles.unreachedMilestone}> 75%</Text>
+                                            </TouchableOpacity>|
+                                            <TouchableOpacity onPress={() => handleSeek((100 / 100) * videoDuration)}>
+                                                <Text style={reachedMilestonesRef.current.has(100) ? styles.reachedMilestone : styles.unreachedMilestone}> 100%</Text>
+                                            </TouchableOpacity>
+                                        </>
+
+                                    ) : (
+                                        <>
+                                        <Text style={styles.unreachedMilestone}> 10%</Text>|
+                                        <Text style={styles.unreachedMilestone}> 25%</Text>|
+                                        <Text style={styles.unreachedMilestone}> 50%</Text>|
+                                        <Text style={styles.unreachedMilestone}> 75%</Text>|
+                                        <Text style={styles.unreachedMilestone}> 100%</Text>
+                                        </>
+                                    )}
                                 </Text>
+                                 {allowSeeking && largestMilestone < 100 &&(
+                                    <TouchableOpacity onPress={() => seekToAllowedPercentage()}>
+                                         <Text>Skip to last watched: {largestMilestone}% </Text>
+                                    </TouchableOpacity>
+                                 )}
                             </View>
                         </View>
                     </View>
@@ -775,7 +851,7 @@ const styles = StyleSheet.create({
         shadowColor: '#000',
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.1,
-        shadowRadius: 4,
+        shadowRadius: 3,
         elevation: 3,
         overflow: 'hidden',
     },
