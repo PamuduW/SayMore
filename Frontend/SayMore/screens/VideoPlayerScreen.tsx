@@ -80,8 +80,10 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = () => {
     const [currentTime, setCurrentTime] = useState(0);
     const previousTimeRef = useRef(0);
     const [largestMilestone, setLargestMilestone] = useState(0);
-    const seekingRef = useRef(false);
-    const [allowSeeking, setAllowSeeking] = useState(false);
+
+    // New state for previously watched percentage
+    const [previousWatchedPercentage, setPreviousWatchedPercentage] = useState<number | null>(null);
+    const [showSkipButton, setShowSkipButton] = useState(false);
 
     const combinedTitle = `${lessonTitle} - ${video.title}`;
 
@@ -169,7 +171,8 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = () => {
 
             if (playing && lastWatchTimeRef.current > 0) {
                 const timeIncrement = currentTime - lastWatchTimeRef.current;
-                if (timeIncrement > 0 && timeIncrement < 10) {
+                // More generous upper limit for time increments
+                if (timeIncrement > 0 && timeIncrement < 30) {
                     watchedDurationRef.current += timeIncrement;
                 }
             }
@@ -182,7 +185,9 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = () => {
             for (const milestone of milestones) {
                 if (percentageWatched >= milestone && !reachedMilestonesRef.current.has(milestone)) {
                     reachedMilestonesRef.current.add(milestone);
+
                     setLargestMilestone(milestone);
+
                     await awardPoints(1, milestone);
                 }
             }
@@ -190,6 +195,8 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = () => {
             if (largestMilestone < percentageWatched) {
                 setLargestMilestone(percentageWatched);
             }
+
+
         } catch (error) {
             console.error('Error checking watching progress:', error);
         }
@@ -202,6 +209,7 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = () => {
         []
     );
 
+    // Poll video position regularly to update progress
     const startPositionPolling = useCallback(() => {
         if (positionPollingRef.current) {
             clearInterval(positionPollingRef.current);
@@ -214,6 +222,7 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = () => {
 
                     if (currentTime > previousTimeRef.current) {
                         let allowedSkip = false;
+
                         const largestMilestoneTime = (largestMilestone / 100) * videoDuration;
                         if (currentTime <= largestMilestoneTime) {
                             allowedSkip = true;
@@ -222,15 +231,19 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = () => {
                         if (!allowedSkip && currentTime - previousTimeRef.current > 3) {
                             videoPlayerRef.current.seekTo(previousTimeRef.current);
                             console.log("Preventing forward skip!");
+
                             showNotification("Cannot skip forward. Watch the content sequentially.");
+
                             return;
                         }
                     }
 
                     previousTimeRef.current = currentTime;
 
-                    const percentageWatched = Math.min(100, Math.round((currentTime / videoDuration) * 100));
+                     // Update watchedDurationRef based on the current time, not just when skipping
                     watchedDurationRef.current = currentTime;
+
+                    const percentageWatched = Math.min(100, Math.round((watchedDurationRef.current / videoDuration) * 100));
                     throttledSetCurrentPercentage(percentageWatched);
 
                 } catch (error) {
@@ -247,6 +260,85 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = () => {
         };
     }, [playing, videoDuration, throttledSetCurrentPercentage, showNotification, largestMilestone]);
 
+    // Get previously watched percentage from Firestore
+    const fetchPreviousWatchedPercentage = useCallback(async () => {
+        try {
+            const user = auth().currentUser;
+            if (!user) {
+                console.log('No user logged in, cannot fetch previous watched percentage');
+                return;
+            }
+
+            const userId = user.uid;
+            const userDoc = await firestore()
+                .collection('User_Accounts')
+                .doc(userId)
+                .get();
+
+            if (userDoc.exists) {
+                const userData = userDoc.data();
+                const watchedVideos = userData?.watchedVideos || [];
+
+                // Find the most recent entry for this video
+                const videoEntry = watchedVideos.find((v: WatchedVideo) => v.videoId === video.videoId);
+
+                if (videoEntry && videoEntry.percentageWatched) {
+                    console.log(`Found video in history with ${videoEntry.percentageWatched}% watched`);
+
+                    // If percentage is significant (>= 5%), show the skip button
+                    if (videoEntry.percentageWatched >= 5 && videoEntry.percentageWatched < 98) {
+                        console.log(`Previously watched ${videoEntry.percentageWatched}% of the video - showing skip button`);
+                        setPreviousWatchedPercentage(videoEntry.percentageWatched);
+                        setShowSkipButton(true);
+                        // Set the initial currentPercentage based on the previously watched percentage
+                        setCurrentPercentage(videoEntry.percentageWatched);
+                        watchedDurationRef.current = (videoEntry.percentageWatched / 100) * videoDuration;
+                    }
+                }
+            }
+        } catch (error) {
+            console.error('Error fetching previous watched percentage:', error);
+        }
+    }, [video.videoId, videoDuration]);
+
+    // Skip to previously watched position
+    const skipToLastWatched = useCallback(async () => {
+        if (videoPlayerRef.current && previousWatchedPercentage && videoDuration) {
+            try {
+                // Calculate the time to skip to
+                const skipToTime = (previousWatchedPercentage / 100) * videoDuration;
+                // Skip to 2 seconds before the saved time to provide context
+                const targetTime = Math.max(0, skipToTime - 2);
+
+                console.log('Previous watched percentage:', previousWatchedPercentage);
+                console.log('Video duration:', videoDuration);
+                console.log('Skipping to time:', targetTime);
+
+                await videoPlayerRef.current.seekTo(targetTime);
+
+                // Make sure to update watchedDurationRef when skipping
+                watchedDurationRef.current = targetTime;
+                // Update current percentage
+                setCurrentPercentage(previousWatchedPercentage);
+
+                // Update the largest milestone based on the previous watched percentage
+                const milestones = [10, 25, 50, 75, 100];
+                for (const milestone of milestones) {
+                    if (previousWatchedPercentage >= milestone) {
+                        reachedMilestonesRef.current.add(milestone);
+                        setLargestMilestone(milestone);
+                    }
+                }
+
+                showNotification(`Skipped to ${previousWatchedPercentage}% of the video`);
+                setShowSkipButton(false);
+            } catch (error) {
+                console.error('Error skipping to previous position:', error);
+                showNotification('Could not skip to previous position');
+            }
+        }
+    }, [previousWatchedPercentage, videoDuration, showNotification]);
+
     const onPlayerReady = useCallback(async () => {
         try {
             if (videoPlayerRef.current) {
@@ -254,55 +346,28 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = () => {
                 console.log('Video duration:', duration, 'seconds');
                 setVideoDuration(duration);
 
-                // Check previously watched percentage
-                const user = auth().currentUser;
-                if (user) {
-                    const userId = user.uid;
-                    const userDoc = await firestore()
-                        .collection('User_Accounts')
-                        .doc(userId)
-                        .get();
-
-                    if (userDoc.exists) {
-                        const userData = userDoc.data();
-                        const watchedVideos = userData?.watchedVideos || [];
-                        const currentVideoHistory = watchedVideos
-                            .filter((v: WatchedVideo) => v.videoId === video.videoId)
-                            .sort((a: WatchedVideo, b: WatchedVideo) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime())[0];
-
-                        if (currentVideoHistory) {
-                            const previouslyWatchedPercentage = currentVideoHistory.percentageWatched || 0;
-                            console.log(`Previously watched percentage: ${previouslyWatchedPercentage}%`);
-
-                            let closestMilestone = 0;
-                            const milestones = [10, 25, 50, 75, 100];
-                            for (const milestone of milestones) {
-                                if (previouslyWatchedPercentage >= milestone) {
-                                    closestMilestone = milestone;
-                                }
-                            }
-
-                            milestones.forEach(milestone => {
-                                if (closestMilestone >= milestone) {
-                                    reachedMilestonesRef.current.add(milestone);
-                                }
-                            });
-
-                            setLargestMilestone(closestMilestone);
-                            setAllowSeeking(true);
-                        }
-                    }
-                }
+                // Start position polling once we have duration
                 startPositionPolling();
+
+                // Fetch previously watched percentage for this video
+                fetchPreviousWatchedPercentage();
+                // reset flags
+                videoSavedRef.current = false;
+                hasPlayedEnoughRef.current = false;
             }
         } catch (error) {
             console.error('Error getting video duration:', error);
         }
-    }, [startPositionPolling, video.videoId]);
+    }, [startPositionPolling, fetchPreviousWatchedPercentage]);
 
     const saveWatchedVideo = useCallback(async () => {
+        console.log("saveWatchedVideo called");
+
         if (videoSavedRef.current || isSavingRef.current || !hasPlayedEnoughRef.current) {
             console.log('Skipping save: already saved, currently saving, or not played enough');
+            console.log("videoSavedRef.current:", videoSavedRef.current);
+            console.log("isSavingRef.current:", isSavingRef.current);
+            console.log("hasPlayedEnoughRef.current:", hasPlayedEnoughRef.current);
             return;
         }
 
@@ -322,7 +387,16 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = () => {
         const userId = user.uid;
         console.log('Saving video to history for User ID:', userId);
 
-        const percentageWatched = Math.min(100, Math.round((watchedDurationRef.current / videoDuration) * 100));
+        // Ensure we're calculating the percentage correctly - don't round to the nearest integer
+        // for small values, and make sure we store the actual percentage
+        const actualPercentage = videoDuration > 0
+            ? Math.min(100, (watchedDurationRef.current / videoDuration) * 100)
+            : 0;
+
+        // Round to at most 1 decimal place for storage
+        const percentageWatched = Math.round(actualPercentage * 10) / 10;
+
+        console.log(`Saving watchedDuration: ${watchedDurationRef.current}s out of ${videoDuration}s (${percentageWatched}%)`);
 
         const watchedVideoData: WatchedVideo = {
             videoId: video.videoId,
@@ -344,35 +418,44 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = () => {
                 const userData = userDoc.data();
                 const existingVideos = userData?.watchedVideos || [];
 
-                const oneHourAgo = new Date();
-                oneHourAgo.setHours(oneHourAgo.getHours() - 1);
-
-                const recentExistingVideo = existingVideos.find((v: WatchedVideo) =>
-                    v.videoId === video.videoId &&
-                    new Date(v.timestamp) > oneHourAgo
+                // Find existing entry for this video regardless of timestamp
+                const existingVideoIndex = existingVideos.findIndex((v: WatchedVideo) =>
+                    v.videoId === video.videoId
                 );
 
-                if (recentExistingVideo) {
-                    const existingPercentage = recentExistingVideo.percentageWatched || 0;
+                if (existingVideoIndex !== -1) {
+                    const existingVideo = existingVideos[existingVideoIndex];
+                    const existingPercentage = existingVideo.percentageWatched || 0;
+
+                    console.log(`Found existing video entry with ${existingPercentage}% watched`);
+                    console.log(`Current percentage watched: ${percentageWatched}%`);
+
+                    // Only update if new percentage is higher
                     if (percentageWatched > existingPercentage) {
+                        console.log(`Updating percentage watched from ${existingPercentage}% to ${percentageWatched}%`);
+
+                        // First remove the existing entry
                         await firestore()
                             .collection('User_Accounts')
                             .doc(userId)
                             .update({
-                                watchedVideos: firestore.FieldValue.arrayRemove(recentExistingVideo),
+                                watchedVideos: firestore.FieldValue.arrayRemove(existingVideo),
                             });
 
+                        // Then add the new one
                         await firestore()
                             .collection('User_Accounts')
                             .doc(userId)
                             .update({
                                 watchedVideos: firestore.FieldValue.arrayUnion(watchedVideoData),
                             });
+
                         console.log('Updated existing video history with higher percentage:', percentageWatched);
                     } else {
                         console.log('No update needed - existing percentage is higher or equal');
                     }
                 } else {
+                    // Add new entry if no existing one found
                     await firestore()
                         .collection('User_Accounts')
                         .doc(userId)
@@ -381,13 +464,17 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = () => {
                         });
                     console.log('Video successfully saved to history:', uniqueId);
                 }
-            }
 
-            videoSavedRef.current = true;
+                videoSavedRef.current = true;
+                console.log("videoSavedRef.current set to true");
+            } else {
+                console.log("User Doc Doesn't Exist!");
+            }
         } catch (error) {
             console.error('Error saving watched video to User_Accounts:', error);
         } finally {
             isSavingRef.current = false;
+            console.log("isSavingRef.current set to false");
         }
     }, [video, lessonTitle, videoDuration]);
 
@@ -406,6 +493,7 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = () => {
 
         if (state === 'playing') {
             setPlaying(true);
+            setShowSkipButton(false); // Hide skip button when video starts playing
 
             if (playStartTimeRef.current === null) {
                 playStartTimeRef.current = Date.now();
@@ -415,7 +503,6 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = () => {
             setPlaying(false);
 
             checkPlayDuration();
-
             checkWatchingProgress();
 
             if (hasPlayedEnoughRef.current && !videoSavedRef.current) {
@@ -444,7 +531,7 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = () => {
                 }
             }
         }
-    }, [checkPlayDuration, saveWatchedVideo, checkWatchingProgress, videoDuration, navigation, video.title, awardPoints, calculateCompletionPoints, showNotification]);
+    }, [checkPlayDuration, saveWatchedVideo, checkWatchingProgress, videoDuration, navigation, video.title, awardPoints, calculateCompletionPoints]);
 
     // Set up regular interval to check watching progress for points
     useEffect(() => {
@@ -487,6 +574,8 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = () => {
         useCallback(() => {
             // Start position polling when screen is focused
             startPositionPolling();
+            videoSavedRef.current = false;
+            hasPlayedEnoughRef.current = false;
 
             return () => {
                 console.log('VideoPlayer screen is losing focus');
@@ -571,28 +660,6 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = () => {
         }
     };
 
-     const handleSeek = useCallback(async (newTime: number) => {
-        if (allowSeeking) {
-            try {
-                await videoPlayerRef.current?.seekTo(newTime, true);
-
-            } catch (error) {
-                console.error('Error seeking video:', error);
-            }
-        }
-        else{
-            showNotification("Video hasn't loaded yet");
-        }
-    }, [allowSeeking]);
-
-     const seekToAllowedPercentage = () => {
-        if (allowSeeking && largestMilestone > 0) {
-            const seekTime = (largestMilestone / 100) * videoDuration;
-            handleSeek(seekTime);
-
-        }
-    };
-
     return (
         <SafeAreaView style={styles.safeArea}>
             <StatusBar barStyle="dark-content" backgroundColor="#F0F8FF" />
@@ -635,6 +702,18 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = () => {
                         />
                     </View>
 
+                    {/* Skip to last watched button */}
+                    {showSkipButton && previousWatchedPercentage && !playing && (
+                        <TouchableOpacity
+                            style={styles.skipButton}
+                            onPress={skipToLastWatched}
+                        >
+                            <Text style={styles.skipButtonText}>
+                                Skip to {previousWatchedPercentage}% (Last Watched)
+                            </Text>
+                        </TouchableOpacity>
+                    )}
+
                     <View style={styles.videoInfoContainer}>
                         <Text style={styles.videoTitle}>{video.title}</Text>
                         <Text style={styles.lessonSubtitle}>{lessonTitle}</Text>
@@ -663,40 +742,12 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = () => {
                             <View style={styles.milestonesContainer}>
                                 <Text style={styles.milestonesText}>
                                     Milestones:
-                                    {allowSeeking ? (
-                                        <>
-                                            <TouchableOpacity onPress={() => handleSeek((10 / 100) * videoDuration)}>
-                                                <Text style={reachedMilestonesRef.current.has(10) ? styles.reachedMilestone : styles.unreachedMilestone}> 10%</Text>
-                                            </TouchableOpacity>|
-                                             <TouchableOpacity onPress={() => handleSeek((25 / 100) * videoDuration)}>
-                                                <Text style={reachedMilestonesRef.current.has(25) ? styles.reachedMilestone : styles.unreachedMilestone}> 25%</Text>
-                                            </TouchableOpacity>|
-                                             <TouchableOpacity onPress={() => handleSeek((50 / 100) * videoDuration)}>
-                                                <Text style={reachedMilestonesRef.current.has(50) ? styles.reachedMilestone : styles.unreachedMilestone}> 50%</Text>
-                                            </TouchableOpacity>|
-                                             <TouchableOpacity onPress={() => handleSeek((75 / 100) * videoDuration)}>
-                                                <Text style={reachedMilestonesRef.current.has(75) ? styles.reachedMilestone : styles.unreachedMilestone}> 75%</Text>
-                                            </TouchableOpacity>|
-                                            <TouchableOpacity onPress={() => handleSeek((100 / 100) * videoDuration)}>
-                                                <Text style={reachedMilestonesRef.current.has(100) ? styles.reachedMilestone : styles.unreachedMilestone}> 100%</Text>
-                                            </TouchableOpacity>
-                                        </>
-
-                                    ) : (
-                                        <>
-                                        <Text style={styles.unreachedMilestone}> 10%</Text>|
-                                        <Text style={styles.unreachedMilestone}> 25%</Text>|
-                                        <Text style={styles.unreachedMilestone}> 50%</Text>|
-                                        <Text style={styles.unreachedMilestone}> 75%</Text>|
-                                        <Text style={styles.unreachedMilestone}> 100%</Text>
-                                        </>
-                                    )}
+                                    <Text style={reachedMilestonesRef.current.has(10) ? styles.reachedMilestone : styles.unreachedMilestone}> 10%</Text> |
+                                    <Text style={reachedMilestonesRef.current.has(25) ? styles.reachedMilestone : styles.unreachedMilestone}> 25%</Text> |
+                                    <Text style={reachedMilestonesRef.current.has(50) ? styles.reachedMilestone : styles.unreachedMilestone}> 50%</Text> |
+                                    <Text style={reachedMilestonesRef.current.has(75) ? styles.reachedMilestone : styles.unreachedMilestone}> 75%</Text> |
+                                    <Text style={reachedMilestonesRef.current.has(100) ? styles.reachedMilestone : styles.unreachedMilestone}> 100%</Text>
                                 </Text>
-                                 {allowSeeking && largestMilestone < 100 &&(
-                                    <TouchableOpacity onPress={() => seekToAllowedPercentage()}>
-                                         <Text>Skip to last watched: {largestMilestone}% </Text>
-                                    </TouchableOpacity>
-                                 )}
                             </View>
                         </View>
                     </View>
@@ -720,6 +771,7 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = () => {
     );
 };
 
+// Add new styles for the skip button
 const styles = StyleSheet.create({
     safeArea: {
         flex: 1,
@@ -777,6 +829,25 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         backgroundColor: '#003366',
         marginBottom: -45,
+    },
+    skipButton: {
+        backgroundColor: '#003366',
+        paddingVertical: 10,
+        paddingHorizontal: 16,
+        borderRadius: 8,
+        marginHorizontal: 16,
+        marginTop: 16,
+        alignItems: 'center',
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.2,
+        shadowRadius: 3,
+        elevation: 4,
+    },
+    skipButtonText: {
+        color: '#FFFFFF',
+        fontSize: 14,
+        fontWeight: '600',
     },
     videoInfoContainer: {
         padding: 16,
@@ -851,7 +922,7 @@ const styles = StyleSheet.create({
         shadowColor: '#000',
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.1,
-        shadowRadius: 3,
+        shadowRadius: 4,
         elevation: 3,
         overflow: 'hidden',
     },
@@ -882,6 +953,19 @@ const styles = StyleSheet.create({
         lineHeight: 24,
         color: '#003366',
     },
-});
+    skipButton: {
+        backgroundColor: '#3498db',
+        paddingVertical: 12,
+        paddingHorizontal: 24,
+        borderRadius: 8,
+        margin: 16,
+        alignItems: 'center',
+    },
+    skipButtonText: {
+            color: '#fff',
+            fontSize: 16,
+            fontWeight: '600',
+        },
+    });
 
-export default VideoPlayerScreen;
+    export default VideoPlayerScreen;
