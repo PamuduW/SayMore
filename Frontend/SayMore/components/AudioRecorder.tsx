@@ -50,7 +50,7 @@ const AudioRecorder: React.FC<AudioRecorderProps> = ({
     }
   };
 
-  const initRecorder = () => {
+  const initRecorder = async () => {
     AudioRecord.init({
       sampleRate: 16000, // 16kHz
       channels: 1, // Mono
@@ -58,11 +58,13 @@ const AudioRecorder: React.FC<AudioRecorderProps> = ({
       audioSource: 6, // Default audio source
       wavFile: 'recordedAudio.wav', // Output file
     });
+    await new Promise(resolve => setTimeout(resolve, 1000)); // Add a delay to ensure initialization
   };
 
-  const startRecording = () => {
+  const startRecording = async () => {
     setIsRecording(true);
     setUploadMessage(null);
+    await initRecorder(); // Ensure the recorder is initialized
     AudioRecord.start();
   };
 

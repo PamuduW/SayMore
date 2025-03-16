@@ -17,7 +17,6 @@ import PublicSpeakQuestionScreen from "../screens/PublicSpeakQuestionScreen";
 import StutteringQuestionScreen from "../screens/StutteringQuestionScreen";
 import PointsScreen from "../screens/PointsScreen";
 import QuizzesNavScreen from "../screens/QuizzesNavScreen";
-
 import HomeIcon from '../assets/home.png';
 import MoreInfoIcon from '../assets/more-info.png';
 
@@ -42,7 +41,10 @@ const HomeStack = () => (
     <Stack.Screen name="Audio" component={AudioScreen} />
     <Stack.Screen name="AnalysisScreen" component={AnalysisScreen} />
     <Stack.Screen name="FeedbackScreen" component={FeedbackScreen} />
-    <Stack.Screen name="AdditionalDetailsScreen" component={AdditionalDetailsScreen} />
+    <Stack.Screen
+      name="AdditionalDetailsScreen"
+      component={AdditionalDetailsScreen}
+    />
   </Stack.Navigator>
 );
 
