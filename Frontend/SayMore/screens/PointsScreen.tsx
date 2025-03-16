@@ -47,7 +47,7 @@ const PointsScreen = ({ route, navigation }) => {
         </Text>
       </Animated.View>
       <TouchableOpacity onPress={handleGoHome} style={styles.homeButton}>
-        <Text style={styles.homeButtonText}>Go Home</Text>
+        <Text style={styles.homeButtonText}>Go To Home Page</Text>
       </TouchableOpacity>
     </View>
   );

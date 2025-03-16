@@ -12,10 +12,11 @@ import AudioScreen from '../screens/AudioScreen';
 import AnalysisScreen from '../screens/AnalysisScreen';
 import FeedbackScreen from '../screens/FeedbackScreen';
 import AdditionalDetailsScreen from '../screens/AdditionalDetailsScreen';
-import Difficulty from '../screens/Difficulty';
-import PublicSpeakQuestionScreen from '../screens/PublicSpeakQuestionScreen';
-import PointsScreen from '../screens/PointsScreen';
-
+import Difficulty from "../screens/Difficulty";
+import PublicSpeakQuestionScreen from "../screens/PublicSpeakQuestionScreen";
+import StutteringQuestionScreen from "../screens/StutteringQuestionScreen";
+import PointsScreen from "../screens/PointsScreen";
+import QuizzesNavScreen from "../screens/QuizzesNavScreen";
 import HomeIcon from '../assets/home.png';
 import MoreInfoIcon from '../assets/more-info.png';
 
@@ -26,11 +27,10 @@ const MoreStack = () => (
   <Stack.Navigator screenOptions={{ headerShown: false }}>
     <Stack.Screen name="MoreScreen" component={MoreScreen} />
     <Stack.Screen name="Lessons" component={LessonsScreen} />
+    <Stack.Screen name="QuizzesNavScreen" component={QuizzesNavScreen} />
     <Stack.Screen name="Difficulty" component={Difficulty} />
-    <Stack.Screen
-      name="PublicSpeakQuestionScreen"
-      component={PublicSpeakQuestionScreen}
-    />
+    <Stack.Screen name="PublicSpeakQuestionScreen" component={PublicSpeakQuestionScreen} />
+    <Stack.Screen name="StutteringQuestionScreen" component={StutteringQuestionScreen} />
     <Stack.Screen name="PointsScreen" component={PointsScreen} />
   </Stack.Navigator>
 );
