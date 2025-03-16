@@ -1,4 +1,3 @@
-// VideoPlayerScreen.tsx
 import React, { useState, useRef, useCallback, useEffect } from 'react';
 import {
     View,
@@ -22,6 +21,7 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import { WatchedVideo } from '../types/types';
 import firestore from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
+import { throttle } from 'lodash';
 
 type RootStackParamList = {
     VideoPlayer: {
@@ -37,6 +37,8 @@ type RootStackParamList = {
     PointsScreen: {
         points: number;
         videoTitle: string;
+        milestones: number[];
+        maxPossiblePoints: number;
     };
 };
 
@@ -59,13 +61,11 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = () => {
     const [playing, setPlaying] = useState(false);
     const videoPlayerRef = useRef<any>(null);
 
-    // Video watching tracking
     const playStartTimeRef = useRef<number | null>(null);
     const hasPlayedEnoughRef = useRef<boolean>(false);
     const isSavingRef = useRef<boolean>(false);
     const videoSavedRef = useRef<boolean>(false);
 
-    // Points system variables
     const [videoDuration, setVideoDuration] = useState<number>(0);
     const [currentPercentage, setCurrentPercentage] = useState<number>(0);
     const lastWatchTimeRef = useRef<number>(0);
@@ -75,12 +75,14 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = () => {
     const reachedMilestonesRef = useRef<Set<number>>(new Set());
     const totalPointsEarnedRef = useRef<number>(0);
 
-    // For video position polling
     const positionPollingRef = useRef<NodeJS.Timeout | null>(null);
+
+    const [currentTime, setCurrentTime] = useState(0);
+    const previousTimeRef = useRef(0);
+    const [largestMilestone, setLargestMilestone] = useState(0);
 
     const combinedTitle = `${lessonTitle} - ${video.title}`;
 
-    // Show notification to user
     const showNotification = (message: string) => {
         if (Platform.OS === 'android') {
             ToastAndroid.show(message, ToastAndroid.SHORT);
@@ -89,39 +91,33 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = () => {
         }
     };
 
-    // Calculate maximum points based on video duration
     const calculateMaxPoints = (durationInSeconds: number): number => {
-        // Base points for completion = 6
         let maxPoints = 6;
 
-        // Length multiplier
-        if (durationInSeconds > 3600) { // > 60 minutes
+        if (durationInSeconds > 3600) {
             maxPoints = 10;
-        } else if (durationInSeconds > 1800) { // > 30 minutes
+        } else if (durationInSeconds > 1800) {
             maxPoints = 8;
-        } else if (durationInSeconds > 600) { // > 10 minutes
+        } else if (durationInSeconds > 600) {
             maxPoints = 7;
         }
 
         return maxPoints;
     };
 
-     // Calculate the points to be awarded for reaching 100%
-     const calculateCompletionPoints = useCallback(() => {
-        // Calculate length bonus based on video duration and adjust calculation
-        const maxCompletionPoints = calculateMaxPoints(videoDuration); // total for 100% video, may be 7, 8, or 10
-        // Points from milestone completion
-        let basePoints = reachedMilestonesRef.current.size - (reachedMilestonesRef.current.has(100) ? 1 : 0);
-        let completionBonus = maxCompletionPoints - basePoints; // calculate the amount
+    const calculateCompletionPoints = useCallback(() => {
+        const maxCompletionPoints = calculateMaxPoints(videoDuration);
 
-        if(completionBonus < 0){
+        let basePoints = reachedMilestonesRef.current.size - (reachedMilestonesRef.current.has(100) ? 1 : 0);
+        let completionBonus = maxCompletionPoints - basePoints;
+
+        if (completionBonus < 0) {
             completionBonus = 0;
         }
 
         return completionBonus;
     }, [videoDuration]);
 
-    // Award points to user
     const awardPoints = useCallback(async (points: number, milestone: number) => {
         try {
             const user = auth().currentUser;
@@ -133,13 +129,11 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = () => {
             const userId = user.uid;
             totalPointsEarnedRef.current += points;
 
-            // Update user's points in Firestore
             await firestore()
                 .collection('User_Accounts')
                 .doc(userId)
                 .update({
                     points: firestore.FieldValue.increment(points),
-                    // Also keep a record of points history
                     pointsHistory: firestore.FieldValue.arrayUnion({
                         videoId: video.videoId,
                         videoTitle: video.title,
@@ -163,66 +157,52 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = () => {
         }
     }, [video, lessonTitle]);
 
-    // Check watching progress and award points
     const checkWatchingProgress = useCallback(async () => {
         if (!videoPlayerRef.current || pointsAwardedRef.current || videoDuration === 0) {
             return;
         }
 
         try {
-            // Get current time using the player reference
             const currentTime = await videoPlayerRef.current.getCurrentTime();
 
-            // Update watched duration
             if (playing && lastWatchTimeRef.current > 0) {
-                // Only count time if actually playing
                 const timeIncrement = currentTime - lastWatchTimeRef.current;
-                if (timeIncrement > 0 && timeIncrement < 10) { // Sanity check to avoid jumps
+                if (timeIncrement > 0 && timeIncrement < 10) {
                     watchedDurationRef.current += timeIncrement;
                 }
             }
             lastWatchTimeRef.current = currentTime;
 
-            // Calculate percentage watched
             const percentageWatched = Math.min(100, Math.round((watchedDurationRef.current / videoDuration) * 100));
-            setCurrentPercentage(percentageWatched);
 
-            // Define milestones for point awards
             const milestones = [10, 25, 50, 75, 100];
 
-            // Check for newly reached milestones
             for (const milestone of milestones) {
                 if (percentageWatched >= milestone && !reachedMilestonesRef.current.has(milestone)) {
-                    // Add to reached milestones
                     reachedMilestonesRef.current.add(milestone);
 
-                    // Award points based on milestone
-                    if (milestone === 100) {
-                        // award points for percentage milestones completion, and the completion percentage
-                        const milestoneCompletionPoints = calculateCompletionPoints();
-                        await awardPoints(milestoneCompletionPoints, milestone);
+                    setLargestMilestone(milestone);
 
-                        // Mark as fully awarded
-                        pointsAwardedRef.current = true;
-
-                        // Navigate to PointsScreen after a short delay
-                        setTimeout(() => {
-                            navigation.navigate('PointsScreen', {
-                                points: totalPointsEarnedRef.current,
-                                videoTitle: video.title
-                            });
-                        }, 1000);
-                    } else {
-                        // For other milestones, award 1 point each
-                        await awardPoints(1, milestone);
-                    }
+                    await awardPoints(1, milestone);
                 }
             }
+
+            if (largestMilestone < percentageWatched) {
+                setLargestMilestone(percentageWatched);
+            }
+
 
         } catch (error) {
             console.error('Error checking watching progress:', error);
         }
-    }, [playing, videoDuration, awardPoints, navigation, video.title, calculateCompletionPoints]);
+    }, [playing, videoDuration, awardPoints, navigation, video.title, calculateCompletionPoints, largestMilestone]);
+
+    const throttledSetCurrentPercentage = useCallback(
+        throttle((percentage: number) => {
+            setCurrentPercentage(percentage);
+        }, 500),
+        []
+    );
 
     // Poll video position regularly to update progress
     const startPositionPolling = useCallback(() => {
@@ -234,18 +214,40 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = () => {
             if (videoPlayerRef.current && playing) {
                 try {
                     const currentTime = await videoPlayerRef.current.getCurrentTime();
-                    const percentageWatched = Math.min(100, Math.round((currentTime / videoDuration) * 100));
-                    setCurrentPercentage(percentageWatched);
 
-                    // Update watched duration directly based on current position
-                    if (currentTime > watchedDurationRef.current) {
-                        watchedDurationRef.current = currentTime;
+                    if (currentTime > previousTimeRef.current) {
+
+                        let allowedSkip = false;
+
+                        const largestMilestoneTime = (largestMilestone / 100) * videoDuration;
+                        if (currentTime <= largestMilestoneTime) {
+                            allowedSkip = true;
+                        }
+
+                        if (!allowedSkip && currentTime - previousTimeRef.current > 3) {
+
+                            videoPlayerRef.current.seekTo(previousTimeRef.current);
+                            console.log("Preventing forward skip!");
+
+                            showNotification("Cannot skip forward. Watch the content sequentially.");
+
+                            return;
+                        }
                     }
+
+                    previousTimeRef.current = currentTime;
+
+                    const percentageWatched = Math.min(100, Math.round((currentTime / videoDuration) * 100));
+
+                    watchedDurationRef.current = currentTime;
+
+                    throttledSetCurrentPercentage(percentageWatched);
+
                 } catch (error) {
                     console.error('Error polling video position:', error);
                 }
             }
-        }, 1000); // Poll every second for smoother updates
+        }, 1000);
 
         return () => {
             if (positionPollingRef.current) {
@@ -253,9 +255,8 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = () => {
                 positionPollingRef.current = null;
             }
         };
-    }, [playing, videoDuration]);
+    }, [playing, videoDuration, throttledSetCurrentPercentage, showNotification, largestMilestone]);
 
-    // Initialize video duration when player is ready
     const onPlayerReady = useCallback(async () => {
         try {
             if (videoPlayerRef.current) {
@@ -293,7 +294,6 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = () => {
         const userId = user.uid;
         console.log('Saving video to history for User ID:', userId);
 
-        // Track percentage watched in the history
         const percentageWatched = videoDuration > 0
             ? Math.min(100, Math.round((watchedDurationRef.current / videoDuration) * 100))
             : 0;
@@ -305,11 +305,10 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = () => {
             timestamp: timestamp,
             thumbnail: video.thumbnail || '',
             id: uniqueId,
-            percentageWatched: percentageWatched, // Add percentage watched to history
+            percentageWatched: percentageWatched,
         };
 
         try {
-            // First check if this video already exists in the user's history
             const userDoc = await firestore()
                 .collection('User_Accounts')
                 .doc(userId)
@@ -328,10 +327,8 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = () => {
                 );
 
                 if (recentExistingVideo) {
-                    // Update the existing record if new percentage is higher
                     const existingPercentage = recentExistingVideo.percentageWatched || 0;
                     if (percentageWatched > existingPercentage) {
-                        // Remove old record
                         await firestore()
                             .collection('User_Accounts')
                             .doc(userId)
@@ -339,7 +336,6 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = () => {
                                 watchedVideos: firestore.FieldValue.arrayRemove(recentExistingVideo),
                             });
 
-                        // Add updated record
                         await firestore()
                             .collection('User_Accounts')
                             .doc(userId)
@@ -351,7 +347,6 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = () => {
                         console.log('No update needed - existing percentage is higher or equal');
                     }
                 } else {
-                    // Add new video to history
                     await firestore()
                         .collection('User_Accounts')
                         .doc(userId)
@@ -362,7 +357,6 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = () => {
                 }
             }
 
-            // Mark video as saved to prevent duplicate saves
             videoSavedRef.current = true;
         } catch (error) {
             console.error('Error saving watched video to User_Accounts:', error);
@@ -371,11 +365,10 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = () => {
         }
     }, [video, lessonTitle, videoDuration]);
 
-    // Check if video has played enough to be considered "watched"
     const checkPlayDuration = useCallback(() => {
         if (playStartTimeRef.current !== null && !hasPlayedEnoughRef.current) {
             const playDuration = Date.now() - playStartTimeRef.current;
-            if (playDuration >= 1000) { // 1 second threshold
+            if (playDuration >= 1000) {
                 console.log(`Video played for ${playDuration}ms - marking as watched`);
                 hasPlayedEnoughRef.current = true;
             }
@@ -395,43 +388,37 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = () => {
         } else if (state === 'paused' || state === 'ended' || state === 'stopped') {
             setPlaying(false);
 
-            // Check if we've played enough to mark as watched
             checkPlayDuration();
 
-            // Check progress and award points when paused
             checkWatchingProgress();
 
             if (hasPlayedEnoughRef.current && !videoSavedRef.current) {
                 saveWatchedVideo();
             }
 
-            // If video ended, make sure we award points for what they've watched
             if (state === 'ended') {
-                // Give benefit of the doubt - if they watched till the end,
-                // consider it 100% watched (in case of tracking issues)
                 watchedDurationRef.current = videoDuration;
                 setCurrentPercentage(100);
 
-                // Force add the 100% milestone
                 if (!reachedMilestonesRef.current.has(100)) {
                     reachedMilestonesRef.current.add(100);
 
-                    // Award completion points (adjust calculation to take prior milestones into account)
                     const milestoneCompletionPoints = calculateCompletionPoints();
 
-                    // Award points and navigate
                     awardPoints(milestoneCompletionPoints, 100).then(() => {
                         setTimeout(() => {
                             navigation.navigate('PointsScreen', {
                                 points: totalPointsEarnedRef.current,
-                                videoTitle: video.title
+                                videoTitle: video.title,
+                                milestones: Array.from(reachedMilestonesRef.current),
+                                maxPossiblePoints: calculateMaxPoints(videoDuration),
                             });
                         }, 1000);
                     });
                 }
             }
         }
-    }, [checkPlayDuration, saveWatchedVideo, checkWatchingProgress, videoDuration, navigation, video.title, awardPoints, calculateCompletionPoints]);
+    }, [checkPlayDuration, saveWatchedVideo, checkWatchingProgress, videoDuration, navigation, video.title, awardPoints, calculateCompletionPoints, showNotification]);
 
     // Set up regular interval to check watching progress for points
     useEffect(() => {
@@ -439,7 +426,7 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = () => {
         if (playing && videoDuration > 0) {
             checkPointsIntervalRef.current = setInterval(() => {
                 checkWatchingProgress();
-            }, 5000); // Check every 5 seconds
+            }, 5000);
         } else if (checkPointsIntervalRef.current) {
             clearInterval(checkPointsIntervalRef.current);
             checkPointsIntervalRef.current = null;
@@ -523,28 +510,26 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = () => {
         };
     }, [saveWatchedVideo, checkWatchingProgress]);
 
-    // Define the colors for the milestones
     const milestoneColors = {
-        10: '#E91E63',   // Pink
-        25: '#9C27B0',   // Purple
-        50: '#3F51B5',   // Indigo
-        75: '#2196F3',   // Blue
-        100: '#4CAF50',  // Green
+        10: '#E91E63',
+        25: '#9C27B0',
+        50: '#3F51B5',
+        75: '#2196F3',
+        100: '#4CAF50',
     };
 
     const getProgressFillColor = (percentage: number) => {
         if (percentage <= 25) {
-            return milestoneColors[10]; // Pink
+            return milestoneColors[10];
         } else if (percentage <= 50) {
-            return milestoneColors[25]; // Purple
+            return milestoneColors[25];
         } else if (percentage <= 75) {
-            return milestoneColors[50]; // Indigo
+            return milestoneColors[50];
         } else {
-            return milestoneColors[75]; // Blue
+            return milestoneColors[75];
         }
     };
 
-    // Get text for milestone points
     const getMilestonePointsText = () => {
         if (reachedMilestonesRef.current.size === 0) {
             return "";
@@ -568,7 +553,6 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = () => {
                     <TouchableOpacity
                         style={styles.backButton}
                         onPress={() => {
-                            // Check if we've played enough and save if needed before going back
                             checkPlayDuration();
                             checkWatchingProgress();
                             if (hasPlayedEnoughRef.current && !videoSavedRef.current) {
@@ -597,6 +581,9 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = () => {
                             onReady={onPlayerReady}
                             ref={videoPlayerRef}
                             forceAndroidAutoplay={true}
+                            webViewProps={{
+                                allowsFullscreen: false
+                            }}
                         />
                     </View>
 
