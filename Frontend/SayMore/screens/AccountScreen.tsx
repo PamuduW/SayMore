@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -6,8 +6,10 @@ import {
   StyleSheet,
   Image,
   Alert,
+  ActivityIndicator,
 } from 'react-native';
 import auth from '@react-native-firebase/auth';
+import firestore from '@react-native-firebase/firestore';
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import { useTheme } from '../components/ThemeContext';
 import LinearGradient from 'react-native-linear-gradient';
@@ -17,6 +19,37 @@ export default function AccountScreen() {
   const theme = useTheme();
   const navigation = useNavigation();
 
+  const [userData, setUserData] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  // Fetch Firestore data
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const currentUser = auth().currentUser;
+        if (currentUser) {
+          const userDoc = await firestore()
+            .collection('User_Accounts')
+            .doc(currentUser.uid)
+            .get();
+
+          if (userDoc.exists) {
+            setUserData(userDoc.data());
+          } else {
+            console.log('No user data found in Firestore');
+          }
+        }
+      } catch (error) {
+        console.log('Error fetching user data: ', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchUserData();
+  }, []);
+
+  // Handle Sign Out
   const handleSignOut = async () => {
     try {
       await GoogleSignin.signOut();
@@ -49,22 +82,25 @@ export default function AccountScreen() {
     <LinearGradient
       colors={theme === 'dark' ? ['#1C1C1C', '#3A3A3A'] : ['#2A2D57', '#577BC1']}
       style={styles.container}>
+
       <View style={styles.card}>
         <View style={styles.avatarWrapper}>
           <Image source={require('../assets/avatar.png')} style={styles.avatar} />
         </View>
 
-        <Text style={styles.username}>Aria Davis</Text>
+        {loading ? (
+          <ActivityIndicator size="large" color="#2A2D57" />
+        ) : (
+          <>
+            <Text style={styles.username}>
+              {userData?.fname} {userData?.sname}
+            </Text>
+            <Text style={styles.email}>{userData?.email}</Text>
+          </>
+        )}
 
         <View style={styles.menuContainer}>
-          {[
-            'Activity',
-            'Quizzes and Challenges',
-            'Progress',
-            'Goals',
-            'Leaderboard',
-            'Settings',
-          ].map((item, index) => (
+          {['Activity', 'Quizzes and Challenges', 'Progress', 'Goals', 'Leaderboard', 'Settings'].map((item, index) => (
             <LinearGradient
               key={index}
               colors={['#3B5998', '#577BC1']}
@@ -135,6 +171,12 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: '700',
     color: '#2A2D57',
+    marginBottom: 10,
+  },
+
+  email: {
+    fontSize: 14,
+    color: '#2A2D57',
     marginBottom: 25,
   },
 
@@ -160,8 +202,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     width: '100%',
     borderRadius: 18,
-    elevation: 100,
-
   },
 
   menuText: {
