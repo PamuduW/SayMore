@@ -166,7 +166,7 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = () => {
         } catch (error) {
             console.error('Error awarding points:', error);
         }
-    }, [video, lessonTitle]);
+    }, [video, lessonTitle, showNotification]);
 
     const checkWatchingProgress = useCallback(async () => {
         if (!videoPlayerRef.current || pointsAwardedRef.current || videoDuration === 0) {
@@ -207,7 +207,7 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = () => {
         } catch (error) {
             console.error('Error checking watching progress:', error);
         }
-    }, [playing, videoDuration, awardPoints, navigation, video.title, calculateCompletionPoints, largestMilestone]);
+    }, [playing, videoDuration, awardPoints, largestMilestone]);
 
     const throttledSetCurrentPercentage = useCallback(
         throttle((percentage: number) => {
@@ -227,6 +227,12 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = () => {
                 try {
                     const currentTime = await videoPlayerRef.current.getCurrentTime();
 
+                    // Update watchedDurationRef based on the current time
+                    watchedDurationRef.current = currentTime;
+
+                    const percentageWatched = Math.min(100, Math.round((watchedDurationRef.current / videoDuration) * 100));
+                    throttledSetCurrentPercentage(percentageWatched);
+
                     if (currentTime > previousTimeRef.current) {
                         let allowedSkip = false;
 
@@ -236,6 +242,7 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = () => {
                         }
 
                         if (!allowedSkip && currentTime - previousTimeRef.current > 3) {
+                            // Correct way to set the video back to the allowed position
                             videoPlayerRef.current.seekTo(previousTimeRef.current);
                             console.log("Preventing forward skip!");
 
@@ -247,11 +254,6 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = () => {
 
                     previousTimeRef.current = currentTime;
 
-                     // Update watchedDurationRef based on the current time, not just when skipping
-                    watchedDurationRef.current = currentTime;
-
-                    const percentageWatched = Math.min(100, Math.round((watchedDurationRef.current / videoDuration) * 100));
-                    throttledSetCurrentPercentage(percentageWatched);
 
                 } catch (error) {
                     console.error('Error polling video position:', error);
@@ -289,7 +291,7 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = () => {
                 // Find the most recent entry for this video
                 const videoEntry = watchedVideos.find((v: WatchedVideo) => v.videoId === video.videoId);
 
-                if (videoEntry && videoEntry.percentageWatched) {
+                if (videoEntry && videoEntry.percentageWatched !== undefined && videoEntry.percentageWatched !== null) {
                     console.log(`Found video in history with ${videoEntry.percentageWatched}% watched`);
 
                     // If percentage is significant (>= 5%), show the skip button
@@ -310,7 +312,7 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = () => {
 
     // Skip to previously watched position
     const skipToLastWatched = useCallback(async () => {
-        if (videoPlayerRef.current && previousWatchedPercentage && videoDuration) {
+        if (videoPlayerRef.current && previousWatchedPercentage !== null && videoDuration) {
             try {
                 // Calculate the time to skip to
                 const skipToTime = (previousWatchedPercentage / 100) * videoDuration;
@@ -322,11 +324,19 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = () => {
                 console.log('Skipping to time:', targetTime);
 
                 await videoPlayerRef.current.seekTo(targetTime);
+                previousTimeRef.current = targetTime; // Update previousTimeRef correctly!
 
                 // Make sure to update watchedDurationRef when skipping
                 watchedDurationRef.current = targetTime;
                 // Update current percentage
                 setCurrentPercentage(previousWatchedPercentage);
+
+                 // Wait for a short delay to ensure the video has seeked before resuming polling
+                setTimeout(() => {
+                    // Re-enable start position polling after short delay
+                     startPositionPolling();
+                }, 500); // Adjust delay time (milliseconds) as needed
+
 
                 // Update the largest milestone based on the previous watched percentage
                 const milestones = [10, 25, 50, 75, 100];
@@ -344,7 +354,7 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = () => {
                 showNotification('Could not skip to previous position');
             }
         }
-    }, [previousWatchedPercentage, videoDuration, showNotification]);
+    }, [previousWatchedPercentage, videoDuration, showNotification, startPositionPolling]);
 
     const onPlayerReady = useCallback(async () => {
         try {
@@ -501,7 +511,7 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = () => {
         }
     }, []);
 
-   const onStateChange = useCallback((state: string) => {
+    const onStateChange = useCallback((state: string) => {
         console.log('YouTube player state changed:', state);
 
         if (state === 'playing') {
@@ -534,7 +544,7 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = () => {
                     const milestoneCompletionPoints = calculateCompletionPoints();
 
                     awardPoints(milestoneCompletionPoints, 100).then(() => {
-                       console.log("Navigating to PointsScreen");
+                        console.log("Navigating to PointsScreen");
                         navigation.navigate('PointsScreen', {
                             points: totalPointsEarnedRef.current,
                             videoTitle: video.title,
@@ -706,16 +716,16 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = () => {
 
                 <ScrollView style={styles.scrollContent} showsVerticalScrollIndicator={false}>
                     <View style={styles.videoContainer}>
-                    {isLoading && (
-                        <View style={styles.loadingOverlay}>
-                            <ActivityIndicator size="large" color="#FFFFFF" />
-                        </View>
-                    )}
-                    {videoError && (
-                        <View style={styles.errorOverlay}>
-                            <Text style={styles.errorText}>{videoError}</Text>
-                        </View>
-                    )}
+                        {isLoading && (
+                            <View style={styles.loadingOverlay}>
+                                <ActivityIndicator size="large" color="#FFFFFF" />
+                            </View>
+                        )}
+                        {videoError && (
+                            <View style={styles.errorOverlay}>
+                                <Text style={styles.errorText}>{videoError}</Text>
+                            </View>
+                        )}
                         <YoutubeIframe
                             height={playerHeight}
                             width={playerWidth}
@@ -955,7 +965,7 @@ const styles = StyleSheet.create({
         elevation: 3,
         overflow: 'hidden',
     },
-summaryHeaderContainer: {
+    summaryHeaderContainer: {
         backgroundColor: '#E1EEFB',
         paddingVertical: 12,
         paddingHorizontal: 16,
