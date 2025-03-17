@@ -15,6 +15,7 @@ import AdditionalDetailsScreen from '../screens/AdditionalDetailsScreen';
 import Difficulty from "../screens/Difficulty";
 import PublicSpeakQuestionScreen from "../screens/PublicSpeakQuestionScreen";
 import PointsScreen from "../screens/PointsScreen";
+import SettingsScreen from "../screens/SettingsScreen";
 
 import HomeIcon from '../assets/home.png';
 import MoreInfoIcon from '../assets/more-info.png';
@@ -39,6 +40,13 @@ const HomeStack = () => (
     <Stack.Screen name="AnalysisScreen" component={AnalysisScreen} />
     <Stack.Screen name="FeedbackScreen" component={FeedbackScreen} />
     <Stack.Screen name="AdditionalDetailsScreen" component={AdditionalDetailsScreen} />
+  </Stack.Navigator>
+);
+
+const AccountStack = () => (
+  <Stack.Navigator screenOptions={{ headerShown: false }}>
+    <Stack.Screen name="AccountScreen" component={AccountScreen} />
+    <Stack.Screen name="SettingsScreen" component={SettingsScreen} />
   </Stack.Navigator>
 );
 
@@ -74,7 +82,7 @@ const TabNavigator = () => {
     <Tab.Navigator screenOptions={({ route }) => screenOptions(route, theme)}>
       <Tab.Screen name="Home" component={HomeStack} />
       <Tab.Screen name="More" component={MoreStack} />
-      <Tab.Screen name="Account" component={AccountScreen} />
+      <Tab.Screen name="Account" component={AccountStack} />
     </Tab.Navigator>
   );
 };
