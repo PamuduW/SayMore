@@ -12,7 +12,8 @@ import {
     BackHandler,
     ToastAndroid,
     Platform,
-    Alert
+    Alert,
+    ActivityIndicator
 } from 'react-native';
 import YoutubeIframe from 'react-native-youtube-iframe';
 import { useRoute, useNavigation, useFocusEffect, useIsFocused } from '@react-navigation/native';
@@ -86,6 +87,12 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = () => {
     const [showSkipButton, setShowSkipButton] = useState(false);
 
     const combinedTitle = `${lessonTitle} - ${video.title}`;
+
+    // Loading State
+    const [isLoading, setIsLoading] = useState(true);
+
+    // Error State
+    const [videoError, setVideoError] = useState<string | null>(null);
 
     const showNotification = (message: string) => {
         if (Platform.OS === 'android') {
@@ -354,9 +361,15 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = () => {
                 // reset flags
                 videoSavedRef.current = false;
                 hasPlayedEnoughRef.current = false;
+
+                // Hide loading indicator
+                setIsLoading(false);
+                setVideoError(null); // Clear any previous error
             }
         } catch (error) {
             console.error('Error getting video duration:', error);
+            setIsLoading(false); // Hide loading indicator even on error
+            setVideoError('Failed to load video duration.');
         }
     }, [startPositionPolling, fetchPreviousWatchedPercentage]);
 
@@ -488,12 +501,14 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = () => {
         }
     }, []);
 
-    const onStateChange = useCallback((state: string) => {
+   const onStateChange = useCallback((state: string) => {
         console.log('YouTube player state changed:', state);
 
         if (state === 'playing') {
             setPlaying(true);
             setShowSkipButton(false); // Hide skip button when video starts playing
+            setIsLoading(false); // ensure loading is hidden
+            setVideoError(null);
 
             if (playStartTimeRef.current === null) {
                 playStartTimeRef.current = Date.now();
@@ -529,6 +544,11 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = () => {
                     });
                 }
             }
+        } else if (state === 'buffering') {
+            setIsLoading(true); // Show loading indicator when buffering
+        } else if (state === 'error') {
+            setIsLoading(false);
+            setVideoError('An error occurred while playing the video.');
         }
     }, [checkPlayDuration, saveWatchedVideo, checkWatchingProgress, videoDuration, navigation, video.title, awardPoints, calculateCompletionPoints]);
 
@@ -686,6 +706,16 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = () => {
 
                 <ScrollView style={styles.scrollContent} showsVerticalScrollIndicator={false}>
                     <View style={styles.videoContainer}>
+                    {isLoading && (
+                        <View style={styles.loadingOverlay}>
+                            <ActivityIndicator size="large" color="#FFFFFF" />
+                        </View>
+                    )}
+                    {videoError && (
+                        <View style={styles.errorOverlay}>
+                            <Text style={styles.errorText}>{videoError}</Text>
+                        </View>
+                    )}
                         <YoutubeIframe
                             height={playerHeight}
                             width={playerWidth}
@@ -925,7 +955,7 @@ const styles = StyleSheet.create({
         elevation: 3,
         overflow: 'hidden',
     },
-    summaryHeaderContainer: {
+summaryHeaderContainer: {
         backgroundColor: '#E1EEFB',
         paddingVertical: 12,
         paddingHorizontal: 16,
@@ -967,3 +997,4 @@ const styles = StyleSheet.create({
 });
 
 export default VideoPlayerScreen;
+
