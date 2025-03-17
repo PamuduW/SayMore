@@ -84,6 +84,7 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = () => {
     // New state for previously watched percentage
     const [previousWatchedPercentage, setPreviousWatchedPercentage] = useState<number | null>(null);
     const [showSkipButton, setShowSkipButton] = useState(false);
+    const [currentVideoId, setCurrentVideoId] = useState<string | null>(null); // Track the current VideoId
 
     const combinedTitle = `${lessonTitle} - ${video.title}`;
 
@@ -280,7 +281,7 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = () => {
                 const userData = userDoc.data();
                 const watchedVideos = userData?.watchedVideos || [];
 
-                // Find the most recent entry for this video
+                // Find the most recent entry for this video ID
                 const videoEntry = watchedVideos.find((v: WatchedVideo) => v.videoId === video.videoId);
 
                 if (videoEntry && videoEntry.percentageWatched) {
@@ -294,6 +295,12 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = () => {
                         // Set the initial currentPercentage based on the previously watched percentage
                         setCurrentPercentage(videoEntry.percentageWatched);
                         watchedDurationRef.current = (videoEntry.percentageWatched / 100) * videoDuration;
+                    } else {
+                        // If finished, start from the beginning again by hiding the skip button
+                        setShowSkipButton(false);
+                        setPreviousWatchedPercentage(null);
+                        setCurrentPercentage(0);
+                        watchedDurationRef.current = 0;
                     }
                 }
             }
@@ -367,20 +374,25 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = () => {
                 // reset flags
                 videoSavedRef.current = false;
                 hasPlayedEnoughRef.current = false;
+
+                // Initialize CurrentVideoId with a unique ID for current session
+                setCurrentVideoId(`${video.videoId}`) // Same ID for the same video
             }
         } catch (error) {
             console.error('Error getting video duration:', error);
         }
-    }, [startPositionPolling, fetchPreviousWatchedPercentage]);
+    }, [startPositionPolling, fetchPreviousWatchedPercentage, video.videoId]);
 
     const saveWatchedVideo = useCallback(async () => {
         console.log("saveWatchedVideo called");
 
-        if (videoSavedRef.current || isSavingRef.current || !hasPlayedEnoughRef.current) {
-            console.log('Skipping save: already saved, currently saving, or not played enough');
-            console.log("videoSavedRef.current:", videoSavedRef.current);
-            console.log("isSavingRef.current:", isSavingRef.current);
-            console.log("hasPlayedEnoughRef.current:", hasPlayedEnoughRef.current);
+        if (isSavingRef.current) {
+            console.log('Skipping save: currently saving');
+            return;
+        }
+
+        if (!currentVideoId) {
+            console.log('No currentVideoId. Aborting saveWatchedVideo.');
             return;
         }
 
@@ -396,7 +408,6 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = () => {
 
         const now = new Date();
         const timestamp = now.toLocaleString();
-        const uniqueId = `${video.videoId}-${Date.now()}`;
         const userId = user.uid;
         console.log('Saving video to history for User ID:', userId);
 
@@ -417,7 +428,7 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = () => {
             lessonTitle: lessonTitle,
             timestamp: timestamp,
             thumbnail: video.thumbnail || '',
-            id: uniqueId,
+            id: currentVideoId, // Use videoId as ID
             percentageWatched: percentageWatched,
         };
 
@@ -431,10 +442,8 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = () => {
                 const userData = userDoc.data();
                 const existingVideos = userData?.watchedVideos || [];
 
-                // Find existing entry for this video regardless of timestamp
-                const existingVideoIndex = existingVideos.findIndex((v: WatchedVideo) =>
-                    v.videoId === video.videoId
-                );
+                // Find existing entry for this video ID
+                const existingVideoIndex = existingVideos.findIndex((v: WatchedVideo) => v.videoId === video.videoId);
 
                 if (existingVideoIndex !== -1) {
                     const existingVideo = existingVideos[existingVideoIndex];
@@ -475,7 +484,7 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = () => {
                         .update({
                             watchedVideos: firestore.FieldValue.arrayUnion(watchedVideoData),
                         });
-                    console.log('Video successfully saved to history:', uniqueId);
+                    console.log('Video successfully saved to history:', currentVideoId);
                 }
 
                 videoSavedRef.current = true;
@@ -489,7 +498,7 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = () => {
             isSavingRef.current = false;
             console.log("isSavingRef.current set to false");
         }
-    }, [video, lessonTitle, videoDuration]);
+    }, [video, lessonTitle, videoDuration, currentVideoId]);
 
     const checkPlayDuration = useCallback(() => {
         if (playStartTimeRef.current !== null && !hasPlayedEnoughRef.current) {
@@ -499,6 +508,23 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = () => {
                 hasPlayedEnoughRef.current = true;
             }
         }
+    }, []);
+
+    const resetWatchingState = useCallback(() => { // New Function to reset state
+        watchedDurationRef.current = 0;
+        setCurrentPercentage(0);
+        lastWatchTimeRef.current = 0;
+        reachedMilestonesRef.current = new Set();
+        totalPointsEarnedRef.current = 0;
+        setLargestMilestone(0);
+        setShowSkipButton(false);
+        setPreviousWatchedPercentage(null);
+
+        // Reset refs that control saving
+        hasPlayedEnoughRef.current = false;
+        videoSavedRef.current = false;
+        playStartTimeRef.current = null;
+
     }, []);
 
     const onStateChange = useCallback((state: string) => {
@@ -541,9 +567,12 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = () => {
                         });
                     });
                 }
+
+                 // Reset all the watching progress and flags
+                resetWatchingState();
             }
         }
-    }, [checkPlayDuration, saveWatchedVideo, checkWatchingProgress, videoDuration, navigation, video.title, awardPoints, calculateCompletionPoints]);
+    }, [checkPlayDuration, saveWatchedVideo, checkWatchingProgress, videoDuration, navigation, video.title, awardPoints, calculateCompletionPoints, resetWatchingState]);
 
     // Set up regular interval to check watching progress for points
     useEffect(() => {
@@ -905,7 +934,7 @@ const styles = StyleSheet.create({
         borderRadius: 4,
         overflow: 'hidden',
     },
-    progressFill: {
+progressFill: {
         height: '100%',
         backgroundColor: '#4CAF50',
     },
@@ -951,7 +980,7 @@ const styles = StyleSheet.create({
         color: '#003366',
         textAlign: 'center',
     },
-summaryCardContainer: {
+    summaryCardContainer: {
         padding: 16,
     },
     summaryImage: {
