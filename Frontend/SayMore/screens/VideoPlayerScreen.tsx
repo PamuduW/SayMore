@@ -519,14 +519,13 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = () => {
                     const milestoneCompletionPoints = calculateCompletionPoints();
 
                     awardPoints(milestoneCompletionPoints, 100).then(() => {
-                        setTimeout(() => {
-                            navigation.navigate('PointsScreen', {
-                                points: totalPointsEarnedRef.current,
-                                videoTitle: video.title,
-                                milestones: Array.from(reachedMilestonesRef.current),
-                                maxPossiblePoints: calculateMaxPoints(videoDuration),
-                            });
-                        }, 1000);
+                       console.log("Navigating to PointsScreen");
+                        navigation.navigate('PointsScreen', {
+                            points: totalPointsEarnedRef.current,
+                            videoTitle: video.title,
+                            milestones: Array.from(reachedMilestonesRef.current),
+                            maxPossiblePoints: calculateMaxPoints(videoDuration),
+                        });
                     });
                 }
             }
@@ -958,14 +957,13 @@ const styles = StyleSheet.create({
         paddingVertical: 12,
         paddingHorizontal: 24,
         borderRadius: 8,
-        margin: 16,
-        alignItems: 'center',
+        margin: 16
     },
     skipButtonText: {
-            color: '#fff',
-            fontSize: 16,
-            fontWeight: '600',
-        },
-    });
+        color: '#fff',
+        fontSize: 16,
+        fontWeight: '600',
+    },
+});
 
-    export default VideoPlayerScreen;
+export default VideoPlayerScreen;
