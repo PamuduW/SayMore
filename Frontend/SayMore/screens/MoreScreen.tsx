@@ -4,13 +4,13 @@ import { NavigationProp } from '@react-navigation/native';
 import { useTheme } from '../components/ThemeContext';
 
 const NewScreens = [
-  { title: "Activity", icon: require("../assets/activity2.png") },
-  { title: "Lesson", icon: require("../assets/lesson.png") },
-  { title: "Quizzes and Challenges", icon: require("../assets/quiz.png") },
-  { title: "Progress", icon: require("../assets/progress.png") },
-  { title: "Points", icon: require("../assets/points.png")},
-  { title: "Leaderboard", icon: require("../assets/leaderboard.png")},
-  { title: "Speech Therapy", icon:require("../assets/speech.png")},
+  { title: 'Activity', icon: require('../assets/activity2.png') },
+  { title: 'Lesson', icon: require('../assets/lesson.png') },
+  { title: 'Quizzes and Challenges', icon: require('../assets/quiz.png') },
+  { title: 'Progress', icon: require('../assets/progress.png') },
+  { title: 'Points', icon: require('../assets/points.png') },
+  { title: 'Leaderboard', icon: require('../assets/leaderboard.png') },
+  { title: 'Speech Therapy', icon: require('../assets/speech.png') },
 ];
 
 interface MoreScreenProps {
@@ -23,6 +23,8 @@ const MoreScreen: React.FC<MoreScreenProps> = ({ navigation }) => {
   const handlePress = (title: string) => {
     if (title === 'Lesson') {
       navigation.navigate('Lessons');
+    } else if (title === 'Quizzes and Challenges') {
+      navigation.navigate('QuizzesNavScreen'); //
     }
   };
 

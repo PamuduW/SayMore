@@ -1,50 +1,29 @@
-import librosa
-import numpy as np
-import torch
-from safetensors.torch import load_file
+import requests
 
-# Load the model
-MODEL_PATH = r"D:\Downloads\model.safetensors"
-
-
-class StutteringDetectionModel(torch.nn.Module):
-    def __init__(self):
-        super(StutteringDetectionModel, self).__init__()
-        self.layer1 = torch.nn.Linear(128, 64)  # Example architecture
-        self.layer2 = torch.nn.Linear(64, 3)  # Assuming 3 stuttering types
-
-    def forward(self, x):
-        x = torch.relu(self.layer1(x))
-        return self.layer2(x)
+# Set up Hugging Face API details
+HUGGING_FACE_API_TOKEN = "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"
+MODEL_ID = "HareemFatima/distilhubert-finetuned-stutterdetection"
+API_URL = f"https://api-inference.huggingface.co/models/{MODEL_ID}"
+HEADERS = {"Authorization": f"Bearer {HUGGING_FACE_API_TOKEN}"}
 
 
-# Initialize and load model
-model = StutteringDetectionModel()
-state_dict = load_file(MODEL_PATH)
-model.load_state_dict(state_dict, strict=False)  # Allow partial loading
-model.eval()
-
-
-# Function to extract MFCC features
-def extract_mfcc(audio_path):
-    y, sr = librosa.load(audio_path, sr=16000)  # Load audio
-    mfcc = librosa.feature.mfcc(y=y, sr=sr, n_mfcc=128)  # Extract MFCCs
-    mfcc = np.mean(mfcc, axis=1)  # Take mean across time axis
-    return torch.tensor(mfcc, dtype=torch.float32).unsqueeze(0)  # Add batch dimension
-
-
-# Function to predict stuttering type
+# Function to read and send raw audio to Hugging Face
 def predict_stuttering(audio_path):
-    input_tensor = extract_mfcc(audio_path)
-    with torch.no_grad():
-        output = model(input_tensor)
-        predicted_class = torch.argmax(output, dim=1).item()
+    with open(audio_path, "rb") as audio_file:
+        audio_data = audio_file.read()  # Read the raw WAV file as bytes
 
-    class_labels = ["Beginning Stutter", "Middle Stutter", "End Stutter"]
-    return class_labels[predicted_class]
+    response = requests.post(
+        API_URL, headers=HEADERS, data=audio_data
+    )  # Send raw audio
+
+    if response.status_code == 200:
+        predictions = response.json()
+        return predictions  # Adjust based on model output format
+    else:
+        return f"Error: {response.status_code}, {response.text}"
 
 
 if __name__ == "__main__":
-    AUDIO_PATH = r"D:\Downloads\d\harvard.wav"
+    AUDIO_PATH = r"D:\One Drive\OneDrive - University of Westminster\SDGP\ML Recs\Basic\New folder\U_ID_2+00308169-b37b-4b9f-aed5-b7dd6420ceba.wav"
     prediction = predict_stuttering(AUDIO_PATH)
     print(f"Predicted Stuttering Type: {prediction}")

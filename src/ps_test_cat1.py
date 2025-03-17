@@ -1,17 +1,25 @@
 import re
-
 import librosa
 import numpy as np
 import parselmouth
 
+def normalize_metric(value, best, worst, invert=False):
+    """
+    Normalize a raw value to a 0–100 scale.
+    For metrics where lower is better (like jitter/shimmer), set invert=True.
+    'best' is the ideal value and 'worst' is the threshold for a score of 0.
+    """
+    if worst == best:
+        return 100.0
+    if invert:
+        score = (1 - (value - best) / (worst - best)) * 100
+    else:
+        score = ((value - best) / (worst - best)) * 100
+    return float(max(0, min(100, round(score, 2))))
 
-######################################################Voice Quality & Stability####################################################################
-# Convert Hz to semitones for normalization
 def hz_to_semitones(pitch_hz, reference_pitch=100.0):
     return 12 * np.log2(pitch_hz / reference_pitch)
 
-
-# Analyze pitch, expressiveness, and provide a Monotony Score
 def analyze_pitch(audio_path, segment_duration=2.0):
     try:
         snd = parselmouth.Sound(audio_path)
@@ -20,7 +28,7 @@ def analyze_pitch(audio_path, segment_duration=2.0):
         pitch_values = pitch.selected_array["frequency"]
         time_stamps = pitch.xs()
 
-        # Remove unvoiced segments
+        # Only consider voiced segments.
         voiced_indices = pitch_values > 0
         pitch_values = pitch_values[voiced_indices]
         time_stamps = time_stamps[voiced_indices]
@@ -31,24 +39,14 @@ def analyze_pitch(audio_path, segment_duration=2.0):
         semitone_values = hz_to_semitones(pitch_values)
         overall_std = np.std(semitone_values)
         overall_range = np.max(semitone_values) - np.min(semitone_values)
+        # Monotony score: higher means more monotone (less variation)
         monotony_score = 100 * (1 - (overall_std / (overall_range + 1e-5)))
-        monotony_score = max(0, min(100, round(monotony_score, 2)))
-
-        feedback = (
-            "Great job! Your voice is dynamic and expressive!"
-            if monotony_score > 70
-            else (
-                "You're doing well! Slightly more pitch variation will improve engagement."
-                if monotony_score > 30
-                else "Your speech sounds too monotone. Try adding more variation to your pitch!"
-            )
-        )
+        monotony_score = float(max(0, min(100, round(monotony_score, 2))))
 
         pitch_data = {}
         for t in np.arange(0, duration, segment_duration):
             segment_indices = (time_stamps >= t) & (time_stamps < t + segment_duration)
             segment_pitches = semitone_values[segment_indices]
-
             if segment_pitches.size > 0:
                 pitch_data[round(t, 2)] = {
                     "mean_pitch_ST": float(round(np.mean(segment_pitches), 2)),
@@ -56,9 +54,7 @@ def analyze_pitch(audio_path, segment_duration=2.0):
                     "min_pitch_ST": float(round(np.min(segment_pitches), 2)),
                     "max_pitch_ST": float(round(np.max(segment_pitches), 2)),
                     "std_pitch_ST": float(round(np.std(segment_pitches), 2)),
-                    "pitch_range_ST": float(
-                        round(np.max(segment_pitches) - np.min(segment_pitches), 2)
-                    ),
+                    "pitch_range_ST": float(round(np.max(segment_pitches) - np.min(segment_pitches), 2)),
                 }
             else:
                 pitch_data[round(t, 2)] = {
@@ -69,109 +65,60 @@ def analyze_pitch(audio_path, segment_duration=2.0):
                     "std_pitch_ST": 0.0,
                     "pitch_range_ST": 0.0,
                 }
-
         return {
             "monotony_score": monotony_score,
-            "feedback": feedback,
             "pitch_analysis": pitch_data,
         }
-
     except Exception as e:
         return {"error": str(e)}
-
 
 def analyze_jitter(audio_path, segment_duration=2.0):
     snd = parselmouth.Sound(audio_path)
     duration = snd.get_total_duration()
-
     jitter_data = {}
-
     for t in np.arange(0, duration, segment_duration):
-        segment = snd.extract_part(
-            from_time=t, to_time=min(t + segment_duration, duration)
-        )
-        point_process = parselmouth.praat.call(
-            segment, "To PointProcess (periodic, cc)", 75, 500
-        )
-        jitter_local = parselmouth.praat.call(
-            point_process, "Get jitter (local)", 0, 0, 0.0001, 0.02, 1.3
-        )
-
-        jitter_value = (
-            float(round(jitter_local, 6)) if not np.isnan(jitter_local) else 0.0
-        )
-        jitter_data[float(round(t, 2))] = jitter_value
-
-    overall_jitter = np.nan_to_num(np.mean(list(jitter_data.values())))
+        segment = snd.extract_part(from_time=t, to_time=min(t + segment_duration, duration))
+        point_process = parselmouth.praat.call(segment, "To PointProcess (periodic, cc)", 75, 500)
+        jitter_local = parselmouth.praat.call(point_process, "Get jitter (local)", 0, 0, 0.0001, 0.02, 1.3)
+        jitter_value = float(round(jitter_local, 6)) if not np.isnan(jitter_local) else 0.0
+        jitter_data[round(t, 2)] = jitter_value
+    overall_jitter = float(np.nanmean(list(jitter_data.values())))
     return {"jitter_data": jitter_data, "overall_jitter": overall_jitter}
-
 
 def analyze_shimmer(audio_path, segment_duration=2.0):
     snd = parselmouth.Sound(audio_path)
     duration = snd.get_total_duration()
-
     shimmer_data = {}
-
     for t in np.arange(0, duration, segment_duration):
-        segment = snd.extract_part(
-            from_time=t, to_time=min(t + segment_duration, duration)
-        )
-        point_process = parselmouth.praat.call(
-            segment, "To PointProcess (periodic, cc)", 75, 500
-        )
-
-        shimmer_local = parselmouth.praat.call(
-            [segment, point_process],
-            "Get shimmer (local)",
-            0,
-            0,
-            0.0001,
-            0.02,
-            1.3,
-            1.6,
-        )
-        shimmer_value = (
-            float(round(shimmer_local, 4)) if not np.isnan(shimmer_local) else 0.0
-        )
-        shimmer_data[float(round(t, 2))] = shimmer_value
-
-    overall_shimmer = np.nan_to_num(np.mean(list(shimmer_data.values())))
+        segment = snd.extract_part(from_time=t, to_time=min(t + segment_duration, duration))
+        point_process = parselmouth.praat.call(segment, "To PointProcess (periodic, cc)", 75, 500)
+        shimmer_local = parselmouth.praat.call([segment, point_process],
+                                               "Get shimmer (local)", 0, 0, 0.0001, 0.02, 1.3, 1.6)
+        shimmer_value = float(round(shimmer_local, 4)) if not np.isnan(shimmer_local) else 0.0
+        shimmer_data[round(t, 2)] = shimmer_value
+    overall_shimmer = float(np.nanmean(list(shimmer_data.values())))
     return {"shimmer_data": shimmer_data, "overall_shimmer": overall_shimmer}
-
 
 def analyze_hnr(audio_path, segment_duration=2.0):
     snd = parselmouth.Sound(audio_path)
     duration = snd.get_total_duration()
-
     hnr_data = {}
-
     for t in np.arange(0, duration, segment_duration):
-        segment = snd.extract_part(
-            from_time=t, to_time=min(t + segment_duration, duration)
-        )
-        harmonicity = parselmouth.praat.call(
-            segment, "To Harmonicity (cc)", 0.01, 75, 0.1, 1.0
-        )
+        segment = snd.extract_part(from_time=t, to_time=min(t + segment_duration, duration))
+        harmonicity = parselmouth.praat.call(segment, "To Harmonicity (cc)", 0.01, 75, 0.1, 1.0)
         hnr_value = parselmouth.praat.call(harmonicity, "Get mean", 0, 0)
-
-        hnr_value = max(float(round(hnr_value, 2)), 0.0)
-        hnr_data[float(round(t, 2))] = hnr_value
-
-    overall_hnr = np.mean(list(hnr_data.values()))
+        hnr_value = float(max(round(hnr_value, 2), 0.0))
+        hnr_data[round(t, 2)] = hnr_value
+    overall_hnr = float(np.mean(list(hnr_data.values())))
     return {"hnr_data": hnr_data, "overall_hnr": overall_hnr}
 
-
-# Analyze speaking speed
 def analyze_speaking_speed(audio_path, text):
     y, sr = librosa.load(audio_path, sr=None)
     duration = librosa.get_duration(y=y, sr=sr)
-    transcript = text
-    words = len(re.findall(r"\b\w+\b", transcript))
-    words_per_minute = words / (duration / 60)
-    return round(words_per_minute, 2)
+    words = len(re.findall(r"\b\w+\b", text))
+    words_per_minute = words / (duration / 60) if duration > 0 else 0
+    return float(round(words_per_minute, 2))
 
-
-# Analyze clarity (using formant frequency dispersion)
 def analyze_clarity(audio_path):
     snd = parselmouth.Sound(audio_path)
     formants = snd.to_formant_burg()
@@ -203,31 +150,86 @@ def generate_speaking_score(
     monotony_score, speaking_speed, clarity, jitter, shimmer, hnr
 ):
     weights = {
-        "monotony": 0.25,
-        "speed": 0.25,
-        "clarity": 0.25,
+        "variation": 0.25,
+        "speed": 0.20,
+        "clarity": 0.30,
         "stability": 0.25,
     }
-
-    # Fix stability score calculation
-    stability_score = 100 - ((jitter * 100) + (shimmer * 100) - (hnr * 2))
-    stability_score = max(0, min(100, round(stability_score, 2)))  # Clamp to 0-100
-
-    # Fix speaking speed scaling
-    speed_score = min(100, (speaking_speed / 150) * 100)  # Normalize to 100 max
-
-    # Fix final score summation logic
+    stability_score = 100 - ((jitter * 100) + (shimmer * 100))
+    stability_score += hnr / 2
+    stability_score = float(max(0, min(100, round(stability_score, 2))))
+    speed_score = float(max(0, 100 - abs(speaking_speed - 130)))
     final_score = (
-        (monotony_score * weights["monotony"])
-        + (speed_score * weights["speed"])
-        + (clarity * weights["clarity"])
-        + (stability_score * weights["stability"])
+            variation_score * weights["variation"]
+            + speed_score * weights["speed"]
+            + clarity * weights["clarity"]
+            + stability_score * weights["stability"]
     )
+    final_score = float(max(0, min(100, round(final_score, 2))))
+    return final_score
 
-    return max(0, min(100, round(final_score, 2)))  # Clamp between 0-100
+def generate_base_feedback(final_voice_score):
+    if final_voice_score >= 85:
+        return "Excellent work! Your vocal delivery is engaging and expressive, showing outstanding control and versatility."
+    elif final_voice_score >= 70:
+        return "Good effort! Your vocal delivery is strong overall, though refining a few aspects could make your performance even more compelling."
+    elif final_voice_score >= 55:
+        return "Fair performance. Your vocal quality is adequate, but there are noticeable areas for improvement to enhance your impact."
+    elif final_voice_score >= 40:
+        return "Needs improvement. Your vocal delivery lacks some dynamic range; focusing on tone and expressiveness may help."
+    else:
+        return "Significant improvement is needed. Consider working on your tone, pace, and articulation to elevate your performance."
 
+def generate_dynamic_feedback(variation_score, stability_score, speaking_speed, clarity):
+    if variation_score >= 85:
+        variation_feedback = "Your pitch variation is excellent, keeping your delivery lively."
+    elif variation_score >= 70:
+        variation_feedback = "Your pitch variation is very good; a bit more dynamism could further captivate your audience."
+    elif variation_score >= 55:
+        variation_feedback = "Your pitch variation is moderate; consider adding more tonal shifts for expressiveness."
+    elif variation_score >= 40:
+        variation_feedback = "Your pitch variation is low; increasing vocal variation can make your speech more engaging."
+    else:
+        variation_feedback = "Your pitch variation is minimal; significant improvement in vocal variation is needed."
 
-# Main function to analyze speech
+    if stability_score >= 85:
+        stability_feedback = "Your voice stability is excellent, indicating strong vocal control."
+    elif stability_score >= 70:
+        stability_feedback = "Your voice stability is very good; slight inconsistencies are observed."
+    elif stability_score >= 55:
+        stability_feedback = "Your voice stability is moderate; practicing consistent control might help."
+    elif stability_score >= 40:
+        stability_feedback = "Your voice stability is low; focusing on steady control can enhance your delivery."
+    else:
+        stability_feedback = "Your voice stability is poor; significant improvement is needed to maintain consistency."
+
+    if speaking_speed >= 140:
+        speed_feedback = "Your speaking speed is a bit fast; consider slowing down for clarity."
+    elif speaking_speed >= 120:
+        speed_feedback = "Your speaking speed is ideal."
+    elif speaking_speed >= 100:
+        speed_feedback = "Your speaking speed is good, though a slight increase could boost engagement."
+    elif speaking_speed >= 80:
+        speed_feedback = "Your speaking speed is a bit slow; try to increase your pace for a more dynamic delivery."
+    else:
+        speed_feedback = "Your speaking speed is too slow; working on a more energetic pace may help."
+
+    if clarity >= 85:
+        clarity_feedback = "Your clarity is exceptional, making your speech easily understandable."
+    elif clarity >= 70:
+        clarity_feedback = "Your clarity is very good; minor improvements could sharpen your articulation even more."
+    elif clarity >= 55:
+        clarity_feedback = "Your clarity is moderate; focusing on enunciation could enhance your message."
+    elif clarity >= 40:
+        clarity_feedback = "Your clarity is low; work on pronunciation and articulation to improve understanding."
+    else:
+        clarity_feedback = "Your clarity needs significant improvement; consider vocal exercises to enhance articulation."
+
+    dynamic_feedback = (
+        f"Additionally, {variation_feedback} {stability_feedback} {speed_feedback} {clarity_feedback}"
+    )
+    return dynamic_feedback
+
 def analyze_speech_1(audio_path, text):
     pitch_data = analyze_pitch(audio_path)
     speaking_speed = analyze_speaking_speed(audio_path, text)
@@ -239,8 +241,11 @@ def analyze_speech_1(audio_path, text):
     if "error" in pitch_data:
         return {"error": pitch_data["error"]}
 
-    final_score = generate_speaking_score(
-        pitch_data["monotony_score"],
+    # Calculate variation_score from monotony_score (higher variation is better)
+    variation_score = float(max(0, min(100, round(100 - pitch_data["monotony_score"], 2))))
+
+    final_voice_score = generate_speaking_score(
+        variation_score,
         speaking_speed,
         clarity,
         jitter_data["overall_jitter"],
@@ -248,120 +253,36 @@ def analyze_speech_1(audio_path, text):
         hnr_data["overall_hnr"],
     )
 
+    stability_score = 100 - ((jitter_data["overall_jitter"] * 100) + (shimmer_data["overall_shimmer"] * 100))
+    stability_score += hnr_data["overall_hnr"] / 2
+    stability_score = float(max(0, min(100, round(stability_score, 2))))
+
+    base_feedback = generate_base_feedback(final_voice_score)
+    dynamic_feedback = generate_dynamic_feedback(
+        variation_score=variation_score,
+        stability_score=stability_score,
+        speaking_speed=speaking_speed,
+        clarity=clarity
+    )
+
+    # Normalize overall jitter, shimmer, and HNR to a 0–100 scale.
+    normalized_jitter = normalize_metric(jitter_data["overall_jitter"], best=0, worst=0.1, invert=True)
+    normalized_shimmer = normalize_metric(shimmer_data["overall_shimmer"], best=0, worst=0.3, invert=True)
+    normalized_hnr = normalize_metric(hnr_data["overall_hnr"], best=0, worst=30, invert=False)
+
     return {
-        "final_public_speaking_score": final_score,
-        "monotony_score": pitch_data["monotony_score"],
-        "feedback": pitch_data["feedback"],
+        "final_voice_score": final_voice_score,
+        "variation_score": variation_score,
+        "stability_score": stability_score,
         "speaking_speed": speaking_speed,
         "clarity": clarity,
-        "jitter": jitter_data,
-        "shimmer": shimmer_data,
-        "hnr": hnr_data,
-        "pitch_analysis": pitch_data["pitch_analysis"],
+        "overall_jitter_score": normalized_jitter,
+        "overall_shimmer_score": normalized_shimmer,
+        "overall_hnr_score": normalized_hnr,
+        "base_feedback": base_feedback,
+        "dynamic_feedback": dynamic_feedback,
+        "jitter_data": jitter_data["jitter_data"],
+        "shimmer_data": shimmer_data["shimmer_data"],
+        "hnr_data": hnr_data["hnr_data"],
+        "pitch_data": pitch_data["pitch_analysis"],
     }
-
-
-##########################################################################################################################
-
-
-#########################################################################################################################
-# def analyze_duration(audio_path):
-#     y, sr = librosa.load(audio_path, sr=None)
-#     return float(round(librosa.get_duration(y=y, sr=sr), 2))
-#
-#
-# def analyze_formants(audio_path, segment_duration=2.0):
-#     y, sr = librosa.load(audio_path, sr=None)
-#     duration = librosa.get_duration(y=y, sr=sr)
-#     _f0, sp, _ap = pw.wav2world(y.astype(np.float64), sr)
-#
-#     formant_data = {}
-#     for t in np.arange(0, duration, segment_duration):
-#         idx = int(t * len(sp) / duration)
-#         f1 = np.mean(sp[idx][:50])  # Approximate first formant
-#         f2 = np.mean(sp[idx][50:150])  # Approximate second formant
-#         f3 = np.mean(sp[idx][150:300])  # Approximate third formant
-#         formant_data[int(t)] = {"F1": round(f1, 2), "F2": round(f2, 2), "F3": round(f3, 2)}
-#     return formant_data
-
-
-# def analyze_pause(audio_path):
-#     vad = webrtcvad.Vad(2)
-#     y, sr = librosa.load(audio_path, sr=16000)  # WebRTC VAD works best at 16kHz
-#     frame_length = int(0.03 * sr)  # 30ms frames
-#     frames = [y[i:i + frame_length] for i in range(0, len(y), frame_length)]
-#
-#     print("aaa")
-#     pauses = 0
-#     for frame in frames:
-#         try:
-#             print("bbbb")
-#             if not vad.is_speech(frame.tobytes(), sr):
-#                 print("cccc")
-#                 pauses += 1
-#         except Exception as e:
-#             return {"result": {"error": f"Error while processing frame: {str(e)}"}}
-#
-#     return pauses
-
-# def analyze_rhythm(audio_path):
-#     y, sr = librosa.load(audio_path, sr=None)
-#     tempo, _ = librosa.beat.beat_track(y=y, sr=sr)
-#     return float(round(tempo, 2))
-#
-# def analyze_fluency(audio_path):
-#     pauses = analyze_pause(audio_path)
-#     return "Fluent" if pauses < 3 else "Non-Fluent"
-#
-# def analyze_prosody(audio_path):
-#     return {
-#         "pitch_variation": analyze_pitch(audio_path),
-#         "rhythm": analyze_rhythm(audio_path),
-#         "intensity_variation": analyze_intensity(audio_path),
-#     }
-#
-# def analyze_clarity(audio_path):
-#     return "Clear" if analyze_fluency(audio_path) == "Fluent" else "Unclear"
-
-
-##########################################################################################
-# def analyze_rate(audio_path):
-#     num_syllables = analyze_syllable(audio_path)
-#     duration = analyze_duration(audio_path)
-#     return round(num_syllables / duration, 2)
-#
-# def analyze_pronunciation(audio_path):
-#     return "Requires ML phoneme analysis (DeepSpeech, wav2vec2)"
-#
-# def analyze_accent(audio_path):
-#     return "Accent detection requires ML models (e.g., wav2vec2)"
-#
-# def analyze_emotion(audio_path):
-#     return "Emotion detection requires ML-based analysis"
-#
-# def analyze_stress(audio_path):
-#     return "Stress analysis requires NLP phoneme recognition"
-#############################################################################################
-
-
-# # Speech Timing & Rhythm
-# "Duration_data": analyze_duration(audio_path),
-#
-
-
-# # Advanced Prosodic & Fluency Analysis
-# "Formant_data": analyze_formants(audio_path),
-
-
-# "Pause_data": analyze_pause(audio_path),
-# "Rhythm_data": analyze_rhythm(audio_path),
-# "Prosody_data": analyze_prosody(audio_path),
-# "Fluency_data": analyze_fluency(audio_path),
-# "Clarity_data": analyze_clarity(audio_path),
-
-
-# "Rate_data": analyze_rate(audio_path),
-# "Pronunciation_data": analyze_pronunciation(audio_path),
-# "Accent_data": analyze_accent(audio_path),
-# "Emotion_data": analyze_emotion(audio_path),
-# "Stress_data": analyze_stress(audio_path)
