@@ -85,6 +85,10 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = () => {
     const [previousWatchedPercentage, setPreviousWatchedPercentage] = useState<number | null>(null);
     const [showSkipButton, setShowSkipButton] = useState(false);
     const [currentVideoId, setCurrentVideoId] = useState<string | null>(null); // Track the current VideoId
+    const [isRewatching, setIsRewatching] = useState(false); // New state to track if rewatching a completed video
+
+    // Reference to completed video entry if exists
+    const completedVideoEntryRef = useRef<WatchedVideo | null>(null);
 
     const combinedTitle = `${lessonTitle} - ${video.title}`;
 
@@ -183,13 +187,16 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = () => {
 
             const milestones = [10, 25, 50, 75, 100];
 
-            for (const milestone of milestones) {
-                if (percentageWatched >= milestone && !reachedMilestonesRef.current.has(milestone)) {
-                    reachedMilestonesRef.current.add(milestone);
+            // Only check for milestones and award points if not rewatching
+            if (!isRewatching) {
+                for (const milestone of milestones) {
+                    if (percentageWatched >= milestone && !reachedMilestonesRef.current.has(milestone)) {
+                        reachedMilestonesRef.current.add(milestone);
 
-                    setLargestMilestone(milestone);
+                        setLargestMilestone(milestone);
 
-                    await awardPoints(1, milestone);
+                        await awardPoints(1, milestone);
+                    }
                 }
             }
 
@@ -197,11 +204,10 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = () => {
                 setLargestMilestone(percentageWatched);
             }
 
-
         } catch (error) {
             console.error('Error checking watching progress:', error);
         }
-    }, [playing, videoDuration, awardPoints, navigation, video.title, calculateCompletionPoints, largestMilestone]);
+    }, [playing, videoDuration, awardPoints, navigation, video.title, calculateCompletionPoints, largestMilestone, isRewatching]);
 
     const throttledSetCurrentPercentage = useCallback(
         throttle((percentage: number) => {
@@ -281,27 +287,75 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = () => {
                 const userData = userDoc.data();
                 const watchedVideos = userData?.watchedVideos || [];
 
-                // Find the most recent entry for this video ID
-                const videoEntry = watchedVideos.find((v: WatchedVideo) => v.videoId === video.videoId);
+                // Find completed video entry (98% or higher)
+                const completedVideoEntry = watchedVideos.find(
+                    (v: WatchedVideo) => v.videoId === video.videoId && v.percentageWatched >= 98
+                );
 
-                if (videoEntry && videoEntry.percentageWatched) {
-                    console.log(`Found video in history with ${videoEntry.percentageWatched}% watched`);
+                // Find latest incomplete entry
+                const incompleteEntries = watchedVideos
+                    .filter((v: WatchedVideo) => v.videoId === video.videoId && v.percentageWatched < 98)
+                    .sort((a: WatchedVideo, b: WatchedVideo) => {
+                        // Sort by timestamp descending to get the most recent
+                        return new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime();
+                    });
 
-                    // If percentage is significant (>= 5%), show the skip button
-                    if (videoEntry.percentageWatched >= 5 && videoEntry.percentageWatched < 98) {
-                        console.log(`Previously watched ${videoEntry.percentageWatched}% of the video - showing skip button`);
-                        setPreviousWatchedPercentage(videoEntry.percentageWatched);
-                        setShowSkipButton(true);
-                        // Set the initial currentPercentage based on the previously watched percentage
-                        setCurrentPercentage(videoEntry.percentageWatched);
-                        watchedDurationRef.current = (videoEntry.percentageWatched / 100) * videoDuration;
+                const latestIncompleteEntry = incompleteEntries.length > 0 ? incompleteEntries[0] : null;
+
+                if (completedVideoEntry) {
+                    console.log('Found completed video entry');
+                    completedVideoEntryRef.current = completedVideoEntry;
+
+                    // Set up for rewatching
+                    console.log('Video was previously completed. Setting up for rewatching.');
+                    setIsRewatching(true);
+
+                    // Check if there's also an incomplete rewatching entry
+                    if (latestIncompleteEntry) {
+                        const incompletePercentage = latestIncompleteEntry.percentageWatched;
+                        console.log(`Found incomplete rewatch session at ${incompletePercentage}%`);
+
+                        if (incompletePercentage >= 5) {
+                            setPreviousWatchedPercentage(incompletePercentage);
+                            setShowSkipButton(true);
+                            setCurrentPercentage(incompletePercentage);
+                            watchedDurationRef.current = (incompletePercentage / 100) * videoDuration;
+                        } else {
+                            // Start from beginning for very low progress
+                            setShowSkipButton(false);
+                            setPreviousWatchedPercentage(null);
+                            setCurrentPercentage(0);
+                            watchedDurationRef.current = 0;
+                        }
                     } else {
-                        // If finished, start from the beginning again by hiding the skip button
+                        // First time rewatching after completion
                         setShowSkipButton(false);
                         setPreviousWatchedPercentage(null);
                         setCurrentPercentage(0);
                         watchedDurationRef.current = 0;
                     }
+                } else if (latestIncompleteEntry) {
+                    // No completion but has incomplete progress
+                    const incompletePercentage = latestIncompleteEntry.percentageWatched;
+                    console.log(`Found video in history with ${incompletePercentage}% watched`);
+
+                    if (incompletePercentage >= 5) {
+                        setPreviousWatchedPercentage(incompletePercentage);
+                        setShowSkipButton(true);
+                        setCurrentPercentage(incompletePercentage);
+                        watchedDurationRef.current = (incompletePercentage / 100) * videoDuration;
+                    } else {
+                        setShowSkipButton(false);
+                        setPreviousWatchedPercentage(null);
+                        setCurrentPercentage(0);
+                        watchedDurationRef.current = 0;
+                    }
+                } else {
+                    // First time watching this video
+                    setShowSkipButton(false);
+                    setPreviousWatchedPercentage(null);
+                    setCurrentPercentage(0);
+                    watchedDurationRef.current = 0;
                 }
             }
         } catch (error) {
@@ -376,7 +430,8 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = () => {
                 hasPlayedEnoughRef.current = false;
 
                 // Initialize CurrentVideoId with a unique ID for current session
-                setCurrentVideoId(`${video.videoId}`) // Same ID for the same video
+                const timestamp = new Date().getTime(); // Add timestamp to make the ID unique for rewatching
+                setCurrentVideoId(`${video.videoId}_${timestamp}`);
             }
         } catch (error) {
             console.error('Error getting video duration:', error);
@@ -428,7 +483,7 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = () => {
             lessonTitle: lessonTitle,
             timestamp: timestamp,
             thumbnail: video.thumbnail || '',
-            id: currentVideoId, // Use videoId as ID
+            id: currentVideoId, // Use unique session ID
             percentageWatched: percentageWatched,
         };
 
@@ -440,31 +495,34 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = () => {
 
             if (userDoc.exists) {
                 const userData = userDoc.data();
-                const existingVideos = userData?.watchedVideos || [];
+                let existingVideos = userData?.watchedVideos || [];
 
-                // Find existing entry for this video ID
-                const existingVideoIndex = existingVideos.findIndex((v: WatchedVideo) => v.videoId === video.videoId);
+                // Handle saving for a rewatch session
+                if (isRewatching) {
+                    console.log('Handling save for rewatch session');
 
-                if (existingVideoIndex !== -1) {
-                    const existingVideo = existingVideos[existingVideoIndex];
-                    const existingPercentage = existingVideo.percentageWatched || 0;
+                    // If this is a finished rewatch (100%)
+                    if (percentageWatched >= 98) {
+                        console.log('Rewatch completed to 100%');
 
-                    console.log(`Found existing video entry with ${existingPercentage}% watched`);
-                    console.log(`Current percentage watched: ${percentageWatched}%`);
+                        // Find any incomplete rewatch entries (not the completed one)
+                        const incompleteRewatchEntries = existingVideos.filter(
+                            (v: WatchedVideo) => v.videoId === video.videoId &&
+                                               v.percentageWatched < 98 &&
+                                               v.id !== completedVideoEntryRef.current?.id
+                        );
 
-                    // Only update if new percentage is higher
-                    if (percentageWatched > existingPercentage) {
-                        console.log(`Updating percentage watched from ${existingPercentage}% to ${percentageWatched}%`);
+                        // Remove any incomplete rewatch entries
+                        for (const entry of incompleteRewatchEntries) {
+                            await firestore()
+                                .collection('User_Accounts')
+                                .doc(userId)
+                                .update({
+                                    watchedVideos: firestore.FieldValue.arrayRemove(entry),
+                                });
+                        }
 
-                        // First remove the existing entry
-                        await firestore()
-                            .collection('User_Accounts')
-                            .doc(userId)
-                            .update({
-                                watchedVideos: firestore.FieldValue.arrayRemove(existingVideo),
-                            });
-
-                        // Then add the new one
+                        // Add new completed rewatch entry
                         await firestore()
                             .collection('User_Accounts')
                             .doc(userId)
@@ -472,19 +530,100 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = () => {
                                 watchedVideos: firestore.FieldValue.arrayUnion(watchedVideoData),
                             });
 
-                        console.log('Updated existing video history with higher percentage:', percentageWatched);
+                        console.log('Added new completed rewatch entry while preserving original completion');
                     } else {
-                        console.log('No update needed - existing percentage is higher or equal');
+                        // Handle incomplete rewatch - update existing incomplete rewatch
+                        const existingRewatchEntry = existingVideos.find(
+                            (v: WatchedVideo) => v.videoId === video.videoId &&
+                                               v.percentageWatched < 98 &&
+                                               v.id !== completedVideoEntryRef.current?.id
+                        );
+
+                        if (existingRewatchEntry) {
+                            // Only update if new percentage is higher
+                            if (percentageWatched > existingRewatchEntry.percentageWatched) {
+                                console.log(`Updating rewatch percentage from ${existingRewatchEntry.percentageWatched}% to ${percentageWatched}%`);
+
+                                // Remove existing rewatch entry
+                                await firestore()
+                                    .collection('User_Accounts')
+                                    .doc(userId)
+                                    .update({
+                                        watchedVideos: firestore.FieldValue.arrayRemove(existingRewatchEntry),
+                                    });
+
+                                // Add updated rewatch entry
+                                await firestore()
+                                    .collection('User_Accounts')
+                                    .doc(userId)
+                                    .update({
+                                        watchedVideos: firestore.FieldValue.arrayUnion(watchedVideoData),
+                                    });
+
+                                console.log('Updated incomplete rewatch entry with higher percentage');
+                            } else {
+                                console.log('No update needed for rewatch - existing percentage is higher or equal');
+                            }
+                        } else {
+                            // No existing rewatch entry, so add a new one
+                            await firestore()
+                                .collection('User_Accounts')
+                                .doc(userId)
+                                .update({
+                                    watchedVideos: firestore.FieldValue.arrayUnion(watchedVideoData),
+                                });
+
+                            console.log('Added new incomplete rewatch entry');
+                        }
                     }
                 } else {
-                    // Add new entry if no existing one found
-                    await firestore()
-                        .collection('User_Accounts')
-                        .doc(userId)
-                        .update({
-                            watchedVideos: firestore.FieldValue.arrayUnion(watchedVideoData),
-                        });
-                    console.log('Video successfully saved to history:', currentVideoId);
+                    // Handle save for first-watch session
+                    console.log('Handling save for first-watch session');
+
+                    const existingVideoIndex = existingVideos.findIndex((v: WatchedVideo) => v.videoId === video.videoId);
+
+                    if (existingVideoIndex !== -1) {
+                        const existingVideo = existingVideos[existingVideoIndex];
+                        const existingPercentage = existingVideo.percentageWatched || 0;
+
+                        console.log(`Found existing video entry with ${existingPercentage}% watched`);
+                        console.log(`Current percentage watched: ${percentageWatched}%`);
+
+                        // Only update if new percentage is higher
+                        if (percentageWatched > existingPercentage) {
+                            console.log(`Updating percentage watched from ${existingPercentage}% to ${percentageWatched}%`);
+
+                            // Remove existing entry
+                            await firestore()
+                                .collection('User_Accounts')
+                                .doc(userId)
+                                .update({
+                                    watchedVideos: firestore.FieldValue.arrayRemove(existingVideo),
+                                });
+
+                            // Add updated entry
+                            await firestore()
+                                .collection('User_Accounts')
+                                .doc(userId)
+                                .update({
+                                    watchedVideos: firestore.FieldValue.arrayUnion(watchedVideoData),
+                                });
+
+                            console.log('Updated existing video history with higher percentage');
+                        } else {
+                            console.log('No update needed - existing percentage is higher or equal');
+                        }
+                    } else {
+                        // Add new entry for first watch
+                        await firestore()
+                            .collection('User_Accounts')
+                            .doc(userId)
+                            .update({
+                                watchedVideos: firestore.FieldValue.arrayUnion(watchedVideoData),
+                            });
+
+                        console.log('Added new first-watch entry');
+                    }
                 }
 
                 videoSavedRef.current = true;
@@ -498,7 +637,7 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = () => {
             isSavingRef.current = false;
             console.log("isSavingRef.current set to false");
         }
-    }, [video, lessonTitle, videoDuration, currentVideoId]);
+    }, [video, lessonTitle, videoDuration, currentVideoId, isRewatching]);
 
     const checkPlayDuration = useCallback(() => {
         if (playStartTimeRef.current !== null && !hasPlayedEnoughRef.current) {
@@ -510,7 +649,7 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = () => {
         }
     }, []);
 
-    const resetWatchingState = useCallback(() => { // New Function to reset state
+    const resetWatchingState = useCallback(() => {
         watchedDurationRef.current = 0;
         setCurrentPercentage(0);
         lastWatchTimeRef.current = 0;
@@ -525,7 +664,10 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = () => {
         videoSavedRef.current = false;
         playStartTimeRef.current = null;
 
-    }, []);
+        // Generate a new unique ID for the next watch session
+        const timestamp = new Date().getTime();
+        setCurrentVideoId(`${video.videoId}_${timestamp}`);
+    }, [video.videoId]);
 
     const onStateChange = useCallback((state: string) => {
         console.log('YouTube player state changed:', state);
@@ -552,13 +694,14 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = () => {
                 watchedDurationRef.current = videoDuration;
                 setCurrentPercentage(100);
 
-                if (!reachedMilestonesRef.current.has(100)) {
+                // Only award completion points when not rewatching
+                if (!isRewatching && !reachedMilestonesRef.current.has(100)) {
                     reachedMilestonesRef.current.add(100);
 
                     const milestoneCompletionPoints = calculateCompletionPoints();
 
                     awardPoints(milestoneCompletionPoints, 100).then(() => {
-                       console.log("Navigating to PointsScreen");
+                        console.log("Navigating to PointsScreen");
                         navigation.navigate('PointsScreen', {
                             points: totalPointsEarnedRef.current,
                             videoTitle: video.title,
@@ -566,13 +709,19 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = () => {
                             maxPossiblePoints: calculateMaxPoints(videoDuration),
                         });
                     });
+                } else if (isRewatching) {
+                    // Just save the video without awarding points when rewatching
+                    saveWatchedVideo();
+                    showNotification("Video rewatched completely!");
                 }
 
-                 // Reset all the watching progress and flags
+                // Reset all the watching progress and flags
                 resetWatchingState();
+                // Reset the rewatching flag - next time treat it as a fresh watch
+                setIsRewatching(false);
             }
         }
-    }, [checkPlayDuration, saveWatchedVideo, checkWatchingProgress, videoDuration, navigation, video.title, awardPoints, calculateCompletionPoints, resetWatchingState]);
+    }, [checkPlayDuration, saveWatchedVideo, checkWatchingProgress, videoDuration, navigation, video.title, awardPoints, calculateCompletionPoints, resetWatchingState, isRewatching, showNotification]);
 
     // Set up regular interval to check watching progress for points
     useEffect(() => {
@@ -687,6 +836,10 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = () => {
     };
 
     const getMilestonePointsText = () => {
+        if (isRewatching) {
+            return "Rewatching - no additional points awarded";
+        }
+
         if (reachedMilestonesRef.current.size === 0) {
             return "";
         }
@@ -1009,3 +1162,4 @@ progressFill: {
 });
 
 export default VideoPlayerScreen;
+
