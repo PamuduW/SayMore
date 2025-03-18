@@ -42,7 +42,7 @@ const Analysis_PS = ({ filename, acc_id, type, language }) => {
           file_name: filename,
           acc_id: acc_id,
           test_type: type,
-          lan_flag: 'language',
+          lan_flag: language,
         };
         const response = await fetch(
           'https://saymore-monorepo-8d4fc9b224ef.herokuapp.com/test',
