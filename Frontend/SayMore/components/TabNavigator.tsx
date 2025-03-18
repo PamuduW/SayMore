@@ -11,6 +11,7 @@ import AccountScreen from '../screens/AccountScreen';
 import AudioScreen from '../screens/AudioScreen';
 import AnalysisScreen from '../screens/AnalysisScreen';
 import FeedbackScreen from '../screens/FeedbackScreen';
+import SpeechTherapyScreen from '../screens/SpeechTherapyScreen'
 import AdditionalDetailsScreen from '../screens/AdditionalDetailsScreen';
 import Difficulty from "../screens/Difficulty";
 import PublicSpeakQuestionScreen from "../screens/PublicSpeakQuestionScreen";
@@ -32,6 +33,7 @@ const MoreStack = () => (
     <Stack.Screen name="PublicSpeakQuestionScreen" component={PublicSpeakQuestionScreen} />
     <Stack.Screen name="StutteringQuestionScreen" component={StutteringQuestionScreen} />
     <Stack.Screen name="PointsScreen" component={PointsScreen} />
+    <Stack.Screen name="SpeechTherapyScreen" component={SpeechTherapyScreen} />
   </Stack.Navigator>
 );
 
