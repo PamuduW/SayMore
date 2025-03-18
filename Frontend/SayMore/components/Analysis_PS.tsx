@@ -12,8 +12,7 @@ import { ProgressChart } from 'react-native-chart-kit';
 
 const screenWidth = Dimensions.get('window').width;
 
-const Analysis_PS = ({ route }) => {
-  const { filename, acc_id, type, language } = route.params;
+const Analysis_PS = ({ filename, acc_id, type, language }) => {
   const [responseData, setResponseData] = useState(null);
   const navigation = useNavigation();
   const [data, setData] = useState({

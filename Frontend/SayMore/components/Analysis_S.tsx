@@ -2,8 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Text, StyleSheet, ScrollView, View } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 
-const Analysis_S = ({ route }) => {
-  const { filename, acc_id, type, language } = route.params;
+const Analysis_S = ({ filename, acc_id, type, language }) => {
   const [responseData, setResponseData] = useState(null);
   const navigation = useNavigation();
 
