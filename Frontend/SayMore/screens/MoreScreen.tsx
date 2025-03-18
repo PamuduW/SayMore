@@ -43,9 +43,11 @@ const MoreScreen: React.FC<MoreScreenProps> = ({ navigation }) => {
                 : styles.lightLessonButton,
             ]}
             onPress={() => handlePress(item.title)}>
-            {item.icon ? (
-              <Image source={item.icon} style={styles.lessonIcon} />
-            ) : null}
+            <View style={styles.imageContainer}>
+              {item.icon ? (
+                <Image source={item.icon} style={styles.lessonIcon} />
+              ) : null}
+            </View>
             <Text style={styles.lessonText}>{item.title}</Text>
           </TouchableOpacity>
         ))}
@@ -63,10 +65,12 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   lessonButton: {
-    width: '48%',
+    width: '50%',
+    height: 230,
     borderRadius: 10,
     padding: 20,
     alignItems: 'center',
+    justifyContent: 'center',
     marginBottom: 15,
     elevation: 3,
     shadowColor: '#000',
@@ -76,9 +80,14 @@ const styles = StyleSheet.create({
   },
   darkLessonButton: { backgroundColor: '#4a4a4a' },
   lightLessonButton: { backgroundColor: '#E6F7FF' },
-  lessonIcon: { width: 50, height: 50, marginBottom: 10 },
+  imageContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 10,
+  },
+  lessonIcon: { width: 100, height: 100,borderRadius: 30},
   lessonText: {
-    fontSize: 14,
+    fontSize: 20,
     fontWeight: 'bold',
     color: '#003366',
     textAlign: 'center',
