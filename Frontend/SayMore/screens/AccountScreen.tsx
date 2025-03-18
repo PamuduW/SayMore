@@ -43,12 +43,12 @@ export default function AccountScreen() {
 
   useFocusEffect(
     useCallback(() => {
-      fetchUserData(false); // Don't show spinner on focus
+      fetchUserData(false);
     }, [])
   );
 
   useEffect(() => {
-    fetchUserData(); // Initial load
+    fetchUserData();
   }, []);
 
   const handleSignOut = async () => {
@@ -90,15 +90,20 @@ export default function AccountScreen() {
           <ActivityIndicator size="large" color="#2A2D57" />
         ) : (
           <>
+            {/* Username Display */}
             <Text style={styles.username}>
+              {userData?.username || 'Username'}
+            </Text>
+
+            {/* Full Name Display */}
+            <Text style={styles.nameText}>
               {userData?.fname} {userData?.sname}
             </Text>
-            <Text style={styles.email}>{userData?.email}</Text>
           </>
         )}
 
         <View style={styles.menuContainer}>
-          {['Activity', 'Quizzes and Challenges', 'Progress', 'Goals', 'Leaderboard', 'Settings'].map((item, index) => (
+          {['Account Details', 'Activity', 'Progress', 'Goals', 'Leaderboard', 'Settings'].map((item, index) => (
             <LinearGradient
               key={index}
               colors={['#3B5998', '#577BC1']}
@@ -110,6 +115,9 @@ export default function AccountScreen() {
                 onPress={() => {
                   if (item === 'Settings') {
                     navigation.navigate('SettingsScreen');
+                  }
+                  if (item === 'Account Details') {
+                    navigation.navigate('EditProfileScreen', { userData });
                   }
                 }}>
                 <Text style={styles.menuText}>{item}</Text>
@@ -157,9 +165,9 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: '700',
     color: '#2A2D57',
-    marginBottom: 10,
+    marginBottom: 8,
   },
-  email: {
+  nameText: {
     fontSize: 14,
     color: '#2A2D57',
     marginBottom: 25,

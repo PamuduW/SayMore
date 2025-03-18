@@ -23,6 +23,7 @@ import ChangePasswordScreen from '../screens/ChangePasswordScreen';
 // Icons
 import HomeIcon from '../assets/home.png';
 import MoreInfoIcon from '../assets/more-info.png';
+import UserAccIcon from '../assets/useracc.png';
 
 // Navigators
 const Tab = createBottomTabNavigator();
@@ -65,7 +66,7 @@ const screenOptions = (route, theme) => {
   const icons = {
     Home: HomeIcon,
     More: MoreInfoIcon,
-    Account: MoreInfoIcon, // You can add a separate icon if desired
+    Account: UserAccIcon,
   };
 
   return {

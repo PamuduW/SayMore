@@ -17,10 +17,9 @@ export default function EditProfileScreen({ navigation }) {
   const [fname, setFname] = useState('');
   const [sname, setSname] = useState('');
   const [dob, setDob] = useState('');
+  const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
-  const [originalEmail, setOriginalEmail] = useState('');
   const [loading, setLoading] = useState(true);
-  const [currentPassword, setCurrentPassword] = useState('');
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -37,8 +36,8 @@ export default function EditProfileScreen({ navigation }) {
             setFname(data.fname || '');
             setSname(data.sname || '');
             setDob(data.dob || '');
-            setEmail(data.email || '');
-            setOriginalEmail(data.email || '');
+            setUsername(data.username || '');
+            setEmail(currentUser.email); // Set email from Firebase Auth
           }
         }
       } catch (error) {
@@ -51,60 +50,15 @@ export default function EditProfileScreen({ navigation }) {
     fetchUserData();
   }, []);
 
-  // 🔑 Reauthenticate before email update
-  const reauthenticate = (password) => {
-    const user = auth().currentUser;
-    const credential = auth.EmailAuthProvider.credential(
-      user.email,
-      password
-    );
-    return user.reauthenticateWithCredential(credential);
-  };
-
   const handleSave = async () => {
     try {
       const currentUser = auth().currentUser;
       if (currentUser) {
-
-        // Check if Email/Password Provider
-        const providers = currentUser.providerData.map(p => p.providerId);
-        if (providers.includes('password')) {
-
-          // If email changed
-          if (email !== originalEmail) {
-
-            // Require password input
-            if (currentPassword === '') {
-              Alert.alert('Error', 'Please enter your current password to change email!');
-              return;
-            }
-
-            const credential = auth.EmailAuthProvider.credential(currentUser.email, currentPassword);
-            await currentUser.reauthenticateWithCredential(credential);
-            await currentUser.updateEmail(email);
-            await firestore().collection('User_Accounts').doc(currentUser.uid).update({
-              fname,
-              sname,
-              dob,
-              email,
-            });
-
-            Alert.alert('Success', 'Email updated and saved!');
-            navigation.goBack();
-            return;
-          }
-
-        } else {
-          Alert.alert('Error', 'Email change is only allowed for Email/Password sign-in users.');
-          return;
-        }
-
-        // Other fields update
         await firestore().collection('User_Accounts').doc(currentUser.uid).update({
           fname,
           sname,
           dob,
-          email,
+          username,
         });
 
         Alert.alert('Success', 'Profile updated successfully!');
@@ -115,7 +69,6 @@ export default function EditProfileScreen({ navigation }) {
       Alert.alert('Error', error.message);
     }
   };
-
 
   if (loading) {
     return (
@@ -158,39 +111,50 @@ export default function EditProfileScreen({ navigation }) {
             placeholderTextColor="#aaa"
           />
 
-          <Text style={styles.label}>Email</Text>
+          <Text style={styles.label}>Username</Text>
           <TextInput
             style={styles.input}
-            value={email}
-            onChangeText={setEmail}
-            placeholder="Enter Email"
+            value={username}
+            onChangeText={setUsername}
+            placeholder="Enter Username"
             placeholderTextColor="#aaa"
           />
 
-          {email !== originalEmail && (
-            <>
-              <Text style={styles.label}>Current Password</Text>
-              <TextInput
-                style={styles.input}
-                value={currentPassword}
-                onChangeText={setCurrentPassword}
-                placeholder="Enter Current Password"
-                placeholderTextColor="#aaa"
-                secureTextEntry
-              />
-            </>
-          )}
+          <Text style={styles.label}>Email</Text>
+          <TextInput
+            style={[styles.input, { backgroundColor: '#D0D3E6', color: '#2A2D57' }]}
+            value={email}
+            editable={false}
+          />
         </View>
 
-        <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
-          <Text style={styles.saveText}>Save Changes</Text>
+        {/* Save Changes Button */}
+        <TouchableOpacity onPress={handleSave} style={{ marginBottom: 15 }}>
+          <LinearGradient
+            colors={['#3B5998', '#577BC1']}
+            style={styles.button}>
+            <Text style={styles.buttonText}>Save Changes</Text>
+          </LinearGradient>
         </TouchableOpacity>
 
-        <TouchableOpacity
-          style={styles.passwordButton}
-          onPress={() => navigation.navigate('ChangePasswordScreen')}>
-          <Text style={styles.passwordText}>Change Password</Text>
+        {/* Cancel Changes Button */}
+        <TouchableOpacity onPress={() => navigation.goBack()} style={{ marginBottom: 15 }}>
+          <LinearGradient
+            colors={['#e74c3c', '#ff6b6b']}
+            style={styles.button}>
+            <Text style={styles.buttonText}>Cancel Changes</Text>
+          </LinearGradient>
         </TouchableOpacity>
+
+        {/* Change Password Button */}
+        <TouchableOpacity onPress={() => navigation.navigate('ChangePasswordScreen')}>
+          <LinearGradient
+            colors={['#FFA500', '#FFB347']}
+            style={styles.button}>
+            <Text style={styles.buttonText}>Change Password</Text>
+          </LinearGradient>
+        </TouchableOpacity>
+
       </ScrollView>
     </LinearGradient>
   );
@@ -219,24 +183,14 @@ const styles = StyleSheet.create({
     color: '#2A2D57',
   },
 
-  saveButton: {
-    backgroundColor: '#3B5998',
+  button: {
     paddingVertical: 14,
     borderRadius: 16,
     alignItems: 'center',
-    marginBottom: 15,
+    elevation: 8,
   },
 
-  saveText: { color: '#fff', fontWeight: 'bold', fontSize: 16 },
-
-  passwordButton: {
-    backgroundColor: '#FFA500',
-    paddingVertical: 12,
-    borderRadius: 16,
-    alignItems: 'center',
-  },
-
-  passwordText: { color: '#fff', fontWeight: 'bold', fontSize: 16 },
+  buttonText: { color: '#fff', fontWeight: 'bold', fontSize: 16 },
 
   loadingContainer: {
     flex: 1,

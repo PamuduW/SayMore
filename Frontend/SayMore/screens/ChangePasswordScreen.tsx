@@ -75,8 +75,14 @@ export default function ChangePasswordScreen({ navigation }) {
         />
       </View>
 
-      <TouchableOpacity style={styles.confirmButton} onPress={handleChangePassword}>
-        <Text style={styles.confirmText}>Confirm</Text>
+      <TouchableOpacity onPress={handleChangePassword} style={{ marginTop: 20 }}>
+        <LinearGradient
+          colors={['#00C6FF', '#0072FF']} // New vibrant blue gradient
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 1 }}
+          style={styles.confirmButton}>
+          <Text style={styles.confirmText}>Confirm</Text>
+        </LinearGradient>
       </TouchableOpacity>
     </LinearGradient>
   );
@@ -104,10 +110,10 @@ const styles = StyleSheet.create({
   },
 
   confirmButton: {
-    backgroundColor: '#3B5998',
     paddingVertical: 14,
-    borderRadius: 16,
+    borderRadius: 18,
     alignItems: 'center',
+    elevation: 8,
   },
 
   confirmText: { color: '#fff', fontWeight: 'bold', fontSize: 16 },
