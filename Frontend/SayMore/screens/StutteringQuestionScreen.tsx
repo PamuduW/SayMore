@@ -26,7 +26,6 @@ const StutteringQuestionScreen: React.FC = ({ navigation }: any) => {
   const [isCorrect, setIsCorrect] = useState<boolean | null>(null);
   const [showConfirm, setShowConfirm] = useState<boolean>(false);
   const [score, setScore] = useState(0);
-  const [loading, setLoading] = useState<boolean>(false);
 
   const setMappings: { [key: string]: string } = {
     'relaxation techniques': 'set1',
@@ -36,7 +35,6 @@ const StutteringQuestionScreen: React.FC = ({ navigation }: any) => {
 
   // Fetch & shuffle questions
   const fetchQuestions = async (setName: string) => {
-    setLoading(true);
     try {
       const doc = await firestore()
         .collection('Questions')
@@ -70,8 +68,6 @@ const StutteringQuestionScreen: React.FC = ({ navigation }: any) => {
       setSelectedSet(setName);
     } catch (error) {
       console.error('Error fetching questions:', error);
-    } finally {
-      setLoading(false);
     }
   };
 
