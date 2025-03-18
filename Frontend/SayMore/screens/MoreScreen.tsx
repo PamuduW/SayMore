@@ -23,7 +23,9 @@ const MoreScreen: React.FC<MoreScreenProps> = ({ navigation }) => {
     if (title === 'Lesson') {
       navigation.navigate('Lessons');
     } else if (title === 'Quizzes and Challenges') {
-      navigation.navigate('QuizzesNavScreen');
+      navigation.navigate('QuizzesNavScreen'); //
+    } else if (title === 'Speech Therapy') {
+        navigation.navigate('SpeechTherapyScreen');
     }
   };
 

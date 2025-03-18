@@ -14,32 +14,30 @@ const QuizzesNavScreen = () => {
 
   const navigateToStuttering = () => {
     // Directly navigate to StutteringQuestionScreen with the default set_name
-    navigation.navigate('StutteringQuestionScreen', { set_name: 'relaxation techniques' });
+    navigation.navigate('StutteringQuestionScreen', {
+      set_name: 'relaxation techniques',
+    });
   };
 
   return (
     <LinearGradient
-      colors={theme === 'dark' ? ['#1C1C1C', '#3A3A3A'] : ['#2A2D57', '#577BC1']}
-      style={styles.container}
-    >
+      colors={
+        theme === 'dark' ? ['#1C1C1C', '#3A3A3A'] : ['#2A2D57', '#577BC1']
+      }
+      style={styles.container}>
       <Text style={styles.title}>Quizzes And Challenges</Text>
       <View style={styles.card}>
-        <Image
-          source={require('../assets/quiznav.jpg')}
-          style={styles.image}
-        />
+        <Image source={require('../assets/quiznav.jpg')} style={styles.image} />
         <View style={styles.buttonContainer}>
           <TouchableOpacity
             style={styles.button}
-            onPress={navigateToPublicSpeaking}
-          >
+            onPress={navigateToPublicSpeaking}>
             <Text style={styles.buttonText}>Public Speaking</Text>
           </TouchableOpacity>
 
           <TouchableOpacity
             style={styles.button}
-            onPress={navigateToStuttering}
-          >
+            onPress={navigateToStuttering}>
             <Text style={styles.buttonText}>Stuttering</Text>
           </TouchableOpacity>
         </View>

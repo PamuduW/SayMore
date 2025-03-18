@@ -1,8 +1,11 @@
 import os
+
 from google.cloud import speech
 
 
-def transcribe_gcs(gcs_uri: str, long_flag: bool, lan_flag: str) -> list[dict[str, str]]:
+def transcribe_gcs(
+    gcs_uri: str, long_flag: bool, lan_flag: str
+) -> list[dict[str, str]]:
     os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = (
         "saymore-340e9-firebase-adminsdk-aaxo4-2e6ac8d48e.json"
     )

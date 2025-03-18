@@ -8,3 +8,7 @@ Go to File > Settings > Project: <Your Project Name> > Python Interpreter.
 Select the interpreter located at D:\OneDrive\Pamudu-other\Github\SayMore\.venv\Scripts\python.exe.
 
 now edit run config file and give the main.py location.
+
+
+make format
+make lint

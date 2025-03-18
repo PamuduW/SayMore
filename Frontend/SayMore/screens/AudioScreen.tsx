@@ -22,7 +22,7 @@ const AudioScreen: React.FC<AudioScreenProps> = ({ route }) => {
     setLanguage(lang);
   };
 
-  if (!language) {
+  if (!language && isPublicSpeaking) {
     return (
       <View style={styles.container}>
         {/* White Panel for Language Selection */}
@@ -43,6 +43,7 @@ const AudioScreen: React.FC<AudioScreenProps> = ({ route }) => {
       </View>
     );
   }
+
 
   return (
     <View style={styles.container}>
