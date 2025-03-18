@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
-import { View, StyleSheet, Text, Button } from 'react-native';
+import { View, StyleSheet, Text, TouchableOpacity } from 'react-native';
 import AudioRecorder from '../components/AudioRecorder';
 import { RouteProp } from '@react-navigation/native';
-import { useTheme } from '../components/ThemeContext';
 
 interface AudioScreenProps {
   route: RouteProp<{ params: { isPublicSpeaking: boolean } }, 'params'>;
@@ -11,78 +10,113 @@ interface AudioScreenProps {
 const AudioScreen: React.FC<AudioScreenProps> = ({ route }) => {
   const { isPublicSpeaking } = route.params;
   const [language, setLanguage] = useState<string | null>(null);
-  const theme = useTheme();
 
   const selectLanguage = (lang: string) => {
     setLanguage(lang);
   };
 
-  if (!language) {
+  if (!language && isPublicSpeaking) {
     return (
-      <View
-        style={theme === 'dark' ? styles.darkContainer : styles.lightContainer}>
-        <Text style={theme === 'dark' ? styles.darkText : styles.lightText}>
-          Select a language:
-        </Text>
-        <Button title="English" onPress={() => selectLanguage('en')} />
-        <Button title="Sinhala" onPress={() => selectLanguage('si')} />
-        <Button title="Tamil" onPress={() => selectLanguage('ta')} />
+      <View style={styles.container}>
+        {/* White Panel for Language Selection */}
+        <View style={styles.whitePanel}>
+          <Text style={styles.headerText}>Select a Language:</Text>
+          <View style={styles.buttonGroup}>
+            <TouchableOpacity
+              style={styles.button}
+              onPress={() => selectLanguage('en')}>
+              <Text style={styles.buttonText}>English</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.button}
+              onPress={() => selectLanguage('si')}>
+              <Text style={styles.buttonText}>සිංහල</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.button}
+              onPress={() => selectLanguage('ta')}>
+              <Text style={styles.buttonText}>தமிழ்</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
       </View>
     );
   }
 
   return (
-    <View
-      style={theme === 'dark' ? styles.darkContainer : styles.lightContainer}>
-      <Text
-        style={
-          theme === 'dark' ? styles.darkHeaderText : styles.lightHeaderText
-        }>
-        {isPublicSpeaking ? 'Public Speaking' : 'Stuttering'}
+    <View style={styles.container}>
+      {/* No White Panel here for Audio */}
+      <Text style={styles.headerText}>
+        {isPublicSpeaking ? '🎤 Public Speaking' : '🗣️ Stuttering'}
       </Text>
-      <Text
-        style={
-          theme === 'dark' ? styles.darkHeaderText : styles.lightHeaderText
-        }>
-        {language ? language : 'choose'}
-      </Text>
+      {isPublicSpeaking && (
+        <Text style={styles.subText}>Language: {language.toUpperCase()}</Text>
+      )}
       <AudioRecorder isPublicSpeaking={isPublicSpeaking} language={language} />
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  lightContainer: {
+  container: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#f7f7f7',
+    backgroundColor: '#08405e',
   },
-  darkContainer: {
-    flex: 1,
-    justifyContent: 'center',
+  whitePanel: {
+    width: '70%',
+    height: '100%',
+    padding: 20,
+    backgroundColor: '#fff',
     alignItems: 'center',
-    backgroundColor: '#333333',
+    justifyContent: 'center',
+    borderRadius: 10,
+    elevation: 5,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 6,
   },
-  lightHeaderText: {
+  buttonGroup: {
+    marginTop: 20,
+    alignItems: 'center',
+    width: '100%',
+  },
+  button: {
+    paddingVertical: 12,
+    paddingHorizontal: 35,
+    borderRadius: 25,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginVertical: 8,
+    backgroundColor: '#007AFF',
+    width: '80%',
+    elevation: 5,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 6,
+  },
+  buttonText: {
+    fontSize: 18,
+    color: '#fff',
+    fontWeight: 'bold',
+  },
+  headerText: {
     fontSize: 28,
     fontWeight: 'bold',
     marginBottom: 20,
-    color: '#333',
+    marginTop: 20,
+    color: '#fff',
+    textAlign: 'center',
   },
-  darkHeaderText: {
-    fontSize: 28,
-    fontWeight: 'bold',
+  subText: {
+    fontSize: 18,
+    color: '#fff',
+    fontStyle: 'italic',
     marginBottom: 20,
-    color: '#FFFFFF',
-  },
-  lightText: {
-    fontSize: 18,
-    color: '#333',
-  },
-  darkText: {
-    fontSize: 18,
-    color: '#FFFFFF',
+    textAlign: 'center',
   },
 });
 

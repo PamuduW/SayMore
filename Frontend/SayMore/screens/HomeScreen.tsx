@@ -45,11 +45,11 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
   return (
     <LinearGradient
       colors={
-        theme === 'dark' ? ['#1C1C1C', '#3A3A3A'] : ['#2A2D57', '#577BC1']
+        theme === 'dark' ? ['#1C1C1C', '#3A3A3A'] : ['#577BC1', '#577BC1']
       }
       style={styles.container}>
       <View style={styles.header}>
-        <Image style={styles.icon} source={require('../assets/icon.png')} />
+        <Image style={styles.icon} source={require('../assets/iconTop.png')} />
         <Text style={styles.greeting}>Welcome to Say More!</Text>
         <Text style={styles.welcomeMessage}>
           Enhance your speech & confidence!

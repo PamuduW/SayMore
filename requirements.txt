@@ -14,3 +14,4 @@ black
 ruff
 isort
 safetensors
+requests

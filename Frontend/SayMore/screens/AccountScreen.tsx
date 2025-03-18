@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import {
   View,
   Text,
@@ -6,27 +6,57 @@ import {
   StyleSheet,
   Image,
   Alert,
+  ActivityIndicator,
 } from 'react-native';
 import auth from '@react-native-firebase/auth';
+import firestore from '@react-native-firebase/firestore';
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
-import { useTheme } from '../components/ThemeContext';
+import LinearGradient from 'react-native-linear-gradient';
+import { useNavigation, useFocusEffect } from '@react-navigation/native';
 
 export default function AccountScreen() {
-  const theme = useTheme();
+  const navigation = useNavigation();
+
+  const [userData, setUserData] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  const fetchUserData = async (showLoader = true) => {
+    try {
+      if (showLoader) setLoading(true);
+      const currentUser = auth().currentUser;
+      if (currentUser) {
+        const userDoc = await firestore()
+          .collection('User_Accounts')
+          .doc(currentUser.uid)
+          .get();
+
+        if (userDoc.exists) {
+          setUserData(userDoc.data());
+        }
+      }
+    } catch (error) {
+      console.log('Error fetching user data: ', error);
+    } finally {
+      if (showLoader) setLoading(false);
+    }
+  };
+
+  useFocusEffect(
+    useCallback(() => {
+      fetchUserData(false);
+    }, [])
+  );
+
+  useEffect(() => {
+    fetchUserData();
+  }, []);
 
   const handleSignOut = async () => {
     try {
       await GoogleSignin.signOut();
-    } catch (googleError) {
-      console.log('Google sign out error:', googleError);
-    }
-    try {
       await auth().signOut();
     } catch (error) {
-      Alert.alert(
-        'Error',
-        'An error occurred while signing out. Please try again.'
-      );
+      Alert.alert('Error', 'An error occurred while signing out.');
     }
   };
 
@@ -43,85 +73,147 @@ export default function AccountScreen() {
   };
 
   return (
-    <View style={styles.container}>
-      <View style={theme === 'dark' ? styles.darkSidebar : styles.lightSidebar}>
-        <Image source={require('../assets/avatar.png')} style={styles.avatar} />
-        <Text
-          style={theme === 'dark' ? styles.darkUsername : styles.lightUsername}>
-          Aria Davis
-        </Text>
-        {[
-          'Activity',
-          'Quizzes and Challenges',
-          'Progress',
-          'Points',
-          'Leaderboard',
-          'Speech Therapy',
-        ].map((item, index) => (
-          <TouchableOpacity
-            key={index}
-            style={
-              item === 'Progress' ? styles.menuItemActive : styles.menuItem
-            }>
-            <Text
-              style={
-                item === 'Progress'
-                  ? styles.menuTextActive
-                  : theme === 'dark'
-                    ? styles.darkMenuText
-                    : styles.lightMenuText
-              }>
-              {item}
+    <LinearGradient colors={['#2A2D57', '#577BC1']} style={styles.container}>
+      <View style={styles.card}>
+        <TouchableOpacity
+          style={styles.avatarWrapper}
+          onPress={() => {
+            if (userData) {
+              navigation.navigate('EditProfileScreen', { userData });
+            }
+          }}>
+          <Image
+            source={require('../assets/avatar.png')}
+            style={styles.avatar}
+          />
+        </TouchableOpacity>
+
+        {loading ? (
+          <ActivityIndicator size="large" color="#2A2D57" />
+        ) : (
+          <>
+            {/* Username Display */}
+            <Text style={styles.username}>
+              {userData?.username || 'Username'}
             </Text>
-          </TouchableOpacity>
-        ))}
+
+            {/* Full Name Display */}
+            <Text style={styles.nameText}>
+              {userData?.fname} {userData?.sname}
+            </Text>
+          </>
+        )}
+
+        <View style={styles.menuContainer}>
+          {[
+            'Account Details',
+            'Activity',
+            'Progress',
+            'Goals',
+            'Leaderboard',
+            'Settings',
+          ].map((item, index) => (
+            <LinearGradient
+              key={index}
+              colors={['#3B5998', '#577BC1']}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 1 }}
+              style={styles.menuItemWrapper}>
+              <TouchableOpacity
+                style={styles.menuItem}
+                onPress={() => {
+                  if (item === 'Settings') {
+                    navigation.navigate('SettingsScreen');
+                  }
+                  if (item === 'Account Details') {
+                    navigation.navigate('EditProfileScreen', { userData });
+                  }
+                }}>
+                <Text style={styles.menuText}>{item}</Text>
+              </TouchableOpacity>
+            </LinearGradient>
+          ))}
+        </View>
+
         <TouchableOpacity style={styles.logoutButton} onPress={confirmSignOut}>
           <Text style={styles.logoutText}>Log Out</Text>
         </TouchableOpacity>
       </View>
-    </View>
+    </LinearGradient>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, flexDirection: 'row' },
-  lightSidebar: {
-    width: '75%',
-    height: '100%',
-    backgroundColor: '#BDE0FE',
-    padding: 20,
-    alignItems: 'flex-start',
+  container: { flex: 1, justifyContent: 'center', alignItems: 'center' },
+  card: {
+    backgroundColor: '#FFFFFF',
+    width: '90%',
+    borderRadius: 30,
+    alignItems: 'center',
+    paddingVertical: 35,
+    paddingHorizontal: 25,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 10 },
+    shadowOpacity: 0.25,
+    shadowRadius: 12,
+    elevation: 14,
   },
-  darkSidebar: {
-    width: '75%',
-    height: '100%',
-    backgroundColor: '#333333',
-    padding: 20,
-    alignItems: 'flex-start',
+  avatarWrapper: {
+    backgroundColor: '#F2F3F8',
+    padding: 10,
+    borderRadius: 50,
+    marginBottom: 10,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 5 },
+    shadowOpacity: 0.15,
+    shadowRadius: 6,
+    elevation: 6,
   },
-  avatar: { width: 60, height: 60, borderRadius: 30, marginBottom: 10 },
-  lightUsername: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: '#003366',
-    marginBottom: 20,
+  avatar: { width: 80, height: 80, borderRadius: 40 },
+  username: {
+    fontSize: 24,
+    fontWeight: '700',
+    color: '#2A2D57',
+    marginBottom: 8,
   },
-  darkUsername: {
-    fontSize: 20,
-    fontWeight: 'bold',
+  nameText: {
+    fontSize: 14,
+    color: '#2A2D57',
+    marginBottom: 25,
+  },
+  menuContainer: { width: '100%', alignItems: 'center', marginBottom: 25 },
+  menuItemWrapper: {
+    borderRadius: 20,
+    marginBottom: 15,
+    width: '100%',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.2,
+    shadowRadius: 8,
+    elevation: 100,
+  },
+  menuItem: {
+    paddingVertical: 14,
+    alignItems: 'center',
+    width: '100%',
+    borderRadius: 18,
+  },
+  menuText: {
+    fontSize: 17,
+    fontWeight: '700',
     color: '#FFFFFF',
-    marginBottom: 20,
   },
-  menuItem: { paddingVertical: 10 },
-  lightMenuText: { fontSize: 16, color: '#003366' },
-  darkMenuText: { fontSize: 16, color: '#FFFFFF' },
-  menuItemActive: {
-    paddingVertical: 10,
-    backgroundColor: '#0080FF',
-    borderRadius: 10,
-    paddingHorizontal: 10,
+  logoutButton: {
+    marginTop: 10,
+    paddingVertical: 14,
+    paddingHorizontal: 50,
+    borderRadius: 22,
+    backgroundColor: '#e74c3c',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 10 },
+    shadowOpacity: 0.3,
+    shadowRadius: 12,
+    elevation: 12,
   },
-  menuTextActive: { fontSize: 16, color: '#FFFFFF' },
-  logoutButton: { marginTop: 20 },
-  logoutText: { fontSize: 16, color: '#FF0000' },
+  logoutText: { color: '#FFFFFF', fontSize: 16, fontWeight: 'bold' },
 });

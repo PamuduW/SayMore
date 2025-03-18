@@ -4,6 +4,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { Image, StyleSheet } from 'react-native';
 import { useTheme } from '../components/ThemeContext';
 
+// Import Screens
 import HomeScreen from '../screens/HomeScreen';
 import MoreScreen from '../screens/MoreScreen';
 import LessonsScreen from '../screens/LessonsScreen';
@@ -12,39 +13,93 @@ import AudioScreen from '../screens/AudioScreen';
 import AnalysisScreen from '../screens/AnalysisScreen';
 import VideoListScreen from '../screens/VideoListScreen';
 import VideoPlayerScreen from '../screens/VideoPlayerScreen';
-import PointsScreen from '../screens/PointsScreen';
 import HistoryScreen from '../screens/HistoryScreen';
-
+import FeedbackScreen_PS from '../screens/FeedbackScreen_PS';
+import FeedbackScreen_S from '../screens/FeedbackScreen_S';
+import SpeechTherapyScreen from '../screens/SpeechTherapyScreen';
+import AdditionalDetailsScreen from '../screens/AdditionalDetailsScreen';
+import Difficulty from '../screens/Difficulty';
+import PublicSpeakQuestionScreen from '../screens/PublicSpeakQuestionScreen';
+import StutteringQuestionScreen from '../screens/StutteringQuestionScreen';
+import PointsScreen from '../screens/PointsScreen';
+import SettingsScreen from '../screens/SettingsScreen';
+import EditProfileScreen from '../screens/EditProfileScreen';
+import ChangePasswordScreen from '../screens/ChangePasswordScreen';
+import QuizzesNavScreen from '../screens/QuizzesNavScreen';
 import HomeIcon from '../assets/home.png';
 import MoreInfoIcon from '../assets/more-info.png';
+import UserAccIcon from '../assets/useracc.png';
 
+// Navigators
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
 
+// Home Stack
+const HomeStack = () => (
+  <Stack.Navigator screenOptions={{ headerShown: false }}>
+    <Stack.Screen name="HomeScreen" component={HomeScreen} />
+    <Stack.Screen name="Audio" component={AudioScreen} />
+    <Stack.Screen name="AnalysisScreen" component={AnalysisScreen} />
+    <Stack.Screen name="FeedbackScreen_PS" component={FeedbackScreen_PS} />
+    <Stack.Screen name="FeedbackScreen_S" component={FeedbackScreen_S} />
+    <Stack.Screen
+      name="AdditionalDetailsScreen"
+      component={AdditionalDetailsScreen}
+    />
+  </Stack.Navigator>
+);
+
+// More Stack
 const MoreStack = () => (
   <Stack.Navigator screenOptions={{ headerShown: false }}>
     <Stack.Screen name="MoreScreen" component={MoreScreen} />
     <Stack.Screen name="Lessons" component={LessonsScreen} />
     <Stack.Screen name="VideoList" component={VideoListScreen} />
     <Stack.Screen name="VideoPlayer" component={VideoPlayerScreen} />
-    <Stack.Screen name="PointsScreen" component={PointsScreen} />
     <Stack.Screen name="History" component={HistoryScreen} />
+    <Stack.Screen name="QuizzesNavScreen" component={QuizzesNavScreen} />
+    <Stack.Screen name="Difficulty" component={Difficulty} />
+    <Stack.Screen
+      name="PublicSpeakQuestionScreen"
+      component={PublicSpeakQuestionScreen}
+    />
+    <Stack.Screen
+      name="StutteringQuestionScreen"
+      component={StutteringQuestionScreen}
+    />
+    <Stack.Screen name="PointsScreen" component={PointsScreen} />
+    <Stack.Screen name="SpeechTherapyScreen" component={SpeechTherapyScreen} />
   </Stack.Navigator>
 );
 
-const HomeStack = () => (
+// Account Stack
+const AccountStack = () => (
   <Stack.Navigator screenOptions={{ headerShown: false }}>
+    <Stack.Screen name="AccountScreen" component={AccountScreen} />
+    <Stack.Screen name="SettingsScreen" component={SettingsScreen} />
+    <Stack.Screen name="EditProfileScreen" component={EditProfileScreen} />
+    <Stack.Screen
+      name="ChangePasswordScreen"
+      component={ChangePasswordScreen}
+    />
     <Stack.Screen name="HomeScreen" component={HomeScreen} />
     <Stack.Screen name="Audio" component={AudioScreen} />
     <Stack.Screen name="AnalysisScreen" component={AnalysisScreen} />
+    <Stack.Screen name="FeedbackScreen_PS" component={FeedbackScreen_PS} />
+    <Stack.Screen name="FeedbackScreen_S" component={FeedbackScreen_S} />
+    <Stack.Screen
+      name="AdditionalDetailsScreen"
+      component={AdditionalDetailsScreen}
+    />
   </Stack.Navigator>
 );
 
+// Tab Options
 const screenOptions = (route, theme) => {
   const icons = {
     Home: HomeIcon,
     More: MoreInfoIcon,
-    Account: MoreInfoIcon,
+    Account: UserAccIcon,
   };
 
   return {
@@ -65,6 +120,7 @@ const screenOptions = (route, theme) => {
   };
 };
 
+// Main Tab Navigator
 const TabNavigator = () => {
   const theme = useTheme();
 
@@ -72,11 +128,12 @@ const TabNavigator = () => {
     <Tab.Navigator screenOptions={({ route }) => screenOptions(route, theme)}>
       <Tab.Screen name="Home" component={HomeStack} />
       <Tab.Screen name="More" component={MoreStack} />
-      <Tab.Screen name="Account" component={AccountScreen} />
+      <Tab.Screen name="Account" component={AccountStack} />
     </Tab.Navigator>
   );
 };
 
+// Styles
 const styles = StyleSheet.create({
   icon: {
     width: 25,
