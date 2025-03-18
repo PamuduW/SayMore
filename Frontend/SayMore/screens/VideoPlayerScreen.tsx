@@ -377,9 +377,8 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = ({ route, navigation
     const skipToLastWatched = useCallback(async () => {
         if (videoPlayerRef.current && previousWatchedPercentage && videoDuration) {
             try {
-                // Calculate the time to skip to
                 const skipToTime = (previousWatchedPercentage / 100) * videoDuration;
-                // Skip to 2 seconds before the saved time to provide context
+
                 const targetTime = Math.max(0, skipToTime - 2);
 
                 console.log('Previous watched percentage:', previousWatchedPercentage);
@@ -388,20 +387,17 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = ({ route, navigation
 
                 await videoPlayerRef.current.seekTo(targetTime);
 
-                // Set skipOccurredRef to true immediately after seeking.
                 skipOccurredRef.current = true;
 
-                // Reset the flag after a short delay.
                 setTimeout(() => {
                     skipOccurredRef.current = false;
-                }, 1000); // Adjust the delay as necessary.
+                }, 1000);
 
-                // Make sure to update watchedDurationRef when skipping
                 watchedDurationRef.current = targetTime;
-                // Update current percentage
+
                 setCurrentPercentage(previousWatchedPercentage);
 
-                previousTimeRef.current = targetTime; // update previous time
+                previousTimeRef.current = targetTime;
 
                 // Update the largest milestone based on the previous watched percentage
                 const milestones = [10, 25, 50, 75, 100];
@@ -432,8 +428,8 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = ({ route, navigation
                 startPositionPolling();
 
                 // Fetch previously watched percentage for this video
-                await fetchPreviousWatchedPercentage(); // AWAIT IT!
-                // reset flags
+                await fetchPreviousWatchedPercentage();
+
                 videoSavedRef.current = false;
                 hasPlayedEnoughRef.current = false;
 
@@ -474,13 +470,10 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = ({ route, navigation
         const userId = user.uid;
         console.log('Saving video to history for User ID:', userId);
 
-        // Ensure we're calculating the percentage correctly - don't round to the nearest integer
-        // for small values, and make sure we store the actual percentage
         const actualPercentage = videoDuration > 0
             ? Math.min(100, (watchedDurationRef.current / videoDuration) * 100)
             : 0;
 
-        // Round to at most 1 decimal place for storage
         const percentageWatched = Math.round(actualPercentage * 10) / 10;
 
         console.log(`Saving watchedDuration: ${watchedDurationRef.current}s out of ${videoDuration}s (${percentageWatched}%)`);
@@ -540,7 +533,6 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = ({ route, navigation
 
                         console.log('Added new completed rewatch entry while preserving original completion');
                     } else {
-                        // Handle incomplete rewatch - update existing incomplete rewatch
                         const existingRewatchEntry = existingVideos.find(
                             (v: WatchedVideo) => v.videoId === video.videoId &&
                                                v.percentageWatched < 98 &&
@@ -573,7 +565,6 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = ({ route, navigation
                                 console.log('No update needed for rewatch - existing percentage is higher or equal');
                             }
                         } else {
-                            // No existing rewatch entry, so add a new one
                             await firestore()
                                 .collection('User_Accounts')
                                 .doc(userId)
@@ -667,7 +658,6 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = ({ route, navigation
         setShowSkipButton(false);
         setPreviousWatchedPercentage(null);
 
-        // Reset refs that control saving
         hasPlayedEnoughRef.current = false;
         videoSavedRef.current = false;
         playStartTimeRef.current = null;
@@ -682,7 +672,7 @@ const onStateChange = useCallback(async (state: string) => {
 
     if (state === 'playing') {
         setPlaying(true);
-        setShowSkipButton(true); // Hide skip button when video starts playing
+        setShowSkipButton(false);
 
         if (playStartTimeRef.current === null) {
             playStartTimeRef.current = Date.now();
@@ -774,7 +764,6 @@ const onStateChange = useCallback(async (state: string) => {
 
     useFocusEffect(
         useCallback(() => {
-            // Start position polling when screen is focused
             startPositionPolling();
             videoSavedRef.current = false;
             hasPlayedEnoughRef.current = false;
@@ -847,7 +836,7 @@ const onStateChange = useCallback(async (state: string) => {
 
     const getMilestonePointsText = () => {
         if (isRewatching) {
-            return "Rewatching - no additional points awarded";
+            return "Rewatching";
         }
 
         if (reachedMilestonesRef.current.size === 0) {
