@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { Text, StyleSheet, ScrollView, View, Dimensions } from 'react-native';
+import { Text, StyleSheet, ScrollView, View } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-
-const screenWidth = Dimensions.get('window').width;
 
 const Analysis_S = ({ route }) => {
   const { filename, acc_id, type, language } = route.params;

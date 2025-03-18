@@ -30,7 +30,6 @@ const PublicSpeakQuestionScreen: React.FC = ({ navigation, route }: any) => {
   const [isCorrect, setIsCorrect] = useState<boolean | null>(null);
   const [shuffledOptions, setShuffledOptions] = useState<string[]>([]);
   const [correctIndex, setCorrectIndex] = useState<number | null>(null);
-  const [isNextButtonDisabled, setIsNextButtonDisabled] = useState(true);
   const [isConfirmButtonVisible, setIsConfirmButtonVisible] = useState(false);
   const [score, setScore] = useState(0);
   const [loading, setLoading] = useState<boolean>(true);
@@ -116,7 +115,6 @@ const PublicSpeakQuestionScreen: React.FC = ({ navigation, route }: any) => {
       const correct = selectedAnswer === correctIndex;
       setIsCorrect(correct);
       if (correct) setScore(score + 10);
-      setIsNextButtonDisabled(false);
       setIsConfirmButtonVisible(false);
     }
   };
@@ -126,7 +124,6 @@ const PublicSpeakQuestionScreen: React.FC = ({ navigation, route }: any) => {
       setCurrentQuestionIndex(currentQuestionIndex + 1);
       setSelectedAnswer(null);
       setIsCorrect(null);
-      setIsNextButtonDisabled(true);
     }
   };
 

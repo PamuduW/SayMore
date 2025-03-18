@@ -1,9 +1,7 @@
 import React from 'react';
-import { View, Dimensions, StyleSheet } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import Analysis_PS from '../components/Analysis_PS';
 import Analysis_S from '../components/Analysis_S';
-
-const screenWidth = Dimensions.get('window').width;
 
 const AnalysisScreen = ({ route }) => {
   const { filename, acc_id, type, language, isPublicSpeaking } = route.params;
