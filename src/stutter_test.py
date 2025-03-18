@@ -7,8 +7,7 @@ def stutter_test(audio_path):
     # For now, we will return a dummy result.
     stutter_analysis_result = {
         "stutter_score": 75,
-        "stutter_feedback": "Your speech shows some signs of stuttering. "
-        "Consider practicing fluency techniques to improve your delivery.",
+        "stutter_feedback": "Your speech shows some signs of stuttering. Consider practicing fluency techniques to improve your delivery.",
     }
 
     return stutter_analysis_result
