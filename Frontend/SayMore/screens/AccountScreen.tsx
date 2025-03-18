@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import {
   View,
   Text,
@@ -11,58 +11,52 @@ import {
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
-import { useTheme } from '../components/ThemeContext';
 import LinearGradient from 'react-native-linear-gradient';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useFocusEffect } from '@react-navigation/native';
 
 export default function AccountScreen() {
-  const theme = useTheme();
   const navigation = useNavigation();
 
   const [userData, setUserData] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // Fetch Firestore data
-  useEffect(() => {
-    const fetchUserData = async () => {
-      try {
-        const currentUser = auth().currentUser;
-        if (currentUser) {
-          const userDoc = await firestore()
-            .collection('User_Accounts')
-            .doc(currentUser.uid)
-            .get();
+  const fetchUserData = async (showLoader = true) => {
+    try {
+      if (showLoader) setLoading(true);
+      const currentUser = auth().currentUser;
+      if (currentUser) {
+        const userDoc = await firestore()
+          .collection('User_Accounts')
+          .doc(currentUser.uid)
+          .get();
 
-          if (userDoc.exists) {
-            setUserData(userDoc.data());
-          } else {
-            console.log('No user data found in Firestore');
-          }
+        if (userDoc.exists) {
+          setUserData(userDoc.data());
         }
-      } catch (error) {
-        console.log('Error fetching user data: ', error);
-      } finally {
-        setLoading(false);
       }
-    };
+    } catch (error) {
+      console.log('Error fetching user data: ', error);
+    } finally {
+      if (showLoader) setLoading(false);
+    }
+  };
 
-    fetchUserData();
+  useFocusEffect(
+    useCallback(() => {
+      fetchUserData(false); // Don't show spinner on focus
+    }, [])
+  );
+
+  useEffect(() => {
+    fetchUserData(); // Initial load
   }, []);
 
-  // Handle Sign Out
   const handleSignOut = async () => {
     try {
       await GoogleSignin.signOut();
-    } catch (googleError) {
-      console.log('Google sign out error:', googleError);
-    }
-    try {
       await auth().signOut();
     } catch (error) {
-      Alert.alert(
-        'Error',
-        'An error occurred while signing out. Please try again.'
-      );
+      Alert.alert('Error', 'An error occurred while signing out.');
     }
   };
 
@@ -79,14 +73,18 @@ export default function AccountScreen() {
   };
 
   return (
-    <LinearGradient
-      colors={theme === 'dark' ? ['#1C1C1C', '#3A3A3A'] : ['#2A2D57', '#577BC1']}
-      style={styles.container}>
-
+    <LinearGradient colors={['#2A2D57', '#577BC1']} style={styles.container}>
       <View style={styles.card}>
-        <View style={styles.avatarWrapper}>
+        <TouchableOpacity
+          style={styles.avatarWrapper}
+          onPress={() => {
+            if (userData) {
+              navigation.navigate('EditProfileScreen', { userData });
+            }
+          }}
+        >
           <Image source={require('../assets/avatar.png')} style={styles.avatar} />
-        </View>
+        </TouchableOpacity>
 
         {loading ? (
           <ActivityIndicator size="large" color="#2A2D57" />
@@ -129,12 +127,7 @@ export default function AccountScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-
+  container: { flex: 1, justifyContent: 'center', alignItems: 'center' },
   card: {
     backgroundColor: '#FFFFFF',
     width: '90%',
@@ -148,7 +141,6 @@ const styles = StyleSheet.create({
     shadowRadius: 12,
     elevation: 14,
   },
-
   avatarWrapper: {
     backgroundColor: '#F2F3F8',
     padding: 10,
@@ -160,32 +152,19 @@ const styles = StyleSheet.create({
     shadowRadius: 6,
     elevation: 6,
   },
-
-  avatar: {
-    width: 80,
-    height: 80,
-    borderRadius: 40,
-  },
-
+  avatar: { width: 80, height: 80, borderRadius: 40 },
   username: {
     fontSize: 24,
     fontWeight: '700',
     color: '#2A2D57',
     marginBottom: 10,
   },
-
   email: {
     fontSize: 14,
     color: '#2A2D57',
     marginBottom: 25,
   },
-
-  menuContainer: {
-    width: '100%',
-    alignItems: 'center',
-    marginBottom: 25,
-  },
-
+  menuContainer: { width: '100%', alignItems: 'center', marginBottom: 25 },
   menuItemWrapper: {
     borderRadius: 20,
     marginBottom: 15,
@@ -196,20 +175,17 @@ const styles = StyleSheet.create({
     shadowRadius: 8,
     elevation: 100,
   },
-
   menuItem: {
     paddingVertical: 14,
     alignItems: 'center',
     width: '100%',
     borderRadius: 18,
   },
-
   menuText: {
     fontSize: 17,
     fontWeight: '700',
     color: '#FFFFFF',
   },
-
   logoutButton: {
     marginTop: 10,
     paddingVertical: 14,
@@ -222,10 +198,5 @@ const styles = StyleSheet.create({
     shadowRadius: 12,
     elevation: 12,
   },
-
-  logoutText: {
-    color: '#FFFFFF',
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
+  logoutText: { color: '#FFFFFF', fontSize: 16, fontWeight: 'bold' },
 });

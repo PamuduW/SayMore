@@ -9,30 +9,26 @@ import {
   StatusBar,
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import Ionicons from 'react-native-vector-icons/Ionicons'; // NEW IMPORT!
 
 export default function SettingsScreen() {
   const [isDarkMode, setIsDarkMode] = useState(false);
 
   const preferences = [
-    { icon: 'bell-outline', label: 'Notifications' },
-    { icon: 'moon-waning-crescent', label: 'Dark Mode', toggle: true },
+    { icon: 'notifications-outline', label: 'Notifications' },
+    { icon: 'moon-outline', label: 'Dark Mode', toggle: true },
   ];
 
   const info = [
-    { icon: 'cookie-outline', label: 'Privacy & Cookies' },
-    { icon: 'file-document-outline', label: 'Terms & Conditions' },
-    { icon: 'information-outline', label: 'App Info' },
+    { icon: 'lock-closed-outline', label: 'Privacy & Cookies' },
+    { icon: 'document-text-outline', label: 'Terms & Conditions' },
+    { icon: 'information-circle-outline', label: 'App Info' },
   ];
 
   const renderOption = (item, index) => (
     <TouchableOpacity key={index} style={styles.option}>
       <View style={styles.leftSection}>
-        <MaterialCommunityIcons
-          name={item.icon}
-          size={22}
-          color="#FFFFFF"
-        />
+        <Ionicons name={item.icon} size={22} color="#FFFFFF" style={{ marginRight: 12 }} />
         <Text style={styles.optionText}>{item.label}</Text>
       </View>
 
@@ -44,11 +40,7 @@ export default function SettingsScreen() {
           thumbColor={isDarkMode ? '#FFFFFF' : '#f4f3f4'}
         />
       ) : (
-        <MaterialCommunityIcons
-          name="chevron-right"
-          size={22}
-          color="#FFFFFF"
-        />
+        <Ionicons name="chevron-forward-outline" size={20} color="#FFFFFF" />
       )}
     </TouchableOpacity>
   );
@@ -61,12 +53,11 @@ export default function SettingsScreen() {
       <View style={styles.headerBar}>
         <Text style={styles.header}>Settings</Text>
         <TouchableOpacity style={styles.logoutButton}>
-          <MaterialCommunityIcons name="logout" size={20} color="#FFFFFF" />
+          <Ionicons name="log-out-outline" size={20} color="#FFFFFF" />
         </TouchableOpacity>
       </View>
 
       <ScrollView contentContainerStyle={styles.scrollArea}>
-
         {/* Preferences Section */}
         <Text style={styles.sectionTitle}>Preferences</Text>
         {preferences.map(renderOption)}
@@ -74,7 +65,6 @@ export default function SettingsScreen() {
         {/* Info Section */}
         <Text style={styles.sectionTitle}>Information</Text>
         {info.map(renderOption)}
-
       </ScrollView>
     </LinearGradient>
   );
@@ -127,7 +117,6 @@ const styles = StyleSheet.create({
   leftSection: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 12,
   },
 
   optionText: {
