@@ -91,7 +91,7 @@ const Analysis_PS = ({ filename, acc_id, type, language }) => {
     };
 
     sendPostRequest();
-  }, [filename, acc_id, type, language]);
+  }, [filename, acc_id, type, language, navigation]);
 
   const handleNext = () => {
     if (responseData) {
