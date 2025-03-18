@@ -39,15 +39,21 @@ export default function SignInScreen() {
    * Displays an alert if fields are empty or if there is an error during sign-in.
    */
   const handleSignIn = async () => {
-    if (!email || !password) {
+    const trimmedEmail = email.trim();
+    const trimmedPassword = password.trim();
+
+    setEmail(trimmedEmail);
+    setPassword(trimmedPassword);
+
+    if (!trimmedEmail || !trimmedPassword) {
       Alert.alert('Error', 'Please fill in all fields');
       return;
     }
 
     try {
       const userCredential = await auth().signInWithEmailAndPassword(
-        email,
-        password
+        trimmedEmail,
+        trimmedPassword
       );
 
       if (!userCredential.user.emailVerified) {
