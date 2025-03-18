@@ -25,6 +25,7 @@ const AudioScreen: React.FC<AudioScreenProps> = ({ route }) => {
   if (!language) {
     return (
       <View style={styles.container}>
+        {/* White Panel for Language Selection */}
         <View style={styles.whitePanel}>
           <Text style={styles.headerText}>Select a Language:</Text>
           <View style={styles.buttonGroup}>
@@ -45,11 +46,10 @@ const AudioScreen: React.FC<AudioScreenProps> = ({ route }) => {
 
   return (
     <View style={styles.container}>
-      <View style={styles.whitePanel}>
-        <Text style={styles.headerText}>{isPublicSpeaking ? '🎤 Public Speaking' : '🗣️ Stuttering'}</Text>
-        <Text style={styles.subText}>Language: {language.toUpperCase()}</Text>
-        <AudioRecorder isPublicSpeaking={isPublicSpeaking} language={language} />
-      </View>
+      {/* No White Panel here for Audio */}
+      <Text style={styles.headerText}>{isPublicSpeaking ? '🎤 Public Speaking' : '🗣️ Stuttering'}</Text>
+      <Text style={styles.subText}>Language: {language.toUpperCase()}</Text>
+      <AudioRecorder isPublicSpeaking={isPublicSpeaking} language={language} />
     </View>
   );
 };
@@ -104,12 +104,13 @@ const styles = StyleSheet.create({
     fontSize: 28,
     fontWeight: 'bold',
     marginBottom: 20,
-    color: '#333',
+    marginTop: 20,
+    color: '#fff',
     textAlign: 'center',
   },
   subText: {
     fontSize: 18,
-    color: '#444',
+    color: '#fff',
     fontStyle: 'italic',
     marginBottom: 20,
     textAlign: 'center',
