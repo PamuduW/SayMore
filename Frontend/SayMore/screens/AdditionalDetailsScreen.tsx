@@ -210,7 +210,7 @@ const AdditionalDetailsScreen = ({ route }) => {
   const navigation = useNavigation();
 
   const handleNext = () => {
-    navigation.navigate('FeedbackScreen', {
+    navigation.navigate('FeedbackScreen_PS', {
       final_public_speaking_score,
       final_public_speaking_feedback,
       voiceBaseFeedback,

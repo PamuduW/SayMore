@@ -37,17 +37,18 @@ const Analysis_PS = ({ filename, acc_id, type, language }) => {
   useEffect(() => {
     const sendPostRequest = async () => {
       try {
+        const requestBody = {
+          file_name: filename,
+          acc_id: acc_id,
+          test_type: type,
+          lan_flag: 'language',
+        };
         const response = await fetch(
           'https://saymore-monorepo-8d4fc9b224ef.herokuapp.com/test',
           {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              file_name: filename,
-              acc_id: acc_id,
-              test_type: type,
-              lan_flag: language,
-            }),
+            body: JSON.stringify(requestBody),
           }
         );
 

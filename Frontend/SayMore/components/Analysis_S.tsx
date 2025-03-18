@@ -5,6 +5,10 @@ import { useNavigation } from '@react-navigation/native';
 const Analysis_S = ({ filename, acc_id, type }) => {
   const [responseData, setResponseData] = useState(null);
   const navigation = useNavigation();
+  const [data, setData] = useState({
+    labels: ['stutter_score', 'stutter_score'],
+    data: [0, 0],
+  });
 
   useEffect(() => {
     const sendPostRequest = async () => {
@@ -15,8 +19,6 @@ const Analysis_S = ({ filename, acc_id, type }) => {
           test_type: type,
           lan_flag: 'language',
         };
-
-        console.log('Sending POST request with body:', requestBody);
 
         const response = await fetch(
           'https://saymore-monorepo-8d4fc9b224ef.herokuapp.com/test',
@@ -32,6 +34,13 @@ const Analysis_S = ({ filename, acc_id, type }) => {
 
         const responseInfo = await response.json();
         setResponseData(responseInfo);
+        setData({
+          labels: ['stutter_score', 'stutter_score'],
+          data: [
+            responseInfo.result.stutter_score / 100,
+            responseInfo.result.stutter_score / 100,
+          ],
+        });
       } catch (error) {
         console.error('Error sending POST request:', error);
       }
@@ -48,6 +57,8 @@ const Analysis_S = ({ filename, acc_id, type }) => {
           <Text style={styles.jsonText}>
             {JSON.stringify(responseData, null, 2)}
           </Text>
+
+          <Text>Stutter score: {responseData.result.stutter_score / 100}</Text>
         </View>
       )}
     </ScrollView>
