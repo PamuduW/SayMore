@@ -13,7 +13,7 @@ const Analysis_S = ({ filename, acc_id, type }) => {
           file_name: filename,
           acc_id: acc_id,
           test_type: type,
-          lan_flag: "language",
+          lan_flag: 'language',
         };
 
         console.log('Sending POST request with body:', requestBody);

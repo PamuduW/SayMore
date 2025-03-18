@@ -16,11 +16,7 @@ const AnalysisScreen = ({ route }) => {
           type={type}
         />
       ) : (
-        <Analysis_S
-          filename={filename}
-          acc_id={acc_id}
-          type={type}
-        />
+        <Analysis_S filename={filename} acc_id={acc_id} type={type} />
       )}
     </View>
   );

@@ -15,12 +15,9 @@ export default function ChangePasswordScreen({ navigation }) {
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
 
-  const reauthenticate = async currentPassword => {
+  const reauthenticate = async password => {
     const user = auth().currentUser;
-    const credential = auth.EmailAuthProvider.credential(
-      user.email,
-      currentPassword
-    );
+    const credential = auth.EmailAuthProvider.credential(user.email, password);
     return await user.reauthenticateWithCredential(credential);
   };
 

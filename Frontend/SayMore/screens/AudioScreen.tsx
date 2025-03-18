@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { View, StyleSheet, Text, TouchableOpacity } from 'react-native';
 import AudioRecorder from '../components/AudioRecorder';
 import { RouteProp } from '@react-navigation/native';
-import { useTheme } from '../components/ThemeContext';
 
 interface AudioScreenProps {
   route: RouteProp<{ params: { isPublicSpeaking: boolean } }, 'params'>;
@@ -11,7 +10,6 @@ interface AudioScreenProps {
 const AudioScreen: React.FC<AudioScreenProps> = ({ route }) => {
   const { isPublicSpeaking } = route.params;
   const [language, setLanguage] = useState<string | null>(null);
-  const theme = useTheme();
 
   const selectLanguage = (lang: string) => {
     setLanguage(lang);
