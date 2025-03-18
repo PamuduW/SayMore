@@ -11,7 +11,8 @@ import LessonsScreen from '../screens/LessonsScreen';
 import AccountScreen from '../screens/AccountScreen';
 import AudioScreen from '../screens/AudioScreen';
 import AnalysisScreen from '../screens/AnalysisScreen';
-import FeedbackScreen from '../screens/FeedbackScreen';
+import FeedbackScreen_PS from '../screens/FeedbackScreen_PS';
+import FeedbackScreen_S from '../screens/FeedbackScreen_S';
 import SpeechTherapyScreen from '../screens/SpeechTherapyScreen';
 import AdditionalDetailsScreen from '../screens/AdditionalDetailsScreen';
 import Difficulty from '../screens/Difficulty';
@@ -36,7 +37,8 @@ const HomeStack = () => (
     <Stack.Screen name="HomeScreen" component={HomeScreen} />
     <Stack.Screen name="Audio" component={AudioScreen} />
     <Stack.Screen name="AnalysisScreen" component={AnalysisScreen} />
-    <Stack.Screen name="FeedbackScreen" component={FeedbackScreen} />
+    <Stack.Screen name="FeedbackScreen_PS" component={FeedbackScreen_PS} />
+    <Stack.Screen name="FeedbackScreen_S" component={FeedbackScreen_S} />
     <Stack.Screen
       name="AdditionalDetailsScreen"
       component={AdditionalDetailsScreen}
@@ -77,7 +79,8 @@ const AccountStack = () => (
     <Stack.Screen name="HomeScreen" component={HomeScreen} />
     <Stack.Screen name="Audio" component={AudioScreen} />
     <Stack.Screen name="AnalysisScreen" component={AnalysisScreen} />
-    <Stack.Screen name="FeedbackScreen" component={FeedbackScreen} />
+    <Stack.Screen name="FeedbackScreen_PS" component={FeedbackScreen_PS} />
+    <Stack.Screen name="FeedbackScreen_S" component={FeedbackScreen_S} />
     <Stack.Screen
       name="AdditionalDetailsScreen"
       component={AdditionalDetailsScreen}

@@ -94,7 +94,7 @@ const Analysis_PS = ({ filename, acc_id, type, language }) => {
         },
       } = result;
 
-      navigation.navigate('FeedbackScreen', {
+      navigation.navigate('FeedbackScreen_PS', {
         final_public_speaking_score,
         final_public_speaking_feedback,
         voiceBaseFeedback,
