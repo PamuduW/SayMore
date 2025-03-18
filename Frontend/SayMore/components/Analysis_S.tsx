@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Text, StyleSheet, ScrollView, View } from 'react-native';
+import { Text, StyleSheet, ScrollView, View, Button } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 
 const Analysis_S = ({ filename, acc_id, type }) => {
@@ -49,6 +49,17 @@ const Analysis_S = ({ filename, acc_id, type }) => {
     sendPostRequest();
   }, [filename, acc_id, type]);
 
+  const handleNext = () => {
+    if (responseData) {
+      const { result } = responseData;
+      const { stutter_feedback } = result;
+
+      navigation.navigate('FeedbackScreen_S', {
+        stutter_feedback,
+      });
+    }
+  };
+
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <Text>Analysis Screen</Text>
@@ -59,6 +70,7 @@ const Analysis_S = ({ filename, acc_id, type }) => {
           </Text>
 
           <Text>Stutter score: {responseData.result.stutter_score / 100}</Text>
+          <Button title="Next" onPress={handleNext} style={styles.button} />
         </View>
       )}
     </ScrollView>

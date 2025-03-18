@@ -2,28 +2,13 @@ import React from 'react';
 import { Text, StyleSheet, ScrollView } from 'react-native';
 
 const FeedbackScreen_S = ({ route }) => {
-  const {
-    final_public_speaking_score,
-    final_public_speaking_feedback,
-    voiceBaseFeedback,
-    voiceDynamicFeedback,
-    speechBaseFeedback,
-    speechDynamicFeedback,
-  } = route.params;
+  const { stutter_feedback } = route.params;
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <Text style={styles.title}>Feedback</Text>
-      <Text style={styles.label}>Public Speaking Score:</Text>
-      <Text style={styles.value}>{final_public_speaking_score}</Text>
-      <Text style={styles.label}>Public Speaking Feedback:</Text>
-      <Text style={styles.value}>{final_public_speaking_feedback}</Text>
-      <Text style={styles.label}>Voice Quality & Stability Feedback:</Text>
-      <Text style={styles.value}>{voiceBaseFeedback}</Text>
-      <Text style={styles.value}>{voiceDynamicFeedback}</Text>
-      <Text style={styles.label}>Speech Intensity & Energy Feedback:</Text>
-      <Text style={styles.value}>{speechBaseFeedback}</Text>
-      <Text style={styles.value}>{speechDynamicFeedback}</Text>
+      <Text style={styles.label}>Stutter feedback:</Text>
+      <Text style={styles.value}>{stutter_feedback}</Text>
     </ScrollView>
   );
 };
