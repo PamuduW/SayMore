@@ -23,25 +23,26 @@ export default function SignUpScreen() {
   const [loading, setLoading] = useState(false);
   const navigation = useNavigation();
 
-  useEffect(() => {
-    GoogleSignin.configure({
-      webClientId:
-        '290999401549-28sv0ta1mhh68drtsi40nr5vmlvnpoa6.apps.googleusercontent.com',
-    });
-  }, []);
-
   const handleSignUp = async () => {
-    if (!email || !password || !confirmPassword) {
+    const trimmedEmail = email.trim();
+    const trimmedPassword = password.trim();
+    const trimmedConfirmPassword = confirmPassword.trim();
+
+    setEmail(trimmedEmail);
+    setPassword(trimmedPassword);
+    setConfirmPassword(trimmedConfirmPassword);
+
+    if (!trimmedEmail || !trimmedPassword || !trimmedConfirmPassword) {
       Alert.alert('Error', 'Please fill in all fields');
       return;
     }
 
-    if (password !== confirmPassword) {
+    if (trimmedPassword !== trimmedConfirmPassword) {
       Alert.alert('Error', 'Passwords do not match');
       return;
     }
 
-    if (password.length < 6) {
+    if (trimmedPassword.length < 6) {
       Alert.alert('Error', 'Password must be at least 6 characters long');
       return;
     }
@@ -50,8 +51,8 @@ export default function SignUpScreen() {
 
     try {
       const userCredential = await auth().createUserWithEmailAndPassword(
-        email,
-        password
+        trimmedEmail,
+        trimmedPassword
       );
       const user = userCredential.user;
       await user.sendEmailVerification();
@@ -59,7 +60,7 @@ export default function SignUpScreen() {
       await firestore().collection('User_Accounts').doc(user.uid).set({
         email: user.email,
         createdAt: firestore.FieldValue.serverTimestamp(),
-        profileComplete: false, // Ensure profileComplete is set to false initially
+        profileComplete: false,
       });
     } catch (error) {
       const errorMessage =

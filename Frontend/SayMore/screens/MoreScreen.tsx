@@ -1,5 +1,12 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, Image, StyleSheet } from 'react-native';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  Image,
+  StyleSheet,
+  ScrollView,
+} from 'react-native';
 import { NavigationProp } from '@react-navigation/native';
 import { useTheme } from '../components/ThemeContext';
 
@@ -34,7 +41,7 @@ const MoreScreen: React.FC<MoreScreenProps> = ({ navigation }) => {
   };
 
   return (
-    <View
+    <ScrollView
       style={theme === 'dark' ? styles.darkContainer : styles.lightContainer}>
       <View style={styles.gridContainer}>
         {NewScreens.map((item, index) => (
@@ -56,7 +63,7 @@ const MoreScreen: React.FC<MoreScreenProps> = ({ navigation }) => {
           </TouchableOpacity>
         ))}
       </View>
-    </View>
+    </ScrollView>
   );
 };
 
