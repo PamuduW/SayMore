@@ -83,7 +83,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     marginBottom: 10,
   },
-  lessonIcon: { width: 100, height: 100 },
+  lessonIcon: { width: 100, height: 100,borderRadius: 30},
   lessonText: {
     fontSize: 20,
     fontWeight: 'bold',
