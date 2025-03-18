@@ -216,62 +216,65 @@ def generate_base_feedback(final_voice_score):
         return "Significant improvement is needed. Consider working on your tone, pace, and articulation to elevate your performance."
 
 
+def generate_variation_feedback(variation_score):
+    if variation_score >= 85:
+        return "Your pitch variation is excellent, keeping your delivery lively."
+    elif variation_score >= 70:
+        return "Your pitch variation is very good; a bit more dynamism could further captivate your audience."
+    elif variation_score >= 55:
+        return "Your pitch variation is moderate; consider adding more tonal shifts for expressiveness."
+    elif variation_score >= 40:
+        return "Your pitch variation is low; increasing vocal variation can make your speech more engaging."
+    else:
+        return "Your pitch variation is minimal; significant improvement in vocal variation is needed."
+
+
+def generate_stability_feedback(stability_score):
+    if stability_score >= 85:
+        return "Your voice stability is excellent, indicating strong vocal control."
+    elif stability_score >= 70:
+        return "Your voice stability is very good; slight inconsistencies are observed."
+    elif stability_score >= 55:
+        return "Your voice stability is moderate; practicing consistent control might help."
+    elif stability_score >= 40:
+        return "Your voice stability is low; focusing on steady control can enhance your delivery."
+    else:
+        return "Your voice stability is poor; significant improvement is needed to maintain consistency."
+
+
+def generate_speed_feedback(speaking_speed):
+    if speaking_speed >= 140:
+        return "Your speaking speed is a bit fast; consider slowing down for clarity."
+    elif speaking_speed >= 120:
+        return "Your speaking speed is ideal."
+    elif speaking_speed >= 100:
+        return "Your speaking speed is good, though a slight increase could boost engagement."
+    elif speaking_speed >= 80:
+        return "Your speaking speed is a bit slow; try to increase your pace for a more dynamic delivery."
+    else:
+        return "Your speaking speed is too slow; working on a more energetic pace may help."
+
+
+def generate_clarity_feedback(clarity):
+    if clarity >= 85:
+        return "Your clarity is exceptional, making your speech easily understandable."
+    elif clarity >= 70:
+        return "Your clarity is very good; minor improvements could sharpen your articulation even more."
+    elif clarity >= 55:
+        return "Your clarity is moderate; focusing on enunciation could enhance your message."
+    elif clarity >= 40:
+        return "Your clarity is low; work on pronunciation and articulation to improve understanding."
+    else:
+        return "Your clarity needs significant improvement; consider vocal exercises to enhance articulation."
+
+
 def generate_dynamic_feedback(
     variation_score, stability_score, speaking_speed, clarity
 ):
-    if variation_score >= 85:
-        variation_feedback = (
-            "Your pitch variation is excellent, keeping your delivery lively."
-        )
-    elif variation_score >= 70:
-        variation_feedback = "Your pitch variation is very good; a bit more dynamism could further captivate your audience."
-    elif variation_score >= 55:
-        variation_feedback = "Your pitch variation is moderate; consider adding more tonal shifts for expressiveness."
-    elif variation_score >= 40:
-        variation_feedback = "Your pitch variation is low; increasing vocal variation can make your speech more engaging."
-    else:
-        variation_feedback = "Your pitch variation is minimal; significant improvement in vocal variation is needed."
-
-    if stability_score >= 85:
-        stability_feedback = (
-            "Your voice stability is excellent, indicating strong vocal control."
-        )
-    elif stability_score >= 70:
-        stability_feedback = (
-            "Your voice stability is very good; slight inconsistencies are observed."
-        )
-    elif stability_score >= 55:
-        stability_feedback = "Your voice stability is moderate; practicing consistent control might help."
-    elif stability_score >= 40:
-        stability_feedback = "Your voice stability is low; focusing on steady control can enhance your delivery."
-    else:
-        stability_feedback = "Your voice stability is poor; significant improvement is needed to maintain consistency."
-
-    if speaking_speed >= 140:
-        speed_feedback = (
-            "Your speaking speed is a bit fast; consider slowing down for clarity."
-        )
-    elif speaking_speed >= 120:
-        speed_feedback = "Your speaking speed is ideal."
-    elif speaking_speed >= 100:
-        speed_feedback = "Your speaking speed is good, though a slight increase could boost engagement."
-    elif speaking_speed >= 80:
-        speed_feedback = "Your speaking speed is a bit slow; try to increase your pace for a more dynamic delivery."
-    else:
-        speed_feedback = "Your speaking speed is too slow; working on a more energetic pace may help."
-
-    if clarity >= 85:
-        clarity_feedback = (
-            "Your clarity is exceptional, making your speech easily understandable."
-        )
-    elif clarity >= 70:
-        clarity_feedback = "Your clarity is very good; minor improvements could sharpen your articulation even more."
-    elif clarity >= 55:
-        clarity_feedback = "Your clarity is moderate; focusing on enunciation could enhance your message."
-    elif clarity >= 40:
-        clarity_feedback = "Your clarity is low; work on pronunciation and articulation to improve understanding."
-    else:
-        clarity_feedback = "Your clarity needs significant improvement; consider vocal exercises to enhance articulation."
+    variation_feedback = generate_variation_feedback(variation_score)
+    stability_feedback = generate_stability_feedback(stability_score)
+    speed_feedback = generate_speed_feedback(speaking_speed)
+    clarity_feedback = generate_clarity_feedback(clarity)
 
     dynamic_feedback = f"Additionally, {variation_feedback} {stability_feedback} {speed_feedback} {clarity_feedback}"
     return dynamic_feedback
