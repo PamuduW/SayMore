@@ -2,24 +2,28 @@ import React, { useEffect, useState } from 'react';
 import { Text, StyleSheet, ScrollView, View } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 
-const Analysis_S = ({ filename, acc_id, type, language }) => {
+const Analysis_S = ({ filename, acc_id, type }) => {
   const [responseData, setResponseData] = useState(null);
   const navigation = useNavigation();
 
   useEffect(() => {
     const sendPostRequest = async () => {
       try {
+        const requestBody = {
+          file_name: filename,
+          acc_id: acc_id,
+          test_type: type,
+          lan_flag: "language",
+        };
+
+        console.log('Sending POST request with body:', requestBody);
+
         const response = await fetch(
           'https://saymore-monorepo-8d4fc9b224ef.herokuapp.com/test',
           {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              file_name: filename,
-              acc_id: acc_id,
-              test_type: type,
-              lan_flag: language,
-            }),
+            body: JSON.stringify(requestBody),
           }
         );
 
@@ -34,7 +38,7 @@ const Analysis_S = ({ filename, acc_id, type, language }) => {
     };
 
     sendPostRequest();
-  }, [filename, acc_id, type, language]);
+  }, [filename, acc_id, type]);
 
   return (
     <ScrollView contentContainerStyle={styles.container}>

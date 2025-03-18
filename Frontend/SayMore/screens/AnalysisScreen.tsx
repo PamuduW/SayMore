@@ -19,7 +19,6 @@ const AnalysisScreen = ({ route }) => {
         <Analysis_S
           filename={filename}
           acc_id={acc_id}
-          language={language}
           type={type}
         />
       )}
