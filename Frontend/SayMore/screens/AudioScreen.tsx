@@ -31,6 +31,7 @@ const AudioScreen: React.FC<AudioScreenProps> = ({ route }) => {
     );
   }
 
+
   return (
     <View
       style={theme === 'dark' ? styles.darkContainer : styles.lightContainer}>
