@@ -17,19 +17,20 @@ const AudioScreen: React.FC<AudioScreenProps> = ({ route }) => {
     setLanguage(lang);
   };
 
-  if (!language) {
+  if (!language && isPublicSpeaking) {
     return (
       <View
         style={theme === 'dark' ? styles.darkContainer : styles.lightContainer}>
         <Text style={theme === 'dark' ? styles.darkText : styles.lightText}>
           Select a language:
         </Text>
-        <Button title="English" onPress={() => selectLanguage('en')} />
-        <Button title="Sinhala" onPress={() => selectLanguage('si')} />
-        <Button title="Tamil" onPress={() => selectLanguage('ta')} />
+        <Button title="English" onPress={() => selectLanguage('english')} />
+        <Button title="Sinhala" onPress={() => selectLanguage('sinhala')} />
+        <Button title="Tamil" onPress={() => selectLanguage('tamil')} />
       </View>
     );
   }
+
 
   return (
     <View
@@ -44,7 +45,7 @@ const AudioScreen: React.FC<AudioScreenProps> = ({ route }) => {
         style={
           theme === 'dark' ? styles.darkHeaderText : styles.lightHeaderText
         }>
-        {language ? language : 'choose'}
+        {language ? language : 'screen'}
       </Text>
       <AudioRecorder isPublicSpeaking={isPublicSpeaking} language={language} />
     </View>

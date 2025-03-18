@@ -9,7 +9,6 @@ const NewScreens = [
   { title: 'Quizzes and Challenges', icon: require('../assets/quiz.png') },
   { title: 'Progress', icon: require('../assets/progress.png') },
   { title: 'Points', icon: require('../assets/points.png') },
-  { title: 'Leaderboard', icon: require('../assets/leaderboard.png') },
   { title: 'Speech Therapy', icon: require('../assets/speech.png') },
 ];
 
@@ -24,19 +23,24 @@ const MoreScreen: React.FC<MoreScreenProps> = ({ navigation }) => {
     if (title === 'Lesson') {
       navigation.navigate('Lessons');
     } else if (title === 'Quizzes and Challenges') {
-      navigation.navigate('Difficulty'); // Navigate to Difficulty screen
+      navigation.navigate('QuizzesNavScreen'); //
+    } else if (title === 'Speech Therapy') {
+        navigation.navigate('SpeechTherapyScreen');
     }
   };
 
   return (
-    <View style={theme === 'dark' ? styles.darkContainer : styles.lightContainer}>
+    <View
+      style={theme === 'dark' ? styles.darkContainer : styles.lightContainer}>
       <View style={styles.gridContainer}>
         {NewScreens.map((item, index) => (
           <TouchableOpacity
             key={index}
             style={[
               styles.lessonButton,
-              theme === 'dark' ? styles.darkLessonButton : styles.lightLessonButton,
+              theme === 'dark'
+                ? styles.darkLessonButton
+                : styles.lightLessonButton,
             ]}
             onPress={() => handlePress(item.title)}>
             {item.icon ? (
