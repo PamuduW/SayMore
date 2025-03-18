@@ -40,6 +40,7 @@ type RootStackParamList = {
         milestones: number[];
         maxPossiblePoints: number;
     };
+    Home: undefined; // Add Home screen to the RootStackParamList
 };
 
 type VideoPlayerRouteProp = RouteProp<RootStackParamList, 'VideoPlayer'>;
@@ -50,9 +51,7 @@ interface VideoPlayerScreenProps {
     navigation: VideoPlayerNavigationProp;
 }
 
-const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = () => {
-    const route = useRoute<any>();
-    const navigation = useNavigation<any>();
+const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = ({ route, navigation }) => {
     const isFocused = useIsFocused();
     const { video, lessonTitle } = route.params;
     const { width, height } = Dimensions.get('window');
@@ -89,6 +88,7 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = () => {
 
     // Reference to completed video entry if exists
     const completedVideoEntryRef = useRef<WatchedVideo | null>(null);
+    const skipOccurredRef = useRef(false); // Define skipOccurredRef
 
     const combinedTitle = `${lessonTitle} - ${video.title}`;
 
@@ -99,6 +99,7 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = () => {
             Alert.alert('', message);
         }
     };
+
 
     const calculateMaxPoints = (durationInSeconds: number): number => {
         let maxPoints = 6;
@@ -117,7 +118,7 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = () => {
     const calculateCompletionPoints = useCallback(() => {
         const maxCompletionPoints = calculateMaxPoints(videoDuration);
 
-        let basePoints = reachedMilestonesRef.current.size - (reachedMilestonesRef.current.has(100) ? 1 : 0);
+        let basePoints = Array.from(reachedMilestonesRef.current).filter(milestone => milestone !== 100).length;
         let completionBonus = maxCompletionPoints - basePoints;
 
         if (completionBonus < 0) {
@@ -164,7 +165,7 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = () => {
         } catch (error) {
             console.error('Error awarding points:', error);
         }
-    }, [video, lessonTitle]);
+    }, [video, lessonTitle, showNotification]);
 
     const checkWatchingProgress = useCallback(async () => {
         if (!videoPlayerRef.current || pointsAwardedRef.current || videoDuration === 0) {
@@ -205,7 +206,7 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = () => {
         } catch (error) {
             console.error('Error checking watching progress:', error);
         }
-    }, [playing, videoDuration, awardPoints, navigation, video.title, calculateCompletionPoints, largestMilestone, isRewatching]);
+    }, [playing, videoDuration, awardPoints, largestMilestone, isRewatching, showNotification]);
 
     const throttledSetCurrentPercentage = useCallback(
         throttle((percentage: number) => {
@@ -246,7 +247,7 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = () => {
 
                     previousTimeRef.current = currentTime;
 
-                     // Update watchedDurationRef based on the current time, not just when skipping
+                    // Update watchedDurationRef based on the current time, not just when skipping
                     watchedDurationRef.current = currentTime;
 
                     const percentageWatched = Math.min(100, Math.round((watchedDurationRef.current / videoDuration) * 100));
@@ -308,9 +309,9 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = () => {
                     console.log('Video was previously completed. Setting up for rewatching.');
                     setIsRewatching(true);
 
-                     // Initialize milestones and points earned for rewatch.
-                     reachedMilestonesRef.current = new Set();
-                     totalPointsEarnedRef.current = 0;
+                    // Initialize milestones and points earned for rewatch.
+                    reachedMilestonesRef.current = new Set();
+                    totalPointsEarnedRef.current = 0;
 
                     // Check if there's also an incomplete rewatching entry
                     if (latestIncompleteEntry) {
@@ -347,12 +348,12 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = () => {
                         setCurrentPercentage(incompletePercentage);
                         watchedDurationRef.current = (incompletePercentage / 100) * videoDuration;
                         //Also re-initialize milestones when starting mid-way
-                          const milestones = [10, 25, 50, 75, 100];
-                          for (const milestone of milestones) {
-                              if (incompletePercentage >= milestone) {
-                                  reachedMilestonesRef.current.add(milestone);
-                              }
-                          }
+                        const milestones = [10, 25, 50, 75, 100];
+                        for (const milestone of milestones) {
+                            if (incompletePercentage >= milestone) {
+                                reachedMilestonesRef.current.add(milestone);
+                            }
+                        }
                     } else {
                         setShowSkipButton(false);
                         setPreviousWatchedPercentage(null);
@@ -371,8 +372,6 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = () => {
             console.error('Error fetching previous watched percentage:', error);
         }
     }, [video.videoId, videoDuration]);
-
-    const skipOccurredRef = useRef(false); // New ref to track if skip was performed
 
     // Skip to previously watched position
     const skipToLastWatched = useCallback(async () => {
@@ -433,7 +432,7 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = () => {
                 startPositionPolling();
 
                 // Fetch previously watched percentage for this video
-                fetchPreviousWatchedPercentage();
+                await fetchPreviousWatchedPercentage(); // AWAIT IT!
                 // reset flags
                 videoSavedRef.current = false;
                 hasPlayedEnoughRef.current = false;
@@ -646,7 +645,7 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = () => {
             isSavingRef.current = false;
             console.log("isSavingRef.current set to false");
         }
-    }, [video, lessonTitle, videoDuration, currentVideoId, isRewatching]);
+    }, [video, lessonTitle, videoDuration, currentVideoId, isRewatching, showNotification]);
 
     const checkPlayDuration = useCallback(() => {
         if (playStartTimeRef.current !== null && !hasPlayedEnoughRef.current) {
@@ -678,72 +677,67 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = () => {
         setCurrentVideoId(`${video.videoId}_${timestamp}`);
     }, [video.videoId]);
 
-    const onStateChange = useCallback(async (state: string) => {
-        console.log('YouTube player state changed:', state);
+const onStateChange = useCallback(async (state: string) => {
+    console.log('YouTube player state changed:', state);
 
-        if (state === 'playing') {
-            setPlaying(true);
-            setShowSkipButton(false); // Hide skip button when video starts playing
+    if (state === 'playing') {
+        setPlaying(true);
+        setShowSkipButton(true); // Hide skip button when video starts playing
 
-            if (playStartTimeRef.current === null) {
-                playStartTimeRef.current = Date.now();
-                console.log('Video playback started, starting timer');
-            }
-        } else if (state === 'paused' || state === 'ended' || state === 'stopped') {
-            setPlaying(false);
-
-            checkPlayDuration();
-            await checkWatchingProgress();  // Await the completion of checkWatchingProgress
-
-            if (hasPlayedEnoughRef.current && !videoSavedRef.current) {
-                await saveWatchedVideo();
-            }
-
-            if (state === 'ended') {
-                watchedDurationRef.current = videoDuration;
-                setCurrentPercentage(100);
-                console.log("Total points earned:", totalPointsEarnedRef.current); // Check total points before completion bonus
-
-        const isFirstTimeComplete = !isRewatching && !reachedMilestonesRef.current.has(100);
-
-                // Award completion points when completing
-                if (isFirstTimeComplete || isRewatching) {
-                    console.log('Calculating final points.');
-                    reachedMilestonesRef.current.add(100);
-
-                    const milestoneCompletionPoints = calculateCompletionPoints();
-                    console.log('Milestone completion points:', milestoneCompletionPoints);
-                    const finalPoints = totalPointsEarnedRef.current + milestoneCompletionPoints; // Store the final points value
-                    console.log("Final calculated Points: ",finalPoints);
-
-                    await awardPoints(milestoneCompletionPoints, 100);
-
-                   if(isFirstTimeComplete){
-                     navigation.navigate('PointsScreen', {
-                         points: finalPoints,
-                         videoTitle: video.title,
-                         milestones: Array.from(reachedMilestonesRef.current),
-                         maxPossiblePoints: calculateMaxPoints(videoDuration),
-                     });
-                   } else {
-                       // Just save the video without awarding points when rewatching
-                        saveWatchedVideo();
-                        showNotification("Video rewatched completely!");
-                   }
-                }
-
-
-                // Reset all the watching progress and flags
-                resetWatchingState();
-                // Reset the rewatching flag - next time treat it as a fresh watch
-                setIsRewatching(false);
-            }
+        if (playStartTimeRef.current === null) {
+            playStartTimeRef.current = Date.now();
+            console.log('Video playback started, starting timer');
         }
-    }, [checkPlayDuration, saveWatchedVideo, checkWatchingProgress, videoDuration, navigation, video.title, awardPoints, calculateCompletionPoints, resetWatchingState, isRewatching, showNotification]);
+    } else if (state === 'paused' || state === 'ended' || state === 'stopped') {
+        setPlaying(false);
+
+        checkPlayDuration();
+        await checkWatchingProgress();
+
+        if (hasPlayedEnoughRef.current && !videoSavedRef.current) {
+            await saveWatchedVideo();
+        }
+
+        if (state === 'ended') {
+            watchedDurationRef.current = videoDuration;
+            setCurrentPercentage(100);
+            console.log("Total points earned:", totalPointsEarnedRef.current);
+
+            reachedMilestonesRef.current.add(100);
+            const milestoneCompletionPoints = calculateCompletionPoints(); // Calculate points
+            console.log('Milestone completion points:', milestoneCompletionPoints);
+            totalPointsEarnedRef.current += milestoneCompletionPoints; // Add to earned points
+
+            const finalPoints = totalPointsEarnedRef.current;
+
+            await awardPoints(milestoneCompletionPoints, 100);
+
+            try {
+                navigation.navigate('PointsScreen', {
+                    points: finalPoints,
+                    videoTitle: video.title,
+                    milestones: Array.from(reachedMilestonesRef.current),
+                    maxPossiblePoints: calculateMaxPoints(videoDuration),
+                });
+                console.log("Navigation to PointsScreen attempted with:", {
+                    points: finalPoints,
+                    videoTitle: video.title,
+                    milestones: Array.from(reachedMilestonesRef.current),
+                    maxPossiblePoints: calculateMaxPoints(videoDuration),
+                });
+            } catch (error) {
+                console.error("Error navigating to PointsScreen:", error);
+                showNotification("Error showing points screen. Please try again later.");
+            }
+
+            resetWatchingState();
+            setIsRewatching(false);
+        }
+    }
+}, [checkPlayDuration, saveWatchedVideo, checkWatchingProgress, videoDuration, navigation, video.title, awardPoints, calculateCompletionPoints, resetWatchingState, showNotification]);
 
     // Set up regular interval to check watching progress for points
     useEffect(() => {
-        // Only start interval when video is playing and duration is known
         if (playing && videoDuration > 0) {
             checkPointsIntervalRef.current = setInterval(() => {
                 checkWatchingProgress();
@@ -795,7 +789,6 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = () => {
                     saveWatchedVideo();
                 }
 
-                // Clear position polling
                 if (positionPollingRef.current) {
                     clearInterval(positionPollingRef.current);
                     positionPollingRef.current = null;
@@ -823,7 +816,6 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = () => {
                 saveWatchedVideo();
             }
 
-            // Clean up all intervals
             if (positionPollingRef.current) {
                 clearInterval(positionPollingRef.current);
             }
@@ -855,7 +847,7 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = () => {
 
     const getMilestonePointsText = () => {
         if (isRewatching) {
-            return "Rewatching - additional points awarded";
+            return "Rewatching - no additional points awarded";
         }
 
         if (reachedMilestonesRef.current.size === 0) {
@@ -914,7 +906,6 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = () => {
                         />
                     </View>
 
-                    {/* Skip to last watched button */}
                     {showSkipButton && previousWatchedPercentage && !playing && (
                         <TouchableOpacity
                             style={styles.skipButton}

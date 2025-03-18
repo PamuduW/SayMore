@@ -7,7 +7,6 @@ import {
     SafeAreaView,
     StatusBar,
     Dimensions,
-    Animated,
 } from 'react-native';
 import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
 
@@ -15,8 +14,8 @@ type RootStackParamList = {
     PointsScreen: {
         points: number;
         videoTitle: string;
-        milestones?: number[];
-        maxPossiblePoints?: number;
+        milestones: number[];
+        maxPossiblePoints: number;
     };
 };
 
@@ -30,32 +29,13 @@ const PointsScreen: React.FC = () => {
     const {
         points,
         videoTitle,
-        milestones = [],
-        maxPossiblePoints = 10,
+        milestones,
+        maxPossiblePoints,
     } = route.params;
-  useEffect(() => {
-         console.log("PointsScreen params:", { points, videoTitle, milestones, maxPossiblePoints });
-    },[points]);
-    // Animation values
-    const pointsAnim = React.useRef(new Animated.Value(0)).current;
-    const scaleAnim = React.useRef(new Animated.Value(0.5)).current;
 
     useEffect(() => {
-        // Animate points counting up
-        Animated.timing(pointsAnim, {
-            toValue: points,
-            duration: 1000,
-            useNativeDriver: false,
-        }).start();
-
-        // Animate scale bounce effect
-        Animated.spring(scaleAnim, {
-            toValue: 1,
-            friction: 5,
-            tension: 40,
-            useNativeDriver: true,
-        }).start();
-    }, [points]);
+        console.log("PointsScreen params:", { points, videoTitle, milestones, maxPossiblePoints });
+    }, [points, videoTitle, milestones, maxPossiblePoints]);
 
     // Get messaging based on points earned
     const getMessageText = () => {
@@ -84,15 +64,9 @@ const PointsScreen: React.FC = () => {
             : 0;
 
         return milestones.includes(100)
-            ? `${basePoints} points from milestones + ${completionBonus} completion bonus!`
+            ? `${basePoints} points from milestones + completion bonus!`
             : `${basePoints} points from reaching milestone${basePoints > 1 ? 's' : ''}: ${milestones.join('%, ')}%`;
     };
-
-    // Animated points value for display
-    const animatedPoints = pointsAnim.interpolate({
-        inputRange: [0, points],
-        outputRange: ['0', points],
-    });
 
     const continueToLesson = () => {
         navigation.goBack();
@@ -106,21 +80,18 @@ const PointsScreen: React.FC = () => {
         <SafeAreaView style={styles.safeArea}>
             <StatusBar barStyle="dark-content" backgroundColor="#F0F8FF" />
             <View style={styles.container}>
-                <Animated.View
+                <View
                     style={[
                         styles.pointsContainer,
-                        { transform: [{ scale: scaleAnim }] },
                     ]}>
                     <View style={styles.pointsCircle}>
-                        <Animated.Text style={styles.pointsNumber}>
-                            {animatedPoints.interpolate({
-                                inputRange: [0, points],
-                                outputRange: ['0', points.toString()],
-                            })}
-                        </Animated.Text>
+                        <Text style={styles.pointsNumber}>
+                            {points}
+
+                        </Text>
                         <Text style={styles.pointsLabel}>POINTS</Text>
                     </View>
-                </Animated.View>
+                </View>
 
                 <View style={styles.messageContainer}>
                     <Text style={styles.congratsText}>Congratulations!</Text>
