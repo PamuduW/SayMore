@@ -187,16 +187,14 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = () => {
 
             const milestones = [10, 25, 50, 75, 100];
 
-            // Only check for milestones and award points if not rewatching
-            if (!isRewatching) {
-                for (const milestone of milestones) {
-                    if (percentageWatched >= milestone && !reachedMilestonesRef.current.has(milestone)) {
-                        reachedMilestonesRef.current.add(milestone);
+            //Only check for milestones and award points always
+            for (const milestone of milestones) {
+                if (percentageWatched >= milestone && !reachedMilestonesRef.current.has(milestone)) {
+                    reachedMilestonesRef.current.add(milestone);
 
-                        setLargestMilestone(milestone);
+                    setLargestMilestone(milestone);
 
-                        await awardPoints(1, milestone);
-                    }
+                    await awardPoints(1, milestone);
                 }
             }
 
@@ -310,6 +308,10 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = () => {
                     console.log('Video was previously completed. Setting up for rewatching.');
                     setIsRewatching(true);
 
+                     // Initialize milestones and points earned for rewatch.
+                     reachedMilestonesRef.current = new Set();
+                     totalPointsEarnedRef.current = 0;
+
                     // Check if there's also an incomplete rewatching entry
                     if (latestIncompleteEntry) {
                         const incompletePercentage = latestIncompleteEntry.percentageWatched;
@@ -344,6 +346,13 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = () => {
                         setShowSkipButton(true);
                         setCurrentPercentage(incompletePercentage);
                         watchedDurationRef.current = (incompletePercentage / 100) * videoDuration;
+                        //Also re-initialize milestones when starting mid-way
+                          const milestones = [10, 25, 50, 75, 100];
+                          for (const milestone of milestones) {
+                              if (incompletePercentage >= milestone) {
+                                  reachedMilestonesRef.current.add(milestone);
+                              }
+                          }
                     } else {
                         setShowSkipButton(false);
                         setPreviousWatchedPercentage(null);
@@ -693,32 +702,36 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = () => {
             if (state === 'ended') {
                 watchedDurationRef.current = videoDuration;
                 setCurrentPercentage(100);
-        console.log("Total points earned:", totalPointsEarnedRef.current); // Check total points before completion bonus
-                // Only award completion points when not rewatching
-                if (!isRewatching && !reachedMilestonesRef.current.has(100)) {
-        console.log('Calculating final points.');
+                console.log("Total points earned:", totalPointsEarnedRef.current); // Check total points before completion bonus
+
+        const isFirstTimeComplete = !isRewatching && !reachedMilestonesRef.current.has(100);
+
+                // Award completion points when completing
+                if (isFirstTimeComplete || isRewatching) {
+                    console.log('Calculating final points.');
                     reachedMilestonesRef.current.add(100);
 
                     const milestoneCompletionPoints = calculateCompletionPoints();
-        console.log('Milestone completion points:', milestoneCompletionPoints);
+                    console.log('Milestone completion points:', milestoneCompletionPoints);
                     const finalPoints = totalPointsEarnedRef.current + milestoneCompletionPoints; // Store the final points value
-                   console.log("Final calculated Points: ",finalPoints);
-                    awardPoints(milestoneCompletionPoints, 100).then(() => {
-                         // Check point: 8
-        console.log("Points awarded. Navigating to PointsScreen with points:", finalPoints);
-                       // Award points for completing milestones.
-                        navigation.navigate('PointsScreen', {
-                            points: finalPoints, // Send the final points value
-                            videoTitle: video.title,
-                            milestones: Array.from(reachedMilestonesRef.current),
-                            maxPossiblePoints: calculateMaxPoints(videoDuration),
-                        });
-                    });
-                } else if (isRewatching) {
-                    // Just save the video without awarding points when rewatching
-                    saveWatchedVideo();
-                    showNotification("Video rewatched completely!");
+                    console.log("Final calculated Points: ",finalPoints);
+
+                    await awardPoints(milestoneCompletionPoints, 100);
+
+                   if(isFirstTimeComplete){
+                     navigation.navigate('PointsScreen', {
+                         points: finalPoints,
+                         videoTitle: video.title,
+                         milestones: Array.from(reachedMilestonesRef.current),
+                         maxPossiblePoints: calculateMaxPoints(videoDuration),
+                     });
+                   } else {
+                       // Just save the video without awarding points when rewatching
+                        saveWatchedVideo();
+                        showNotification("Video rewatched completely!");
+                   }
                 }
+
 
                 // Reset all the watching progress and flags
                 resetWatchingState();
@@ -842,7 +855,7 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = () => {
 
     const getMilestonePointsText = () => {
         if (isRewatching) {
-            return "Rewatching - no additional points awarded";
+            return "Rewatching - additional points awarded";
         }
 
         if (reachedMilestonesRef.current.size === 0) {
@@ -927,7 +940,7 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = () => {
                                     ? `You've watched ${currentPercentage}% of this video`
                                     : "Start watching to track progress"}
                             </Text>
-<View style={styles.progressBar}>
+                            <View style={styles.progressBar}>
                                 <View style={[styles.progressFill, {
                                     width: `${currentPercentage}%`,
                                     backgroundColor: getProgressFillColor(currentPercentage)
@@ -1092,7 +1105,7 @@ const styles = StyleSheet.create({
         borderRadius: 4,
         overflow: 'hidden',
     },
-progressFill: {
+    progressFill: {
         height: '100%',
         backgroundColor: '#4CAF50',
     },
@@ -1167,4 +1180,3 @@ progressFill: {
 });
 
 export default VideoPlayerScreen;
-
