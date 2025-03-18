@@ -70,7 +70,9 @@ def analyze_speech_2(audio_path, segment_duration=2.0):
 
     # Variation score: Combine the variation in intensity and energy.
     max_variation = 50  # Adjust based on expected standard deviations.
-    normalized_variation = np.log1p((intensity_variation + energy_variation) / max_variation) * 100
+    normalized_variation = (
+        np.log1p((intensity_variation + energy_variation) / max_variation) * 100
+    )
     variation_score = float(round(np.clip(normalized_variation, 0, 100), 2))
     # ---------------------------------
 
@@ -81,31 +83,23 @@ def analyze_speech_2(audio_path, segment_duration=2.0):
 
     # --- Base Feedback Based on Final Energy Score ---
     if final_energy_score >= 85:
-        base_feedback = (
-            "Excellent! Your speech exhibits outstanding dynamic energy, intensity, and variation—highly engaging and captivating."
-        )
+        base_feedback = "Excellent! Your speech exhibits outstanding dynamic energy, intensity, and variation—highly engaging and captivating."
     elif final_energy_score >= 70:
-        base_feedback = (
-            "Very good! Your overall energy is strong, though slight improvements could elevate your delivery even further."
-        )
+        base_feedback = "Very good! Your overall energy is strong, though slight improvements could elevate your delivery even further."
     elif final_energy_score >= 55:
-        base_feedback = (
-            "Good effort! Your energy is adequate, but there’s room for improvement in making your delivery more engaging."
-        )
+        base_feedback = "Good effort! Your energy is adequate, but there’s room for improvement in making your delivery more engaging."
     elif final_energy_score >= 40:
-        base_feedback = (
-            "Fair performance. Your overall energy is a bit low; consider working on both your intensity and variation."
-        )
+        base_feedback = "Fair performance. Your overall energy is a bit low; consider working on both your intensity and variation."
     else:
-        base_feedback = (
-            "Needs improvement. Your speech lacks dynamic energy and variation, making it less engaging."
-        )
+        base_feedback = "Needs improvement. Your speech lacks dynamic energy and variation, making it less engaging."
 
     # --- Detailed Feedback for Each Specific Metric ---
 
     # Intensity Feedback
     if intensity_score >= 85:
-        intensity_feedback = "Your vocal intensity is excellent, projecting powerfully throughout."
+        intensity_feedback = (
+            "Your vocal intensity is excellent, projecting powerfully throughout."
+        )
     elif intensity_score >= 70:
         intensity_feedback = "Your vocal intensity is very good; a bit more volume variation could add extra impact."
     elif intensity_score >= 55:
@@ -117,7 +111,9 @@ def analyze_speech_2(audio_path, segment_duration=2.0):
 
     # Energy Feedback
     if energy_score >= 85:
-        energy_feedback = "Your energy level is outstanding, keeping your audience captivated."
+        energy_feedback = (
+            "Your energy level is outstanding, keeping your audience captivated."
+        )
     elif energy_score >= 70:
         energy_feedback = "Your energy level is high, though a bit more enthusiasm might further enhance your delivery."
     elif energy_score >= 55:
