@@ -669,7 +669,7 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = () => {
         setCurrentVideoId(`${video.videoId}_${timestamp}`);
     }, [video.videoId]);
 
-    const onStateChange = useCallback((state: string) => {
+    const onStateChange = useCallback(async (state: string) => {
         console.log('YouTube player state changed:', state);
 
         if (state === 'playing') {
@@ -684,26 +684,31 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = () => {
             setPlaying(false);
 
             checkPlayDuration();
-            checkWatchingProgress();
+            await checkWatchingProgress();  // Await the completion of checkWatchingProgress
 
             if (hasPlayedEnoughRef.current && !videoSavedRef.current) {
-                saveWatchedVideo();
+                await saveWatchedVideo();
             }
 
             if (state === 'ended') {
                 watchedDurationRef.current = videoDuration;
                 setCurrentPercentage(100);
-
+        console.log("Total points earned:", totalPointsEarnedRef.current); // Check total points before completion bonus
                 // Only award completion points when not rewatching
                 if (!isRewatching && !reachedMilestonesRef.current.has(100)) {
+        console.log('Calculating final points.');
                     reachedMilestonesRef.current.add(100);
 
                     const milestoneCompletionPoints = calculateCompletionPoints();
-
+        console.log('Milestone completion points:', milestoneCompletionPoints);
+                    const finalPoints = totalPointsEarnedRef.current + milestoneCompletionPoints; // Store the final points value
+                   console.log("Final calculated Points: ",finalPoints);
                     awardPoints(milestoneCompletionPoints, 100).then(() => {
-                        console.log("Navigating to PointsScreen");
+                         // Check point: 8
+        console.log("Points awarded. Navigating to PointsScreen with points:", finalPoints);
+                       // Award points for completing milestones.
                         navigation.navigate('PointsScreen', {
-                            points: totalPointsEarnedRef.current,
+                            points: finalPoints, // Send the final points value
                             videoTitle: video.title,
                             milestones: Array.from(reachedMilestonesRef.current),
                             maxPossiblePoints: calculateMaxPoints(videoDuration),
@@ -922,7 +927,7 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = () => {
                                     ? `You've watched ${currentPercentage}% of this video`
                                     : "Start watching to track progress"}
                             </Text>
-                            <View style={styles.progressBar}>
+<View style={styles.progressBar}>
                                 <View style={[styles.progressFill, {
                                     width: `${currentPercentage}%`,
                                     backgroundColor: getProgressFillColor(currentPercentage)
