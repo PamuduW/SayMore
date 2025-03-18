@@ -6,6 +6,7 @@ import {
   Button,
   View,
   Dimensions,
+  Alert,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { ProgressChart } from 'react-native-chart-kit';
@@ -56,6 +57,19 @@ const Analysis_PS = ({ filename, acc_id, type, language }) => {
           throw new Error(`HTTP error! status: ${response.status}`);
 
         const responseInfo = await response.json();
+
+        if (
+          !responseInfo.result.transcription ||
+          !responseInfo.result.transcription[0]
+        ) {
+          Alert.alert(
+            'Error',
+            'The transcript is empty! make sure your mic is working'
+          );
+          navigation.navigate('HomeScreen');
+          return;
+        }
+
         setResponseData(responseInfo);
         setData({
           labels: [
