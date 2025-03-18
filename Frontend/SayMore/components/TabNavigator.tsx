@@ -11,6 +11,9 @@ import LessonsScreen from '../screens/LessonsScreen';
 import AccountScreen from '../screens/AccountScreen';
 import AudioScreen from '../screens/AudioScreen';
 import AnalysisScreen from '../screens/AnalysisScreen';
+import VideoListScreen from '../screens/VideoListScreen';
+import VideoPlayerScreen from '../screens/VideoPlayerScreen';
+import HistoryScreen from '../screens/HistoryScreen';
 import FeedbackScreen_PS from '../screens/FeedbackScreen_PS';
 import FeedbackScreen_S from '../screens/FeedbackScreen_S';
 import SpeechTherapyScreen from '../screens/SpeechTherapyScreen';
@@ -51,6 +54,9 @@ const MoreStack = () => (
   <Stack.Navigator screenOptions={{ headerShown: false }}>
     <Stack.Screen name="MoreScreen" component={MoreScreen} />
     <Stack.Screen name="Lessons" component={LessonsScreen} />
+    <Stack.Screen name="VideoList" component={VideoListScreen} />
+    <Stack.Screen name="VideoPlayer" component={VideoPlayerScreen} />
+    <Stack.Screen name="History" component={HistoryScreen} />
     <Stack.Screen name="QuizzesNavScreen" component={QuizzesNavScreen} />
     <Stack.Screen name="Difficulty" component={Difficulty} />
     <Stack.Screen

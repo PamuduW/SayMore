@@ -10,6 +10,7 @@ const NewScreens = [
   { title: 'Progress', icon: require('../assets/progress.png') },
   { title: 'Points', icon: require('../assets/points.png') },
   { title: 'Speech Therapy', icon: require('../assets/speech.png') },
+  { title: 'Watched Lessons', icon: require('../assets/lesson.png') },
 ];
 
 interface MoreScreenProps {
@@ -20,12 +21,15 @@ const MoreScreen: React.FC<MoreScreenProps> = ({ navigation }) => {
   const theme = useTheme();
 
   const handlePress = (title: string) => {
-    if (title === 'Lesson') {
+    if (title === 'Lessons') {
       navigation.navigate('Lessons');
     } else if (title === 'Quizzes and Challenges') {
       navigation.navigate('QuizzesNavScreen'); //
     } else if (title === 'Speech Therapy') {
       navigation.navigate('SpeechTherapyScreen');
+    }
+    if (title === 'Watched Lessons') {
+      navigation.navigate('History');
     }
   };
 

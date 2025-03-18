@@ -36,19 +36,19 @@ const PersonalDetailsScreen = () => {
             fname,
             sname,
             username,
-            dob: dob.toISOString(), // Save as Firestore-compatible string
+            dob: dob.toISOString(),
             profileComplete: true,
+            watchedVideos: [],
             results: {
-              PS_Check: firestore.FieldValue.arrayUnion(''), // Ensures it's an empty array if not present
+              PS_Check: firestore.FieldValue.arrayUnion(''),
               Stuttering_Check: firestore.FieldValue.arrayUnion(''),
             },
           },
-          { merge: true } // Prevents overwriting existing data
+          { merge: true }
         );
 
       Alert.alert('Success', 'Profile updated successfully!');
 
-      // Navigate back to LandingPage (which now listens for updates)
       navigation.reset({
         index: 0,
         routes: [{ name: 'MainApp' }],
