@@ -100,13 +100,13 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = ({
 
   const combinedTitle = `${lessonTitle} - ${video.title}`;
 
-const showNotification = useCallback((message: string) => {
-  if (Platform.OS === 'android') {
-    ToastAndroid.show(message, ToastAndroid.SHORT);
-  } else {
-    Alert.alert('', message);
-  }
-}, []);
+  const showNotification = useCallback((message: string) => {
+    if (Platform.OS === 'android') {
+      ToastAndroid.show(message, ToastAndroid.SHORT);
+    } else {
+      Alert.alert('', message);
+    }
+  }, []);
 
   const calculateMaxPoints = (durationInSeconds: number): number => {
     let maxPoints = 6;
