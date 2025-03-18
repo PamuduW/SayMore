@@ -51,7 +51,7 @@ const PersonalDetailsScreen = () => {
 
       navigation.reset({
         index: 0,
-        routes: [{ name: 'MainApp' }],
+        routes: [{ name: 'SignIn' }],
       });
     } catch (error) {
       Alert.alert('Error', 'Failed to update profile.');
