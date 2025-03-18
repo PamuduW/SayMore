@@ -23,7 +23,7 @@ const WelcomeScreen = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <Animated.Image
-        source={require('../assets/applogo.jpg')}
+        source={require('../assets/applogo.png')}
         style={[styles.logo, { opacity: fadeAnim }]}
       />
     </View>
