@@ -9,7 +9,6 @@ const NewScreens = [
   { title: 'Quizzes and Challenges', icon: require('../assets/quiz.png') },
   { title: 'Progress', icon: require('../assets/progress.png') },
   { title: 'Points', icon: require('../assets/points.png') },
-  { title: 'Leaderboard', icon: require('../assets/leaderboard.png') },
   { title: 'Speech Therapy', icon: require('../assets/speech.png') },
 ];
 
@@ -25,6 +24,8 @@ const MoreScreen: React.FC<MoreScreenProps> = ({ navigation }) => {
       navigation.navigate('Lessons');
     } else if (title === 'Quizzes and Challenges') {
       navigation.navigate('QuizzesNavScreen'); //
+    } else if (title === 'Speech Therapy') {
+        navigation.navigate('SpeechTherapyScreen');
     }
   };
 
