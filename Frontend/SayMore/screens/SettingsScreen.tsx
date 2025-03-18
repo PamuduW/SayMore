@@ -28,7 +28,12 @@ export default function SettingsScreen() {
   const renderOption = (item, index) => (
     <TouchableOpacity key={index} style={styles.option}>
       <View style={styles.leftSection}>
-        <Ionicons name={item.icon} size={22} color="#FFFFFF" style={{ marginRight: 12 }} />
+        <Ionicons
+          name={item.icon}
+          size={22}
+          color="#FFFFFF"
+          style={{ marginRight: 12 }}
+        />
         <Text style={styles.optionText}>{item.label}</Text>
       </View>
 

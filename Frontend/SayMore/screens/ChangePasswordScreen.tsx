@@ -15,7 +15,7 @@ export default function ChangePasswordScreen({ navigation }) {
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
 
-  const reauthenticate = async (currentPassword) => {
+  const reauthenticate = async currentPassword => {
     const user = auth().currentUser;
     const credential = auth.EmailAuthProvider.credential(
       user.email,
@@ -75,7 +75,9 @@ export default function ChangePasswordScreen({ navigation }) {
         />
       </View>
 
-      <TouchableOpacity onPress={handleChangePassword} style={{ marginTop: 20 }}>
+      <TouchableOpacity
+        onPress={handleChangePassword}
+        style={{ marginTop: 20 }}>
         <LinearGradient
           colors={['#00C6FF', '#0072FF']} // New vibrant blue gradient
           start={{ x: 0, y: 0 }}
@@ -90,7 +92,13 @@ export default function ChangePasswordScreen({ navigation }) {
 
 const styles = StyleSheet.create({
   container: { flex: 1, paddingTop: 40, paddingHorizontal: 20 },
-  header: { fontSize: 26, color: '#fff', marginBottom: 30, textAlign: 'center', fontWeight: 'bold' },
+  header: {
+    fontSize: 26,
+    color: '#fff',
+    marginBottom: 30,
+    textAlign: 'center',
+    fontWeight: 'bold',
+  },
 
   inputContainer: { marginBottom: 20 },
 

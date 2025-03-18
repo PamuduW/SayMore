@@ -1,5 +1,12 @@
 import React from 'react';
-import { View, Text, FlatList, TouchableOpacity, Linking, StyleSheet } from 'react-native';
+import {
+  View,
+  Text,
+  FlatList,
+  TouchableOpacity,
+  Linking,
+  StyleSheet,
+} from 'react-native';
 import { useTheme } from '../components/ThemeContext';
 
 const therapists = [
@@ -38,11 +45,12 @@ const SpeechTherapyScreen = () => {
   };
 
   return (
-    <View style={theme === 'dark' ? styles.darkContainer : styles.lightContainer}>
+    <View
+      style={theme === 'dark' ? styles.darkContainer : styles.lightContainer}>
       <Text style={styles.header}>Speech Therapists</Text>
       <FlatList
         data={therapists}
-        keyExtractor={(item) => item.id}
+        keyExtractor={item => item.id}
         renderItem={({ item }) => (
           <View style={styles.card}>
             <Text style={styles.name}>{item.name}</Text>
@@ -86,4 +94,3 @@ const styles = StyleSheet.create({
 });
 
 export default SpeechTherapyScreen;
-

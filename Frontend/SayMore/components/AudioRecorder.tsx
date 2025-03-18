@@ -127,6 +127,7 @@ const AudioRecorder: React.FC<AudioRecorderProps> = ({
         acc_id: currentUser.uid,
         type: isPublicSpeaking,
         language,
+        isPublicSpeaking, // Pass isPublicSpeaking to AnalysisScreen
       });
     } catch (error) {
       Alert.alert('Upload Failed', error.message);
