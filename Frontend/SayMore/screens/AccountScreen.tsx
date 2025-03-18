@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback, useRef } from 'react';
 import {
   View,
   Text,
@@ -7,6 +7,7 @@ import {
   Image,
   Alert,
   ActivityIndicator,
+  Animated,
 } from 'react-native';
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
@@ -19,6 +20,24 @@ export default function AccountScreen() {
 
   const [userData, setUserData] = useState(null);
   const [loading, setLoading] = useState(true);
+
+  // Animation
+  const borderAnimation = useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+    Animated.loop(
+      Animated.timing(borderAnimation, {
+        toValue: 1,
+        duration: 1800,
+        useNativeDriver: false,
+      })
+    ).start();
+  }, [borderAnimation]);
+
+  const borderInterpolation = borderAnimation.interpolate({
+    inputRange: [0, 1],
+    outputRange: ['#2D336B', '#7886C7'],
+  });
 
   const fetchUserData = async (showLoader = true) => {
     try {
@@ -81,23 +100,18 @@ export default function AccountScreen() {
             if (userData) {
               navigation.navigate('EditProfileScreen', { userData });
             }
-          }}>
-          <Image
-            source={require('../assets/avatar.png')}
-            style={styles.avatar}
-          />
+          }}
+        >
+          <Image source={require('../assets/avatar.png')} style={styles.avatar} />
         </TouchableOpacity>
 
         {loading ? (
           <ActivityIndicator size="large" color="#2A2D57" />
         ) : (
           <>
-            {/* Username Display */}
             <Text style={styles.username}>
               {userData?.username || 'Username'}
             </Text>
-
-            {/* Full Name Display */}
             <Text style={styles.nameText}>
               {userData?.fname} {userData?.sname}
             </Text>
@@ -105,33 +119,32 @@ export default function AccountScreen() {
         )}
 
         <View style={styles.menuContainer}>
-          {[
-            'Account Details',
-            'Activity',
-            'Progress',
-            'Goals',
-            'Leaderboard',
-            'Settings',
-          ].map((item, index) => (
-            <LinearGradient
+          {['Account Details', 'Settings'].map((item, index) => (
+            <Animated.View
               key={index}
-              colors={['#3B5998', '#577BC1']}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 1 }}
-              style={styles.menuItemWrapper}>
-              <TouchableOpacity
-                style={styles.menuItem}
-                onPress={() => {
-                  if (item === 'Settings') {
-                    navigation.navigate('SettingsScreen');
-                  }
-                  if (item === 'Account Details') {
-                    navigation.navigate('EditProfileScreen', { userData });
-                  }
-                }}>
-                <Text style={styles.menuText}>{item}</Text>
-              </TouchableOpacity>
-            </LinearGradient>
+              style={[
+                styles.animatedBorder,
+                { borderColor: borderInterpolation }
+              ]}>
+              <LinearGradient
+                colors={['#3B5998', '#577BC1']}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 1 }}
+                style={styles.menuItemWrapper}>
+                <TouchableOpacity
+                  style={styles.menuItem}
+                  onPress={() => {
+                    if (item === 'Settings') {
+                      navigation.navigate('SettingsScreen');
+                    }
+                    if (item === 'Account Details') {
+                      navigation.navigate('EditProfileScreen', { userData });
+                    }
+                  }}>
+                  <Text style={styles.menuText}>{item}</Text>
+                </TouchableOpacity>
+              </LinearGradient>
+            </Animated.View>
           ))}
         </View>
 
@@ -144,76 +157,120 @@ export default function AccountScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, justifyContent: 'center', alignItems: 'center' },
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+
   card: {
     backgroundColor: '#FFFFFF',
     width: '90%',
-    borderRadius: 30,
+    borderRadius: 25,
     alignItems: 'center',
-    paddingVertical: 35,
+    paddingVertical: 40,
     paddingHorizontal: 25,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 10 },
-    shadowOpacity: 0.25,
-    shadowRadius: 12,
-    elevation: 14,
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.1,
+    shadowRadius: 10,
+    elevation: 10,
   },
+
   avatarWrapper: {
     backgroundColor: '#F2F3F8',
-    padding: 10,
-    borderRadius: 50,
-    marginBottom: 10,
+    padding: 12,
+    borderRadius: 60,
+    marginBottom: 15,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 5 },
-    shadowOpacity: 0.15,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.1,
     shadowRadius: 6,
     elevation: 6,
   },
-  avatar: { width: 80, height: 80, borderRadius: 40 },
+
+  avatar: {
+    width: 90,
+    height: 90,
+    borderRadius: 45,
+  },
+
   username: {
-    fontSize: 24,
+    fontSize: 22,
     fontWeight: '700',
     color: '#2A2D57',
-    marginBottom: 8,
+    marginBottom: 5,
   },
+
   nameText: {
-    fontSize: 14,
+    fontSize: 15,
     color: '#2A2D57',
     marginBottom: 25,
   },
-  menuContainer: { width: '100%', alignItems: 'center', marginBottom: 25 },
-  menuItemWrapper: {
-    borderRadius: 20,
-    marginBottom: 15,
+
+  menuContainer: {
     width: '100%',
+    alignItems: 'center',
+    marginBottom: 30,
+  },
+
+  animatedBorder: {
+    borderWidth: 2.5,
+    borderRadius: 20,
+    marginBottom: 18,
+    width: '100%',
+  },
+
+  menuItemWrapper: {
+    borderRadius: 18,
+    width: '100%',
+    backgroundColor: '#3B5998',
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.2,
-    shadowRadius: 8,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.15,
+    shadowRadius: 6,
     elevation: 100,
   },
+
   menuItem: {
-    paddingVertical: 14,
+    paddingVertical: 15,
     alignItems: 'center',
     width: '100%',
     borderRadius: 18,
   },
+
   menuText: {
-    fontSize: 17,
-    fontWeight: '700',
+    fontSize: 16,
+    fontWeight: '600',
     color: '#FFFFFF',
+    letterSpacing: 0.5,
   },
+
   logoutButton: {
-    marginTop: 10,
+    marginTop: 20,
     paddingVertical: 14,
     paddingHorizontal: 50,
-    borderRadius: 22,
+    borderRadius: 25,
     backgroundColor: '#e74c3c',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 10 },
     shadowOpacity: 0.3,
     shadowRadius: 12,
-    elevation: 12,
+    elevation: 150,
+    borderWidth: 1,
+    borderColor: '#c0392b',
   },
-  logoutText: { color: '#FFFFFF', fontSize: 16, fontWeight: 'bold' },
+
+  logoutText: {
+    color: '#FFFFFF',
+    fontSize: 16,
+    fontWeight: 'bold',
+    letterSpacing: 0.5,
+    textShadowColor: 'rgba(0, 0, 0, 0.2)',
+    textShadowOffset: { width: 1, height: 2 },
+    textShadowRadius: 3,
+
+  },
+
 });
+

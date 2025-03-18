@@ -29,6 +29,9 @@ import QuizzesNavScreen from '../screens/QuizzesNavScreen';
 import HomeIcon from '../assets/home.png';
 import MoreInfoIcon from '../assets/more-info.png';
 import UserAccIcon from '../assets/useracc.png';
+import TermsAndConditionsScreen from '../screens/TermsAndConditionsScreen';
+import PrivacyCookiesScreen from '../screens/PrivacyCookiesScreen';
+
 
 // Navigators
 const Tab = createBottomTabNavigator();
@@ -78,10 +81,9 @@ const AccountStack = () => (
     <Stack.Screen name="AccountScreen" component={AccountScreen} />
     <Stack.Screen name="SettingsScreen" component={SettingsScreen} />
     <Stack.Screen name="EditProfileScreen" component={EditProfileScreen} />
-    <Stack.Screen
-      name="ChangePasswordScreen"
-      component={ChangePasswordScreen}
-    />
+    <Stack.Screen name="ChangePasswordScreen" component={ChangePasswordScreen} />
+    <Stack.Screen name="TermsAndConditionsScreen" component={TermsAndConditionsScreen} />
+    <Stack.Screen name="PrivacyCookiesScreen" component={PrivacyCookiesScreen} />
     <Stack.Screen name="HomeScreen" component={HomeScreen} />
     <Stack.Screen name="Audio" component={AudioScreen} />
     <Stack.Screen name="AnalysisScreen" component={AnalysisScreen} />

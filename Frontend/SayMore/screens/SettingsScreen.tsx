@@ -7,45 +7,73 @@ import {
   Switch,
   ScrollView,
   StatusBar,
+  Image,
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
-import Ionicons from 'react-native-vector-icons/Ionicons'; // NEW IMPORT!
+import { useNavigation } from '@react-navigation/native';
+
+// Import icons
+import SettingsIcon from '../assets/settings.png';
+import NotificationIcon from '../assets/notificationsset.png';
+import DarkModeIcon from '../assets/darkmodeset.png';
+import ConditionsIcon from '../assets/conditionsset.png';
+import CookiesIcon from '../assets/cookieset.png';
+import AppInfoIcon from '../assets/appinfoset.png';
 
 export default function SettingsScreen() {
-  const [isDarkMode, setIsDarkMode] = useState(false);
+    const navigation = useNavigation();
+    const [isDarkMode, setIsDarkMode] = useState(false);
 
   const preferences = [
-    { icon: 'notifications-outline', label: 'Notifications' },
-    { icon: 'moon-outline', label: 'Dark Mode', toggle: true },
+    { label: 'Notifications' },
+    { label: 'Dark Mode', toggle: true },
   ];
 
   const info = [
-    { icon: 'lock-closed-outline', label: 'Privacy & Cookies' },
-    { icon: 'document-text-outline', label: 'Terms & Conditions' },
-    { icon: 'information-circle-outline', label: 'App Info' },
+    { label: 'Privacy & Cookies' },
+    { label: 'Terms & Conditions' },
+    { label: 'App Info' },
   ];
 
   const renderOption = (item, index) => (
-    <TouchableOpacity key={index} style={styles.option}>
+    <TouchableOpacity
+      key={index}
+      style={styles.option}
+      onPress={() => {
+        if (item.label === 'Terms & Conditions') {
+          navigation.navigate('TermsAndConditionsScreen');
+        } else if (item.label === 'Privacy & Cookies') {
+          navigation.navigate('PrivacyCookiesScreen');
+        }
+        // Add other navigation options as needed
+      }}
+    >
       <View style={styles.leftSection}>
-        <Ionicons
-          name={item.icon}
-          size={22}
-          color="#FFFFFF"
-          style={{ marginRight: 12 }}
-        />
+        {item.label === 'Notifications' && (
+          <Image source={NotificationIcon} style={styles.optionIcon} />
+        )}
+        {item.label === 'Dark Mode' && (
+          <Image source={DarkModeIcon} style={styles.optionIcon} />
+        )}
+        {item.label === 'Terms & Conditions' && (
+          <Image source={ConditionsIcon} style={styles.optionIcon} />
+        )}
+        {item.label === 'Privacy & Cookies' && (
+          <Image source={CookiesIcon} style={styles.optionIcon} />
+        )}
+        {item.label === 'App Info' && (
+          <Image source={AppInfoIcon} style={styles.optionIcon} />
+        )}
         <Text style={styles.optionText}>{item.label}</Text>
       </View>
 
-      {item.toggle ? (
+      {item.toggle && (
         <Switch
           value={isDarkMode}
           onValueChange={setIsDarkMode}
           trackColor={{ false: '#D0D3E6', true: '#3B5998' }}
           thumbColor={isDarkMode ? '#FFFFFF' : '#f4f3f4'}
         />
-      ) : (
-        <Ionicons name="chevron-forward-outline" size={20} color="#FFFFFF" />
       )}
     </TouchableOpacity>
   );
@@ -57,19 +85,23 @@ export default function SettingsScreen() {
       {/* Header Bar */}
       <View style={styles.headerBar}>
         <Text style={styles.header}>Settings</Text>
-        <TouchableOpacity style={styles.logoutButton}>
-          <Ionicons name="log-out-outline" size={20} color="#FFFFFF" />
-        </TouchableOpacity>
+        <Image source={SettingsIcon} style={styles.headerIconRight} />
       </View>
 
       <ScrollView contentContainerStyle={styles.scrollArea}>
-        {/* Preferences Section */}
-        <Text style={styles.sectionTitle}>Preferences</Text>
-        {preferences.map(renderOption)}
 
-        {/* Info Section */}
-        <Text style={styles.sectionTitle}>Information</Text>
-        {info.map(renderOption)}
+        {/* Preferences Section */}
+        <View style={styles.sectionContainer}>
+          <Text style={styles.sectionTitle}>Preferences</Text>
+          {preferences.map(renderOption)}
+        </View>
+
+        {/* Information Section */}
+        <View style={styles.sectionContainer}>
+          <Text style={styles.sectionTitle}>Information</Text>
+          {info.map(renderOption)}
+        </View>
+
       </ScrollView>
     </LinearGradient>
   );
@@ -92,31 +124,50 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
   },
 
-  logoutButton: {
-    backgroundColor: '#e74c3c',
-    padding: 10,
-    borderRadius: 10,
+  headerIconRight: {
+    width: 28,
+    height: 28,
+    tintColor: '#FFFFFF',
   },
 
   scrollArea: {
     paddingHorizontal: 20,
+    paddingBottom: 30,
+  },
+
+  sectionContainer: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 20,
+    padding: 20,
+    marginBottom: 20,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    elevation: 8,
   },
 
   sectionTitle: {
     fontSize: 18,
-    color: '#D0D3E6',
-    marginTop: 20,
-    marginBottom: 10,
-    fontWeight: '600',
+    color: '#2A2D57',
+    marginBottom: 15,
+    fontWeight: '700',
   },
 
   option: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingVertical: 16,
-    borderBottomColor: '#7886C7',
-    borderBottomWidth: 0.5,
+    backgroundColor: '#F7F9FC',
+    paddingVertical: 14,
+    paddingHorizontal: 10,
+    borderRadius: 12,
+    marginBottom: 12,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.1,
+    shadowRadius: 6,
+    elevation: 6,
   },
 
   leftSection: {
@@ -124,9 +175,16 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
 
+  optionIcon: {
+    width: 22,
+    height: 22,
+    tintColor: '#3B5998',
+    marginRight: 12,
+  },
+
   optionText: {
     fontSize: 16,
     fontWeight: '500',
-    color: '#FFFFFF',
+    color: '#2A2D57',
   },
 });
