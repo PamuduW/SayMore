@@ -81,9 +81,11 @@ export default function AccountScreen() {
             if (userData) {
               navigation.navigate('EditProfileScreen', { userData });
             }
-          }}
-        >
-          <Image source={require('../assets/avatar.png')} style={styles.avatar} />
+          }}>
+          <Image
+            source={require('../assets/avatar.png')}
+            style={styles.avatar}
+          />
         </TouchableOpacity>
 
         {loading ? (
@@ -103,7 +105,14 @@ export default function AccountScreen() {
         )}
 
         <View style={styles.menuContainer}>
-          {['Account Details', 'Activity', 'Progress', 'Goals', 'Leaderboard', 'Settings'].map((item, index) => (
+          {[
+            'Account Details',
+            'Activity',
+            'Progress',
+            'Goals',
+            'Leaderboard',
+            'Settings',
+          ].map((item, index) => (
             <LinearGradient
               key={index}
               colors={['#3B5998', '#577BC1']}

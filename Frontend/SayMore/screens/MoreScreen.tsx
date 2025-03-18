@@ -25,7 +25,7 @@ const MoreScreen: React.FC<MoreScreenProps> = ({ navigation }) => {
     } else if (title === 'Quizzes and Challenges') {
       navigation.navigate('QuizzesNavScreen'); //
     } else if (title === 'Speech Therapy') {
-        navigation.navigate('SpeechTherapyScreen');
+      navigation.navigate('SpeechTherapyScreen');
     }
   };
 
@@ -85,7 +85,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     marginBottom: 10,
   },
-  lessonIcon: { width: 100, height: 100,borderRadius: 30},
+  lessonIcon: { width: 100, height: 100, borderRadius: 30 },
   lessonText: {
     fontSize: 20,
     fontWeight: 'bold',

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Text, StyleSheet, ScrollView } from 'react-native';
 
-const FeedbackScreen = ({ route }) => {
+const FeedbackScreen_PS = ({ route }) => {
   const {
     final_public_speaking_score,
     final_public_speaking_feedback,
@@ -51,4 +51,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default FeedbackScreen;
+export default FeedbackScreen_PS;

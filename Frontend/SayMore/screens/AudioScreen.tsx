@@ -1,13 +1,7 @@
 import React, { useState } from 'react';
-import {
-  View,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-} from 'react-native';
+import { View, StyleSheet, Text, TouchableOpacity } from 'react-native';
 import AudioRecorder from '../components/AudioRecorder';
 import { RouteProp } from '@react-navigation/native';
-import { useTheme } from '../components/ThemeContext';
 
 interface AudioScreenProps {
   route: RouteProp<{ params: { isPublicSpeaking: boolean } }, 'params'>;
@@ -16,7 +10,6 @@ interface AudioScreenProps {
 const AudioScreen: React.FC<AudioScreenProps> = ({ route }) => {
   const { isPublicSpeaking } = route.params;
   const [language, setLanguage] = useState<string | null>(null);
-  const theme = useTheme();
 
   const selectLanguage = (lang: string) => {
     setLanguage(lang);
@@ -29,13 +22,19 @@ const AudioScreen: React.FC<AudioScreenProps> = ({ route }) => {
         <View style={styles.whitePanel}>
           <Text style={styles.headerText}>Select a Language:</Text>
           <View style={styles.buttonGroup}>
-            <TouchableOpacity style={styles.button} onPress={() => selectLanguage('en')}>
+            <TouchableOpacity
+              style={styles.button}
+              onPress={() => selectLanguage('en')}>
               <Text style={styles.buttonText}>English</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.button} onPress={() => selectLanguage('si')}>
+            <TouchableOpacity
+              style={styles.button}
+              onPress={() => selectLanguage('si')}>
               <Text style={styles.buttonText}>සිංහල</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.button} onPress={() => selectLanguage('ta')}>
+            <TouchableOpacity
+              style={styles.button}
+              onPress={() => selectLanguage('ta')}>
               <Text style={styles.buttonText}>தமிழ்</Text>
             </TouchableOpacity>
           </View>
@@ -44,12 +43,15 @@ const AudioScreen: React.FC<AudioScreenProps> = ({ route }) => {
     );
   }
 
-
   return (
     <View style={styles.container}>
       {/* No White Panel here for Audio */}
-      <Text style={styles.headerText}>{isPublicSpeaking ? '🎤 Public Speaking' : '🗣️ Stuttering'}</Text>
-      <Text style={styles.subText}>Language: {language.toUpperCase()}</Text>
+      <Text style={styles.headerText}>
+        {isPublicSpeaking ? '🎤 Public Speaking' : '🗣️ Stuttering'}
+      </Text>
+      {isPublicSpeaking && (
+        <Text style={styles.subText}>Language: {language.toUpperCase()}</Text>
+      )}
       <AudioRecorder isPublicSpeaking={isPublicSpeaking} language={language} />
     </View>
   );

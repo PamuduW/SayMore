@@ -11,14 +11,15 @@ import LessonsScreen from '../screens/LessonsScreen';
 import AccountScreen from '../screens/AccountScreen';
 import AudioScreen from '../screens/AudioScreen';
 import AnalysisScreen from '../screens/AnalysisScreen';
-import FeedbackScreen from '../screens/FeedbackScreen';
-import SpeechTherapyScreen from '../screens/SpeechTherapyScreen'
+import FeedbackScreen_PS from '../screens/FeedbackScreen_PS';
+import FeedbackScreen_S from '../screens/FeedbackScreen_S';
+import SpeechTherapyScreen from '../screens/SpeechTherapyScreen';
 import AdditionalDetailsScreen from '../screens/AdditionalDetailsScreen';
-import Difficulty from "../screens/Difficulty";
-import PublicSpeakQuestionScreen from "../screens/PublicSpeakQuestionScreen";
+import Difficulty from '../screens/Difficulty';
+import PublicSpeakQuestionScreen from '../screens/PublicSpeakQuestionScreen';
 import StutteringQuestionScreen from '../screens/StutteringQuestionScreen';
-import PointsScreen from "../screens/PointsScreen";
-import SettingsScreen from "../screens/SettingsScreen";
+import PointsScreen from '../screens/PointsScreen';
+import SettingsScreen from '../screens/SettingsScreen';
 import EditProfileScreen from '../screens/EditProfileScreen';
 import ChangePasswordScreen from '../screens/ChangePasswordScreen';
 import QuizzesNavScreen from '../screens/QuizzesNavScreen';
@@ -36,8 +37,12 @@ const HomeStack = () => (
     <Stack.Screen name="HomeScreen" component={HomeScreen} />
     <Stack.Screen name="Audio" component={AudioScreen} />
     <Stack.Screen name="AnalysisScreen" component={AnalysisScreen} />
-    <Stack.Screen name="FeedbackScreen" component={FeedbackScreen} />
-    <Stack.Screen name="AdditionalDetailsScreen" component={AdditionalDetailsScreen} />
+    <Stack.Screen name="FeedbackScreen_PS" component={FeedbackScreen_PS} />
+    <Stack.Screen name="FeedbackScreen_S" component={FeedbackScreen_S} />
+    <Stack.Screen
+      name="AdditionalDetailsScreen"
+      component={AdditionalDetailsScreen}
+    />
   </Stack.Navigator>
 );
 
@@ -67,11 +72,15 @@ const AccountStack = () => (
     <Stack.Screen name="AccountScreen" component={AccountScreen} />
     <Stack.Screen name="SettingsScreen" component={SettingsScreen} />
     <Stack.Screen name="EditProfileScreen" component={EditProfileScreen} />
-    <Stack.Screen name="ChangePasswordScreen" component={ChangePasswordScreen} />
+    <Stack.Screen
+      name="ChangePasswordScreen"
+      component={ChangePasswordScreen}
+    />
     <Stack.Screen name="HomeScreen" component={HomeScreen} />
     <Stack.Screen name="Audio" component={AudioScreen} />
     <Stack.Screen name="AnalysisScreen" component={AnalysisScreen} />
-    <Stack.Screen name="FeedbackScreen" component={FeedbackScreen} />
+    <Stack.Screen name="FeedbackScreen_PS" component={FeedbackScreen_PS} />
+    <Stack.Screen name="FeedbackScreen_S" component={FeedbackScreen_S} />
     <Stack.Screen
       name="AdditionalDetailsScreen"
       component={AdditionalDetailsScreen}
