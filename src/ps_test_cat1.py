@@ -122,33 +122,28 @@ def analyze_speaking_speed(audio_path, text):
 def analyze_clarity(audio_path):
     snd = parselmouth.Sound(audio_path)
     formants = snd.to_formant_burg()
+    f1_vals = []
+    f2_vals = []
+    for t in np.arange(0, snd.get_total_duration(), 0.01):
+        f1 = formants.get_value_at_time(1, t)
+        f2 = formants.get_value_at_time(2, t)
+        if f1 is not None and f2 is not None:
+            f1_vals.append(f1)
+            f2_vals.append(f2)
+    if not f1_vals or not f2_vals:
+        return 0.0
+    mean_f1 = np.mean(f1_vals)
+    std_f1 = np.std(f1_vals)
+    mean_f2 = np.mean(f2_vals)
+    std_f2 = np.std(f2_vals)
+    cv1 = std_f1 / mean_f1 if mean_f1 != 0 else 0
+    cv2 = std_f2 / mean_f2 if mean_f2 != 0 else 0
+    clarity_score = 100 * (1 - ((cv1 + cv2) / 2))
+    clarity_score = float(max(0, min(100, round(clarity_score, 2))))
+    return clarity_score
 
-    formant_values = {i: [] for i in range(1, 4)}  # Store F1, F2, and F3
-    times = np.arange(0, snd.get_total_duration(), 0.01)
-
-    for t in times:
-        for i in range(1, 4):
-            value = formants.get_value_at_time(i, t)
-            if value is not None:
-                formant_values[i].append(value)
-
-    means = {i: np.mean(formant_values[i]) for i in formant_values}
-    std_devs = {i: np.std(formant_values[i]) for i in formant_values}
-
-    clarity_score = 1 - (
-            abs(means[1] - means[2]) +
-            abs(means[2] - means[3]) +
-            abs(means[1] - means[3]) +
-            std_devs[1] + std_devs[2] + std_devs[3]
-    ) / 6000
-
-    return max(0, min(1, round(clarity_score, 4)))
-
-
-# Generate final public speaking score
-def generate_speaking_score(
-    monotony_score, speaking_speed, clarity, jitter, shimmer, hnr
-):
+# Now, final_voice_score is calculated using variation_score (100 - monotony_score)
+def generate_speaking_score(variation_score, speaking_speed, clarity, jitter, shimmer, hnr):
     weights = {
         "variation": 0.25,
         "speed": 0.20,
