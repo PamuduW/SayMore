@@ -51,31 +51,55 @@ export default function EditProfileScreen({ navigation }) {
     fetchUserData();
   }, []);
 
+  // 🔑 Reauthenticate before email update
+  const reauthenticate = (password) => {
+    const user = auth().currentUser;
+    const credential = auth.EmailAuthProvider.credential(
+      user.email,
+      password
+    );
+    return user.reauthenticateWithCredential(credential);
+  };
+
   const handleSave = async () => {
     try {
       const currentUser = auth().currentUser;
-      if (!currentUser) return;
+      if (currentUser) {
 
-      // Check if email is being changed
-      if (email !== originalEmail) {
-        if (!currentPassword) {
-          Alert.alert('Error', 'Enter your current password to change email!');
+        // Check if Email/Password Provider
+        const providers = currentUser.providerData.map(p => p.providerId);
+        if (providers.includes('password')) {
+
+          // If email changed
+          if (email !== originalEmail) {
+
+            // Require password input
+            if (currentPassword === '') {
+              Alert.alert('Error', 'Please enter your current password to change email!');
+              return;
+            }
+
+            const credential = auth.EmailAuthProvider.credential(currentUser.email, currentPassword);
+            await currentUser.reauthenticateWithCredential(credential);
+            await currentUser.updateEmail(email);
+            await firestore().collection('User_Accounts').doc(currentUser.uid).update({
+              fname,
+              sname,
+              dob,
+              email,
+            });
+
+            Alert.alert('Success', 'Email updated and saved!');
+            navigation.goBack();
+            return;
+          }
+
+        } else {
+          Alert.alert('Error', 'Email change is only allowed for Email/Password sign-in users.');
           return;
         }
 
-        // 🔐 Re-authenticate
-        const credential = auth.EmailAuthProvider.credential(currentUser.email, currentPassword);
-        await currentUser.reauthenticateWithCredential(credential);
-
-        // Update email
-        await currentUser.updateEmail(email);
-
-        // Optionally: Send verification
-        await currentUser.sendEmailVerification();
-
-        Alert.alert('Verification Sent', 'A verification email has been sent to your new email. Please verify.');
-
-        // Update Firestore after email update
+        // Other fields update
         await firestore().collection('User_Accounts').doc(currentUser.uid).update({
           fname,
           sname,
@@ -83,31 +107,15 @@ export default function EditProfileScreen({ navigation }) {
           email,
         });
 
-        setOriginalEmail(email); // Update locally too
+        Alert.alert('Success', 'Profile updated successfully!');
         navigation.goBack();
-        return;
       }
-
-      // No email change, update other fields
-      await firestore().collection('User_Accounts').doc(currentUser.uid).update({
-        fname,
-        sname,
-        dob,
-        email,
-      });
-
-      Alert.alert('Success', 'Profile updated!');
-      navigation.goBack();
-
     } catch (error) {
       console.log(error);
-      if (error.code === 'auth/requires-recent-login') {
-        Alert.alert('Session Expired', 'Please sign in again to update your email.');
-      } else {
-        Alert.alert('Error', error.message);
-      }
+      Alert.alert('Error', error.message);
     }
   };
+
 
   if (loading) {
     return (
@@ -157,7 +165,6 @@ export default function EditProfileScreen({ navigation }) {
             onChangeText={setEmail}
             placeholder="Enter Email"
             placeholderTextColor="#aaa"
-            autoCapitalize="none"
           />
 
           {email !== originalEmail && (
@@ -192,9 +199,18 @@ export default function EditProfileScreen({ navigation }) {
 const styles = StyleSheet.create({
   container: { flex: 1, paddingTop: 40 },
   scrollArea: { paddingHorizontal: 20, paddingBottom: 40 },
+
   header: { fontSize: 26, color: '#fff', marginBottom: 30, textAlign: 'center', fontWeight: 'bold' },
+
   inputContainer: { marginBottom: 20 },
-  label: { color: '#FFFFFF', marginBottom: 8, fontSize: 15, fontWeight: '600' },
+
+  label: {
+    color: '#FFFFFF',
+    marginBottom: 8,
+    fontSize: 15,
+    fontWeight: '600',
+  },
+
   input: {
     backgroundColor: '#fff',
     borderRadius: 12,
@@ -202,6 +218,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     color: '#2A2D57',
   },
+
   saveButton: {
     backgroundColor: '#3B5998',
     paddingVertical: 14,
@@ -209,14 +226,18 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 15,
   },
+
   saveText: { color: '#fff', fontWeight: 'bold', fontSize: 16 },
+
   passwordButton: {
     backgroundColor: '#FFA500',
     paddingVertical: 12,
     borderRadius: 16,
     alignItems: 'center',
   },
+
   passwordText: { color: '#fff', fontWeight: 'bold', fontSize: 16 },
+
   loadingContainer: {
     flex: 1,
     justifyContent: 'center',
