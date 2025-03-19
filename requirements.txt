@@ -10,3 +10,4 @@ google-cloud-speech
 black
 ruff
 isort
+werkzeug==3.1.3
