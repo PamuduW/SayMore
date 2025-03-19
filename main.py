@@ -2,7 +2,7 @@ import json
 import os
 from datetime import datetime
 
-from dotenv import load_dotenv  # Import dotenv package
+from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException
 from firebase_admin import credentials, firestore, initialize_app, storage
 from pydantic import BaseModel
