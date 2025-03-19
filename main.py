@@ -6,6 +6,7 @@ from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException
 from firebase_admin import credentials, firestore, initialize_app, storage
 from pydantic import BaseModel
+from werkzeug.utils import secure_filename
 
 from src.logic import analysing_audio
 
@@ -72,7 +73,11 @@ async def test(request_body: RequestBody):
 
     """
     try:
-        file_name = request_body.file_name
+        file_name = secure_filename(request_body.file_name)
+        base_path = "recordings"
+        full_path = os.path.normpath(os.path.join(base_path, file_name))
+        if not full_path.startswith(base_path):
+            raise HTTPException(status_code=400, detail="Invalid file path")
         acc_id = request_body.acc_id
         test_type = request_body.test_type
         test_tag = datetime.now().strftime("%Y%m%d%H%M%S")
@@ -86,7 +91,7 @@ async def test(request_body: RequestBody):
         # Download the audio file from Firebase storage
         bucket = storage.bucket()
         blob = bucket.blob(file_name)
-        blob.download_to_filename(file_name)
+        blob.download_to_filename(full_path)
 
         # Analyze the audio file
         analysis_result = analysing_audio(file_name, test_type, lan_flag)
@@ -112,7 +117,7 @@ async def test(request_body: RequestBody):
 
         # Clean up the downloaded file
         blob.delete()
-        os.remove(file_name)
+        os.remove(full_path)
         return {"result": analysis_result}
     except Exception as e:
         logging.error("An error occurred: %s", str(e))
