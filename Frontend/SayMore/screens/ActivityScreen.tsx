@@ -19,6 +19,7 @@ const dataPoints = [
   { date: "14", points: 200 },
 ];
 
+// Sanitize data to ensure no invalid points
 const sanitizedData = dataPoints.map(item => ({
   date: item.date,
   points: isFinite(item.points) ? item.points : 0, // Replace invalid values
@@ -33,23 +34,9 @@ interface Props {
 }
 
 const ActivityScreen: React.FC<Props> = ({ userRecords }) => {
-  const [animatedData, setAnimatedData] = useState<{ date: string; points: number }[]>([]);
   const [stats, setStats] = useState({ avgScore: 0, highestScore: 0, totalQuizzes: 0 });
 
-  useEffect(() => {
-    let index = 0;
-    const interval = setInterval(() => {
-      if (index < sanitizedData.length) {
-        setAnimatedData(prevData => [...prevData, sanitizedData[index]]);
-        index++;
-      } else {
-        clearInterval(interval);
-      }
-    }, 300);
-
-    return () => clearInterval(interval); // Cleanup on unmount
-  }, []);
-
+  // Update stats based on user records
   useEffect(() => {
     if (userRecords && userRecords.length > 0) {
       const totalScore = userRecords.reduce((acc, record) => acc + record.score, 0);
@@ -62,6 +49,7 @@ const ActivityScreen: React.FC<Props> = ({ userRecords }) => {
     }
   }, [userRecords]);
 
+  // Share function
   const handleShare = async () => {
     try {
       await Share.share({
@@ -76,30 +64,29 @@ const ActivityScreen: React.FC<Props> = ({ userRecords }) => {
     <ScrollView style={styles.container}>
       <Text style={styles.title}>Progress</Text>
       <View style={styles.chartContainer}>
-        {animatedData.length > 0 && (
-          <LineChart
-            data={{
-              labels: animatedData.map(item => item.date), // Using animatedData for dynamic display
-              datasets: [
-                {
-                  data: animatedData.map(item => item.points),
-                },
-              ],
-            }}
-            width={Dimensions.get("window").width - 40} // Adjust width to fit screen
-            height={220} // Adjust height
-            chartConfig={{
-              backgroundColor: "#fff",
-              backgroundGradientFrom: "#fff",
-              backgroundGradientTo: "#fff",
-              color: (opacity = 1) => `rgba(0, 122, 255, ${opacity})`,
-              labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
-              strokeWidth: 2,
-              barPercentage: 0.5,
-            }}
-            verticalLabelRotation={30}
-          />
-        )}
+        {/* Displaying the chart without animation */}
+        <LineChart
+          data={{
+            labels: sanitizedData.map(item => item.date), // Using sanitizedData for the chart
+            datasets: [
+              {
+                data: sanitizedData.map(item => item.points),
+              },
+            ],
+          }}
+          width={Dimensions.get("window").width - 40} // Adjust width to fit screen
+          height={220} // Adjust height
+          chartConfig={{
+            backgroundColor: "#fff",
+            backgroundGradientFrom: "#fff",
+            backgroundGradientTo: "#fff",
+            color: (opacity = 1) => `rgba(0, 122, 255, ${opacity})`,
+            labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
+            strokeWidth: 2,
+            barPercentage: 0.5,
+          }}
+          verticalLabelRotation={30}
+        />
       </View>
 
       <View style={styles.infoBox}>
