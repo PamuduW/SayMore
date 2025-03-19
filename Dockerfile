@@ -5,10 +5,6 @@ FROM python:3.9-slim
 WORKDIR /app
 
 # Update the package list and install necessary build tools and compilers
-# Install build-essential package
-# Install GNU Compiler Collection
-# Install GNU C++ Compiler
- # Clean up the package list to reduce image size
 RUN apt-get update && apt-get install -y \
     build-essential \
     gcc \
