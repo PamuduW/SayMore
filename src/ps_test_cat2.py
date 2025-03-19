@@ -3,6 +3,18 @@ import numpy as np
 
 
 def analyze_intensity(audio_path, segment_duration=2.0):
+    """Analyzes the intensity of an audio file by calculating the root mean square (RMS) energy for segments of the audio.
+
+    Parameters
+    ----------
+    audio_path (str): The path to the audio file.
+    segment_duration (float): The duration of each segment in seconds. Default is 2.0 seconds.
+
+    Returns
+    -------
+    dict: A dictionary where keys are segment start times and values are the calculated intensity for each segment.
+
+    """
     y, sr = librosa.load(audio_path, sr=None)
     rms_energy = librosa.feature.rms(y=y)[0]
     duration = librosa.get_duration(y=y, sr=sr)
@@ -23,6 +35,18 @@ def analyze_intensity(audio_path, segment_duration=2.0):
 
 
 def analyze_energy(audio_path, segment_duration=2.0):
+    """Analyzes the energy of an audio file by calculating the log-scaled energy for segments of the audio.
+
+    Parameters
+    ----------
+    audio_path (str): The path to the audio file.
+    segment_duration (float): The duration of each segment in seconds. Default is 2.0 seconds.
+
+    Returns
+    -------
+    dict: A dictionary where keys are segment start times and values are the calculated energy for each segment.
+
+    """
     y, sr = librosa.load(audio_path, sr=None)
     duration = librosa.get_duration(y=y, sr=sr)
     energy_data = {}
@@ -43,6 +67,18 @@ def analyze_energy(audio_path, segment_duration=2.0):
 
 
 def calculate_scores(intensity_values, energy_values):
+    """Calculates various scores based on intensity and energy values.
+
+    Parameters
+    ----------
+    intensity_values (list): List of intensity values.
+    energy_values (list): List of energy values.
+
+    Returns
+    -------
+    tuple: A tuple containing intensity score, energy score, variation score, and final energy score.
+
+    """
     avg_intensity = float(np.mean(intensity_values))
     avg_energy = float(np.mean(energy_values))
     intensity_variation = float(np.std(intensity_values))
@@ -71,6 +107,20 @@ def calculate_scores(intensity_values, energy_values):
 def generate_feedback(
     final_energy_score, intensity_score, energy_score, variation_score
 ):
+    """Generates feedback based on the calculated scores.
+
+    Parameters
+    ----------
+    final_energy_score (float): The final energy score.
+    intensity_score (float): The intensity score.
+    energy_score (float): The energy score.
+    variation_score (float): The variation score.
+
+    Returns
+    -------
+    tuple: A tuple containing base feedback and dynamic feedback.
+
+    """
     if final_energy_score >= 85:
         base_feedback = "Excellent! Your speech exhibits outstanding dynamic energy, intensity, and variation—highly engaging and captivating."
     elif final_energy_score >= 70:
@@ -94,6 +144,17 @@ def generate_feedback(
 
 
 def generate_intensity_feedback(intensity_score):
+    """Generates feedback based on the intensity score.
+
+    Parameters
+    ----------
+    intensity_score (float): The intensity score.
+
+    Returns
+    -------
+    str: Feedback message corresponding to the intensity score.
+
+    """
     if intensity_score >= 85:
         return "Your vocal intensity is excellent, projecting powerfully throughout."
     elif intensity_score >= 70:
@@ -107,6 +168,17 @@ def generate_intensity_feedback(intensity_score):
 
 
 def generate_energy_feedback(energy_score):
+    """Generates feedback based on the energy score.
+
+    Parameters
+    ----------
+    energy_score (float): The energy score.
+
+    Returns
+    -------
+    str: Feedback message corresponding to the energy score.
+
+    """
     if energy_score >= 85:
         return "Your energy level is outstanding, keeping your audience captivated."
     elif energy_score >= 70:
@@ -120,6 +192,17 @@ def generate_energy_feedback(energy_score):
 
 
 def generate_variation_feedback(variation_score):
+    """Generates feedback based on the variation score.
+
+    Parameters
+    ----------
+    variation_score (float): The variation score.
+
+    Returns
+    -------
+    str: Feedback message corresponding to the variation score.
+
+    """
     if variation_score >= 85:
         return "Your speech variation is excellent, with seamless shifts in pace and pauses."
     elif variation_score >= 70:
@@ -133,6 +216,18 @@ def generate_variation_feedback(variation_score):
 
 
 def analyze_speech_2(audio_path, segment_duration=2.0):
+    """Analyzes the speech in an audio file by calculating intensity and energy scores, and generating feedback.
+
+    Parameters
+    ----------
+    audio_path (str): The path to the audio file.
+    segment_duration (float): The duration of each segment in seconds. Default is 2.0 seconds.
+
+    Returns
+    -------
+    dict: A dictionary containing the final energy score, intensity score, energy score, variation score, base feedback, dynamic feedback, intensity analysis, and energy analysis.
+
+    """
     intensity_data = analyze_intensity(audio_path, segment_duration)
     energy_data = analyze_energy(audio_path, segment_duration)
 

@@ -10,6 +10,7 @@ import MoreScreen from '../screens/MoreScreen';
 import LessonsScreen from '../screens/LessonsScreen';
 import AccountScreen from '../screens/AccountScreen';
 import AudioScreen from '../screens/AudioScreen';
+import ActivityScreen from '../screens/ActivityScreen';
 import AnalysisScreen from '../screens/AnalysisScreen';
 import VideoListScreen from '../screens/VideoListScreen';
 import VideoPlayerScreen from '../screens/VideoPlayerScreen';
@@ -29,6 +30,9 @@ import QuizzesNavScreen from '../screens/QuizzesNavScreen';
 import HomeIcon from '../assets/home.png';
 import MoreInfoIcon from '../assets/more-info.png';
 import UserAccIcon from '../assets/useracc.png';
+import TermsAndConditionsScreen from '../screens/TermsAndConditionsScreen';
+import PrivacyCookiesScreen from '../screens/PrivacyCookiesScreen';
+import AppInfoScreen from '../screens/AppInfoScreen';
 
 // Navigators
 const Tab = createBottomTabNavigator();
@@ -53,6 +57,7 @@ const HomeStack = () => (
 const MoreStack = () => (
   <Stack.Navigator screenOptions={{ headerShown: false }}>
     <Stack.Screen name="MoreScreen" component={MoreScreen} />
+    <Stack.Screen name="ActivityScreen" component={ActivityScreen} />
     <Stack.Screen name="Lessons" component={LessonsScreen} />
     <Stack.Screen name="VideoList" component={VideoListScreen} />
     <Stack.Screen name="VideoPlayer" component={VideoPlayerScreen} />
@@ -77,11 +82,21 @@ const AccountStack = () => (
   <Stack.Navigator screenOptions={{ headerShown: false }}>
     <Stack.Screen name="AccountScreen" component={AccountScreen} />
     <Stack.Screen name="SettingsScreen" component={SettingsScreen} />
+    <Stack.Screen name="ActivityScreen" component={ActivityScreen} />
     <Stack.Screen name="EditProfileScreen" component={EditProfileScreen} />
     <Stack.Screen
       name="ChangePasswordScreen"
       component={ChangePasswordScreen}
     />
+    <Stack.Screen
+      name="TermsAndConditionsScreen"
+      component={TermsAndConditionsScreen}
+    />
+    <Stack.Screen
+      name="PrivacyCookiesScreen"
+      component={PrivacyCookiesScreen}
+    />
+    <Stack.Screen name="AppInfoScreen" component={AppInfoScreen} />
     <Stack.Screen name="HomeScreen" component={HomeScreen} />
     <Stack.Screen name="Audio" component={AudioScreen} />
     <Stack.Screen name="AnalysisScreen" component={AnalysisScreen} />
