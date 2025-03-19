@@ -31,6 +31,7 @@ import MoreInfoIcon from '../assets/more-info.png';
 import UserAccIcon from '../assets/useracc.png';
 import TermsAndConditionsScreen from '../screens/TermsAndConditionsScreen';
 import PrivacyCookiesScreen from '../screens/PrivacyCookiesScreen';
+import AppInfoScreen from '../screens/AppInfoScreen';
 
 
 // Navigators
@@ -84,6 +85,7 @@ const AccountStack = () => (
     <Stack.Screen name="ChangePasswordScreen" component={ChangePasswordScreen} />
     <Stack.Screen name="TermsAndConditionsScreen" component={TermsAndConditionsScreen} />
     <Stack.Screen name="PrivacyCookiesScreen" component={PrivacyCookiesScreen} />
+    <Stack.Screen name="AppInfoScreen" component={AppInfoScreen} />
     <Stack.Screen name="HomeScreen" component={HomeScreen} />
     <Stack.Screen name="Audio" component={AudioScreen} />
     <Stack.Screen name="AnalysisScreen" component={AnalysisScreen} />

@@ -37,9 +37,11 @@ const PrivacyCookiesScreen = () => {
           </ScrollView>
         </LinearGradient>
 
+        {/* Back Button */}
         <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
-          <Text style={styles.backButtonText}>Go Back</Text>
+          <Text style={styles.backButtonText}>Back</Text>
         </TouchableOpacity>
+
       </View>
     </LinearGradient>
   );
@@ -112,19 +114,24 @@ const styles = StyleSheet.create({
 
   backButton: {
     marginTop: 25,
-    borderColor: '#FFFFFF',
-    borderWidth: 2,
-    paddingVertical: 10,
-    paddingHorizontal: 30,
-    borderRadius: 30,
+    marginBottom: 15,
+    alignSelf: 'center',
+    backgroundColor: '#3B5998',
+    paddingVertical: 12,
+    paddingHorizontal: 32,
+    borderRadius: 25,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 5 },
+    shadowOpacity: 0.18,
+    shadowRadius: 7,
+    elevation: 7,
   },
 
   backButtonText: {
     color: '#FFFFFF',
-    fontSize: 15,
+    fontSize: 16,
     fontWeight: '600',
   },
 });
 
 export default PrivacyCookiesScreen;
-``

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -8,9 +8,12 @@ import {
   ScrollView,
   StatusBar,
   Image,
+  PermissionsAndroid,
+  Platform,
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import { useNavigation } from '@react-navigation/native';
+import messaging from '@react-native-firebase/messaging';
 
 // Import icons
 import SettingsIcon from '../assets/settings.png';
@@ -21,12 +24,43 @@ import CookiesIcon from '../assets/cookieset.png';
 import AppInfoIcon from '../assets/appinfoset.png';
 
 export default function SettingsScreen() {
-    const navigation = useNavigation();
-    const [isDarkMode, setIsDarkMode] = useState(false);
+  const navigation = useNavigation();
+  const [isDarkMode, setIsDarkMode] = useState(false);
+  const [notificationsEnabled, setNotificationsEnabled] = useState(true);
+
+  useEffect(() => {
+    // Check initial notification permission
+    checkNotificationPermission();
+  }, []);
+
+  const checkNotificationPermission = async () => {
+    const authStatus = await messaging().hasPermission();
+    setNotificationsEnabled(authStatus === messaging.AuthorizationStatus.AUTHORIZED);
+  };
+
+  const toggleNotifications = async () => {
+    if (notificationsEnabled) {
+      // Disable: unsubscribe from FCM
+      await messaging().deleteToken();
+      setNotificationsEnabled(false);
+    } else {
+      // Enable: request permission & get token
+      if (Platform.OS === 'android' && Platform.Version >= 33) {
+        await PermissionsAndroid.request(
+          PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS
+        );
+      }
+      const authStatus = await messaging().requestPermission();
+      if (authStatus === messaging.AuthorizationStatus.AUTHORIZED) {
+        await messaging().getToken();
+        setNotificationsEnabled(true);
+      }
+    }
+  };
 
   const preferences = [
-    { label: 'Notifications' },
-    { label: 'Dark Mode', toggle: true },
+    { label: 'Notifications', toggle: 'notifications' },
+    { label: 'Dark Mode', toggle: 'darkmode' },
   ];
 
   const info = [
@@ -44,8 +78,9 @@ export default function SettingsScreen() {
           navigation.navigate('TermsAndConditionsScreen');
         } else if (item.label === 'Privacy & Cookies') {
           navigation.navigate('PrivacyCookiesScreen');
+        } else if (item.label === 'App Info') {
+          navigation.navigate('AppInfoScreen');
         }
-        // Add other navigation options as needed
       }}
     >
       <View style={styles.leftSection}>
@@ -67,7 +102,16 @@ export default function SettingsScreen() {
         <Text style={styles.optionText}>{item.label}</Text>
       </View>
 
-      {item.toggle && (
+      {item.toggle === 'notifications' && (
+        <Switch
+          value={notificationsEnabled}
+          onValueChange={toggleNotifications}
+          trackColor={{ false: '#D0D3E6', true: '#3B5998' }}
+          thumbColor={notificationsEnabled ? '#FFFFFF' : '#f4f3f4'}
+        />
+      )}
+
+      {item.toggle === 'darkmode' && (
         <Switch
           value={isDarkMode}
           onValueChange={setIsDarkMode}
@@ -82,26 +126,21 @@ export default function SettingsScreen() {
     <LinearGradient colors={['#2A2D57', '#577BC1']} style={styles.container}>
       <StatusBar barStyle="light-content" />
 
-      {/* Header Bar */}
       <View style={styles.headerBar}>
         <Text style={styles.header}>Settings</Text>
         <Image source={SettingsIcon} style={styles.headerIconRight} />
       </View>
 
       <ScrollView contentContainerStyle={styles.scrollArea}>
-
-        {/* Preferences Section */}
         <View style={styles.sectionContainer}>
           <Text style={styles.sectionTitle}>Preferences</Text>
           {preferences.map(renderOption)}
         </View>
 
-        {/* Information Section */}
         <View style={styles.sectionContainer}>
           <Text style={styles.sectionTitle}>Information</Text>
           {info.map(renderOption)}
         </View>
-
       </ScrollView>
     </LinearGradient>
   );

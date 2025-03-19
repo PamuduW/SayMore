@@ -35,7 +35,15 @@ export default function EditProfileScreen({ navigation }) {
             const data = userDoc.data();
             setFname(data.fname || '');
             setSname(data.sname || '');
-            setDob(data.dob || '');
+
+            // Format only date part (YYYY-MM-DD)
+            if (data.dob) {
+              const formattedDate = data.dob.split('T')[0];
+              setDob(formattedDate);
+            } else {
+              setDob('');
+            }
+
             setUsername(data.username || '');
             setEmail(currentUser.email); // Set email from Firebase Auth
           }
