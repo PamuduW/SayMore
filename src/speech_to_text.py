@@ -1,14 +1,17 @@
-import os
 import json
+import os
 import tempfile
-from google.cloud import speech
+
 from dotenv import load_dotenv
+from google.cloud import speech
 
 load_dotenv()
 
 gcs_credentials_json = os.getenv("GOOGLE_APPLICATION_CREDENTIALS_JSON")
 if gcs_credentials_json is None:
-    raise ValueError("GOOGLE_APPLICATION_CREDENTIALS_JSON environment variable is not set.")
+    raise ValueError(
+        "GOOGLE_APPLICATION_CREDENTIALS_JSON environment variable is not set."
+    )
 
 credentials_dict = json.loads(gcs_credentials_json)
 
@@ -24,7 +27,10 @@ temp_credentials_file.close()
 
 os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = temp_credentials_file.name
 
-def transcribe_gcs(gcs_uri: str, long_flag: bool, lan_flag: str) -> list[dict[str, str]]:
+
+def transcribe_gcs(
+    gcs_uri: str, long_flag: bool, lan_flag: str
+) -> list[dict[str, str]]:
     try:
         client = speech.SpeechClient()
 
