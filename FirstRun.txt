@@ -12,3 +12,13 @@ now edit run config file and give the main.py location.
 
 make format
 make lint
+
+
+
+
+torchvision
+torchaudio
+webrtcvad
+pyworld
+safetensors
+requests

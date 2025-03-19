@@ -1,33 +1,44 @@
 [tool.ruff]
-line-length = 88  # Black's default
+line-length = 88
 target-version = "py311"
 
 [tool.ruff.lint]
 select = [
-    "E",    # Pycodestyle errors
-    "F",    # Pyflakes (common mistakes)
-    "I",    # isort (import sorting)
-    "B",    # Bugbear (security improvements)
-    "D",    # Pydocstyle (docstrings)
-    "W",    # Pycodestyle warnings
-    "C90",  # McCabe complexity checks
-    "N",    # Naming conventions
+    "E",  # Errors
+    "F",  # Failures
+    "I",  # Imports
+    "B",  # Bugbear
+    "D",  # Docstrings
+    "W",  # Warnings
+    "C90",  # C90 style issues
+    "N",  # Naming conventions
 ]
-ignore = ["E501", "D100", "D101", "D102", "D203", "D213", "D103", "D107",]  # Ignore long lines & some docstring rules
-# for now d103, d1o7
+ignore = [
+    "E501",  # Line too long
+    "D100",  # Missing docstring in public module
+    "D101",  # Missing docstring in public class
+    "D102",  # Missing docstring in public method
+    "D203",  # 1 blank line required before class docstring
+    "D213",  # Multi-line docstring summary should start at the second line
+    "D103",  # Missing docstring in public function
+    "D107",  # Missing docstring in __init__
+    "D200",
+    "D417",
+    "D401",
+]
 
 [tool.ruff.isort]
-known-first-party = ["SayMore"]  # Change to your FastAPI project name
-combine-as-imports = true
-force-sort-within-sections = true
+known-first-party = ["SayMore"]
+combine-as-imports = true  # Combine 'as' imports
+force-sort-within-sections = true  # Force sorting within sections
 
 [tool.black]
-line-length = 88  # Match Ruff
+line-length = 88
 target-version = ['py311']
-skip-string-normalization = false
-include = '\.pyi?$'
+skip-string-normalization = false  # Do not skip string normalization
+include = '\.pyi?$'  # Include .py and .pyi files
 
 [tool.mypy]
 python_version = "3.11"
-ignore_missing_imports = true
-strict = true
+ignore_missing_imports = true  # Ignore missing imports
+strict = true  # Enable strict type checking

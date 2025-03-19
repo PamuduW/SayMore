@@ -6,9 +6,19 @@ import parselmouth
 
 
 def normalize_metric(value, best, worst, invert=False):
-    """Normalize a raw value to a 0–100 scale.
-    For metrics where lower is better (like jitter/shimmer), set invert=True.
-    'best' is the ideal value and 'worst' is the threshold for a score of 0.
+    """Normalizes a metric to a score between 0 and 100.
+
+    Parameters
+    ----------
+    value (float): The value to be normalized.
+    best (float): The best possible value for normalization.
+    worst (float): The worst possible value for normalization.
+    invert (bool): Whether to invert the normalization scale.
+
+    Returns
+    -------
+    float: The normalized score between 0 and 100.
+
     """
     if worst == best:
         return 100.0
@@ -20,10 +30,34 @@ def normalize_metric(value, best, worst, invert=False):
 
 
 def hz_to_semitones(pitch_hz, reference_pitch=100.0):
+    """Converts pitch in Hertz to semitones.
+
+    Parameters
+    ----------
+    pitch_hz (float): The pitch in Hertz.
+    reference_pitch (float): The reference pitch in Hertz.
+
+    Returns
+    -------
+    float: The pitch in semitones.
+
+    """
     return 12 * np.log2(pitch_hz / reference_pitch)
 
 
 def analyze_pitch(audio_path, segment_duration=2.0):
+    """Analyzes the pitch of an audio file.
+
+    Parameters
+    ----------
+    audio_path (str): The path to the audio file.
+    segment_duration (float): The duration of each segment for analysis.
+
+    Returns
+    -------
+    dict: A dictionary containing the monotony score and pitch analysis data.
+
+    """
     try:
         snd = parselmouth.Sound(audio_path)
         duration = snd.get_total_duration()
@@ -31,7 +65,6 @@ def analyze_pitch(audio_path, segment_duration=2.0):
         pitch_values = pitch.selected_array["frequency"]
         time_stamps = pitch.xs()
 
-        # Only consider voiced segments.
         voiced_indices = pitch_values > 0
         pitch_values = pitch_values[voiced_indices]
         time_stamps = time_stamps[voiced_indices]
@@ -42,7 +75,6 @@ def analyze_pitch(audio_path, segment_duration=2.0):
         semitone_values = hz_to_semitones(pitch_values)
         overall_std = np.std(semitone_values)
         overall_range = np.max(semitone_values) - np.min(semitone_values)
-        # Monotony score: higher means more monotone (less variation)
         monotony_score = 100 * (1 - (overall_std / (overall_range + 1e-5)))
         monotony_score = float(max(0, min(100, round(monotony_score, 2))))
 
@@ -79,6 +111,18 @@ def analyze_pitch(audio_path, segment_duration=2.0):
 
 
 def analyze_jitter(audio_path, segment_duration=2.0):
+    """Analyzes the jitter of an audio file.
+
+    Parameters
+    ----------
+    audio_path (str): The path to the audio file.
+    segment_duration (float): The duration of each segment for analysis.
+
+    Returns
+    -------
+    dict: A dictionary containing jitter data and overall jitter.
+
+    """
     snd = parselmouth.Sound(audio_path)
     duration = snd.get_total_duration()
     jitter_data = {}
@@ -101,6 +145,18 @@ def analyze_jitter(audio_path, segment_duration=2.0):
 
 
 def analyze_shimmer(audio_path, segment_duration=2.0):
+    """Analyzes the shimmer of an audio file.
+
+    Parameters
+    ----------
+    audio_path (str): The path to the audio file.
+    segment_duration (float): The duration of each segment for analysis.
+
+    Returns
+    -------
+    dict: A dictionary containing shimmer data and overall shimmer.
+
+    """
     snd = parselmouth.Sound(audio_path)
     duration = snd.get_total_duration()
     shimmer_data = {}
@@ -130,6 +186,18 @@ def analyze_shimmer(audio_path, segment_duration=2.0):
 
 
 def analyze_hnr(audio_path, segment_duration=2.0):
+    """Analyzes the Harmonics-to-Noise Ratio (HNR) of an audio file.
+
+    Parameters
+    ----------
+    audio_path (str): The path to the audio file.
+    segment_duration (float): The duration of each segment for analysis.
+
+    Returns
+    -------
+    dict: A dictionary containing HNR data and overall HNR.
+
+    """
     snd = parselmouth.Sound(audio_path)
     duration = snd.get_total_duration()
     hnr_data = {}
@@ -148,6 +216,18 @@ def analyze_hnr(audio_path, segment_duration=2.0):
 
 
 def analyze_speaking_speed(audio_path, text):
+    """Analyzes the speaking speed of an audio file.
+
+    Parameters
+    ----------
+    audio_path (str): The path to the audio file.
+    text (str): The transcribed text of the audio file.
+
+    Returns
+    -------
+    float: The speaking speed in words per minute.
+
+    """
     y, sr = librosa.load(audio_path, sr=None)
     duration = librosa.get_duration(y=y, sr=sr)
     words = len(re.findall(r"\b\w+\b", text))
@@ -156,6 +236,17 @@ def analyze_speaking_speed(audio_path, text):
 
 
 def analyze_clarity(audio_path):
+    """Analyzes the clarity of an audio file.
+
+    Parameters
+    ----------
+    audio_path (str): The path to the audio file.
+
+    Returns
+    -------
+    float: The clarity score between 0 and 100.
+
+    """
     snd = parselmouth.Sound(audio_path)
     formants = snd.to_formant_burg()
     f1_vals = []
@@ -179,10 +270,25 @@ def analyze_clarity(audio_path):
     return clarity_score
 
 
-# Now, final_voice_score is calculated using variation_score (100 - monotony_score)
 def generate_speaking_score(
     variation_score, speaking_speed, clarity, jitter, shimmer, hnr
 ):
+    """Generates a speaking score based on various metrics.
+
+    Parameters
+    ----------
+    variation_score (float): The score for pitch variation.
+    speaking_speed (float): The speaking speed in words per minute.
+    clarity (float): The clarity score.
+    jitter (float): The jitter value.
+    shimmer (float): The shimmer value.
+    hnr (float): The Harmonics-to-Noise Ratio (HNR) value.
+
+    Returns
+    -------
+    float: The final speaking score between 0 and 100.
+
+    """
     weights = {
         "variation": 0.25,
         "speed": 0.20,
@@ -204,6 +310,17 @@ def generate_speaking_score(
 
 
 def generate_base_feedback(final_voice_score):
+    """Generates base feedback based on the final voice score.
+
+    Parameters
+    ----------
+    final_voice_score (float): The final voice score.
+
+    Returns
+    -------
+    str: The feedback message.
+
+    """
     if final_voice_score >= 85:
         return "Excellent work! Your vocal delivery is engaging and expressive, showing outstanding control and versatility."
     elif final_voice_score >= 70:
@@ -217,6 +334,17 @@ def generate_base_feedback(final_voice_score):
 
 
 def generate_variation_feedback(variation_score):
+    """Generates feedback based on the variation score.
+
+    Parameters
+    ----------
+    variation_score (float): The score for pitch variation.
+
+    Returns
+    -------
+    str: The feedback message.
+
+    """
     if variation_score >= 85:
         return "Your pitch variation is excellent, keeping your delivery lively."
     elif variation_score >= 70:
@@ -230,6 +358,17 @@ def generate_variation_feedback(variation_score):
 
 
 def generate_stability_feedback(stability_score):
+    """Generates feedback based on the stability score.
+
+    Parameters
+    ----------
+    stability_score (float): The score for voice stability.
+
+    Returns
+    -------
+    str: The feedback message.
+
+    """
     if stability_score >= 85:
         return "Your voice stability is excellent, indicating strong vocal control."
     elif stability_score >= 70:
@@ -243,6 +382,17 @@ def generate_stability_feedback(stability_score):
 
 
 def generate_speed_feedback(speaking_speed):
+    """Generates feedback based on the speaking speed.
+
+    Parameters
+    ----------
+    speaking_speed (float): The speaking speed in words per minute.
+
+    Returns
+    -------
+    str: The feedback message.
+
+    """
     if speaking_speed >= 140:
         return "Your speaking speed is a bit fast; consider slowing down for clarity."
     elif speaking_speed >= 120:
@@ -256,6 +406,17 @@ def generate_speed_feedback(speaking_speed):
 
 
 def generate_clarity_feedback(clarity):
+    """Generates feedback based on the clarity score.
+
+    Parameters
+    ----------
+    clarity (float): The clarity score.
+
+    Returns
+    -------
+    str: The feedback message.
+
+    """
     if clarity >= 85:
         return "Your clarity is exceptional, making your speech easily understandable."
     elif clarity >= 70:
@@ -271,6 +432,20 @@ def generate_clarity_feedback(clarity):
 def generate_dynamic_feedback(
     variation_score, stability_score, speaking_speed, clarity
 ):
+    """Generates dynamic feedback based on various scores.
+
+    Parameters
+    ----------
+    variation_score (float): The score for pitch variation.
+    stability_score (float): The score for voice stability.
+    speaking_speed (float): The speaking speed in words per minute.
+    clarity (float): The clarity score.
+
+    Returns
+    -------
+    str: The dynamic feedback message.
+
+    """
     variation_feedback = generate_variation_feedback(variation_score)
     stability_feedback = generate_stability_feedback(stability_score)
     speed_feedback = generate_speed_feedback(speaking_speed)
@@ -281,6 +456,18 @@ def generate_dynamic_feedback(
 
 
 def analyze_speech_1(audio_path, text):
+    """Analyzes various aspects of speech from an audio file.
+
+    Parameters
+    ----------
+    audio_path (str): The path to the audio file.
+    text (str): The transcribed text of the audio file.
+
+    Returns
+    -------
+    dict: A dictionary containing various analysis results and feedback.
+
+    """
     pitch_data = analyze_pitch(audio_path)
     speaking_speed = analyze_speaking_speed(audio_path, text)
     clarity = analyze_clarity(audio_path)
@@ -291,7 +478,6 @@ def analyze_speech_1(audio_path, text):
     if "error" in pitch_data:
         return {"error": pitch_data["error"]}
 
-    # Calculate variation_score from monotony_score (higher variation is better)
     variation_score = float(
         max(0, min(100, round(100 - pitch_data["monotony_score"], 2)))
     )
@@ -319,7 +505,6 @@ def analyze_speech_1(audio_path, text):
         clarity=clarity,
     )
 
-    # Normalize overall jitter, shimmer, and HNR to a 0–100 scale.
     normalized_jitter = normalize_metric(
         jitter_data["overall_jitter"], best=0, worst=0.1, invert=True
     )

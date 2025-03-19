@@ -6,6 +6,7 @@ import {
   Button,
   View,
   Dimensions,
+  Alert,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { ProgressChart } from 'react-native-chart-kit';
@@ -41,7 +42,7 @@ const Analysis_PS = ({ filename, acc_id, type, language }) => {
           file_name: filename,
           acc_id: acc_id,
           test_type: type,
-          lan_flag: 'language',
+          lan_flag: language,
         };
         const response = await fetch(
           'https://saymore-monorepo-8d4fc9b224ef.herokuapp.com/test',
@@ -56,6 +57,19 @@ const Analysis_PS = ({ filename, acc_id, type, language }) => {
           throw new Error(`HTTP error! status: ${response.status}`);
 
         const responseInfo = await response.json();
+
+        if (
+          !responseInfo.result.transcription ||
+          !responseInfo.result.transcription[0]
+        ) {
+          Alert.alert(
+            'Error',
+            'The transcript is empty! make sure your mic is working'
+          );
+          navigation.navigate('HomeScreen');
+          return;
+        }
+
         setResponseData(responseInfo);
         setData({
           labels: [
@@ -77,7 +91,7 @@ const Analysis_PS = ({ filename, acc_id, type, language }) => {
     };
 
     sendPostRequest();
-  }, [filename, acc_id, type, language]);
+  }, [filename, acc_id, type, language, navigation]);
 
   const handleNext = () => {
     if (responseData) {

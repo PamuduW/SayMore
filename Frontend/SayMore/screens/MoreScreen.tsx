@@ -12,7 +12,7 @@ import { useTheme } from '../components/ThemeContext';
 
 const NewScreens = [
   { title: 'Activity', icon: require('../assets/activity2.png') },
-  { title: 'Lesson', icon: require('../assets/lesson.png') },
+  { title: 'Lessons', icon: require('../assets/lesson.png') },
   { title: 'Quizzes and Challenges', icon: require('../assets/quiz.png') },
   { title: 'Progress', icon: require('../assets/progress.png') },
   { title: 'Points', icon: require('../assets/points.png') },
@@ -28,14 +28,15 @@ const MoreScreen: React.FC<MoreScreenProps> = ({ navigation }) => {
   const theme = useTheme();
 
   const handlePress = (title: string) => {
-    if (title === 'Lessons') {
+    if (title === 'Activity') {
+      navigation.navigate('ActivityScreen'); // Ensure this matches the registered screen name
+    } else if (title === 'Lessons') {
       navigation.navigate('Lessons');
     } else if (title === 'Quizzes and Challenges') {
-      navigation.navigate('QuizzesNavScreen'); //
+      navigation.navigate('QuizzesNavScreen');
     } else if (title === 'Speech Therapy') {
       navigation.navigate('SpeechTherapyScreen');
-    }
-    if (title === 'Watched Lessons') {
+    } else if (title === 'Watched Lessons') {
       navigation.navigate('History');
     }
   };

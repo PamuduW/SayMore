@@ -27,8 +27,8 @@ const PointsScreen = ({ route, navigation }) => {
     }).start();
   }, [fadeAnim, scaleAnim]);
 
-  const handleGoHome = () => {
-    navigation.navigate('Home', { screen: 'HomeScreen' });
+  const handleGoQuiz = () => {
+    navigation.navigate('QuizzesNavScreen', { screen: 'QuizzesNavScreen' });
   };
 
   return (
@@ -46,8 +46,8 @@ const PointsScreen = ({ route, navigation }) => {
           {points} / {totalPoints}
         </Text>
       </Animated.View>
-      <TouchableOpacity onPress={handleGoHome} style={styles.homeButton}>
-        <Text style={styles.homeButtonText}>Go To Home Page</Text>
+      <TouchableOpacity onPress={handleGoQuiz} style={styles.quizButton}>
+        <Text style={styles.quizButtonText}>Go to Quiz Page</Text>
       </TouchableOpacity>
     </View>
   );
@@ -80,13 +80,13 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#4CAF50',
   },
-  homeButton: {
+  quizButton: {
     marginTop: 30,
     padding: 15,
     backgroundColor: '#4CAF50',
     borderRadius: 10,
   },
-  homeButtonText: {
+  quizButtonText: {
     color: 'white',
     fontSize: 18,
     fontWeight: 'bold',
