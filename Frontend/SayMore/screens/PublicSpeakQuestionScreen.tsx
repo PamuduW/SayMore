@@ -31,8 +31,10 @@ const PublicSpeakQuestionScreen: React.FC = ({ navigation, route }: any) => {
   const [shuffledOptions, setShuffledOptions] = useState<string[]>([]);
   const [correctIndex, setCorrectIndex] = useState<number | null>(null);
   const [isConfirmButtonVisible, setIsConfirmButtonVisible] = useState(false);
+  const [isNextButtonVisible, setIsNextButtonVisible] = useState(false);
   const [score, setScore] = useState(0);
   const [loading, setLoading] = useState<boolean>(true);
+  const [progress, setProgress] = useState<number>(0);
 
   useEffect(() => {
     const fetchQuestions = async () => {
@@ -102,6 +104,7 @@ const PublicSpeakQuestionScreen: React.FC = ({ navigation, route }: any) => {
 
       setShuffledOptions(shuffledAnswers);
       setCorrectIndex(correctAnswerIndex);
+      setProgress(currentQuestionIndex / questions.length);
     }
   }, [currentQuestionIndex, questions]);
 
@@ -116,16 +119,21 @@ const PublicSpeakQuestionScreen: React.FC = ({ navigation, route }: any) => {
       setIsCorrect(correct);
       if (correct) setScore(score + 10);
       setIsConfirmButtonVisible(false);
+      setIsNextButtonVisible(true);
+      setProgress((currentQuestionIndex + 1) / questions.length);
     }
   };
 
   const handleNext = () => {
-    if (currentQuestionIndex < questions.length - 1) {
-      setCurrentQuestionIndex(currentQuestionIndex + 1);
-      setSelectedAnswer(null);
-      setIsCorrect(null);
-    }
+      if (currentQuestionIndex < questions.length - 1) {
+        setCurrentQuestionIndex(currentQuestionIndex + 1);
+        setSelectedAnswer(null);
+        setIsCorrect(null);
+        setIsNextButtonVisible(false);
+      }
   };
+
+const isLastQuestion = currentQuestionIndex === questions.length - 1;
 
   const handleFinish = () => {
     const totalPoints = questions.length * 10;
@@ -160,7 +168,7 @@ const PublicSpeakQuestionScreen: React.FC = ({ navigation, route }: any) => {
         </Text>
 
         <ProgressBar
-          progress={(currentQuestionIndex + 1) / questions.length}
+          progress={progress}
           width={330}
           height={12}
           color="#289e1b"
@@ -176,43 +184,31 @@ const PublicSpeakQuestionScreen: React.FC = ({ navigation, route }: any) => {
             disabled={isCorrect !== null}
             style={[
               styles.optionButton,
-              selectedAnswer === index
-                ? styles.selectedOption
-                : styles.defaultOption,
-              isCorrect !== null &&
-                index === correctIndex &&
-                styles.correctOption,
-              isCorrect !== null &&
-                index === selectedAnswer &&
-                !isCorrect &&
-                styles.incorrectOption,
+              selectedAnswer === index ? styles.selectedOption : {},
+              isCorrect !== null && index === correctIndex && styles.correctOption,
+              isCorrect !== null && index === selectedAnswer && !isCorrect && styles.incorrectOption,
             ]}>
             <Text style={styles.optionText}>{option}</Text>
           </TouchableOpacity>
         ))}
 
         {isConfirmButtonVisible && (
-          <TouchableOpacity
-            onPress={handleConfirm}
-            style={styles.confirmButton}>
+          <TouchableOpacity onPress={handleConfirm} style={styles.confirmButton}>
             <Text style={styles.confirmButtonText}>Confirm Answer</Text>
           </TouchableOpacity>
         )}
 
-        {isCorrect !== null && currentQuestionIndex < questions.length - 1 && (
-          <TouchableOpacity onPress={handleNext} style={styles.nextButton}>
-            <Text style={styles.nextButtonText}>Next</Text>
-          </TouchableOpacity>
+        {isNextButtonVisible && !isLastQuestion && (
+            <TouchableOpacity onPress={handleNext} style={styles.nextButton}>
+              <Text style={styles.nextButtonText}>Next Question</Text>
+            </TouchableOpacity>
         )}
 
-        {currentQuestionIndex === questions.length - 1 &&
-          isCorrect !== null && (
-            <TouchableOpacity
-              onPress={handleFinish}
-              style={styles.finishButton}>
-              <Text style={styles.finishButtonText}>Finish</Text>
+        {isNextButtonVisible && isLastQuestion && (
+            <TouchableOpacity onPress={handleFinish} style={styles.finishButton}>
+               <Text style={styles.finishButtonText}>Finish Quiz</Text>
             </TouchableOpacity>
-          )}
+        )}
       </View>
     </ImageBackground>
   );
@@ -222,7 +218,7 @@ const styles = StyleSheet.create({
   background: { flex: 1 },
   overlay: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: 'rgba(0, 0, 0, 0.7)',
+    backgroundColor: 'rgba(0, 0, 0, 0.8)',
   },
   container: {
     flex: 1,
@@ -300,6 +296,9 @@ const styles = StyleSheet.create({
     color: '#fff',
     textAlign: 'center',
     marginTop: 20,
+  },
+  selectedOption: {
+    backgroundColor: '#4c87c7',
   },
 });
 
