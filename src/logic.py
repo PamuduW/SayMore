@@ -21,6 +21,9 @@ def analysing_audio(file_name, test_type, lan_flag):
             analysis_result = ps_test(file_name, lan_flag)
         else:
             analysis_result = stutter_test(file_name)
+        if "error" in analysis_result:
+            logging.error("Error during audio analysis: %s", analysis_result["error"])
+            return {"error": "An internal error has occurred during audio analysis."}
         return analysis_result
     except Exception as e:
         logging.error("Error during audio analysis: %s", str(e))
