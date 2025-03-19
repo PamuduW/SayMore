@@ -141,7 +141,7 @@ export default function AccountScreen() {
 
         <View style={styles.menuContainer}>
           {['Account Details', 'Settings'].map((item, index) => (
-            <Animated.View
+            <LinearGradient
               key={index}
               colors={
                 theme === 'dark'
@@ -263,12 +263,6 @@ const styles = StyleSheet.create({
   },
   menuContainer: { width: '100%', alignItems: 'center', marginBottom: 25 },
   menuItemWrapper: {
-    borderRadius: 20,
-    marginBottom: 20,
-    width: '100%',
-  },
-
-  menuItemWrapper: {
     borderRadius: 18,
     width: '100%',
     shadowColor: '#000',
@@ -276,13 +270,6 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.15,
     shadowRadius: 8,
     elevation: 10,
-  },
-
-  menuItem: {
-    paddingVertical: 16,
-    alignItems: 'center',
-    width: '100%',
-    borderRadius: 18,
   },
   menuItem: {
     paddingVertical: 14,
