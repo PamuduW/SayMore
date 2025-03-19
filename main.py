@@ -119,9 +119,12 @@ async def test(request_body: RequestBody):
         blob.delete()
         os.remove(full_path)
         return {"result": analysis_result}
-    except Exception as e:
+    except RuntimeError as e:
         logging.error("An error occurred: %s", str(e))
         raise HTTPException(status_code=500, detail="An internal error has occurred.") from e
+    except Exception as e:
+        logging.error("An unexpected error occurred: %s", str(e))
+        raise HTTPException(status_code=500, detail="An unexpected error has occurred.") from e
 
 
 # Function to check if necessary environment variables are set
