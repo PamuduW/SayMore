@@ -106,10 +106,10 @@ const screenOptions = (route, theme) => {
     tabBarIcon: ({ focused }) => (
       <Image
         source={icons[route.name]}
-        style={[styles.icon, focused ? styles.activeIcon : styles.inactiveIcon]}
+        style={[styles.icon, focused ? (theme === 'dark'? styles.darkActiveIcon : styles.lightActiveIcon ): styles.inactiveIcon]}
       />
     ),
-    tabBarActiveTintColor: '#003366',
+    tabBarActiveTintColor: theme === 'dark'?'#FFFFFF':'#003366',
     tabBarInactiveTintColor: 'gray',
     tabBarStyle: {
       backgroundColor: theme === 'dark' ? '#333333' : '#F0F8FF',
@@ -141,6 +141,12 @@ const styles = StyleSheet.create({
   },
   activeIcon: {
     tintColor: '#003366',
+  },
+  lightActiveIcon: {
+    tintColor: '#003366',
+  },
+  darkActiveIcon: {
+    tintColor: '#FFFFFF',
   },
   inactiveIcon: {
     tintColor: 'gray',

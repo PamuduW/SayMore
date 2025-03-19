@@ -10,9 +10,11 @@ import {
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import Ionicons from 'react-native-vector-icons/Ionicons'; // NEW IMPORT!
+import { useTheme } from '../components/ThemeContext';
 
 export default function SettingsScreen() {
   const [isDarkMode, setIsDarkMode] = useState(false);
+  const theme = useTheme();
 
   const preferences = [
     { icon: 'notifications-outline', label: 'Notifications' },
@@ -51,7 +53,7 @@ export default function SettingsScreen() {
   );
 
   return (
-    <LinearGradient colors={['#2A2D57', '#577BC1']} style={styles.container}>
+    <LinearGradient colors={theme === 'dark' ? ['#1C1C1C', '#3A3A3A'] : ['#577BC1', '#577BC1']} style={styles.container}>
       <StatusBar barStyle="light-content" />
 
       {/* Header Bar */}
