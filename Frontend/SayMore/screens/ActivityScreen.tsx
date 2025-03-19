@@ -1,29 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Share, Dimensions } from "react-native";
-import { LineChart } from "react-native-chart-kit";
-
-const dataPoints = [
-  { date: "01", points: 20 },
-  { date: "02", points: 40 },
-  { date: "03", points: 35 },
-  { date: "04", points: 50 },
-  { date: "05", points: 65 },
-  { date: "06", points: 80 },
-  { date: "07", points: 90 },
-  { date: "08", points: 110 },
-  { date: "09", points: 130 },
-  { date: "10", points: 150 },
-  { date: "11", points: 160 },
-  { date: "12", points: 175 },
-  { date: "13", points: 190 },
-  { date: "14", points: 200 },
-];
-
-// Sanitize data to ensure no invalid points
-const sanitizedData = dataPoints.map(item => ({
-  date: item.date,
-  points: isFinite(item.points) ? item.points : 0, // Replace invalid values
-}));
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Share, Image } from "react-native";
 
 interface UserRecord {
   score: number;
@@ -62,41 +38,21 @@ const ActivityScreen: React.FC<Props> = ({ userRecords }) => {
 
   return (
     <ScrollView style={styles.container}>
-      <Text style={styles.title}>Progress</Text>
-      <View style={styles.chartContainer}>
-        {/* Displaying the chart without animation */}
-        <LineChart
-          data={{
-            labels: sanitizedData.map(item => item.date), // Using sanitizedData for the chart
-            datasets: [
-              {
-                data: sanitizedData.map(item => item.points),
-              },
-            ],
-          }}
-          width={Dimensions.get("window").width - 40} // Adjust width to fit screen
-          height={220} // Adjust height
-          chartConfig={{
-            backgroundColor: "#fff",
-            backgroundGradientFrom: "#fff",
-            backgroundGradientTo: "#fff",
-            color: (opacity = 1) => `rgba(0, 122, 255, ${opacity})`,
-            labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
-            strokeWidth: 2,
-            barPercentage: 0.5,
-          }}
-          verticalLabelRotation={30}
-        />
+      <Text style={styles.title}>Activity</Text>
+
+      {/* Progress Image */}
+      <View style={styles.imageContainer}>
+        <Image source={require("../assets/act.jpg")} style={styles.progressImage} />
       </View>
 
       <View style={styles.infoBox}>
-        <Text style={styles.infoText}>Your average score this month: {stats.avgScore} points</Text>
+        <Text style={styles.infoText}>Total Videos Watched: {stats.totalQuizzes}</Text>
       </View>
       <View style={styles.infoBox}>
-        <Text style={styles.infoText}>Your highest score: {stats.highestScore} points</Text>
+        <Text style={styles.infoText}>Total Public Speaking Quizzes Taken: {stats.totalQuizzes}</Text>
       </View>
       <View style={styles.infoBox}>
-        <Text style={styles.infoText}>Total Quizzes Taken: {stats.totalQuizzes}</Text>
+        <Text style={styles.infoText}>Total Stuttering Quizzes Taken: {stats.totalQuizzes}</Text>
       </View>
 
       <Text style={styles.footerText}>
@@ -105,7 +61,7 @@ const ActivityScreen: React.FC<Props> = ({ userRecords }) => {
       </Text>
 
       <TouchableOpacity style={styles.shareButton} onPress={handleShare}>
-        <Text style={styles.shareText}>Share Your Achievement</Text>
+        <Text style={styles.shareText}>➤  Share Your Activity</Text>
       </TouchableOpacity>
     </ScrollView>
   );
@@ -113,29 +69,34 @@ const ActivityScreen: React.FC<Props> = ({ userRecords }) => {
 
 const styles = StyleSheet.create({
   container: { flex: 1, padding: 20, backgroundColor: "#fff" },
-  title: { fontSize: 24, fontWeight: "bold", textAlign: "center", marginVertical: 20 },
-  chartContainer: {
+  title: { fontSize: 28, fontWeight: "bold", textAlign: "center", marginVertical: 20 },
+  imageContainer: {
     alignItems: "center",
     padding: 10,
     backgroundColor: "#DFF6FF",
-    borderRadius: 10,
+    borderRadius: 15,
     marginBottom: 20,
+  },
+  progressImage: {
+    width: 300, // Adjust size as needed
+    height: 200,
+    resizeMode: "contain",
   },
   infoBox: {
     backgroundColor: "#007AFF",
-    padding: 15,
+    padding: 20,
     borderRadius: 10,
     marginVertical: 10,
     alignItems: "center",
   },
-  infoText: { color: "white", fontSize: 16, fontWeight: "bold" },
-  footerText: { textAlign: "center", marginTop: 20, fontSize: 16, marginBottom: 30 },
+  infoText: { color: "white", fontSize: 18, fontWeight: "bold" },
+  footerText: { textAlign: "center", marginTop: 20, fontSize: 16, marginBottom: 30, fontWeight: "bold" },
   shareButton: {
     backgroundColor: "#007AFF",
     padding: 15,
     borderRadius: 10,
     alignItems: "center",
-    marginTop: 20,
+    marginTop: 5,
   },
   shareText: { color: "white", fontSize: 16, fontWeight: "bold" },
 });
