@@ -26,5 +26,4 @@ def analysing_audio(file_name, test_type, lan_flag):
             return {"error": "An internal error has occurred during audio analysis."}
         return analysis_result
     except Exception as e:
-        logging.error("Error during audio analysis: %s", str(e))
-        return {"error": "An internal error has occurred during audio analysis."}
+        return {"error": str(e)}
