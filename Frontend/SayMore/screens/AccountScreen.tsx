@@ -100,9 +100,11 @@ export default function AccountScreen() {
             if (userData) {
               navigation.navigate('EditProfileScreen', { userData });
             }
-          }}
-        >
-          <Image source={require('../assets/avatar.png')} style={styles.avatar} />
+          }}>
+          <Image
+            source={require('../assets/avatar.png')}
+            style={styles.avatar}
+          />
         </TouchableOpacity>
 
         {loading ? (
@@ -124,7 +126,7 @@ export default function AccountScreen() {
               key={index}
               style={[
                 styles.animatedBorder,
-                { borderColor: borderInterpolation }
+                { borderColor: borderInterpolation },
               ]}>
               <LinearGradient
                 colors={['#3B5998', '#577BC1']}
@@ -149,12 +151,15 @@ export default function AccountScreen() {
         </View>
 
         {/* Gradient Logout Button */}
-        <LinearGradient colors={['#e74c3c', '#c0392b']} style={styles.logoutButtonWrapper}>
-          <TouchableOpacity style={styles.logoutButton} onPress={confirmSignOut}>
+        <LinearGradient
+          colors={['#e74c3c', '#c0392b']}
+          style={styles.logoutButtonWrapper}>
+          <TouchableOpacity
+            style={styles.logoutButton}
+            onPress={confirmSignOut}>
             <Text style={styles.logoutText}>Log Out</Text>
           </TouchableOpacity>
         </LinearGradient>
-
       </View>
     </LinearGradient>
   );

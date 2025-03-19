@@ -125,15 +125,15 @@ const PublicSpeakQuestionScreen: React.FC = ({ navigation, route }: any) => {
   };
 
   const handleNext = () => {
-      if (currentQuestionIndex < questions.length - 1) {
-        setCurrentQuestionIndex(currentQuestionIndex + 1);
-        setSelectedAnswer(null);
-        setIsCorrect(null);
-        setIsNextButtonVisible(false);
-      }
+    if (currentQuestionIndex < questions.length - 1) {
+      setCurrentQuestionIndex(currentQuestionIndex + 1);
+      setSelectedAnswer(null);
+      setIsCorrect(null);
+      setIsNextButtonVisible(false);
+    }
   };
 
-const isLastQuestion = currentQuestionIndex === questions.length - 1;
+  const isLastQuestion = currentQuestionIndex === questions.length - 1;
 
   const handleFinish = () => {
     const totalPoints = questions.length * 10;
@@ -185,29 +185,36 @@ const isLastQuestion = currentQuestionIndex === questions.length - 1;
             style={[
               styles.optionButton,
               selectedAnswer === index ? styles.selectedOption : {},
-              isCorrect !== null && index === correctIndex && styles.correctOption,
-              isCorrect !== null && index === selectedAnswer && !isCorrect && styles.incorrectOption,
+              isCorrect !== null &&
+                index === correctIndex &&
+                styles.correctOption,
+              isCorrect !== null &&
+                index === selectedAnswer &&
+                !isCorrect &&
+                styles.incorrectOption,
             ]}>
             <Text style={styles.optionText}>{option}</Text>
           </TouchableOpacity>
         ))}
 
         {isConfirmButtonVisible && (
-          <TouchableOpacity onPress={handleConfirm} style={styles.confirmButton}>
+          <TouchableOpacity
+            onPress={handleConfirm}
+            style={styles.confirmButton}>
             <Text style={styles.confirmButtonText}>Confirm Answer</Text>
           </TouchableOpacity>
         )}
 
         {isNextButtonVisible && !isLastQuestion && (
-            <TouchableOpacity onPress={handleNext} style={styles.nextButton}>
-              <Text style={styles.nextButtonText}>Next Question</Text>
-            </TouchableOpacity>
+          <TouchableOpacity onPress={handleNext} style={styles.nextButton}>
+            <Text style={styles.nextButtonText}>Next Question</Text>
+          </TouchableOpacity>
         )}
 
         {isNextButtonVisible && isLastQuestion && (
-            <TouchableOpacity onPress={handleFinish} style={styles.finishButton}>
-               <Text style={styles.finishButtonText}>Finish Quiz</Text>
-            </TouchableOpacity>
+          <TouchableOpacity onPress={handleFinish} style={styles.finishButton}>
+            <Text style={styles.finishButtonText}>Finish Quiz</Text>
+          </TouchableOpacity>
         )}
       </View>
     </ImageBackground>

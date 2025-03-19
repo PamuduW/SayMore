@@ -1,5 +1,13 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, ScrollView, StatusBar, Image } from 'react-native';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+  ScrollView,
+  StatusBar,
+  Image,
+} from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import LinearGradient from 'react-native-linear-gradient';
 
@@ -21,25 +29,35 @@ const TermsAndConditionsScreen = () => {
           <Text style={styles.date}>Last Updated: 16/02/2025</Text>
         </View>
 
-        <ScrollView style={styles.scrollContainer} contentContainerStyle={styles.scrollContent}>
+        <ScrollView
+          style={styles.scrollContainer}
+          contentContainerStyle={styles.scrollContent}>
           <Text style={styles.text}>
             By using SayMore, you agree to the following:
             {'\n\n'}
-            1. <Text style={styles.boldText}>Account Information:</Text> Provide accurate and truthful personal
-            information during registration and ensure your account remains secure.
+            1. <Text style={styles.boldText}>Account Information:</Text> Provide
+            accurate and truthful personal information during registration and
+            ensure your account remains secure.
             {'\n\n'}
-            2. <Text style={styles.boldText}>App Usage:</Text> Use the app solely for personal speech improvement and
-            not as a substitute for professional therapy, diagnosis, or advice.
+            2. <Text style={styles.boldText}>App Usage:</Text> Use the app
+            solely for personal speech improvement and not as a substitute for
+            professional therapy, diagnosis, or advice.
             {'\n\n'}
-            3. <Text style={styles.boldText}>Data Usage:</Text> Allow secure processing of your data, such as audio
-            recordings and progress metrics, for personalized feedback and service improvement. Your data will be handled in accordance with our Privacy Policy.
+            3. <Text style={styles.boldText}>Data Usage:</Text> Allow secure
+            processing of your data, such as audio recordings and progress
+            metrics, for personalized feedback and service improvement. Your
+            data will be handled in accordance with our Privacy Policy.
             {'\n\n'}
-            4. <Text style={styles.boldText}>Prohibited Actions:</Text> Refrain from misuse of the app, including
-            sharing inappropriate, offensive, or harmful content, attempting unauthorized access, or using the app for commercial purposes.
+            4. <Text style={styles.boldText}>Prohibited Actions:</Text> Refrain
+            from misuse of the app, including sharing inappropriate, offensive,
+            or harmful content, attempting unauthorized access, or using the app
+            for commercial purposes.
           </Text>
         </ScrollView>
 
-        <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
+        <TouchableOpacity
+          style={styles.backButton}
+          onPress={() => navigation.goBack()}>
           <Text style={styles.backButtonText}>Back</Text>
         </TouchableOpacity>
       </View>
@@ -66,12 +84,12 @@ const styles = StyleSheet.create({
   },
 
   headerUnderline: {
-      marginTop: 6,
-      width: 230,
-      height: 3,
-      backgroundColor: '#D0D3E6',
-      borderRadius: 2,
-    },
+    marginTop: 6,
+    width: 230,
+    height: 3,
+    backgroundColor: '#D0D3E6',
+    borderRadius: 2,
+  },
 
   contentWrapper: {
     flex: 1,

@@ -35,7 +35,9 @@ export default function SettingsScreen() {
 
   const checkNotificationPermission = async () => {
     const authStatus = await messaging().hasPermission();
-    setNotificationsEnabled(authStatus === messaging.AuthorizationStatus.AUTHORIZED);
+    setNotificationsEnabled(
+      authStatus === messaging.AuthorizationStatus.AUTHORIZED
+    );
   };
 
   const toggleNotifications = async () => {
@@ -81,8 +83,7 @@ export default function SettingsScreen() {
         } else if (item.label === 'App Info') {
           navigation.navigate('AppInfoScreen');
         }
-      }}
-    >
+      }}>
       <View style={styles.leftSection}>
         {item.label === 'Notifications' && (
           <Image source={NotificationIcon} style={styles.optionIcon} />

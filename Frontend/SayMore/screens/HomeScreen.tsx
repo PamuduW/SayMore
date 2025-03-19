@@ -65,9 +65,8 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
 
         <View style={styles.testOptions}>
           {['Public Speaking', 'Stuttering'].map((option, index) => (
-            <TouchableOpacity onPress={() => handlePress(option)}>
+            <TouchableOpacity key={index} onPress={() => handlePress(option)}>
               <Animated.View
-                key={index}
                 style={[
                   styles.optionButtonWrapper,
                   { borderColor: borderInterpolation },
