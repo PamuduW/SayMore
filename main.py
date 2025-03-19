@@ -1,7 +1,7 @@
 import json
 import os
 from datetime import datetime
-
+import logging
 from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException
 from firebase_admin import credentials, firestore, initialize_app, storage
@@ -11,7 +11,7 @@ from src.logic import analysing_audio
 
 # Load environment variables from a .env file
 load_dotenv()
-
+logging.basicConfig(level=logging.ERROR)
 # Initialize FastAPI app
 app = FastAPI()
 
@@ -115,7 +115,8 @@ async def test(request_body: RequestBody):
         os.remove(file_name)
         return {"result": analysis_result}
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e)) from e
+        logging.error("An error occurred: %s", str(e))
+        raise HTTPException(status_code=500, detail="An internal error has occurred.") from e
 
 
 # Function to check if necessary environment variables are set
