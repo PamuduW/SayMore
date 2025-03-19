@@ -2,15 +2,35 @@ import json
 import os
 from datetime import datetime
 
+from dotenv import load_dotenv  # Import dotenv package
 from fastapi import FastAPI, HTTPException
 from firebase_admin import credentials, firestore, initialize_app, storage
 from pydantic import BaseModel
 
 from src.logic import analysing_audio
 
+# Load environment variables from .env
+load_dotenv()
+
 app = FastAPI()
 
-cred = credentials.Certificate("saymore-340e9-firebase-adminsdk-aaxo4-2e6ac8d48e.json")
+# Read Firebase credentials from environment variable
+firebase_credentials_json = os.getenv("FIREBASE_CREDENTIALS")
+
+if firebase_credentials_json is None:
+    raise ValueError("FIREBASE_CREDENTIALS environment variable is not set")
+
+# Convert the JSON string back to a dictionary
+firebase_credentials = json.loads(firebase_credentials_json)
+
+private_key = firebase_credentials.get("private_key")
+if private_key:
+    firebase_credentials["private_key"] = private_key.replace("\\n", "\n")
+else:
+    raise ValueError("Private key not found in Firebase credentials")
+
+# Initialize Firebase Admin SDK
+cred = credentials.Certificate(firebase_credentials)
 initialize_app(cred, {"storageBucket": "saymore-340e9.firebasestorage.app"})
 db = firestore.client()
 
