@@ -1,6 +1,10 @@
+# Define the build process using Docker
 build:
   docker:
-    web: Dockerfile  # Specify the Dockerfile for the web process
+    # Specify the Dockerfile to use for building the web service
+    web: Dockerfile
 
+# Define the run command for the web service
 run:
+  # Use uvicorn to run the FastAPI app, binding to all interfaces and using the port specified by the PORT environment variable
   web: uvicorn main:app --host 0.0.0.0 --port ${PORT}
