@@ -1,7 +1,8 @@
 import json
+import logging
 import os
 from datetime import datetime
-import logging
+
 from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException
 from firebase_admin import credentials, firestore, initialize_app, storage
@@ -118,10 +119,14 @@ async def test(request_body: RequestBody):
         return {"result": analysis_result}
     except RuntimeError as e:
         logging.error("An error occurred: %s", str(e))
-        raise HTTPException(status_code=500, detail="An internal error has occurred.") from e
+        raise HTTPException(
+            status_code=500, detail="An internal error has occurred."
+        ) from e
     except Exception as e:
         logging.error("An unexpected error occurred: %s", str(e))
-        raise HTTPException(status_code=500, detail="An unexpected error has occurred.") from e
+        raise HTTPException(
+            status_code=500, detail="An unexpected error has occurred."
+        ) from e
 
 
 # Function to check if necessary environment variables are set
