@@ -4,37 +4,30 @@ import tempfile
 from google.cloud import speech
 from dotenv import load_dotenv
 
-# Load environment variables from .env
 load_dotenv()
 
-# Load the credentials JSON from the environment variable
 gcs_credentials_json = os.getenv("GOOGLE_APPLICATION_CREDENTIALS_JSON")
 if gcs_credentials_json is None:
     raise ValueError("GOOGLE_APPLICATION_CREDENTIALS_JSON environment variable is not set.")
 
-# Convert the JSON string back to a dictionary
 credentials_dict = json.loads(gcs_credentials_json)
 
-# Replace literal newline characters with actual newlines in the private key
 private_key = credentials_dict.get("private_key")
 if private_key:
     credentials_dict["private_key"] = private_key.replace("\\n", "\n")
 else:
     raise ValueError("Private key not found in Google Cloud credentials.")
 
-# Write the processed credentials to a temporary file
 temp_credentials_file = tempfile.NamedTemporaryFile(delete=False, suffix=".json")
 temp_credentials_file.write(json.dumps(credentials_dict).encode())
 temp_credentials_file.close()
 
-# Set the GOOGLE_APPLICATION_CREDENTIALS environment variable to the temporary file's path
 os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = temp_credentials_file.name
 
 def transcribe_gcs(gcs_uri: str, long_flag: bool, lan_flag: str) -> list[dict[str, str]]:
     try:
         client = speech.SpeechClient()
 
-        # Map short language codes to full locales.
         language_mapping = {"en": "en-US", "si": "si-LK", "ta": "ta-LK"}
         language_code = language_mapping.get(lan_flag, "en-US")
 

@@ -4,11 +4,17 @@ In CMD run >>> (for powerShell. not needed for cmd)
     python.exe -m pip install --upgrade pip
     pip install -r requirements.txt
 
-Go to File > Settings > Project: <Your Project Name> > Python Interpreter.
-Select the interpreter located at D:\OneDrive\Pamudu-other\Github\SayMore\.venv\Scripts\python.exe.
-
 now edit run config file and give the main.py location.
 
+
+
+
+
+
+
+
+Go to File > Settings > Project: <Your Project Name> > Python Interpreter.
+Select the interpreter located at D:\OneDrive\Pamudu-other\Github\SayMore\.venv\Scripts\python.exe.
 
 make format
 make lint

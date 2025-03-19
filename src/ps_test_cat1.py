@@ -6,10 +6,6 @@ import parselmouth
 
 
 def normalize_metric(value, best, worst, invert=False):
-    """Normalize a raw value to a 0–100 scale.
-    For metrics where lower is better (like jitter/shimmer), set invert=True.
-    'best' is the ideal value and 'worst' is the threshold for a score of 0.
-    """
     if worst == best:
         return 100.0
     if invert:
@@ -31,7 +27,6 @@ def analyze_pitch(audio_path, segment_duration=2.0):
         pitch_values = pitch.selected_array["frequency"]
         time_stamps = pitch.xs()
 
-        # Only consider voiced segments.
         voiced_indices = pitch_values > 0
         pitch_values = pitch_values[voiced_indices]
         time_stamps = time_stamps[voiced_indices]
@@ -42,7 +37,6 @@ def analyze_pitch(audio_path, segment_duration=2.0):
         semitone_values = hz_to_semitones(pitch_values)
         overall_std = np.std(semitone_values)
         overall_range = np.max(semitone_values) - np.min(semitone_values)
-        # Monotony score: higher means more monotone (less variation)
         monotony_score = 100 * (1 - (overall_std / (overall_range + 1e-5)))
         monotony_score = float(max(0, min(100, round(monotony_score, 2))))
 
@@ -179,7 +173,6 @@ def analyze_clarity(audio_path):
     return clarity_score
 
 
-# Now, final_voice_score is calculated using variation_score (100 - monotony_score)
 def generate_speaking_score(
     variation_score, speaking_speed, clarity, jitter, shimmer, hnr
 ):
@@ -291,7 +284,6 @@ def analyze_speech_1(audio_path, text):
     if "error" in pitch_data:
         return {"error": pitch_data["error"]}
 
-    # Calculate variation_score from monotony_score (higher variation is better)
     variation_score = float(
         max(0, min(100, round(100 - pitch_data["monotony_score"], 2)))
     )
@@ -319,7 +311,6 @@ def analyze_speech_1(audio_path, text):
         clarity=clarity,
     )
 
-    # Normalize overall jitter, shimmer, and HNR to a 0–100 scale.
     normalized_jitter = normalize_metric(
         jitter_data["overall_jitter"], best=0, worst=0.1, invert=True
     )
