@@ -50,8 +50,7 @@ class RequestBody(BaseModel):
 @app.get("/")
 async def root():
     """Root endpoint that returns a welcome message."""
-    check_env_variables()
-    return {"message": "Backend with the Deep Learning model of the SayMore app"}
+    return {"message": "Backend with the Deep Learning model of the SayMore app\n" + check_env_variables()}
 
 
 # Define the test endpoint
@@ -119,15 +118,18 @@ async def test(request_body: RequestBody):
 def check_env_variables():
     google_credentials = os.getenv("GOOGLE_APPLICATION_CREDENTIALS_JSON")
     firebase_credentials = os.getenv("FIREBASE_CREDENTIALS")
+    s = "here goes... \n"
 
     if google_credentials is None:
-        print("GOOGLE_APPLICATION_CREDENTIALS_JSON environment variable is not set.")
+        s += "GOOGLE_APPLICATION_CREDENTIALS_JSON environment variable is not set.\n"
     else:
-        print("GOOGLE_APPLICATION_CREDENTIALS_JSON environment variable is set.")
-        print(google_credentials)
+        s += "............................................................................................................\n"
+        s += google_credentials + "\n"
 
     if firebase_credentials is None:
-        print("FIREBASE_CREDENTIALS environment variable is not set.")
+        s += "FIREBASE_CREDENTIALS environment variable is not set.\n"
     else:
-        print("FIREBASE_CREDENTIALS environment variable is set.")
-        print(firebase_credentials)
+        s += "............................................................................................................\n"
+        s += firebase_credentials + "\n"
+
+    return s
