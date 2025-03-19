@@ -62,12 +62,15 @@ export default function EditProfileScreen({ navigation }) {
     try {
       const currentUser = auth().currentUser;
       if (currentUser) {
-        await firestore().collection('User_Accounts').doc(currentUser.uid).update({
-          fname,
-          sname,
-          dob,
-          username,
-        });
+        await firestore()
+          .collection('User_Accounts')
+          .doc(currentUser.uid)
+          .update({
+            fname,
+            sname,
+            dob,
+            username,
+          });
 
         Alert.alert('Success', 'Profile updated successfully!');
         navigation.goBack();
@@ -130,7 +133,10 @@ export default function EditProfileScreen({ navigation }) {
 
           <Text style={styles.label}>Email</Text>
           <TextInput
-            style={[styles.input, { backgroundColor: '#D0D3E6', color: '#2A2D57' }]}
+            style={[
+              styles.input,
+              { backgroundColor: '#D0D3E6', color: '#2A2D57' },
+            ]}
             value={email}
             editable={false}
           />
@@ -138,31 +144,27 @@ export default function EditProfileScreen({ navigation }) {
 
         {/* Save Changes Button */}
         <TouchableOpacity onPress={handleSave} style={{ marginBottom: 15 }}>
-          <LinearGradient
-            colors={['#3B5998', '#577BC1']}
-            style={styles.button}>
+          <LinearGradient colors={['#3B5998', '#577BC1']} style={styles.button}>
             <Text style={styles.buttonText}>Save Changes</Text>
           </LinearGradient>
         </TouchableOpacity>
 
         {/* Cancel Changes Button */}
-        <TouchableOpacity onPress={() => navigation.goBack()} style={{ marginBottom: 15 }}>
-          <LinearGradient
-            colors={['#e74c3c', '#ff6b6b']}
-            style={styles.button}>
+        <TouchableOpacity
+          onPress={() => navigation.goBack()}
+          style={{ marginBottom: 15 }}>
+          <LinearGradient colors={['#e74c3c', '#ff6b6b']} style={styles.button}>
             <Text style={styles.buttonText}>Cancel Changes</Text>
           </LinearGradient>
         </TouchableOpacity>
 
         {/* Change Password Button */}
-        <TouchableOpacity onPress={() => navigation.navigate('ChangePasswordScreen')}>
-          <LinearGradient
-            colors={['#FFA500', '#FFB347']}
-            style={styles.button}>
+        <TouchableOpacity
+          onPress={() => navigation.navigate('ChangePasswordScreen')}>
+          <LinearGradient colors={['#FFA500', '#FFB347']} style={styles.button}>
             <Text style={styles.buttonText}>Change Password</Text>
           </LinearGradient>
         </TouchableOpacity>
-
       </ScrollView>
     </LinearGradient>
   );
@@ -172,7 +174,13 @@ const styles = StyleSheet.create({
   container: { flex: 1, paddingTop: 40 },
   scrollArea: { paddingHorizontal: 20, paddingBottom: 40 },
 
-  header: { fontSize: 26, color: '#fff', marginBottom: 30, textAlign: 'center', fontWeight: 'bold' },
+  header: {
+    fontSize: 26,
+    color: '#fff',
+    marginBottom: 30,
+    textAlign: 'center',
+    fontWeight: 'bold',
+  },
 
   inputContainer: { marginBottom: 20 },
 

@@ -1,5 +1,12 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, ScrollView, StatusBar } from 'react-native';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+  ScrollView,
+  StatusBar,
+} from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import LinearGradient from 'react-native-linear-gradient';
 
@@ -16,25 +23,26 @@ const AppInfoScreen = () => {
       </View>
 
       <View style={styles.contentWrapper}>
-        <ScrollView style={styles.scrollContainer} contentContainerStyle={styles.scrollContent}>
+        <ScrollView
+          style={styles.scrollContainer}
+          contentContainerStyle={styles.scrollContent}>
           <Text style={styles.title}>SayMore App</Text>
           <Text style={styles.subText}>Version: 1.0.0</Text>
 
           <Text style={styles.sectionHeader}>Overview</Text>
           <Text style={styles.text}>
-            SayMore is your personal companion for improving public speaking and speech fluency.
-            Whether you're looking to overcome stuttering, refine your pronunciation, or build
-            confidence in front of an audience, SayMore offers personalized exercises, audio analysis,
-            and progress tracking features.
+            SayMore is your personal companion for improving public speaking and
+            speech fluency. Whether you're looking to overcome stuttering,
+            refine your pronunciation, or build confidence in front of an
+            audience, SayMore offers personalized exercises, audio analysis, and
+            progress tracking features.
           </Text>
 
           <Text style={styles.sectionHeader}>Features</Text>
           <Text style={styles.text}>
-            - Public Speaking Practice{'\n'}
-            - Stuttering Assistance Exercises{'\n'}
-            - Personalized Audio Feedback{'\n'}
-            - Progress Analysis and Metrics{'\n'}
-            - Customizable User Profile
+            - Public Speaking Practice{'\n'}- Stuttering Assistance Exercises
+            {'\n'}- Personalized Audio Feedback{'\n'}- Progress Analysis and
+            Metrics{'\n'}- Customizable User Profile
           </Text>
 
           <Text style={styles.sectionHeader}>Developer</Text>
@@ -45,7 +53,9 @@ const AppInfoScreen = () => {
           </Text>
         </ScrollView>
 
-        <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
+        <TouchableOpacity
+          style={styles.backButton}
+          onPress={() => navigation.goBack()}>
           <Text style={styles.backButtonText}>Back</Text>
         </TouchableOpacity>
       </View>

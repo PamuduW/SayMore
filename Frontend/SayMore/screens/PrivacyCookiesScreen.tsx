@@ -1,5 +1,12 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, ScrollView, StatusBar } from 'react-native';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+  ScrollView,
+  StatusBar,
+} from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import LinearGradient from 'react-native-linear-gradient';
 
@@ -19,29 +26,41 @@ const PrivacyCookiesScreen = () => {
       <View style={styles.contentWrapper}>
         <Text style={styles.date}> </Text>
 
-        <LinearGradient colors={['#F9FAFC', '#ECEFF9']} style={styles.scrollContainer}>
+        <LinearGradient
+          colors={['#F9FAFC', '#ECEFF9']}
+          style={styles.scrollContainer}>
           <ScrollView contentContainerStyle={styles.scrollContent}>
             <Text style={styles.text}>
-              Your privacy is essential to us at SayMore. Here's how we protect your data:
+              Your privacy is essential to us at SayMore. Here's how we protect
+              your data:
               {'\n\n'}
-              1. <Text style={styles.boldText}>Personal Info:</Text> We gather only basic details like your name & email to personalize your progress.
+              1. <Text style={styles.boldText}>Personal Info:</Text> We gather
+              only basic details like your name & email to personalize your
+              progress.
               {'\n\n'}
-              2. <Text style={styles.boldText}>Audio Storage:</Text> Any speech recordings remain securely stored and are used exclusively for analysis and feedback.
+              2. <Text style={styles.boldText}>Audio Storage:</Text> Any speech
+              recordings remain securely stored and are used exclusively for
+              analysis and feedback.
               {'\n\n'}
-              3. <Text style={styles.boldText}>Cookies Usage:</Text> We utilize cookies to ensure app performance & enhance your user experience. You can disable them anytime via device settings.
+              3. <Text style={styles.boldText}>Cookies Usage:</Text> We utilize
+              cookies to ensure app performance & enhance your user experience.
+              You can disable them anytime via device settings.
               {'\n\n'}
-              4. <Text style={styles.boldText}>Data Sharing:</Text> We never share or sell your personal data to third parties.
+              4. <Text style={styles.boldText}>Data Sharing:</Text> We never
+              share or sell your personal data to third parties.
               {'\n\n'}
-              5. <Text style={styles.boldText}>Security Measures:</Text> Your data is safeguarded with modern encryption & privacy standards.
+              5. <Text style={styles.boldText}>Security Measures:</Text> Your
+              data is safeguarded with modern encryption & privacy standards.
             </Text>
           </ScrollView>
         </LinearGradient>
 
         {/* Back Button */}
-        <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
+        <TouchableOpacity
+          style={styles.backButton}
+          onPress={() => navigation.goBack()}>
           <Text style={styles.backButtonText}>Back</Text>
         </TouchableOpacity>
-
       </View>
     </LinearGradient>
   );
