@@ -65,24 +65,24 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
 
         <View style={styles.testOptions}>
           {['Public Speaking', 'Stuttering'].map((option, index) => (
-            <Animated.View
-              key={index}
-              style={[
-                styles.optionButtonWrapper,
-                { borderColor: borderInterpolation },
-              ]}>
-              <LinearGradient
-                colors={
-                  theme === 'dark'
-                    ? ['#1C1C1C', '#3A3A3A']
-                    : ['#3B5998', '#577BC1']
-                }
-                style={styles.optionButton}>
-                <TouchableOpacity onPress={() => handlePress(option)}>
+            <TouchableOpacity onPress={() => handlePress(option)}>
+              <Animated.View
+                key={index}
+                style={[
+                  styles.optionButtonWrapper,
+                  { borderColor: borderInterpolation },
+                ]}>
+                <LinearGradient
+                  colors={
+                    theme === 'dark'
+                      ? ['#1C1C1C', '#3A3A3A']
+                      : ['#3B5998', '#577BC1']
+                  }
+                  style={styles.optionButton}>
                   <Text style={styles.optionText}>{option}</Text>
-                </TouchableOpacity>
-              </LinearGradient>
-            </Animated.View>
+                </LinearGradient>
+              </Animated.View>
+            </TouchableOpacity>
           ))}
         </View>
       </View>

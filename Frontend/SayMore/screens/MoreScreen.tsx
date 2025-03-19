@@ -12,7 +12,7 @@ import { useTheme } from '../components/ThemeContext';
 
 const NewScreens = [
   { title: 'Activity', icon: require('../assets/activity2.png') },
-  { title: 'Lesson', icon: require('../assets/lesson.png') },
+  { title: 'Lessons', icon: require('../assets/lesson.png') },
   { title: 'Quizzes and Challenges', icon: require('../assets/quiz.png') },
   { title: 'Progress', icon: require('../assets/progress.png') },
   { title: 'Points', icon: require('../assets/points.png') },
