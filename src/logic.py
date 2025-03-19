@@ -23,4 +23,5 @@ def analysing_audio(file_name, test_type, lan_flag):
             analysis_result = stutter_test(file_name)
         return analysis_result
     except Exception as e:
-        raise RuntimeError("Error during audio analysis") from e
+        logging.error("Error during audio analysis: %s", str(e))
+        return {"error": "An error occurred during audio analysis."}

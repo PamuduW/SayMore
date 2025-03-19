@@ -118,6 +118,8 @@ async def test(request_body: RequestBody):
         # Clean up the downloaded file
         blob.delete()
         os.remove(full_path)
+        if "error" in analysis_result:
+            raise HTTPException(status_code=500, detail=analysis_result["error"])
         return {"result": analysis_result}
     except RuntimeError as e:
         logging.error("An error occurred: %s", str(e))
