@@ -128,6 +128,9 @@ export default function AccountScreen() {
                   if (item === 'Account Details') {
                     navigation.navigate('EditProfileScreen', { userData });
                   }
+                  if (item === 'Activity') {
+                    navigation.navigate('ActivityScreen'); // ✅ Navigate to ActivityScreen
+                  }
                 }}>
                 <Text style={styles.menuText}>{item}</Text>
               </TouchableOpacity>
