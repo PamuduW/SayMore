@@ -14,9 +14,11 @@ import firestore from '@react-native-firebase/firestore';
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import LinearGradient from 'react-native-linear-gradient';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
+import { useTheme } from '../components/ThemeContext';
 
 export default function AccountScreen() {
   const navigation = useNavigation();
+  const theme = useTheme();
 
   const [userData, setUserData] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -92,10 +94,18 @@ export default function AccountScreen() {
   };
 
   return (
-    <LinearGradient colors={['#2A2D57', '#577BC1']} style={styles.container}>
-      <View style={styles.card}>
+    <LinearGradient
+      colors={
+        theme === 'dark' ? ['#1C1C1C', '#3A3A3A'] : ['#577BC1', '#577BC1']
+      }
+      style={styles.container}>
+      <View style={theme === 'dark' ? styles.darkCard : styles.lightCard}>
         <TouchableOpacity
-          style={styles.avatarWrapper}
+          style={
+            theme === 'dark'
+              ? styles.darkAvatarWrapper
+              : styles.lightAvatarWrapper
+          }
           onPress={() => {
             if (userData) {
               navigation.navigate('EditProfileScreen', { userData });
@@ -111,10 +121,19 @@ export default function AccountScreen() {
           <ActivityIndicator size="large" color="#2A2D57" />
         ) : (
           <>
-            <Text style={styles.username}>
+            {/* Username Display */}
+            <Text
+              style={
+                theme === 'dark' ? styles.darkUsername : styles.lightUsername
+              }>
               {userData?.username || 'Username'}
             </Text>
-            <Text style={styles.nameText}>
+
+            {/* Full Name Display */}
+            <Text
+              style={
+                theme === 'dark' ? styles.darkNameText : styles.lightNameText
+              }>
               {userData?.fname} {userData?.sname}
             </Text>
           </>
@@ -124,29 +143,27 @@ export default function AccountScreen() {
           {['Account Details', 'Settings'].map((item, index) => (
             <Animated.View
               key={index}
-              style={[
-                styles.animatedBorder,
-                { borderColor: borderInterpolation },
-              ]}>
-              <LinearGradient
-                colors={['#3B5998', '#577BC1']}
-                start={{ x: 0, y: 0 }}
-                end={{ x: 1, y: 1 }}
-                style={styles.menuItemWrapper}>
-                <TouchableOpacity
-                  style={styles.menuItem}
-                  onPress={() => {
-                    if (item === 'Settings') {
-                      navigation.navigate('SettingsScreen');
-                    }
-                    if (item === 'Account Details') {
-                      navigation.navigate('EditProfileScreen', { userData });
-                    }
-                  }}>
-                  <Text style={styles.menuText}>{item}</Text>
-                </TouchableOpacity>
-              </LinearGradient>
-            </Animated.View>
+              colors={
+                theme === 'dark'
+                  ? ['#2B2B2B', '#2B2B2B']
+                  : ['#577BC1', '#577BC1']
+              }
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 1 }}
+              style={styles.menuItemWrapper}>
+              <TouchableOpacity
+                style={styles.menuItem}
+                onPress={() => {
+                  if (item === 'Settings') {
+                    navigation.navigate('SettingsScreen');
+                  }
+                  if (item === 'Account Details') {
+                    navigation.navigate('EditProfileScreen', { userData });
+                  }
+                }}>
+                <Text style={styles.menuText}>{item}</Text>
+              </TouchableOpacity>
+            </LinearGradient>
           ))}
         </View>
 
@@ -166,13 +183,8 @@ export default function AccountScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-
-  card: {
+  container: { flex: 1, justifyContent: 'center', alignItems: 'center' },
+  lightCard: {
     backgroundColor: '#FFFFFF',
     width: '90%',
     borderRadius: 30,
@@ -185,8 +197,21 @@ const styles = StyleSheet.create({
     shadowRadius: 12,
     elevation: 12,
   },
+  darkCard: {
+    backgroundColor: '#4a4a4a',
+    width: '90%',
+    borderRadius: 30,
+    alignItems: 'center',
+    paddingVertical: 35,
+    paddingHorizontal: 25,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 10 },
+    shadowOpacity: 0.25,
+    shadowRadius: 12,
+    elevation: 14,
+  },
 
-  avatarWrapper: {
+  lightAvatarWrapper: {
     backgroundColor: '#F2F3F8',
     padding: 14,
     borderRadius: 60,
@@ -197,34 +222,47 @@ const styles = StyleSheet.create({
     shadowRadius: 8,
     elevation: 8,
   },
-
-  avatar: {
-    width: 90,
-    height: 90,
-    borderRadius: 45,
+  darkAvatarWrapper: {
+    backgroundColor: '#1C1C1C',
+    padding: 10,
+    borderRadius: 50,
+    marginBottom: 10,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 5 },
+    shadowOpacity: 0.15,
+    shadowRadius: 6,
+    elevation: 6,
   },
-
-  username: {
+  avatar: { width: 80, height: 80, borderRadius: 40 },
+  lightUsername: {
     fontSize: 24,
     fontWeight: '700',
     color: '#2A2D57',
     marginBottom: 6,
   },
-
+  darkUsername: {
+    fontSize: 24,
+    fontWeight: '700',
+    color: '#FFFFFF',
+    marginBottom: 8,
+  },
   nameText: {
     fontSize: 15,
     color: '#2A2D57',
     marginBottom: 28,
   },
-
-  menuContainer: {
-    width: '100%',
-    alignItems: 'center',
-    marginBottom: 30,
+  lightNameText: {
+    fontSize: 14,
+    color: '#2A2D57',
+    marginBottom: 25,
   },
-
-  animatedBorder: {
-    borderWidth: 2.5,
+  darkNameText: {
+    fontSize: 14,
+    color: '#FFFFFF',
+    marginBottom: 25,
+  },
+  menuContainer: { width: '100%', alignItems: 'center', marginBottom: 25 },
+  menuItemWrapper: {
     borderRadius: 20,
     marginBottom: 20,
     width: '100%',
@@ -246,7 +284,12 @@ const styles = StyleSheet.create({
     width: '100%',
     borderRadius: 18,
   },
-
+  menuItem: {
+    paddingVertical: 14,
+    alignItems: 'center',
+    width: '100%',
+    borderRadius: 18,
+  },
   menuText: {
     fontSize: 16,
     fontWeight: '600',

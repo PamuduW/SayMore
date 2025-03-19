@@ -9,6 +9,7 @@ import {
 } from 'react-native';
 import { NavigationProp } from '@react-navigation/native';
 import { useTheme } from '../components/ThemeContext';
+import LinearGradient from 'react-native-linear-gradient';
 
 const NewScreens = [
   { title: 'Activity', icon: require('../assets/activity2.png') },
@@ -42,44 +43,55 @@ const MoreScreen: React.FC<MoreScreenProps> = ({ navigation }) => {
   };
 
   return (
-    <ScrollView
-      style={theme === 'dark' ? styles.darkContainer : styles.lightContainer}>
-      <View style={styles.gridContainer}>
-        {NewScreens.map((item, index) => (
-          <TouchableOpacity
-            key={index}
-            style={[
-              styles.lessonButton,
-              theme === 'dark'
-                ? styles.darkLessonButton
-                : styles.lightLessonButton,
-            ]}
-            onPress={() => handlePress(item.title)}>
-            <View style={styles.imageContainer}>
-              {item.icon ? (
-                <Image source={item.icon} style={styles.lessonIcon} />
-              ) : null}
-            </View>
-            <Text style={styles.lessonText}>{item.title}</Text>
-          </TouchableOpacity>
-        ))}
-      </View>
+    <ScrollView>
+      <LinearGradient
+        colors={
+          theme === 'dark' ? ['#1C1C1C', '#3A3A3A'] : ['#577BC1', '#577BC1']
+        }
+        style={styles.container}>
+        <View style={styles.gridContainer}>
+          {NewScreens.map((item, index) => (
+            <TouchableOpacity
+              key={index}
+              style={[
+                styles.lessonButton,
+                theme === 'dark'
+                  ? styles.darkLessonButton
+                  : styles.lightLessonButton,
+              ]}
+              onPress={() => handlePress(item.title)}>
+              <View style={styles.imageContainer}>
+                {item.icon ? (
+                  <Image source={item.icon} style={styles.lessonIcon} />
+                ) : null}
+              </View>
+              <Text
+                style={
+                  theme === 'dark'
+                    ? styles.darkLessonText
+                    : styles.lightLessonText
+                }>
+                {item.title}
+              </Text>
+            </TouchableOpacity>
+          ))}
+        </View>
+      </LinearGradient>
     </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
-  darkContainer: { flex: 1, backgroundColor: '#000000', padding: 20 },
-  lightContainer: { flex: 1, backgroundColor: '#FFFFFF', padding: 20 },
+  Container: { flex: 1, padding: 20 },
   gridContainer: {
     flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'space-between',
   },
   lessonButton: {
-    width: '50%',
-    height: 230,
-    borderRadius: 10,
+    width: '45%',
+    height: 190,
+    borderRadius: 25,
     padding: 20,
     alignItems: 'center',
     justifyContent: 'center',
@@ -89,6 +101,7 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.2,
     shadowRadius: 3,
+    marginHorizontal: 10,
   },
   darkLessonButton: { backgroundColor: '#4a4a4a' },
   lightLessonButton: { backgroundColor: '#E6F7FF' },
@@ -102,6 +115,18 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: 'bold',
     color: '#003366',
+    textAlign: 'center',
+  },
+  lightLessonText: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#003366',
+    textAlign: 'center',
+  },
+  darkLessonText: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#FFFFFF',
     textAlign: 'center',
   },
 });

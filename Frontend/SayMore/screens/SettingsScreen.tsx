@@ -12,6 +12,8 @@ import {
   Platform,
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
+import Ionicons from 'react-native-vector-icons/Ionicons'; // NEW IMPORT!
+import { useTheme } from '../components/ThemeContext';
 import { useNavigation } from '@react-navigation/native';
 import messaging from '@react-native-firebase/messaging';
 
@@ -26,6 +28,7 @@ import AppInfoIcon from '../assets/appinfoset.png';
 export default function SettingsScreen() {
   const navigation = useNavigation();
   const [isDarkMode, setIsDarkMode] = useState(false);
+  const theme = useTheme();
   const [notificationsEnabled, setNotificationsEnabled] = useState(true);
 
   useEffect(() => {
@@ -124,7 +127,11 @@ export default function SettingsScreen() {
   );
 
   return (
-    <LinearGradient colors={['#2A2D57', '#577BC1']} style={styles.container}>
+    <LinearGradient
+      colors={
+        theme === 'dark' ? ['#1C1C1C', '#3A3A3A'] : ['#577BC1', '#577BC1']
+      }
+      style={styles.container}>
       <StatusBar barStyle="light-content" />
 
       <View style={styles.headerBar}>

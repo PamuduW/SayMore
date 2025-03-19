@@ -25,11 +25,11 @@ const Analysis_PS = ({ filename, acc_id, type, language }) => {
     data: [0, 0, 0],
   });
   const chartConfig = {
-    backgroundGradientFrom: '#1E2923',
+    backgroundGradientFrom: 'transparent',
     backgroundGradientFromOpacity: 0,
-    backgroundGradientTo: '#08130D',
-    backgroundGradientToOpacity: 0.5,
-    color: (opacity = 1) => `rgba(26, 255, 146, ${opacity})`,
+    backgroundGradientTo: 'transparent',
+    backgroundGradientToOpacity: 0,
+    color: (opacity = 1) => `rgba(0, 0, 255, ${opacity})`,
     strokeWidth: 2, // optional, default 3
     barPercentage: 0.5,
     useShadowColorFromDataset: false, // optional
@@ -161,7 +161,7 @@ const Analysis_PS = ({ filename, acc_id, type, language }) => {
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      <Text>Analysis Screen</Text>
+      <Text style={styles.progressChartText}>Analysis Screen</Text>
       <ProgressChart
         data={data}
         width={screenWidth}
@@ -289,6 +289,11 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
     marginVertical: 10,
+  },
+  progressChartText: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: 'blue',
   },
 });
 
