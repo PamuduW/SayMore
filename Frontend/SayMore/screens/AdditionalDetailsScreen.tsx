@@ -7,10 +7,10 @@ const screenWidth = Dimensions.get('window').width;
 
 const chartConfig = {
   backgroundGradientFrom: 'transparent',
-   backgroundGradientFromOpacity: 0,
-      backgroundGradientTo: 'transparent',
-      backgroundGradientToOpacity: 0,
-      color: (opacity = 1) => `rgba(0, 0, 255, ${opacity})`,
+  backgroundGradientFromOpacity: 0,
+  backgroundGradientTo: 'transparent',
+  backgroundGradientToOpacity: 0,
+  color: (opacity = 1) => `rgba(0, 0, 255, ${opacity})`,
   strokeWidth: 2, // optional, default 3
   barPercentage: 0.5,
   useShadowColorFromDataset: false, // optional

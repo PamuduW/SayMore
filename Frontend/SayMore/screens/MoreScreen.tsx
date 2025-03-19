@@ -43,27 +43,38 @@ const MoreScreen: React.FC<MoreScreenProps> = ({ navigation }) => {
 
   return (
     <ScrollView>
-    <LinearGradient colors={theme === 'dark' ? ['#1C1C1C', '#3A3A3A'] : ['#577BC1', '#577BC1']} style={styles.container}>
-      <View style={styles.gridContainer}>
-        {NewScreens.map((item, index) => (
-          <TouchableOpacity
-            key={index}
-            style={[
-              styles.lessonButton,
-              theme === 'dark'
-                ? styles.darkLessonButton
-                : styles.lightLessonButton,
-            ]}
-            onPress={() => handlePress(item.title)}>
-            <View style={styles.imageContainer}>
-              {item.icon ? (
-                <Image source={item.icon} style={styles.lessonIcon} />
-              ) : null}
-            </View>
-            <Text style={theme === 'dark'? styles.darkLessonText : styles.lightLessonText}>{item.title}</Text>
-          </TouchableOpacity>
-        ))}
-      </View>
+      <LinearGradient
+        colors={
+          theme === 'dark' ? ['#1C1C1C', '#3A3A3A'] : ['#577BC1', '#577BC1']
+        }
+        style={styles.container}>
+        <View style={styles.gridContainer}>
+          {NewScreens.map((item, index) => (
+            <TouchableOpacity
+              key={index}
+              style={[
+                styles.lessonButton,
+                theme === 'dark'
+                  ? styles.darkLessonButton
+                  : styles.lightLessonButton,
+              ]}
+              onPress={() => handlePress(item.title)}>
+              <View style={styles.imageContainer}>
+                {item.icon ? (
+                  <Image source={item.icon} style={styles.lessonIcon} />
+                ) : null}
+              </View>
+              <Text
+                style={
+                  theme === 'dark'
+                    ? styles.darkLessonText
+                    : styles.lightLessonText
+                }>
+                {item.title}
+              </Text>
+            </TouchableOpacity>
+          ))}
+        </View>
       </LinearGradient>
     </ScrollView>
   );

@@ -75,10 +75,18 @@ export default function AccountScreen() {
   };
 
   return (
-    <LinearGradient colors={theme === 'dark' ? ['#1C1C1C', '#3A3A3A'] : ['#577BC1', '#577BC1']} style={styles.container}>
-      <View style={theme === 'dark'? styles.darkCard : styles.lightCard}>
+    <LinearGradient
+      colors={
+        theme === 'dark' ? ['#1C1C1C', '#3A3A3A'] : ['#577BC1', '#577BC1']
+      }
+      style={styles.container}>
+      <View style={theme === 'dark' ? styles.darkCard : styles.lightCard}>
         <TouchableOpacity
-          style={theme === 'dark'? styles.darkAvatarWrapper : styles.lightAvatarWrapper}
+          style={
+            theme === 'dark'
+              ? styles.darkAvatarWrapper
+              : styles.lightAvatarWrapper
+          }
           onPress={() => {
             if (userData) {
               navigation.navigate('EditProfileScreen', { userData });
@@ -95,12 +103,18 @@ export default function AccountScreen() {
         ) : (
           <>
             {/* Username Display */}
-            <Text style={theme === 'dark'? styles.darkUsername : styles.lightUsername}>
+            <Text
+              style={
+                theme === 'dark' ? styles.darkUsername : styles.lightUsername
+              }>
               {userData?.username || 'Username'}
             </Text>
 
             {/* Full Name Display */}
-            <Text style={theme === 'dark'? styles.darkNameText : styles.lightNameText}>
+            <Text
+              style={
+                theme === 'dark' ? styles.darkNameText : styles.lightNameText
+              }>
               {userData?.fname} {userData?.sname}
             </Text>
           </>
@@ -117,7 +131,11 @@ export default function AccountScreen() {
           ].map((item, index) => (
             <LinearGradient
               key={index}
-              colors={theme === 'dark' ? ['#2B2B2B', '#2B2B2B'] : ['#577BC1', '#577BC1']}
+              colors={
+                theme === 'dark'
+                  ? ['#2B2B2B', '#2B2B2B']
+                  : ['#577BC1', '#577BC1']
+              }
               start={{ x: 0, y: 0 }}
               end={{ x: 1, y: 1 }}
               style={styles.menuItemWrapper}>
@@ -161,18 +179,18 @@ const styles = StyleSheet.create({
     elevation: 14,
   },
   darkCard: {
-      backgroundColor: '#4a4a4a',
-      width: '90%',
-      borderRadius: 30,
-      alignItems: 'center',
-      paddingVertical: 35,
-      paddingHorizontal: 25,
-      shadowColor: '#000',
-      shadowOffset: { width: 0, height: 10 },
-      shadowOpacity: 0.25,
-      shadowRadius: 12,
-      elevation: 14,
-    },
+    backgroundColor: '#4a4a4a',
+    width: '90%',
+    borderRadius: 30,
+    alignItems: 'center',
+    paddingVertical: 35,
+    paddingHorizontal: 25,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 10 },
+    shadowOpacity: 0.25,
+    shadowRadius: 12,
+    elevation: 14,
+  },
 
   lightAvatarWrapper: {
     backgroundColor: '#F2F3F8',
@@ -218,7 +236,8 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#2A2D57',
     marginBottom: 25,
-  },darkNameText: {
+  },
+  darkNameText: {
     fontSize: 14,
     color: '#FFFFFF',
     marginBottom: 25,

@@ -53,7 +53,11 @@ export default function SettingsScreen() {
   );
 
   return (
-    <LinearGradient colors={theme === 'dark' ? ['#1C1C1C', '#3A3A3A'] : ['#577BC1', '#577BC1']} style={styles.container}>
+    <LinearGradient
+      colors={
+        theme === 'dark' ? ['#1C1C1C', '#3A3A3A'] : ['#577BC1', '#577BC1']
+      }
+      style={styles.container}>
       <StatusBar barStyle="light-content" />
 
       {/* Header Bar */}

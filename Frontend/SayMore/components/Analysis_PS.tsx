@@ -277,10 +277,10 @@ const styles = StyleSheet.create({
     marginVertical: 10,
   },
   progressChartText: {
-      fontSize: 18,
-      fontWeight: 'bold',
-      color: 'blue',
-      },
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: 'blue',
+  },
 });
 
 export default Analysis_PS;

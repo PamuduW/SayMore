@@ -84,7 +84,11 @@ export default function EditProfileScreen({ navigation }) {
   }
 
   return (
-    <LinearGradient colors={theme === 'dark' ? ['#3A3A3A', '#3A3A3A'] : ['#577BC1', '#577BC1']} style={styles.container}>
+    <LinearGradient
+      colors={
+        theme === 'dark' ? ['#3A3A3A', '#3A3A3A'] : ['#577BC1', '#577BC1']
+      }
+      style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollArea}>
         <Text style={styles.header}>Edit Profile</Text>
 
@@ -138,7 +142,11 @@ export default function EditProfileScreen({ navigation }) {
 
         {/* Save Changes Button */}
         <TouchableOpacity onPress={handleSave} style={{ marginBottom: 15 }}>
-          <LinearGradient colors={theme === 'dark' ? ['#2B2B2B', '#3A3A3A'] : ['#577BC1', '#577BC1']} style={styles.button}>
+          <LinearGradient
+            colors={
+              theme === 'dark' ? ['#2B2B2B', '#3A3A3A'] : ['#577BC1', '#577BC1']
+            }
+            style={styles.button}>
             <Text style={styles.buttonText}>Save Changes</Text>
           </LinearGradient>
         </TouchableOpacity>
