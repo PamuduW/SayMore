@@ -1,68 +1,77 @@
-import openai as genai  # Changed from google.generativeai to openai
-import speech_recognition as sr
-import os
-from dotenv import load_dotenv
+import streamlit as st
 import tempfile
+import speech_recognition as sr
+import google.generativeai as genai
+from dotenv import load_dotenv
+import os
+import json
 
-# Load API key from .env file
+# Load .env variables (make sure you have GEMINI_API_KEY in your .env)
 load_dotenv()
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 
-# Configure OpenAI
-genai.api_key = GEMINI_API_KEY
+# Configure Gemini API
+genai.configure(api_key=GEMINI_API_KEY)
 
-def transcribe_audio(file_path):
-    """Transcribes an audio file using Google Speech Recognition."""
+# Streamlit app
+st.title("Audio Stutter Analysis with Gemini AI")
+
+uploaded_file = st.file_uploader("Upload a .wav file", type=["wav"])
+
+if uploaded_file is not None:
+    with tempfile.NamedTemporaryFile(delete=False, suffix=".wav") as tmp_file:
+        tmp_file.write(uploaded_file.read())
+        tmp_file_path = tmp_file.name
+
     recognizer = sr.Recognizer()
-    with sr.AudioFile(file_path) as source:
+    with sr.AudioFile(tmp_file_path) as source:
         audio_data = recognizer.record(source)
         try:
-            return recognizer.recognize_google(audio_data)
+            transcript = recognizer.recognize_google(audio_data)
+            st.subheader("Transcript")
+            st.write(transcript)
         except Exception as e:
-            print(f"Error transcribing audio: {e}")
-            return ""
+            st.error(f"Error transcribing audio: {e}")
+            transcript = ""
 
-def analyze_stuttering(transcript):
-    """Sends the transcript to OpenAI for stuttering analysis."""
-    if not transcript:
-        return "No transcript available."
+    if transcript:
+        # Gemini system instructions (Prompt Engineering)
+        prompt = f"""
+        You are an expert speech-language pathologist. Analyze the following transcript for signs of stuttering.
 
-    system_prompt = (
-        "You are an expert in speech and language pathology specializing in stuttering detection. "
-        "You will be provided with a transcript of a spoken audio file. Your task is to analyze the transcript "
-        "to detect signs of stuttering, including clinical stuttering patterns such as sound repetitions, syllable repetitions, "
-        "word repetitions, prolongations, and blocks (silent pauses within words). Additionally, identify signs of cluttering "
-        "(excessively fast or irregular speech) if present. Use linguistic analysis to detect and classify stuttering patterns. "
-        "Also, determine the language of the transcript. "
-        "Return the result in JSON format with these keys: "
-        "'language': Detected language, "
-        "'stutter_count': Total number of stutters detected, "
-        "'stuttered_words': List of words/phrases that were stuttered with type, "
-        "'cluttering_detected': Boolean (true/false), "
-        "'fluency_score': Score (0-100) for speech fluency, "
-        "'confidence_score': Score (0-1) for analysis certainty."
-    )
+        Look for:
+        - Sound repetitions
+        - Syllable repetitions
+        - Word repetitions
+        - Prolongations
+        - Blocks (silent pauses)
+        - Signs of cluttering (fast/irregular speech)
 
-    try:
-        response = genai.Completion.create(
-            engine="text-davinci-003",
-            prompt=f"{system_prompt}\n\n{transcript}",
-            max_tokens=500
-        )
-        return response.choices[0].text.strip()
-    except Exception as e:
-        return f"Error processing OpenAI response: {e}"
+        Also, detect the language and assign a fluency score (0-100).
 
-if __name__ == "__main__":
-    file_path = input("Enter the path to your WAV file: ").strip()
+        Return JSON with:
+        {{
+            "language": ...,
+            "stutter_count": ...,
+            "stuttered_words": [...],
+            "cluttering_detected": true/false,
+            "fluency_score": ...,
+            "confidence_score": ...
+        }}
 
-    if not os.path.exists(file_path):
-        print("Error: File not found.")
-    else:
-        print("Transcribing audio...")
-        transcript = transcribe_audio(file_path)
-        print("\nTranscript:\n", transcript)
+        Transcript:
+        \"\"\"{transcript}\"\"\"
+        """
 
-        print("\nAnalyzing for stuttering...")
-        analysis = analyze_stuttering(transcript)
-        print("\nStuttering Analysis Result:\n", analysis)
+        try:
+            model = genai.GenerativeModel('gemini-pro')
+            response = model.generate_content(prompt)
+            st.subheader("Gemini AI Analysis")
+            try:
+                # Try to parse JSON response if possible
+                response_json = json.loads(response.text)
+                st.json(response_json)
+            except:
+                st.write(response.text)
+        except Exception as e:
+            st.error(f"Error with Gemini API: {e}")
