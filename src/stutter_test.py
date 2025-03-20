@@ -1,7 +1,6 @@
-import streamlit as st
 import tempfile
 import speech_recognition as sr
-import google.generativeai as genai
+import openai as genai  # Assuming you're using OpenAI for the analysis, or you can replace it with your actual Gemini API
 import json
 import os
 from dotenv import load_dotenv
@@ -10,30 +9,27 @@ from dotenv import load_dotenv
 load_dotenv()
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 
-# Configure Gemini API
-genai.configure(api_key=GEMINI_API_KEY)
+# Configure OpenAI (or Gemini)
+genai.api_key = GEMINI_API_KEY
 
-st.title("Audio Stutter Analysis with Gemini")
+# Replace this with the path to your audio file
+audio_file_path = "path_to_your_audio_file.wav"
 
-uploaded_file = st.file_uploader("Upload a .wav file", type=["wav"])
-
-if uploaded_file is not None:
-    with tempfile.NamedTemporaryFile(delete=False, suffix=".wav") as tmp_file:
-        tmp_file.write(uploaded_file.read())
-        tmp_file_path = tmp_file.name
-
+def analyze_audio_stutter(audio_file_path):
+    # Initialize recognizer
     recognizer = sr.Recognizer()
-    with sr.AudioFile(tmp_file_path) as source:
+    with sr.AudioFile(audio_file_path) as source:
         audio_data = recognizer.record(source)
         try:
             transcript = recognizer.recognize_google(audio_data)
-            st.subheader("Transcript")
-            st.write(transcript)
+            print("Transcript:")
+            print(transcript)
         except Exception as e:
-            st.error(f"Error transcribing audio: {e}")
+            print(f"Error transcribing audio: {e}")
             transcript = ""
 
     if transcript:
+        # System prompt to analyze stuttering
         system_prompt = (
             "You are an expert in speech and language pathology specializing in stuttering detection. "
             "Analyze the following transcript to detect signs of stuttering (e.g., repetitions, prolongations, blocks) "
@@ -49,15 +45,22 @@ if uploaded_file is not None:
         )
 
         try:
-            model = genai.GenerativeModel('gemini-pro')
-            response = model.generate_content(system_prompt)
-            json_output = response.text.strip()
+            # Call the Gemini (or OpenAI) API
+            response = genai.Completion.create(
+                engine="text-davinci-003",  # Or the engine you're using
+                prompt=system_prompt,
+                max_tokens=500
+            )
+            json_output = response.choices[0].text.strip()
             try:
                 parsed_json = json.loads(json_output)
-            except:
+            except Exception as e:
                 parsed_json = {"raw_output": json_output}
 
-            st.subheader("Gemini Analysis")
-            st.json(parsed_json)
+            print("\nGemini Analysis:")
+            print(json.dumps(parsed_json, indent=4))
         except Exception as e:
-            st.error(f"Error with Gemini API: {e}")
+            print(f"Error with Gemini API: {e}")
+
+# Call the function
+analyze_audio_stutter(audio_file_path)
