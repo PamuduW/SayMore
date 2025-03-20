@@ -9,11 +9,10 @@ const QuizzesNavScreen = () => {
   const theme = useTheme();
 
   const navigateToPublicSpeaking = () => {
-    navigation.navigate('Difficulty', { type: 'PublicSpeaking' }); // Public Speaking goes to Difficulty screen
+    navigation.navigate('Difficulty', { type: 'PublicSpeaking' });
   };
 
   const navigateToStuttering = () => {
-    // Directly navigate to StutteringQuestionScreen with the default set_name
     navigation.navigate('StutteringQuestionScreen', {
       set_name: 'relaxation techniques',
     });
@@ -21,27 +20,29 @@ const QuizzesNavScreen = () => {
 
   return (
     <LinearGradient
-      colors={
-        theme === 'dark' ? ['#1C1C1C', '#3A3A3A'] : ['#2A2D57', '#577BC1']
-      }
+      colors={theme === 'dark' ? ['#1C1C1C', '#3A3A3A'] : ['#2A2D57', '#577BC1']}
       style={styles.container}>
-      <Text style={styles.title}>Quizzes And Challenges</Text>
+
+      <Text style={styles.title}>Quizzes & Challenges</Text>
+
+      {/* Public Speaking Card */}
       <View style={styles.card}>
         <Image source={require('../assets/quiznav.jpg')} style={styles.image} />
-        <View style={styles.buttonContainer}>
-          <TouchableOpacity
-            style={styles.button}
-            onPress={navigateToPublicSpeaking}>
-            <Text style={styles.buttonText}>Public Speaking</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            style={styles.button}
-            onPress={navigateToStuttering}>
-            <Text style={styles.buttonText}>Stuttering</Text>
-          </TouchableOpacity>
-        </View>
+        <Text style={styles.cardTitle}>Public Speaking</Text>
+        <TouchableOpacity style={styles.button} onPress={navigateToPublicSpeaking}>
+          <Text style={styles.buttonText}>Start</Text>
+        </TouchableOpacity>
       </View>
+
+      {/* Stuttering Card */}
+      <View style={styles.card}>
+        <Image source={require('../assets/stutterquiz.png')} style={styles.image} />
+        <Text style={styles.cardTitle}>Stuttering</Text>
+        <TouchableOpacity style={styles.button} onPress={navigateToStuttering}>
+          <Text style={styles.buttonText}>Start</Text>
+        </TouchableOpacity>
+      </View>
+
     </LinearGradient>
   );
 };
@@ -53,22 +54,24 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   title: {
-    fontSize: 22,
+    fontSize: 24,
     fontWeight: 'bold',
     color: '#FFFFFF',
-    marginBottom: 20,
-    alignSelf: 'flex-start',
+    marginBottom: 30,
+    alignSelf: 'center',
   },
   card: {
     backgroundColor: '#FFFFFF',
     borderRadius: 25,
     padding: 25,
+    width: '100%',
     alignItems: 'center',
+    marginBottom: 25,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.2,
-    shadowRadius: 5,
-    elevation: 6,
+    shadowOffset: { width: 0, height: 5 },
+    shadowOpacity: 0.15,
+    shadowRadius: 8,
+    elevation: 8,
   },
   image: {
     width: 250,
@@ -76,26 +79,27 @@ const styles = StyleSheet.create({
     marginBottom: 15,
     resizeMode: 'contain',
   },
-  buttonContainer: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    gap: 15,
+  cardTitle: {
+    fontSize: 18,
+    fontWeight: '700',
+    color: '#2A2D57',
+    marginBottom: 15,
   },
   button: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#3B5998',
     paddingVertical: 12,
-    paddingHorizontal: 20,
+    paddingHorizontal: 35,
     borderRadius: 20,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
+    shadowOffset: { width: 0, height: 3 },
     shadowOpacity: 0.2,
-    shadowRadius: 3,
-    elevation: 3,
+    shadowRadius: 4,
+    elevation: 4,
   },
   buttonText: {
-    fontSize: 14,
+    fontSize: 15,
     fontWeight: 'bold',
-    color: '#2A2D57',
+    color: '#FFFFFF',
   },
 });
 

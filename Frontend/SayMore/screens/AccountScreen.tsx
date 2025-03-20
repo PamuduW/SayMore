@@ -121,7 +121,6 @@ export default function AccountScreen() {
           <ActivityIndicator size="large" color="#2A2D57" />
         ) : (
           <>
-            {/* Username Display */}
             <Text
               style={
                 theme === 'dark' ? styles.darkUsername : styles.lightUsername
@@ -129,7 +128,6 @@ export default function AccountScreen() {
               {userData?.username || 'Username'}
             </Text>
 
-            {/* Full Name Display */}
             <Text
               style={
                 theme === 'dark' ? styles.darkNameText : styles.lightNameText
@@ -141,7 +139,7 @@ export default function AccountScreen() {
 
         <View style={styles.menuContainer}>
           {['Account Details', 'Settings'].map((item, index) => (
-            <Animated.View
+            <LinearGradient
               key={index}
               colors={
                 theme === 'dark'
@@ -150,24 +148,27 @@ export default function AccountScreen() {
               }
               start={{ x: 0, y: 0 }}
               end={{ x: 1, y: 1 }}
-              style={styles.menuItemWrapper}>
-              <TouchableOpacity
-                style={styles.menuItem}
-                onPress={() => {
-                  if (item === 'Settings') {
-                    navigation.navigate('SettingsScreen');
-                  }
-                  if (item === 'Account Details') {
-                    navigation.navigate('EditProfileScreen', { userData });
-                  }
-                }}>
-                <Text style={styles.menuText}>{item}</Text>
-              </TouchableOpacity>
+              style={styles.menuItemWrapper}
+            >
+              <Animated.View>
+                <TouchableOpacity
+                  style={styles.menuItem}
+                  onPress={() => {
+                    if (item === 'Settings') {
+                      navigation.navigate('SettingsScreen');
+                    }
+                    if (item === 'Account Details') {
+                      navigation.navigate('EditProfileScreen', { userData });
+                    }
+                  }}
+                >
+                  <Text style={styles.menuText}>{item}</Text>
+                </TouchableOpacity>
+              </Animated.View>
             </LinearGradient>
           ))}
         </View>
 
-        {/* Gradient Logout Button */}
         <LinearGradient
           colors={['#e74c3c', '#c0392b']}
           style={styles.logoutButtonWrapper}>
@@ -263,12 +264,6 @@ const styles = StyleSheet.create({
   },
   menuContainer: { width: '100%', alignItems: 'center', marginBottom: 25 },
   menuItemWrapper: {
-    borderRadius: 20,
-    marginBottom: 20,
-    width: '100%',
-  },
-
-  menuItemWrapper: {
     borderRadius: 18,
     width: '100%',
     shadowColor: '#000',
@@ -276,13 +271,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.15,
     shadowRadius: 8,
     elevation: 10,
-  },
-
-  menuItem: {
-    paddingVertical: 16,
-    alignItems: 'center',
-    width: '100%',
-    borderRadius: 18,
+    marginBottom: 20,
   },
   menuItem: {
     paddingVertical: 14,
