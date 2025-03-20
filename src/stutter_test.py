@@ -1,28 +1,31 @@
 import streamlit as st
 import tempfile
 import speech_recognition as sr
-import openai as genai  # Changed from google.generativeai to openai
-from dotenv import load_dotenv
-import os
+import google.generativeai as genai
 import json
+import os
+from dotenv import load_dotenv
 
-# Load .env variables (make sure you have GEMINI_API_KEY in your .env)
+# Load environment variables (for your Gemini API key)
 load_dotenv()
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 
-# Configure OpenAI
-genai.api_key = GEMINI_API_KEY
+# Configure Gemini client
+genai.configure(api_key=GEMINI_API_KEY)
+model = genai.GenerativeModel('gemini-pro')
 
-# Streamlit app
-st.title("Audio Stutter Analysis with OpenAI")
+st.title("Audio Stutter Analysis with Gemini")
 
+# Upload audio
 uploaded_file = st.file_uploader("Upload a .wav file", type=["wav"])
 
 if uploaded_file is not None:
+    # Save the audio file temporarily
     with tempfile.NamedTemporaryFile(delete=False, suffix=".wav") as tmp_file:
         tmp_file.write(uploaded_file.read())
         tmp_file_path = tmp_file.name
 
+    # Transcribe using SpeechRecognition
     recognizer = sr.Recognizer()
     with sr.AudioFile(tmp_file_path) as source:
         audio_data = recognizer.record(source)
@@ -35,46 +38,31 @@ if uploaded_file is not None:
             transcript = ""
 
     if transcript:
-        # OpenAI system instructions (Prompt Engineering)
-        prompt = f"""
-        You are an expert speech-language pathologist. Analyze the following transcript for signs of stuttering.
-
-        Look for:
-        - Sound repetitions
-        - Syllable repetitions
-        - Word repetitions
-        - Prolongations
-        - Blocks (silent pauses)
-        - Signs of cluttering (fast/irregular speech)
-
-        Also, detect the language and assign a fluency score (0-100).
-
-        Return JSON with:
-        {{
-            "language": ...,
-            "stutter_count": ...,
-            "stuttered_words": [...],
-            "cluttering_detected": true/false,
-            "fluency_score": ...,
-            "confidence_score": ...
-        }}
-
-        Transcript:
-        \"\"\"{transcript}\"\"\"
-        """
+        # Gemini analysis prompt
+        system_prompt = (
+            "You are an expert in speech and language pathology specializing in stuttering detection. "
+            "Analyze the following transcript to detect signs of stuttering (e.g., repetitions, prolongations, blocks) "
+            "and cluttering (irregular or fast speech patterns). "
+            "Return a JSON object with the following keys:\n"
+            "- 'language': detected language\n"
+            "- 'stutter_count': total stutter events\n"
+            "- 'stuttered_words': list of stuttered words or phrases with stutter type\n"
+            "- 'cluttering_detected': true/false\n"
+            "- 'fluency_score': score from 0 to 100 (higher = better fluency)\n"
+            "- 'confidence_score': score from 0 to 1 (certainty of your analysis)\n\n"
+            f"Transcript: '''{transcript}'''"
+        )
 
         try:
-            response = genai.Completion.create(
-                engine="text-davinci-003",
-                prompt=prompt,
-                max_tokens=500
-            )
-            st.subheader("OpenAI Analysis")
+            response = model.generate_content(system_prompt)
+            # Gemini gives plain text, so we try to parse JSON from it
+            json_output = response.text.strip()
             try:
-                # Try to parse JSON response if possible
-                response_json = json.loads(response.choices[0].text.strip())
-                st.json(response_json)
+                parsed_json = json.loads(json_output)
             except:
-                st.write(response.choices[0].text.strip())
+                parsed_json = {"raw_output": json_output}
+
+            st.subheader("Gemini Analysis")
+            st.json(parsed_json)
         except Exception as e:
-            st.error(f"Error with OpenAI API: {e}")
+            st.error(f"Error with Gemini API: {e}")
