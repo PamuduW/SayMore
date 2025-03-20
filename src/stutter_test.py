@@ -1,66 +1,80 @@
 import tempfile
 import speech_recognition as sr
-import openai  # Assuming you're using OpenAI for the analysis
+import requests  # For API requests to Gemini
 import json
 import os
 from dotenv import load_dotenv
+from google import genai
 
-# Load environment variables (for your OpenAI API key)
+# Load environment variables (API key will be retrieved from .env file)
 load_dotenv()
-OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 
-# Configure OpenAI
-openai.api_key = OPENAI_API_KEY
+# Gemini API Key loaded from environment variables (or hardcoded for testing)
+GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 
-# Replace this with the path to your audio file
-audio_file_path = "path_to_your_audio_file.wav"
+# Check if the API key is loaded
+if not GEMINI_API_KEY:
+    print("Error: Gemini API key not found in .env file. Make sure you have a .env file in the correct directory.")
+    exit()
 
+# Audio file path
+audio_file_path = "D:\\Downloads\\d.wav"  # Ensure to use raw string or double backslashes for file path
+
+
+# Initialize the Google Gemini client with the API key
+client = genai.Client(api_key="AIzaSyATh0uB7jh2EFpkVePJwdgX85daKn3zoho")
+
+
+# Function to analyze audio stutter using the Gemini API
 def analyze_audio_stutter(audio_file_path):
-    # Initialize recognizer
+    print(f"Using Gemini API Key: {GEMINI_API_KEY}")  # Debugging: Verify API Key
+
     recognizer = sr.Recognizer()
-    with sr.AudioFile(audio_file_path) as source:
-        audio_data = recognizer.record(source)
-        try:
-            transcript = recognizer.recognize_google(audio_data)
-            print("Transcript:")
-            print(transcript)
-        except Exception as e:
-            print(f"Error transcribing audio: {e}")
-            transcript = ""
+    try:
+        with sr.AudioFile(audio_file_path) as source:
+            audio_data = recognizer.record(source)
+            try:
+                transcript = recognizer.recognize_google(audio_data)
+                print("Transcript:")
+                print(transcript)
+            except sr.UnknownValueError:
+                print("Speech Recognition could not understand audio")
+                transcript = ""
+            except sr.RequestError as e:
+                print(f"Could not request results from Speech Recognition service; {e}")
+                transcript = ""
+    except FileNotFoundError:
+        print(f"Error: Audio file not found at {audio_file_path}")
+        return  # Exit if the file doesn't exist
 
     if transcript:
-        # System prompt to analyze stuttering
-        system_prompt = (
-            "You are an expert in speech and language pathology specializing in stuttering detection. "
-            "Analyze the following transcript to detect signs of stuttering (e.g., repetitions, prolongations, blocks) "
-            "and cluttering (irregular or fast speech patterns). "
-            "Return a JSON object with the following keys:\n"
-            "- 'language': detected language\n"
-            "- 'stutter_count': total stutter events\n"
-            "- 'stuttered_words': list of stuttered words or phrases with stutter type\n"
-            "- 'cluttering_detected': true/false\n"
-            "- 'fluency_score': score from 0 to 100 (higher = better fluency)\n"
-            "- 'confidence_score': score from 0 to 1 (certainty of your analysis)\n\n"
-            f"Transcript: '''{transcript}'''"
-        )
+        # Constructing the request payload for Gemini API
+        payload = {
+            "text": transcript,  # Assuming the Gemini API accepts the transcript text
+            "api_key": GEMINI_API_KEY,
+            "task": "stuttering_analysis"  # Assuming the Gemini API has a stuttering analysis task
+        }
 
         try:
-            # Call the OpenAI API
-            response = openai.Completion.create(
-                engine="text-davinci-003",  # Or the engine you're using
-                prompt=system_prompt,
-                max_tokens=500
-            )
-            json_output = response.choices[0].text.strip()
-            try:
-                parsed_json = json.loads(json_output)
-            except json.JSONDecodeError:
-                parsed_json = {"raw_output": json_output}
+            # Send the request to Gemini API (adjust URL to actual endpoint)
+            response = requests.post("https://api.gemini.com/analyze", json=payload)
 
-            print("\nOpenAI Analysis:")
-            print(json.dumps(parsed_json, indent=4))
-        except Exception as e:
-            print(f"Error with OpenAI API: {e}")
+            if response.status_code == 200:
+                # Assuming the API returns a JSON response
+                gemini_analysis = response.json()
 
-# Call the function
+                print("\nGemini Analysis:")
+                print(json.dumps(gemini_analysis, indent=4))
+            else:
+                print(f"Error from Gemini API: {response.status_code} - {response.text}")
+
+        except requests.exceptions.RequestException as e:
+            print(f"Request Error: {e}")
+    else:
+        print("No transcript to analyze.")
+
+
+# Call the function to analyze stutter
 analyze_audio_stutter(audio_file_path)
+
+
