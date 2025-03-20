@@ -1,7 +1,7 @@
 import streamlit as st
 import tempfile
 import speech_recognition as sr
-import google.generativeai as genai
+import openai as genai  # Changed from google.generativeai to openai
 from dotenv import load_dotenv
 import os
 import json
@@ -10,11 +10,11 @@ import json
 load_dotenv()
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 
-# Configure Gemini API
-genai.configure(api_key=GEMINI_API_KEY)
+# Configure OpenAI
+genai.api_key = GEMINI_API_KEY
 
 # Streamlit app
-st.title("Audio Stutter Analysis with Gemini AI")
+st.title("Audio Stutter Analysis with OpenAI")
 
 uploaded_file = st.file_uploader("Upload a .wav file", type=["wav"])
 
@@ -35,7 +35,7 @@ if uploaded_file is not None:
             transcript = ""
 
     if transcript:
-        # Gemini system instructions (Prompt Engineering)
+        # OpenAI system instructions (Prompt Engineering)
         prompt = f"""
         You are an expert speech-language pathologist. Analyze the following transcript for signs of stuttering.
 
@@ -64,14 +64,17 @@ if uploaded_file is not None:
         """
 
         try:
-            model = genai.GenerativeModel('gemini-pro')
-            response = model.generate_content(prompt)
-            st.subheader("Gemini AI Analysis")
+            response = genai.Completion.create(
+                engine="text-davinci-003",
+                prompt=prompt,
+                max_tokens=500
+            )
+            st.subheader("OpenAI Analysis")
             try:
                 # Try to parse JSON response if possible
-                response_json = json.loads(response.text)
+                response_json = json.loads(response.choices[0].text.strip())
                 st.json(response_json)
             except:
-                st.write(response.text)
+                st.write(response.choices[0].text.strip())
         except Exception as e:
-            st.error(f"Error with Gemini API: {e}")
+            st.error(f"Error with OpenAI API: {e}")
