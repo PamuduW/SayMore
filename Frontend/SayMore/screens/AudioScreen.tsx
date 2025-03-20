@@ -20,7 +20,7 @@ const AudioScreen: React.FC<AudioScreenProps> = ({ route }) => {
       <View style={styles.container}>
         {/* White Panel for Language Selection */}
         <View style={styles.whitePanel}>
-          <Text style={styles.headerText}>Select a Language:</Text>
+          <Text style={styles.headerText}>Select a Language</Text>
           <View style={styles.buttonGroup}>
             <TouchableOpacity
               style={styles.button}
@@ -62,11 +62,11 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#08405e',
+    backgroundColor: '#007AFF',
   },
   whitePanel: {
-    width: '70%',
-    height: '100%',
+    width: '75%',
+    height: '50%',
     padding: 20,
     backgroundColor: '#fff',
     alignItems: 'center',
@@ -108,8 +108,9 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginBottom: 20,
     marginTop: 20,
-    color: '#fff',
+    color: '#000',
     textAlign: 'center',
+    color: '#007AFF',
   },
   subText: {
     fontSize: 18,

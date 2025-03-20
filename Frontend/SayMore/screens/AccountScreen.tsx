@@ -36,11 +36,6 @@ export default function AccountScreen() {
     ).start();
   }, [borderAnimation]);
 
-  const borderInterpolation = borderAnimation.interpolate({
-    inputRange: [0, 1],
-    outputRange: ['#2D336B', '#7886C7'],
-  });
-
   const fetchUserData = async (showLoader = true) => {
     try {
       if (showLoader) setLoading(true);
@@ -270,6 +265,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.15,
     shadowRadius: 8,
     elevation: 10,
+    marginBottom: 15,
   },
   menuItem: {
     paddingVertical: 14,
