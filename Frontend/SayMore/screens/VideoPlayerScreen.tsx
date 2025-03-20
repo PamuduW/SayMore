@@ -59,7 +59,6 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = ({
   route,
   navigation,
 }) => {
-
   const theme = useTheme();
   const isFocused = useIsFocused();
   const { video, lessonTitle } = route.params;
@@ -1003,10 +1002,12 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = ({
   return (
     <SafeAreaView style={styles.safeArea}>
       <StatusBar barStyle="dark-content" backgroundColor="#F0F8FF" />
-      <View style={theme === 'dark'? styles.darkContainer:styles.container}>
+      <View style={theme === 'dark' ? styles.darkContainer : styles.container}>
         <View style={styles.header}>
           <TouchableOpacity
-            style={theme === 'light' ? styles.lightBackButton : styles.backButton}
+            style={
+              theme === 'light' ? styles.lightBackButton : styles.backButton
+            }
             onPress={() => {
               checkPlayDuration();
               checkWatchingProgress();
@@ -1015,7 +1016,14 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = ({
               }
               navigation.goBack();
             }}>
-            <Text style={theme === 'dark'? styles.darkBackButtonText:styles.lightBackButtonText}>←</Text>
+            <Text
+              style={
+                theme === 'dark'
+                  ? styles.darkBackButtonText
+                  : styles.lightBackButtonText
+              }>
+              ←
+            </Text>
           </TouchableOpacity>
           <View style={styles.headerTextContainer}>
             <Text
@@ -1189,53 +1197,53 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: '#E1EEFB',
   },
-    lightBackButton: {
-      width: 48,
-      height: 48,
-      backgroundColor: '#E6F7FF',
-      borderRadius: 12,
-      justifyContent: 'center',
-      alignItems: 'center',
-      shadowColor: '#000',
-      shadowOffset: { width: 0, height: 2 },
-      shadowOpacity: 0.2,
-      shadowRadius: 3,
-      elevation: 4,
-    },
-    darkBackButton: {
-      width: 48,
-      height: 48,
-      backgroundColor: '#FFF',
-      borderRadius: 12,
-      justifyContent: 'center',
-      alignItems: 'center',
-      shadowColor: '#000',
-      shadowOffset: { width: 0, height: 2 },
-      shadowOpacity: 0.2,
-      shadowRadius: 3,
-      elevation: 4,
-    },
+  lightBackButton: {
+    width: 48,
+    height: 48,
+    backgroundColor: '#E6F7FF',
+    borderRadius: 12,
+    justifyContent: 'center',
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 3,
+    elevation: 4,
+  },
+  darkBackButton: {
+    width: 48,
+    height: 48,
+    backgroundColor: '#FFF',
+    borderRadius: 12,
+    justifyContent: 'center',
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 3,
+    elevation: 4,
+  },
 
-    lightBackButtonText: {
-      fontSize: 28,
-      fontWeight: 'bold',
-      color: '#2C3E50',
-      textAlign: 'center',
-      textAlignVertical: 'center',
-      includeFontPadding: false,
-      paddingBottom: 2, // Fine-tune vertical centering
-      lineHeight: 32, // Control line height to center text
-    },
-    darkBackButtonText: {
-      fontSize: 28,
-      fontWeight: 'bold',
-      color: '#000',
-      textAlign: 'center',
-      textAlignVertical: 'center',
-      includeFontPadding: false,
-      paddingBottom: 2,
-      lineHeight: 32,
-    },
+  lightBackButtonText: {
+    fontSize: 28,
+    fontWeight: 'bold',
+    color: '#2C3E50',
+    textAlign: 'center',
+    textAlignVertical: 'center',
+    includeFontPadding: false,
+    paddingBottom: 2, // Fine-tune vertical centering
+    lineHeight: 32, // Control line height to center text
+  },
+  darkBackButtonText: {
+    fontSize: 28,
+    fontWeight: 'bold',
+    color: '#000',
+    textAlign: 'center',
+    textAlignVertical: 'center',
+    includeFontPadding: false,
+    paddingBottom: 2,
+    lineHeight: 32,
+  },
   headerTextContainer: {
     flex: 1,
     marginLeft: 12,

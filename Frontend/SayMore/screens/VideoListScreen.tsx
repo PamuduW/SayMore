@@ -99,10 +99,20 @@ const VideoListScreen = () => {
           <Image source={{ uri: item.thumbnail }} style={styles.thumbnail} />
         ) : (
           <View style={styles.noThumbnail}>
-            <Text style={theme === 'dark'? styles.noThumbnailText : styles.darkNoThumbnailText}>No Thumbnail</Text>
+            <Text
+              style={
+                theme === 'dark'
+                  ? styles.noThumbnailText
+                  : styles.darkNoThumbnailText
+              }>
+              No Thumbnail
+            </Text>
           </View>
         )}
-        <Text style={theme === 'dark' ? styles.darkVideoTitle:styles.videoTitle}>{item.title}</Text>
+        <Text
+          style={theme === 'dark' ? styles.darkVideoTitle : styles.videoTitle}>
+          {item.title}
+        </Text>
       </TouchableOpacity>
     ),
     [handleVideoPress]
@@ -113,17 +123,33 @@ const VideoListScreen = () => {
       <View style={theme === 'dark' ? styles.darkContainer : styles.container}>
         <View style={theme === 'dark' ? styles.header : styles.header}>
           <TouchableOpacity
-            style={theme === 'dark' ? styles.darkBackButton : styles.lightBackButton}
+            style={
+              theme === 'dark' ? styles.darkBackButton : styles.lightBackButton
+            }
             onPress={() => navigation.goBack()}>
-            <Text style={theme === 'dark' ? styles.darkBackButtonText:styles.lightBackButtonText}>←</Text>
+            <Text
+              style={
+                theme === 'dark'
+                  ? styles.darkBackButtonText
+                  : styles.lightBackButtonText
+              }>
+              ←
+            </Text>
           </TouchableOpacity>
           <View style={styles.titleContainer}>
-            <Text style={theme === 'dark' ? styles.darkTitle : styles.title}>{lesson.title}</Text>
+            <Text style={theme === 'dark' ? styles.darkTitle : styles.title}>
+              {lesson.title}
+            </Text>
           </View>
         </View>
 
         {loading ? (
-          <View style={theme === 'dark' ? styles.darkLoadingContainer : styles.loadingContainer}>
+          <View
+            style={
+              theme === 'dark'
+                ? styles.darkLoadingContainer
+                : styles.loadingContainer
+            }>
             <ActivityIndicator size="large" color="#003366" />
           </View>
         ) : (

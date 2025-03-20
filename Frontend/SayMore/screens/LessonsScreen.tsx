@@ -121,18 +121,40 @@ const LessonsScreen: React.FC<LessonsScreenProps> = () => {
   return (
     <SafeAreaView style={styles.safeArea}>
       <ScrollView>
-        <View style={theme === 'dark' ? styles.darkContainer : styles.lightContainer}>
+        <View
+          style={
+            theme === 'dark' ? styles.darkContainer : styles.lightContainer
+          }>
           <View style={styles.headerContainer}>
             <TouchableOpacity
-              style={theme === 'dark' ? styles.darkBackButton : styles.lightBackButton}
+              style={
+                theme === 'dark'
+                  ? styles.darkBackButton
+                  : styles.lightBackButton
+              }
               onPress={handleBackPress}>
-              <Text style={theme === 'dark' ? styles.darkBackButtonText:styles.lightBackButtonText}>←</Text>
+              <Text
+                style={
+                  theme === 'dark'
+                    ? styles.darkBackButtonText
+                    : styles.lightBackButtonText
+                }>
+                ←
+              </Text>
             </TouchableOpacity>
             <View style={styles.headerTextContainer}>
-              <Text style={theme === 'dark' ? styles.darkHeaderText:styles.lightHeaderText}>Hi {firstName},</Text>
+              <Text
+                style={
+                  theme === 'dark'
+                    ? styles.darkHeaderText
+                    : styles.lightHeaderText
+                }>
+                Hi {firstName},
+              </Text>
             </View>
           </View>
-          <Text style={theme === 'dark' ? styles.darkSubText : styles.lightSubText}>
+          <Text
+            style={theme === 'dark' ? styles.darkSubText : styles.lightSubText}>
             Unlock your potential as a confident speaker. Explore our
             educational videos, tips, and techniques designed to help you
             overcome stuttering, build confidence, and communicate with clarity
@@ -142,7 +164,12 @@ const LessonsScreen: React.FC<LessonsScreenProps> = () => {
             {lessons.map((lesson, index) => (
               <TouchableOpacity
                 key={index}
-                style={[theme === 'dark'? styles.darkLessonButton: styles.lightLessonButton, { width: itemWidth }]}
+                style={[
+                  theme === 'dark'
+                    ? styles.darkLessonButton
+                    : styles.lightLessonButton,
+                  { width: itemWidth },
+                ]}
                 onPress={() => handleLessonPress(lesson)}>
                 <View style={styles.imageContainer}>
                   <Image
@@ -151,7 +178,14 @@ const LessonsScreen: React.FC<LessonsScreenProps> = () => {
                     resizeMode="contain"
                   />
                 </View>
-                <Text style={theme === 'dark' ? styles.darkLessonText:styles.lightLessonText}>{lesson.title}</Text>
+                <Text
+                  style={
+                    theme === 'dark'
+                      ? styles.darkLessonText
+                      : styles.lightLessonText
+                  }>
+                  {lesson.title}
+                </Text>
               </TouchableOpacity>
             ))}
           </View>

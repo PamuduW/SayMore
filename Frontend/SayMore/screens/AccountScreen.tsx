@@ -36,7 +36,6 @@ export default function AccountScreen() {
     ).start();
   }, [borderAnimation]);
 
-
   const fetchUserData = async (showLoader = true) => {
     try {
       if (showLoader) setLoading(true);
