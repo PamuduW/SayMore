@@ -1,16 +1,16 @@
 import tempfile
 import speech_recognition as sr
-import openai as genai  # Assuming you're using OpenAI for the analysis, or you can replace it with your actual Gemini API
+import openai  # Assuming you're using OpenAI for the analysis
 import json
 import os
 from dotenv import load_dotenv
 
-# Load environment variables (for your Gemini API key)
+# Load environment variables (for your OpenAI API key)
 load_dotenv()
-GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 
-# Configure OpenAI (or Gemini)
-genai.api_key = GEMINI_API_KEY
+# Configure OpenAI
+openai.api_key = OPENAI_API_KEY
 
 # Replace this with the path to your audio file
 audio_file_path = "path_to_your_audio_file.wav"
@@ -45,8 +45,8 @@ def analyze_audio_stutter(audio_file_path):
         )
 
         try:
-            # Call the Gemini (or OpenAI) API
-            response = genai.Completion.create(
+            # Call the OpenAI API
+            response = openai.Completion.create(
                 engine="text-davinci-003",  # Or the engine you're using
                 prompt=system_prompt,
                 max_tokens=500
@@ -54,13 +54,13 @@ def analyze_audio_stutter(audio_file_path):
             json_output = response.choices[0].text.strip()
             try:
                 parsed_json = json.loads(json_output)
-            except Exception as e:
+            except json.JSONDecodeError:
                 parsed_json = {"raw_output": json_output}
 
-            print("\nGemini Analysis:")
+            print("\nOpenAI Analysis:")
             print(json.dumps(parsed_json, indent=4))
         except Exception as e:
-            print(f"Error with Gemini API: {e}")
+            print(f"Error with OpenAI API: {e}")
 
 # Call the function
 analyze_audio_stutter(audio_file_path)
