@@ -22,6 +22,7 @@ import { WatchedVideo } from '../types/types';
 import firestore from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
 import { throttle } from 'lodash';
+import { useTheme } from '../components/ThemeContext';
 
 type RootStackParamList = {
   VideoPlayer: {
@@ -58,6 +59,8 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = ({
   route,
   navigation,
 }) => {
+
+  const theme = useTheme();
   const isFocused = useIsFocused();
   const { video, lessonTitle } = route.params;
   const { width, height } = Dimensions.get('window');
@@ -1000,10 +1003,10 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = ({
   return (
     <SafeAreaView style={styles.safeArea}>
       <StatusBar barStyle="dark-content" backgroundColor="#F0F8FF" />
-      <View style={styles.container}>
+      <View style={theme === 'dark'? styles.darkContainer:styles.container}>
         <View style={styles.header}>
           <TouchableOpacity
-            style={styles.backButton}
+            style={theme === 'light' ? styles.lightBackButton : styles.backButton}
             onPress={() => {
               checkPlayDuration();
               checkWatchingProgress();
@@ -1012,7 +1015,7 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = ({
               }
               navigation.goBack();
             }}>
-            <Text style={styles.backButtonText}>←</Text>
+            <Text style={theme === 'dark'? styles.darkBackButtonText:styles.lightBackButtonText}>←</Text>
           </TouchableOpacity>
           <View style={styles.headerTextContainer}>
             <Text
@@ -1173,6 +1176,10 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#F0F8FF',
   },
+  darkContainer: {
+    flex: 1,
+    backgroundColor: '#2B2B2B',
+  },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -1182,29 +1189,53 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: '#E1EEFB',
   },
-  backButton: {
-    width: 48,
-    height: 48,
-    backgroundColor: '#E6F7FF',
-    borderRadius: 12,
-    justifyContent: 'center',
-    alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 3,
-    elevation: 4,
-  },
-  backButtonText: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    color: '#2C3E50',
-    textAlign: 'center',
-    textAlignVertical: 'center',
-    includeFontPadding: false,
-    paddingBottom: 2,
-    lineHeight: 32,
-  },
+    lightBackButton: {
+      width: 48,
+      height: 48,
+      backgroundColor: '#E6F7FF',
+      borderRadius: 12,
+      justifyContent: 'center',
+      alignItems: 'center',
+      shadowColor: '#000',
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: 0.2,
+      shadowRadius: 3,
+      elevation: 4,
+    },
+    darkBackButton: {
+      width: 48,
+      height: 48,
+      backgroundColor: '#FFF',
+      borderRadius: 12,
+      justifyContent: 'center',
+      alignItems: 'center',
+      shadowColor: '#000',
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: 0.2,
+      shadowRadius: 3,
+      elevation: 4,
+    },
+
+    lightBackButtonText: {
+      fontSize: 28,
+      fontWeight: 'bold',
+      color: '#2C3E50',
+      textAlign: 'center',
+      textAlignVertical: 'center',
+      includeFontPadding: false,
+      paddingBottom: 2, // Fine-tune vertical centering
+      lineHeight: 32, // Control line height to center text
+    },
+    darkBackButtonText: {
+      fontSize: 28,
+      fontWeight: 'bold',
+      color: '#000',
+      textAlign: 'center',
+      textAlignVertical: 'center',
+      includeFontPadding: false,
+      paddingBottom: 2,
+      lineHeight: 32,
+    },
   headerTextContainer: {
     flex: 1,
     marginLeft: 12,
