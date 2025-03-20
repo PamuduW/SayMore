@@ -1,4 +1,4 @@
-import google.generativeai as genai
+import openai as genai  # Changed from google.generativeai to openai
 import speech_recognition as sr
 import os
 from dotenv import load_dotenv
@@ -8,8 +8,8 @@ import tempfile
 load_dotenv()
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 
-# Configure Gemini AI
-genai.configure(api_key=GEMINI_API_KEY)
+# Configure OpenAI
+genai.api_key = GEMINI_API_KEY
 
 def transcribe_audio(file_path):
     """Transcribes an audio file using Google Speech Recognition."""
@@ -23,7 +23,7 @@ def transcribe_audio(file_path):
             return ""
 
 def analyze_stuttering(transcript):
-    """Sends the transcript to Gemini AI for stuttering analysis."""
+    """Sends the transcript to OpenAI for stuttering analysis."""
     if not transcript:
         return "No transcript available."
 
@@ -44,11 +44,14 @@ def analyze_stuttering(transcript):
     )
 
     try:
-        model = genai.GenerativeModel("gemini-pro")
-        response = model.generate_content([system_prompt, transcript])
-        return response.text
+        response = genai.Completion.create(
+            engine="text-davinci-003",
+            prompt=f"{system_prompt}\n\n{transcript}",
+            max_tokens=500
+        )
+        return response.choices[0].text.strip()
     except Exception as e:
-        return f"Error processing Gemini response: {e}"
+        return f"Error processing OpenAI response: {e}"
 
 if __name__ == "__main__":
     file_path = input("Enter the path to your WAV file: ").strip()
