@@ -33,6 +33,7 @@ import UserAccIcon from '../assets/useracc.png';
 import TermsAndConditionsScreen from '../screens/TermsAndConditionsScreen';
 import PrivacyCookiesScreen from '../screens/PrivacyCookiesScreen';
 import AppInfoScreen from '../screens/AppInfoScreen';
+import QandCProgressScreen from '../screens/QandCProgressScreen';
 
 // Navigators
 const Tab = createBottomTabNavigator();
@@ -74,6 +75,7 @@ const MoreStack = () => (
     />
     <Stack.Screen name="PointsScreen" component={PointsScreen} />
     <Stack.Screen name="SpeechTherapyScreen" component={SpeechTherapyScreen} />
+    <Stack.Screen name="QandCProgressScreen" component={QandCProgressScreen} />
   </Stack.Navigator>
 );
 

@@ -6,6 +6,7 @@ import {
   Image,
   StyleSheet,
   ScrollView,
+  Dimensions,
 } from 'react-native';
 import { NavigationProp } from '@react-navigation/native';
 import { useTheme } from '../components/ThemeContext';
@@ -14,7 +15,7 @@ import LinearGradient from 'react-native-linear-gradient';
 const NewScreens = [
   { title: 'Activity', icon: require('../assets/activity2.png') },
   { title: 'Lessons', icon: require('../assets/lesson.png') },
-  { title: 'Quizzes and Challenges', icon: require('../assets/quiz.png') },
+  { title: 'Quizzes & Challenges', icon: require('../assets/quiz.png') },
   { title: 'Progress', icon: require('../assets/progress.png') },
   { title: 'Points', icon: require('../assets/points.png') },
   { title: 'Speech Therapy', icon: require('../assets/speech.png') },
@@ -27,49 +28,50 @@ interface MoreScreenProps {
 
 const MoreScreen: React.FC<MoreScreenProps> = ({ navigation }) => {
   const theme = useTheme();
+  const screenWidth = Dimensions.get('window').width;
+  const cardWidth = (screenWidth - 60) / 2;
 
   const handlePress = (title: string) => {
     if (title === 'Activity') {
-      navigation.navigate('ActivityScreen'); // Ensure this matches the registered screen name
+      navigation.navigate('ActivityScreen');
     } else if (title === 'Lessons') {
       navigation.navigate('Lessons');
-    } else if (title === 'Quizzes and Challenges') {
+    } else if (title === 'Quizzes & Challenges') {
       navigation.navigate('QuizzesNavScreen');
     } else if (title === 'Speech Therapy') {
       navigation.navigate('SpeechTherapyScreen');
     } else if (title === 'Watched Lessons') {
       navigation.navigate('History');
+    } else if (title === 'Progress') {
+      navigation.navigate('QandCProgressScreen');
     }
-  };
+  };  // <-- This closing brace was missing
 
   return (
-    <ScrollView>
+    <ScrollView showsVerticalScrollIndicator={false}>
       <LinearGradient
-        colors={
-          theme === 'dark' ? ['#1C1C1C', '#3A3A3A'] : ['#577BC1', '#577BC1']
-        }
+        colors={theme === 'dark' ? ['#1C1C1C', '#3A3A3A'] : ['#577BC1', '#577BC1']}
         style={styles.container}>
+        <View style={styles.titleContainer}>
+          <Text style={styles.title}>Explore More</Text>
+        </View>
         <View style={styles.gridContainer}>
           {NewScreens.map((item, index) => (
             <TouchableOpacity
               key={index}
+              activeOpacity={0.85}
               style={[
-                styles.lessonButton,
-                theme === 'dark'
-                  ? styles.darkLessonButton
-                  : styles.lightLessonButton,
+                styles.card,
+                { width: cardWidth },
+                theme === 'dark' ? styles.darkCard : styles.lightCard,
               ]}
               onPress={() => handlePress(item.title)}>
-              <View style={styles.imageContainer}>
-                {item.icon ? (
-                  <Image source={item.icon} style={styles.lessonIcon} />
-                ) : null}
-              </View>
+
+              <Image source={item.icon} style={styles.iconElevated} />
+
               <Text
                 style={
-                  theme === 'dark'
-                    ? styles.darkLessonText
-                    : styles.lightLessonText
+                  theme === 'dark' ? styles.darkCardText : styles.lightCardText
                 }>
                 {item.title}
               </Text>
@@ -82,51 +84,71 @@ const MoreScreen: React.FC<MoreScreenProps> = ({ navigation }) => {
 };
 
 const styles = StyleSheet.create({
-  Container: { flex: 1, padding: 20 },
+  container: {
+    flex: 1,
+    paddingTop: 40,
+    paddingHorizontal: 20,
+    paddingBottom: 30,
+  },
+  titleContainer: {
+    marginBottom: 25,
+    alignItems: 'center',
+  },
+  title: {
+    fontSize: 24,
+    color: '#FFFFFF',
+    fontWeight: 'bold',
+    letterSpacing: 1,
+  },
   gridContainer: {
     flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'space-between',
   },
-  lessonButton: {
-    width: '45%',
-    height: 190,
+  card: {
+    backgroundColor: '#FFFFFF',
     borderRadius: 25,
-    padding: 20,
+    paddingVertical: 22,
+    paddingHorizontal: 12,
+    marginBottom: 20,
     alignItems: 'center',
     justifyContent: 'center',
-    marginBottom: 15,
-    elevation: 3,
+    elevation: 8,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 3,
-    marginHorizontal: 10,
+    shadowOffset: { width: 0, height: 5 },
+    shadowOpacity: 0.12,
+    shadowRadius: 8,
   },
-  darkLessonButton: { backgroundColor: '#4a4a4a' },
-  lightLessonButton: { backgroundColor: '#E6F7FF' },
-  imageContainer: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginBottom: 10,
+  lightCard: {
+    backgroundColor: '#F9FAFC',
   },
-  lessonIcon: { width: 100, height: 100, borderRadius: 30 },
-  lessonText: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: '#003366',
+  darkCard: {
+    backgroundColor: '#3B3B3B',
+  },
+  iconElevated: {
+    width: 75,
+    height: 75,
+    resizeMode: 'contain',
+    marginBottom: 12,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 20,
+    padding: 10,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 5 },
+    shadowOpacity: 0.25,
+    shadowRadius: 8,
+    elevation: 15,
+  },
+  lightCardText: {
+    fontSize: 16,
+    color: '#2A2D57',
+    fontWeight: '600',
     textAlign: 'center',
   },
-  lightLessonText: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: '#003366',
-    textAlign: 'center',
-  },
-  darkLessonText: {
-    fontSize: 20,
-    fontWeight: 'bold',
+  darkCardText: {
+    fontSize: 16,
     color: '#FFFFFF',
+    fontWeight: '600',
     textAlign: 'center',
   },
 });
