@@ -28,20 +28,20 @@ type RootStackParamList = {
   VideoPlayer: {
     video: {
       videoId: string;
-      title: string;
-      summary?: string;
-      thumbnail: string;
-      summaryImage?: string;
-    };
-    lessonTitle: string;
+    title: string;
+    summary?: string;
+    thumbnail: string;
+    summaryImage?: string;
   };
-  PointsScreen: {
-    points: number;
-    videoTitle: string;
-    milestones: number[];
-    maxPossiblePoints: number;
-  };
-  Home: undefined; // Add Home screen to the RootStackParamList
+  lessonTitle: string;
+};
+LessonsPointsScreen: {
+  points: number;
+  videoTitle: string;
+  milestones: number[];
+  maxPossiblePoints: number;
+};
+Home: undefined;
 };
 
 type VideoPlayerRouteProp = RouteProp<RootStackParamList, 'VideoPlayer'>;
@@ -771,86 +771,86 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = ({
   }, [video.videoId]);
 
   const onStateChange = useCallback(
-    async (state: string) => {
-      console.log('YouTube player state changed:', state);
+      async (state: string) => {
+        console.log('YouTube player state changed:', state);
 
-      if (state === 'playing') {
-        setPlaying(true);
-        setShowSkipButton(false);
+        if (state === 'playing') {
+          setPlaying(true);
+          setShowSkipButton(false);
 
-        if (playStartTimeRef.current === null) {
-          playStartTimeRef.current = Date.now();
-          console.log('Video playback started, starting timer');
-        }
-      } else if (
-        state === 'paused' ||
-        state === 'ended' ||
-        state === 'stopped'
-      ) {
-        setPlaying(false);
+          if (playStartTimeRef.current === null) {
+            playStartTimeRef.current = Date.now();
+            console.log('Video playback started, starting timer');
+          }
+        } else if (
+          state === 'paused' ||
+          state === 'ended' ||
+          state === 'stopped'
+        ) {
+          setPlaying(false);
 
-        checkPlayDuration();
-        await checkWatchingProgress();
+          checkPlayDuration();
+          await checkWatchingProgress();
 
-        if (hasPlayedEnoughRef.current && !videoSavedRef.current) {
-          await saveWatchedVideo();
-        }
-
-        if (state === 'ended') {
-          watchedDurationRef.current = videoDuration;
-          setCurrentPercentage(100);
-          console.log('Total points earned:', totalPointsEarnedRef.current);
-
-          reachedMilestonesRef.current.add(100);
-          const milestoneCompletionPoints = calculateCompletionPoints(); // Calculate points
-          console.log(
-            'Milestone completion points:',
-            milestoneCompletionPoints
-          );
-          totalPointsEarnedRef.current += milestoneCompletionPoints; // Add to earned points
-
-          const finalPoints = totalPointsEarnedRef.current;
-
-          await awardPoints(milestoneCompletionPoints, 100);
-
-          try {
-            navigation.navigate('PointsScreen', {
-              points: finalPoints,
-              videoTitle: video.title,
-              milestones: Array.from(reachedMilestonesRef.current),
-              maxPossiblePoints: calculateMaxPoints(videoDuration),
-            });
-            console.log('Navigation to PointsScreen attempted with:', {
-              points: finalPoints,
-              videoTitle: video.title,
-              milestones: Array.from(reachedMilestonesRef.current),
-              maxPossiblePoints: calculateMaxPoints(videoDuration),
-            });
-          } catch (error) {
-            console.error('Error navigating to PointsScreen:', error);
-            showNotification(
-              'Error showing points screen. Please try again later.'
-            );
+          if (hasPlayedEnoughRef.current && !videoSavedRef.current) {
+            await saveWatchedVideo();
           }
 
-          resetWatchingState();
-          setIsRewatching(false);
+          if (state === 'ended') {
+            watchedDurationRef.current = videoDuration;
+            setCurrentPercentage(100);
+            console.log('Total points earned:', totalPointsEarnedRef.current);
+
+            reachedMilestonesRef.current.add(100);
+            const milestoneCompletionPoints = calculateCompletionPoints();
+            console.log(
+              'Milestone completion points:',
+              milestoneCompletionPoints
+            );
+            totalPointsEarnedRef.current += milestoneCompletionPoints;
+
+            const finalPoints = totalPointsEarnedRef.current;
+
+            await awardPoints(milestoneCompletionPoints, 100);
+
+            try {
+              navigation.navigate('LessonsPointsScreen', {
+                points: finalPoints,
+                videoTitle: video.title,
+                milestones: Array.from(reachedMilestonesRef.current),
+                maxPossiblePoints: calculateMaxPoints(videoDuration),
+              });
+              console.log('Navigation to LessonsPointsScreen attempted with:', {
+                points: finalPoints,
+                videoTitle: video.title,
+                milestones: Array.from(reachedMilestonesRef.current),
+                maxPossiblePoints: calculateMaxPoints(videoDuration),
+              });
+            } catch (error) {
+              console.error('Error navigating to LessonsPointsScreen:', error);
+              showNotification(
+                'Error showing points screen. Please try again later.'
+              );
+            }
+
+            resetWatchingState();
+            setIsRewatching(false);
+          }
         }
-      }
-    },
-    [
-      checkPlayDuration,
-      saveWatchedVideo,
-      checkWatchingProgress,
-      videoDuration,
-      navigation,
-      video.title,
-      awardPoints,
-      calculateCompletionPoints,
-      resetWatchingState,
-      showNotification,
-    ]
-  );
+      },
+      [
+        checkPlayDuration,
+        saveWatchedVideo,
+        checkWatchingProgress,
+        videoDuration,
+        navigation,
+        video.title,
+        awardPoints,
+        calculateCompletionPoints,
+        resetWatchingState,
+        showNotification,
+      ]
+    );
 
   // Set up regular interval to check watching progress for points
   useEffect(() => {

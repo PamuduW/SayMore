@@ -33,6 +33,7 @@ import UserAccIcon from '../assets/useracc.png';
 import TermsAndConditionsScreen from '../screens/TermsAndConditionsScreen';
 import PrivacyCookiesScreen from '../screens/PrivacyCookiesScreen';
 import AppInfoScreen from '../screens/AppInfoScreen';
+import LessonsPointsScreen from '../screens/LessonsPointsScreen';
 
 // Navigators
 const Tab = createBottomTabNavigator();
@@ -61,6 +62,7 @@ const MoreStack = () => (
     <Stack.Screen name="Lessons" component={LessonsScreen} />
     <Stack.Screen name="VideoList" component={VideoListScreen} />
     <Stack.Screen name="VideoPlayer" component={VideoPlayerScreen} />
+    <Stack.Screen name="LessonsPointsScreen" component={LessonsPointsScreen} />
     <Stack.Screen name="History" component={HistoryScreen} />
     <Stack.Screen name="QuizzesNavScreen" component={QuizzesNavScreen} />
     <Stack.Screen name="Difficulty" component={Difficulty} />

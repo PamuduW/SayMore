@@ -11,7 +11,7 @@ import {
 import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
 
 type RootStackParamList = {
-  PointsScreen: {
+  LessonsPointsScreen: {
     points: number;
     videoTitle: string;
     milestones: number[];
@@ -19,17 +19,17 @@ type RootStackParamList = {
   };
 };
 
-type PointsScreenRouteProp = RouteProp<RootStackParamList, 'PointsScreen'>;
+type LessonsPointsScreenRouteProp = RouteProp<RootStackParamList, 'LessonsPointsScreen'>;
 
 const { width } = Dimensions.get('window');
 
 const LessonsPointsScreen: React.FC = () => {
   const navigation = useNavigation();
-  const route = useRoute<PointsScreenRouteProp>();
+  const route = useRoute<LessonsPointsScreenRouteProp>();
   const { points, videoTitle, milestones, maxPossiblePoints } = route.params;
 
   useEffect(() => {
-    console.log('PointsScreen params:', {
+    console.log('LessonsPointsScreen params:', {
       points,
       videoTitle,
       milestones,
