@@ -1,89 +1,93 @@
-import os
-import json
-import google.generativeai as genai
+from fastapi import FastAPI, UploadFile, File, HTTPException
+import uvicorn
+import tempfile
 import speech_recognition as sr
-from dotenv import load_dotenv
+from openai import AzureOpenAI
+from pydantic_settings import SettingsConfigDict, BaseSettings
+from pydantic import BaseModel
+import json
 
-# Load API key from .env file
-load_dotenv()
-GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 
-# Ensure API key is available
-if not GEMINI_API_KEY:
-    print("Error: Google Gemini API key not found.")
-    exit()
+class Config(BaseSettings):
+    AZURE_OPENAI_API_KEY: str
+    AZURE_OPENAI_DEPLOYMENT_ID: str
+    AZURE_ENDPOINT: str
 
-# Configure Google Gemini
-genai.configure(api_key=GEMINI_API_KEY)
+    model_config = SettingsConfigDict(env_file=".env", case_sensitive=True)
 
-# Audio file path
-audio_file_path = r"D:\Downloads\d.wav"
 
-# Function to analyze audio stutter using the Google Gemini API
-def analyze_audio_stutter(audio_file_path):
-    print(f"Using Gemini API Key: {GEMINI_API_KEY}")
+config = Config()
 
-    # Initialize the recognizer
+openai_client = AzureOpenAI(
+    api_key=config.AZURE_OPENAI_API_KEY,
+    api_version="2024-05-01-preview",
+    azure_endpoint=config.AZURE_ENDPOINT,
+)
+
+app = FastAPI()
+
+
+class StutterAnalysisResponse(BaseModel):
+    language: str
+    stutter_count: int
+    stuttered_words: list
+    cluttering_detected: bool
+    fluency_score: int
+    confidence_score: float
+
+
+@app.post("/analyze-audio", response_model=StutterAnalysisResponse)
+async def analyze_audio(file: UploadFile = File(...)):
+    if file.content_type != "audio/wav":
+        raise HTTPException(status_code=400, detail="Invalid file format. Please upload a .wav file.")
+
+    with tempfile.NamedTemporaryFile(delete=False, suffix=".wav") as tmp_file:
+        tmp_file.write(await file.read())
+        tmp_file_path = tmp_file.name
+
     recognizer = sr.Recognizer()
+    with sr.AudioFile(tmp_file_path) as source:
+        audio_data = recognizer.record(source)
+        try:
+            transcript = recognizer.recognize_google(audio_data)
+        except Exception as e:
+            raise HTTPException(status_code=500, detail=f"Error transcribing audio: {e}")
+
+    system_prompt = """
+    "You are an expert in speech and language pathology specializing in stuttering detection. "
+        "You will be provided with a transcript of a spoken audio file in any language. Your task is to analyze the transcript to detect signs of stuttering, "
+        "including clinical stuttering patterns such as sound repetitions, syllable repetitions, word repetitions, prolongations, and blocks (silent pauses within words). "
+        "Additionally, identify signs of cluttering (excessively fast or irregular speech) if present. Use linguistic analysis and natural language processing to detect and classify stuttering patterns. "
+        "Along with the stuttering and cluttering analysis, you should also detect the language of the transcript."
+
+        "Return the result in JSON format with the following keys:"
+
+        "'language': The detected language of the transcript (e.g., English, Spanish, etc.)."
+        "'stutter_count': The total number of stutters detected."
+        "'stuttered_words': A list of words or phrases that were stuttered, along with the type of stutter (e.g., repetition, prolongation, block)."
+        "'cluttering_detected': A boolean value (true/false) indicating if signs of cluttering were found."
+        "'fluency_score': A numerical score (0-100) representing the speech fluency, where higher values indicate better fluency."
+        "'confidence_score': A numerical value (0-1) representing the confidence level of the stuttering detection analysis, where 1 indicates the highest certainty."
+        "Ensure accuracy by considering linguistic context, phonetic patterns, and typical speech disfluencies. Provide an unbiased and objective analysis."
+    """
+
+    messages = [
+        {"role": "system", "content": system_prompt},
+        {"role": "user", "content": transcript},
+    ]
 
     try:
-        with sr.AudioFile(audio_file_path) as source:
-            audio_data = recognizer.record(source)
-            try:
-                # Convert speech to text (transcript)
-                transcript = recognizer.recognize_google(audio_data)
-                print("\nTranscript:\n", transcript)
-            except sr.UnknownValueError:
-                print("Speech Recognition could not understand audio.")
-                transcript = ""
-            except sr.RequestError as e:
-                print(f"Speech Recognition API error: {e}")
-                transcript = ""
-
-    except FileNotFoundError:
-        print(f"Error: Audio file not found at {audio_file_path}")
-        return
-
-    # Check if transcript exists before proceeding
-    if transcript:
-        system_prompt = (
-            "You are an AI speech pathology expert analyzing a person's speech for stuttering patterns. "
-            "Detect stuttering types such as repetitions, prolongations, and blocks, and assess fluency levels. "
-            "Return a JSON object with:\n"
-            "- 'language': Detected language\n"
-            "- 'stutter_count': Number of detected stuttering events\n"
-            "- 'stuttered_words': List of words/phrases affected by stuttering\n"
-            "- 'stuttering_types': Breakdown of stuttering types (e.g., repetitions, prolongations)\n"
-            "- 'cluttering_detected': True/False\n"
-            "- 'fluency_score': Fluency rating (0-100)\n"
-            "- 'confidence_score': AI confidence (0-1)\n"
-            f"Analyze the following transcript:\n'''\n{transcript}\n'''"
+        response = openai_client.chat.completions.create(
+            model=config.AZURE_OPENAI_DEPLOYMENT_ID,
+            messages=messages,
+            max_tokens=150
         )
+        gpt_response = response.choices[0].message.content.strip()
+        gpt_response = gpt_response.replace("```json", "").replace("```", "").strip()
+        return json.loads(gpt_response)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error processing GPT response: {e}")
 
-        try:
-            # Load Gemini model
-            model = genai.GenerativeModel("gemini-pro-vision")
 
-            # Read and send the audio file as input
-            with open(audio_file_path, "rb") as audio_file:
-                response = model.generate_content(
-                    [system_prompt, audio_file.read()]
-                )
-
-            # Extract and parse the AI response
-            json_output = response.text.strip()
-            try:
-                parsed_json = json.loads(json_output)
-            except json.JSONDecodeError:
-                parsed_json = {"raw_output": json_output}
-
-            print("\nGemini AI Stuttering Analysis:")
-            print(json.dumps(parsed_json, indent=4))
-
-        except Exception as e:
-            print(f"Error with Gemini API: {e}")
-    else:
-        print("No transcript available for analysis.")
-
-# Run the stuttering analysis
-analyze_audio_stutter(audio_file_path)
+if __name__ == "__main__":
+    uvicorn.run(app, host="0.0.0.0", port=8000)
