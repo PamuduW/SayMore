@@ -19,8 +19,7 @@ const NewScreens = [
   { title: 'Points', icon: require('../assets/points.png') },
   { title: 'Speech Therapy', icon: require('../assets/speech.png') },
   { title: 'Watched Lessons', icon: require('../assets/lesson.png') },
-  { title: 'Lesson Redirection PS', icon: require('../assets/lesson.png') },
-  { title: 'Lesson Redirection Stuttering', icon: require('../assets/lesson.png') },
+  { title: 'Lesson Redirection', icon: require('../assets/lesson.png') }, // Replaced with the single redirection entry
 ];
 
 interface MoreScreenProps {
@@ -32,7 +31,7 @@ const MoreScreen: React.FC<MoreScreenProps> = ({ navigation }) => {
 
   const handlePress = (title: string) => {
     if (title === 'Activity') {
-      navigation.navigate('ActivityScreen'); // Ensure this matches the registered screen name
+      navigation.navigate('ActivityScreen');
     } else if (title === 'Lessons') {
       navigation.navigate('Lessons');
     } else if (title === 'Quizzes and Challenges') {
@@ -41,10 +40,8 @@ const MoreScreen: React.FC<MoreScreenProps> = ({ navigation }) => {
       navigation.navigate('SpeechTherapyScreen');
     } else if (title === 'Watched Lessons') {
       navigation.navigate('History');
-    } else if (title === 'Lesson Redirection PS') {
-      navigation.navigate('LessonRedirectionPS');
-    } else if (title === 'Lesson Redirection Stuttering') {
-      navigation.navigate('LessonRedirectionStuttering');
+    } else if (title === 'Lesson Redirection') {
+      navigation.navigate('LessonRedirection');  // Navigate to the new redirection screen
     }
   };
 
