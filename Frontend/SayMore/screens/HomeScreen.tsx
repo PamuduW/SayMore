@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -11,6 +11,8 @@ import { useNotifications } from '../components/Notifications';
 import { NavigationProp } from '@react-navigation/native';
 import LinearGradient from 'react-native-linear-gradient';
 import { useTheme } from '../components/ThemeContext';
+import auth from '@react-native-firebase/auth';
+import firestore from '@react-native-firebase/firestore';
 
 interface HomeScreenProps {
   navigation: NavigationProp<any>;
@@ -20,8 +22,33 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
   useNotifications();
   const theme = useTheme();
 
+  const [userData, setUserData] = useState(null);
   const borderAnimation = useRef(new Animated.Value(0)).current;
 
+  // Fetch user data (only first name)
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const currentUser = auth().currentUser;
+        if (currentUser) {
+          const userDoc = await firestore()
+            .collection('User_Accounts')
+            .doc(currentUser.uid)
+            .get();
+
+          if (userDoc.exists) {
+            setUserData(userDoc.data());
+          }
+        }
+      } catch (error) {
+        console.log('Error fetching user data: ', error);
+      }
+    };
+
+    fetchUserData();
+  }, []);
+
+  // Animation
   useEffect(() => {
     Animated.loop(
       Animated.timing(borderAnimation, {
@@ -44,15 +71,20 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
 
   return (
     <LinearGradient
-      colors={
-        theme === 'dark' ? ['#1C1C1C', '#3A3A3A'] : ['#577BC1', '#577BC1']
-      }
-      style={styles.container}>
+      colors={theme === 'dark' ? ['#1C1C1C', '#3A3A3A'] : ['#577BC1', '#577BC1']}
+      style={styles.container}
+    >
       <View style={styles.header}>
         <Image style={styles.icon} source={require('../assets/iconTop.png')} />
-        <Text style={styles.greeting}>Welcome to Say More!</Text>
+
+        <Text style={styles.greeting}>
+          Hello {userData?.fname ? userData.fname : ''}
+        </Text>
         <Text style={styles.welcomeMessage}>
-          Enhance your speech & confidence!
+          Welcome to SayMore!
+        </Text>
+        <Text style={styles.tagline}>
+          Enhance your speech & confidence
         </Text>
       </View>
 
@@ -70,14 +102,16 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
                 style={[
                   styles.optionButtonWrapper,
                   { borderColor: borderInterpolation },
-                ]}>
+                ]}
+              >
                 <LinearGradient
                   colors={
                     theme === 'dark'
                       ? ['#1C1C1C', '#3A3A3A']
                       : ['#3B5998', '#577BC1']
                   }
-                  style={styles.optionButton}>
+                  style={styles.optionButton}
+                >
                   <Text style={styles.optionText}>{option}</Text>
                 </LinearGradient>
               </Animated.View>
@@ -92,14 +126,32 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: { flex: 1, padding: 20, justifyContent: 'center' },
 
-  header: { alignItems: 'center', marginBottom: 40 },
-  icon: { width: 80, height: 80, marginBottom: 15 },
-  greeting: { fontSize: 28, fontWeight: 'bold', color: '#FFFFFF' },
+  header: {
+    alignItems: 'center',
+    marginBottom: 30,
+    paddingHorizontal: 10
+  },
+  icon: { width: 80, height: 80, marginBottom: 10 },
+
+  greeting: {
+    fontSize: 26,
+    color: '#FFFFFF',
+    textAlign: 'center',
+    marginBottom: 6,
+  },
   welcomeMessage: {
+    fontSize: 30,
+    color: '#FFFFFF',
+    fontWeight: 'bold',
+    textAlign: 'center',
+    marginBottom: 6,
+  },
+  tagline: {
     fontSize: 18,
     color: '#D0D3E6',
     textAlign: 'center',
-    marginTop: 5,
+    marginTop: 2,
+    marginBottom: 8,
   },
 
   testContainer: {

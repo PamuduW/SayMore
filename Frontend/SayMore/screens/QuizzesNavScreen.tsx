@@ -20,7 +20,7 @@ const QuizzesNavScreen = () => {
 
   return (
     <LinearGradient
-      colors={theme === 'dark' ? ['#1C1C1C', '#3A3A3A'] : ['#577BC1', '#577BC1']}
+      colors={theme === 'dark' ? ['#2A2A2A', '#4A4A4A'] : ['#8AAEE0', '#A7C4F2']}
       start={{ x: 0, y: 0 }}
       end={{ x: 1, y: 1 }}
       style={styles.container}>
@@ -30,14 +30,14 @@ const QuizzesNavScreen = () => {
       <ScrollView contentContainerStyle={styles.cardsWrapper} showsVerticalScrollIndicator={false}>
 
         {/* Public Speaking Card */}
-        <View style={styles.card}>
-          <View style={styles.imageWrapper}>
+        <View style={[styles.card, theme === 'dark' && styles.cardDark]}>
+          <View style={[styles.imageWrapper, theme === 'dark' && styles.imageWrapperDark]}>
             <Image source={require('../assets/quiznav.jpg')} style={styles.image} />
           </View>
-          <Text style={styles.cardTitle}>Public Speaking</Text>
-          <TouchableOpacity activeOpacity={0.85} style={styles.button} onPress={navigateToPublicSpeaking}>
+          <Text style={[styles.cardTitle, theme === 'dark' && styles.cardTitleDark]}>Public Speaking</Text>
+          <TouchableOpacity activeOpacity={0.85} style={[styles.button]} onPress={navigateToPublicSpeaking}>
             <LinearGradient
-              colors={['#3B5998', '#577BC1']}
+              colors={theme === 'dark' ? ['#4A4A4A', '#6B6B6B'] : ['#6B8ED6', '#8AAEE0']}
               start={{ x: 0, y: 0 }}
               end={{ x: 1, y: 1 }}
               style={styles.buttonGradient}>
@@ -47,14 +47,14 @@ const QuizzesNavScreen = () => {
         </View>
 
         {/* Stuttering Card */}
-        <View style={styles.card}>
-          <View style={styles.imageWrapper}>
+        <View style={[styles.card, theme === 'dark' && styles.cardDark]}>
+          <View style={[styles.imageWrapper, theme === 'dark' && styles.imageWrapperDark]}>
             <Image source={require('../assets/stutterquiz.png')} style={styles.image} />
           </View>
-          <Text style={styles.cardTitle}>Stuttering</Text>
-          <TouchableOpacity activeOpacity={0.85} style={styles.button} onPress={navigateToStuttering}>
+          <Text style={[styles.cardTitle, theme === 'dark' && styles.cardTitleDark]}>Stuttering</Text>
+          <TouchableOpacity activeOpacity={0.85} style={[styles.button]} onPress={navigateToStuttering}>
             <LinearGradient
-              colors={['#3B5998', '#577BC1']}
+              colors={theme === 'dark' ? ['#4A4A4A', '#6B6B6B'] : ['#6B8ED6', '#8AAEE0']}
               start={{ x: 0, y: 0 }}
               end={{ x: 1, y: 1 }}
               style={styles.buttonGradient}>
@@ -100,6 +100,9 @@ const styles = StyleSheet.create({
     shadowRadius: 8,
     elevation: 8,
   },
+  cardDark: {
+    backgroundColor: '#2B2B2B',
+  },
   imageWrapper: {
     backgroundColor: '#F9FAFC',
     padding: 12,
@@ -110,6 +113,9 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.12,
     shadowRadius: 6,
     elevation: 6,
+  },
+  imageWrapperDark: {
+    backgroundColor: '#1C1C1C',
   },
   image: {
     width: 230,
@@ -122,6 +128,9 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     color: '#2A2D57',
     marginBottom: 20,
+  },
+  cardTitleDark: {
+    color: '#FFFFFF',
   },
   button: {
     width: '75%',

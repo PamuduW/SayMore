@@ -31,7 +31,6 @@ export default function SettingsScreen() {
   const [notificationsEnabled, setNotificationsEnabled] = useState(true);
 
   useEffect(() => {
-    // Check initial notification permission
     checkNotificationPermission();
   }, []);
 
@@ -44,11 +43,9 @@ export default function SettingsScreen() {
 
   const toggleNotifications = async () => {
     if (notificationsEnabled) {
-      // Disable: unsubscribe from FCM
       await messaging().deleteToken();
       setNotificationsEnabled(false);
     } else {
-      // Enable: request permission & get token
       if (Platform.OS === 'android' && Platform.Version >= 33) {
         await PermissionsAndroid.request(
           PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS
@@ -76,7 +73,10 @@ export default function SettingsScreen() {
   const renderOption = (item, index) => (
     <TouchableOpacity
       key={index}
-      style={styles.option}
+      style={[
+        styles.option,
+        theme === 'dark' ? styles.optionDark : styles.optionLight,
+      ]}
       onPress={() => {
         if (item.label === 'Terms & Conditions') {
           navigation.navigate('TermsAndConditionsScreen');
@@ -87,30 +87,38 @@ export default function SettingsScreen() {
         }
       }}>
       <View style={styles.leftSection}>
-        {item.label === 'Notifications' && (
-          <Image source={NotificationIcon} style={styles.optionIcon} />
-        )}
-        {item.label === 'Dark Mode' && (
-          <Image source={DarkModeIcon} style={styles.optionIcon} />
-        )}
-        {item.label === 'Terms & Conditions' && (
-          <Image source={ConditionsIcon} style={styles.optionIcon} />
-        )}
-        {item.label === 'Privacy & Cookies' && (
-          <Image source={CookiesIcon} style={styles.optionIcon} />
-        )}
-        {item.label === 'App Info' && (
-          <Image source={AppInfoIcon} style={styles.optionIcon} />
-        )}
-        <Text style={styles.optionText}>{item.label}</Text>
+        <Image
+          source={
+            item.label === 'Notifications'
+              ? NotificationIcon
+              : item.label === 'Dark Mode'
+              ? DarkModeIcon
+              : item.label === 'Terms & Conditions'
+              ? ConditionsIcon
+              : item.label === 'Privacy & Cookies'
+              ? CookiesIcon
+              : AppInfoIcon
+          }
+          style={[
+            styles.optionIcon,
+            theme === 'dark' ? styles.iconDark : styles.iconLight,
+          ]}
+        />
+        <Text
+          style={[
+            styles.optionText,
+            theme === 'dark' ? styles.optionTextDark : styles.optionTextLight,
+          ]}>
+          {item.label}
+        </Text>
       </View>
 
       {item.toggle === 'notifications' && (
         <Switch
           value={notificationsEnabled}
           onValueChange={toggleNotifications}
-          trackColor={{ false: '#D0D3E6', true: '#3B5998' }}
-          thumbColor={notificationsEnabled ? '#FFFFFF' : '#f4f3f4'}
+          trackColor={{ false: '#777777', true: '#FFFFFF' }}
+          thumbColor={notificationsEnabled ? '#FFFFFF' : '#444444'}
         />
       )}
 
@@ -118,8 +126,8 @@ export default function SettingsScreen() {
         <Switch
           value={isDarkMode}
           onValueChange={setIsDarkMode}
-          trackColor={{ false: '#D0D3E6', true: '#3B5998' }}
-          thumbColor={isDarkMode ? '#FFFFFF' : '#f4f3f4'}
+          trackColor={{ false: '#777777', true: '#FFFFFF' }}
+          thumbColor={isDarkMode ? '#FFFFFF' : '#444444'}
         />
       )}
     </TouchableOpacity>
@@ -128,24 +136,50 @@ export default function SettingsScreen() {
   return (
     <LinearGradient
       colors={
-        theme === 'dark' ? ['#1C1C1C', '#3A3A3A'] : ['#577BC1', '#577BC1']
+        theme === 'dark' ? ['#000000', '#1C1C1C'] : ['#577BC1', '#577BC1']
       }
       style={styles.container}>
       <StatusBar barStyle="light-content" />
 
       <View style={styles.headerBar}>
         <Text style={styles.header}>Settings</Text>
-        <Image source={SettingsIcon} style={styles.headerIconRight} />
+        <Image
+          source={SettingsIcon}
+          style={[
+            styles.headerIconRight,
+            { tintColor: '#FFFFFF' },
+          ]}
+        />
       </View>
 
       <ScrollView contentContainerStyle={styles.scrollArea}>
-        <View style={styles.sectionContainer}>
-          <Text style={styles.sectionTitle}>Preferences</Text>
+        <View
+          style={[
+            styles.sectionContainer,
+            theme === 'dark' ? styles.sectionDark : styles.sectionLight,
+          ]}>
+          <Text
+            style={[
+              styles.sectionTitle,
+              theme === 'dark' ? styles.sectionTitleDark : styles.sectionTitleLight,
+            ]}>
+            Preferences
+          </Text>
           {preferences.map(renderOption)}
         </View>
 
-        <View style={styles.sectionContainer}>
-          <Text style={styles.sectionTitle}>Information</Text>
+        <View
+          style={[
+            styles.sectionContainer,
+            theme === 'dark' ? styles.sectionDark : styles.sectionLight,
+          ]}>
+          <Text
+            style={[
+              styles.sectionTitle,
+              theme === 'dark' ? styles.sectionTitleDark : styles.sectionTitleLight,
+            ]}>
+            Information
+          </Text>
           {info.map(renderOption)}
         </View>
       </ScrollView>
@@ -173,7 +207,6 @@ const styles = StyleSheet.create({
   headerIconRight: {
     width: 28,
     height: 28,
-    tintColor: '#FFFFFF',
   },
 
   scrollArea: {
@@ -182,38 +215,56 @@ const styles = StyleSheet.create({
   },
 
   sectionContainer: {
-    backgroundColor: '#FFFFFF',
     borderRadius: 20,
     padding: 20,
     marginBottom: 20,
+    elevation: 8,
+  },
+
+  sectionLight: {
+    backgroundColor: '#FFFFFF',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 6 },
     shadowOpacity: 0.1,
     shadowRadius: 8,
-    elevation: 8,
+  },
+  sectionDark: {
+    backgroundColor: '#1C1C1C',
+    shadowColor: 'transparent',
   },
 
   sectionTitle: {
     fontSize: 18,
-    color: '#2A2D57',
     marginBottom: 15,
     fontWeight: '700',
+  },
+  sectionTitleLight: {
+    color: '#2A2D57',
+  },
+  sectionTitleDark: {
+    color: '#FFFFFF',
   },
 
   option: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    backgroundColor: '#F7F9FC',
     paddingVertical: 14,
     paddingHorizontal: 10,
     borderRadius: 12,
     marginBottom: 12,
+  },
+
+  optionLight: {
+    backgroundColor: '#F7F9FC',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.1,
     shadowRadius: 6,
-    elevation: 6,
+  },
+  optionDark: {
+    backgroundColor: '#2B2B2B',
+    shadowColor: 'transparent',
   },
 
   leftSection: {
@@ -224,13 +275,25 @@ const styles = StyleSheet.create({
   optionIcon: {
     width: 22,
     height: 22,
-    tintColor: '#3B5998',
     marginRight: 12,
+  },
+
+  iconLight: {
+    tintColor: '#3B5998',
+  },
+  iconDark: {
+    tintColor: '#FFFFFF',
   },
 
   optionText: {
     fontSize: 16,
     fontWeight: '500',
+  },
+
+  optionTextLight: {
     color: '#2A2D57',
+  },
+  optionTextDark: {
+    color: '#FFFFFF',
   },
 });
