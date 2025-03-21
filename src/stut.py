@@ -1,20 +1,18 @@
+import json
 import os
+
 import azure.cognitiveservices.speech as speechsdk
 from dotenv import load_dotenv
 import google.generativeai as genai
-import json
 
 load_dotenv()
 
-# Azure Speech-to-Text Credentials
-AZURE_SPEECH_KEY = os.getenv("AZURE_SPEECH_KEY")
-AZURE_SPEECH_REGION = os.getenv("AZURE_SPEECH_REGION")
+asure_speech_key = os.getenv("asure_speech_key")
+asure_speech_region = os.getenv("asure_speech_region")
 
-# Google AI Studio API Credentials
-GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
+google_api_key = os.getenv("google_api_key")
 
-# Configure the Google generative AI library with your API key
-genai.configure(api_key=GOOGLE_API_KEY)
+genai.configure(api_key=google_api_key)
 model = genai.GenerativeModel('gemini-2.0-flash')
 
 system_prompt = """
@@ -32,8 +30,7 @@ system_prompt = """
 """
 
 def transcribe_audio(file_name):
-    """Convert speech to text using Azure Speech-to-Text."""
-    speech_config = speechsdk.SpeechConfig(subscription=AZURE_SPEECH_KEY, region=AZURE_SPEECH_REGION)
+    speech_config = speechsdk.SpeechConfig(subscription=asure_speech_key, region=asure_speech_region)
     audio_config = speechsdk.audio.AudioConfig(filename=file_name)
 
     recognizer = speechsdk.SpeechRecognizer(speech_config=speech_config, audio_config=audio_config)
@@ -45,26 +42,14 @@ def transcribe_audio(file_name):
         return None
 
 def analyze_stuttering_gemini(transcript):
-    """
-    Analyzes the transcript for stuttering using the Google Generative AI model.
-
-    Args:
-        transcript: The transcribed text to analyze.
-
-    Returns:
-        A dictionary containing the analysis results.
-    """
     try:
         prompt = system_prompt + "\n\nTranscript:\n" + transcript
 
-        # Call the Google Generative AI API using the selected model
         response = model.generate_content(prompt)
 
         if response and response.text:
-            # Remove markdown code fences (```) if present
             cleaned_text = response.text.strip()
             if cleaned_text.startswith("```"):
-                # Remove first line (e.g., "```json") and last line ("```")
                 cleaned_text = "\n".join(cleaned_text.splitlines()[1:-1]).strip()
             try:
                 return json.loads(cleaned_text)
@@ -80,7 +65,6 @@ def analyze_stuttering_gemini(transcript):
 
 
 def stutter_test(file_name):
-    """Run speech-to-text and stuttering analysis."""
     try:
         transcript = transcribe_audio(file_name)
         print("Transcript:", transcript)

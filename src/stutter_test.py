@@ -1,8 +1,8 @@
-import tempfile
-import speech_recognition as sr
-from openai import AzureOpenAI
 import json
 import os
+
+from openai import AzureOpenAI
+import speech_recognition as sr
 
 
 class Config:
@@ -30,6 +30,7 @@ def stutter_test(file_name):
     Returns
     -------
     dict: Analysis result containing language, stutter count, stuttered words, cluttering detection, fluency score, and confidence score.
+
     """
     try:
         recognizer = sr.Recognizer()
