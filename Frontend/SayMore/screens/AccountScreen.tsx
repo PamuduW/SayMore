@@ -95,9 +95,7 @@ export default function AccountScreen() {
 
   return (
     <LinearGradient
-      colors={
-        theme === 'dark' ? ['#1C1C1C', '#3A3A3A'] : ['#577BC1', '#577BC1']
-      }
+      colors={theme === 'dark' ? ['#1C1C1C', '#3A3A3A'] : ['#577BC1', '#577BC1']}
       style={styles.container}>
       <View style={theme === 'dark' ? styles.darkCard : styles.lightCard}>
         <TouchableOpacity
@@ -144,27 +142,23 @@ export default function AccountScreen() {
               colors={
                 theme === 'dark'
                   ? ['#2B2B2B', '#2B2B2B']
-                  : ['#577BC1', '#577BC1']
+                  : ['#3B5998', '#577BC1']
               }
               start={{ x: 0, y: 0 }}
               end={{ x: 1, y: 1 }}
-              style={styles.menuItemWrapper}
-            >
-              <Animated.View>
-                <TouchableOpacity
-                  style={styles.menuItem}
-                  onPress={() => {
-                    if (item === 'Settings') {
-                      navigation.navigate('SettingsScreen');
-                    }
-                    if (item === 'Account Details') {
-                      navigation.navigate('EditProfileScreen', { userData });
-                    }
-                  }}
-                >
-                  <Text style={styles.menuText}>{item}</Text>
-                </TouchableOpacity>
-              </Animated.View>
+              style={styles.menuItemWrapper}>
+              <TouchableOpacity
+                style={styles.menuItem}
+                onPress={() => {
+                  if (item === 'Settings') {
+                    navigation.navigate('SettingsScreen');
+                  }
+                  if (item === 'Account Details') {
+                    navigation.navigate('EditProfileScreen', { userData });
+                  }
+                }}>
+                <Text style={styles.menuText}>{item}</Text>
+              </TouchableOpacity>
             </LinearGradient>
           ))}
         </View>
@@ -185,6 +179,7 @@ export default function AccountScreen() {
 
 const styles = StyleSheet.create({
   container: { flex: 1, justifyContent: 'center', alignItems: 'center' },
+
   lightCard: {
     backgroundColor: '#FFFFFF',
     width: '90%',
@@ -193,53 +188,55 @@ const styles = StyleSheet.create({
     paddingVertical: 45,
     paddingHorizontal: 30,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 10 },
-    shadowOpacity: 0.15,
+    shadowOffset: { width: 0, height: 12 },
+    shadowOpacity: 0.2,
     shadowRadius: 12,
-    elevation: 12,
+    elevation: 14,
   },
   darkCard: {
-    backgroundColor: '#4a4a4a',
+    backgroundColor: '#2B2B2B',
     width: '90%',
     borderRadius: 30,
     alignItems: 'center',
-    paddingVertical: 35,
-    paddingHorizontal: 25,
+    paddingVertical: 40,
+    paddingHorizontal: 28,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 10 },
-    shadowOpacity: 0.25,
+    shadowOffset: { width: 0, height: 12 },
+    shadowOpacity: 0.3,
     shadowRadius: 12,
-    elevation: 14,
+    elevation: 16,
   },
 
   lightAvatarWrapper: {
     backgroundColor: '#F2F3F8',
     padding: 14,
     borderRadius: 60,
-    marginBottom: 15,
+    marginBottom: 20,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.12,
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.15,
     shadowRadius: 8,
-    elevation: 8,
+    elevation: 10,
   },
   darkAvatarWrapper: {
     backgroundColor: '#1C1C1C',
-    padding: 10,
+    padding: 12,
     borderRadius: 50,
-    marginBottom: 10,
+    marginBottom: 20,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 5 },
-    shadowOpacity: 0.15,
-    shadowRadius: 6,
-    elevation: 6,
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.2,
+    shadowRadius: 8,
+    elevation: 10,
   },
+
   avatar: { width: 80, height: 80, borderRadius: 40 },
+
   lightUsername: {
     fontSize: 24,
     fontWeight: '700',
     color: '#2A2D57',
-    marginBottom: 6,
+    marginBottom: 8,
   },
   darkUsername: {
     fontSize: 24,
@@ -247,37 +244,35 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
     marginBottom: 8,
   },
-  nameText: {
-    fontSize: 15,
-    color: '#2A2D57',
-    marginBottom: 28,
-  },
   lightNameText: {
     fontSize: 14,
     color: '#2A2D57',
-    marginBottom: 25,
+    marginBottom: 30,
   },
   darkNameText: {
     fontSize: 14,
     color: '#FFFFFF',
-    marginBottom: 25,
+    marginBottom: 30,
   },
+
   menuContainer: { width: '100%', alignItems: 'center', marginBottom: 25 },
+
   menuItemWrapper: {
-    borderRadius: 18,
+    borderRadius: 20,
     width: '100%',
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.15,
-    shadowRadius: 8,
-    elevation: 10,
-    marginBottom: 20,
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.2,
+    shadowRadius: 10,
+    elevation: 100,
+    marginBottom: 18,
   },
   menuItem: {
-    paddingVertical: 14,
+    paddingVertical: 16,
     alignItems: 'center',
     width: '100%',
-    borderRadius: 18,
+    borderRadius: 20,
+    elevation: 100,
   },
   menuText: {
     fontSize: 16,
@@ -297,7 +292,7 @@ const styles = StyleSheet.create({
   },
 
   logoutButton: {
-    paddingVertical: 15,
+    paddingVertical: 16,
     paddingHorizontal: 50,
     alignItems: 'center',
     borderRadius: 25,

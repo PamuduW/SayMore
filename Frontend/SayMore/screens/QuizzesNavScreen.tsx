@@ -20,7 +20,7 @@ const QuizzesNavScreen = () => {
 
   return (
     <LinearGradient
-      colors={theme === 'dark' ? ['#2A2A2A', '#4A4A4A'] : ['#8AAEE0', '#A7C4F2']}
+      colors={theme === 'dark' ? ['#1C1C1C', '#3A3A3A'] : ['#577BC1', '#8AAEE0']}
       start={{ x: 0, y: 0 }}
       end={{ x: 1, y: 1 }}
       style={styles.container}>
@@ -35,9 +35,9 @@ const QuizzesNavScreen = () => {
             <Image source={require('../assets/quiznav.jpg')} style={styles.image} />
           </View>
           <Text style={[styles.cardTitle, theme === 'dark' && styles.cardTitleDark]}>Public Speaking</Text>
-          <TouchableOpacity activeOpacity={0.85} style={[styles.button]} onPress={navigateToPublicSpeaking}>
+          <TouchableOpacity activeOpacity={0.85} style={styles.button} onPress={navigateToPublicSpeaking}>
             <LinearGradient
-              colors={theme === 'dark' ? ['#4A4A4A', '#6B6B6B'] : ['#6B8ED6', '#8AAEE0']}
+              colors={theme === 'dark' ? ['#4A4A4A', '#6B6B6B'] : ['#3B5998', '#577BC1']}
               start={{ x: 0, y: 0 }}
               end={{ x: 1, y: 1 }}
               style={styles.buttonGradient}>
@@ -52,9 +52,9 @@ const QuizzesNavScreen = () => {
             <Image source={require('../assets/stutterquiz.png')} style={styles.image} />
           </View>
           <Text style={[styles.cardTitle, theme === 'dark' && styles.cardTitleDark]}>Stuttering</Text>
-          <TouchableOpacity activeOpacity={0.85} style={[styles.button]} onPress={navigateToStuttering}>
+          <TouchableOpacity activeOpacity={0.85} style={styles.button} onPress={navigateToStuttering}>
             <LinearGradient
-              colors={theme === 'dark' ? ['#4A4A4A', '#6B6B6B'] : ['#6B8ED6', '#8AAEE0']}
+              colors={theme === 'dark' ? ['#4A4A4A', '#6B6B6B'] : ['#3B5998', '#577BC1']}
               start={{ x: 0, y: 0 }}
               end={{ x: 1, y: 1 }}
               style={styles.buttonGradient}>

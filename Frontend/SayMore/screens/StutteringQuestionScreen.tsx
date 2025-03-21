@@ -35,6 +35,17 @@ const StutteringQuestionScreen: React.FC = ({ navigation }: any) => {
     pronunciation: 'set3',
   };
 
+  // Shuffle function
+  const shuffleArray = (array: any[]) => {
+    const newArray = [...array];
+    for (let i = newArray.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
+    }
+    return newArray;
+  };
+
+  // Fetch and shuffle questions + answers
   const fetchQuestions = async (setName: string) => {
     try {
       const doc = await firestore().collection('Questions').doc('Stuttering_Ques').get();
@@ -45,12 +56,35 @@ const StutteringQuestionScreen: React.FC = ({ navigation }: any) => {
 
       let extractedQuestions = Object.keys(data[setMappings[setName]])
         .filter(key => key.startsWith('Q'))
-        .map(key => ({
-          id: key,
-          ...data[setMappings[setName]][key],
-        }));
+        .map(key => {
+          const questionData = data[setMappings[setName]][key];
 
-      extractedQuestions = extractedQuestions.sort(() => Math.random() - 0.5).slice(0, 7);
+          // Convert answers to array
+          const answersArray = Object.entries(questionData.Answers).map(([ansKey, value]) => ({
+            key: ansKey,
+            value,
+          }));
+
+          // Shuffle answers
+          const shuffledAnswers = shuffleArray(answersArray);
+
+          // Find new correct index after shuffle
+          const originalCorrectKey = `A${questionData.Correct}`;
+          const newCorrectIndex = shuffledAnswers.findIndex(a => a.key === originalCorrectKey) + 1;
+
+          return {
+            id: key,
+            Question: questionData.Question,
+            Answers: shuffledAnswers.reduce((acc, curr, idx) => {
+              acc[`A${idx + 1}`] = curr.value;
+              return acc;
+            }, {} as AnswerOptions),
+            Correct: newCorrectIndex,
+          };
+        });
+
+      // Shuffle questions too
+      extractedQuestions = shuffleArray(extractedQuestions).slice(0, 7);
 
       setQuestions(extractedQuestions);
       setCurrentQuestionIndex(0);

@@ -136,7 +136,7 @@ export default function SettingsScreen() {
   return (
     <LinearGradient
       colors={
-        theme === 'dark' ? ['#000000', '#1C1C1C'] : ['#577BC1', '#577BC1']
+        theme === 'dark' ? ['#1C1C1C', '#3A3A3A'] : ['#577BC1', '#577BC1']
       }
       style={styles.container}>
       <StatusBar barStyle="light-content" />
@@ -215,28 +215,27 @@ const styles = StyleSheet.create({
   },
 
   sectionContainer: {
-    borderRadius: 20,
-    padding: 20,
-    marginBottom: 20,
-    elevation: 8,
+    borderRadius: 25,
+    padding: 22,
+    marginBottom: 25,
+    elevation: 6,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.2,
+    shadowRadius: 5,
   },
 
   sectionLight: {
     backgroundColor: '#FFFFFF',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.1,
-    shadowRadius: 8,
   },
   sectionDark: {
     backgroundColor: '#1C1C1C',
-    shadowColor: 'transparent',
   },
 
   sectionTitle: {
-    fontSize: 18,
-    marginBottom: 15,
-    fontWeight: '700',
+    fontSize: 22,
+    marginBottom: 18,
+    fontWeight: 'bold',
   },
   sectionTitleLight: {
     color: '#2A2D57',
@@ -249,22 +248,27 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingVertical: 14,
-    paddingHorizontal: 10,
-    borderRadius: 12,
-    marginBottom: 12,
+    paddingVertical: 16,
+    paddingHorizontal: 14,
+    borderRadius: 20,
+    marginBottom: 14,
   },
 
   optionLight: {
-    backgroundColor: '#F7F9FC',
+    backgroundColor: '#FFFFFF',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.1,
-    shadowRadius: 6,
+    shadowOpacity: 0.2,
+    shadowRadius: 5,
+    elevation: 6,
   },
   optionDark: {
     backgroundColor: '#2B2B2B',
-    shadowColor: 'transparent',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.2,
+    shadowRadius: 5,
+    elevation: 6,
   },
 
   leftSection: {
@@ -287,7 +291,7 @@ const styles = StyleSheet.create({
 
   optionText: {
     fontSize: 16,
-    fontWeight: '500',
+    fontWeight: '600',
   },
 
   optionTextLight: {

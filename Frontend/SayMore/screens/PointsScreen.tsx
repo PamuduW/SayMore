@@ -6,7 +6,11 @@ import {
   StyleSheet,
   Animated,
   TouchableOpacity,
+  Dimensions,
 } from 'react-native';
+import LinearGradient from 'react-native-linear-gradient';
+
+const { width } = Dimensions.get('window');
 
 const PointsScreen = ({ route, navigation }) => {
   const { points, totalPoints } = route.params;
@@ -22,7 +26,8 @@ const PointsScreen = ({ route, navigation }) => {
 
     Animated.spring(scaleAnim, {
       toValue: 1,
-      friction: 5,
+      friction: 4,
+      tension: 100,
       useNativeDriver: true,
     }).start();
   }, [fadeAnim, scaleAnim]);
@@ -32,24 +37,47 @@ const PointsScreen = ({ route, navigation }) => {
   };
 
   return (
-    <View style={styles.container}>
-      <Image
+    <LinearGradient
+      colors={['#3B5998', '#577BC1']}
+      style={styles.container}
+      start={{ x: 0, y: 0 }}
+      end={{ x: 1, y: 1 }}
+    >
+      <Animated.Image
         source={require('../assets/trophy.png')}
-        style={styles.trophyImage}
+        style={[styles.trophyImage, { opacity: fadeAnim, transform: [{ scale: scaleAnim }] }]}
       />
+
       <Animated.Text style={[styles.title, { opacity: fadeAnim }]}>
         Congratulations!
       </Animated.Text>
-      <Animated.View style={{ transform: [{ scale: scaleAnim }] }}>
+
+      <Animated.View
+        style={[
+          styles.pointsCard,
+          {
+            opacity: fadeAnim,
+            transform: [{ scale: scaleAnim }],
+          },
+        ]}
+      >
         <Text style={styles.pointsText}>You Scored:</Text>
         <Text style={styles.points}>
           {points} / {totalPoints}
         </Text>
       </Animated.View>
-      <TouchableOpacity onPress={handleGoQuiz} style={styles.quizButton}>
-        <Text style={styles.quizButtonText}>Go to Quiz Page</Text>
+
+      <TouchableOpacity activeOpacity={0.9} onPress={handleGoQuiz}>
+        <LinearGradient
+          colors={['#4CAF50', '#2ecc71']}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 1 }}
+          style={styles.quizButton}
+        >
+          <Text style={styles.quizButtonText}>Go to Quizzes & Challenges</Text>
+        </LinearGradient>
       </TouchableOpacity>
-    </View>
+    </LinearGradient>
   );
 };
 
@@ -58,22 +86,36 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#122f4d',
   },
   trophyImage: {
-    width: 250,
-    height: 250,
-    marginBottom: 20,
+    width: 220,
+    height: 220,
+    marginBottom: 25,
   },
   title: {
-    fontSize: 34,
+    fontSize: 36,
     fontWeight: 'bold',
-    marginBottom: 20,
-    color: '#fff',
+    color: '#FFFFFF',
+    marginBottom: 25,
+    letterSpacing: 1,
+  },
+  pointsCard: {
+    backgroundColor: '#FFFFFF',
+    padding: 25,
+    borderRadius: 25,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.2,
+    shadowRadius: 10,
+    elevation: 12,
+    width: width * 0.8,
+    marginBottom: 35,
   },
   pointsText: {
-    fontSize: 25,
-    color: '#fff',
+    fontSize: 20,
+    color: '#2A2D57',
+    marginBottom: 10,
   },
   points: {
     fontSize: 32,
@@ -81,15 +123,21 @@ const styles = StyleSheet.create({
     color: '#4CAF50',
   },
   quizButton: {
-    marginTop: 30,
-    padding: 15,
-    backgroundColor: '#4CAF50',
-    borderRadius: 10,
+    paddingVertical: 15,
+    paddingHorizontal: 30,
+    borderRadius: 30,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 10 },
+    shadowOpacity: 0.25,
+    shadowRadius: 10,
+    elevation: 15,
   },
   quizButtonText: {
-    color: 'white',
-    fontSize: 18,
+    color: '#FFFFFF',
+    fontSize: 16,
     fontWeight: 'bold',
+    letterSpacing: 0.5,
+    textAlign: 'center',
   },
 });
 
