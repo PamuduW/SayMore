@@ -44,12 +44,17 @@ def transcribe_audio(file_name, language):
 
     Returns:
         str: The transcribed text if successful, None otherwise.
+
     """
-    speech_config = speechsdk.SpeechConfig(subscription=azure_speech_key, region=azure_speech_region)
+    speech_config = speechsdk.SpeechConfig(
+        subscription=azure_speech_key, region=azure_speech_region
+    )
     speech_config.speech_recognition_language = language
     audio_config = speechsdk.audio.AudioConfig(filename=file_name)
 
-    recognizer = speechsdk.SpeechRecognizer(speech_config=speech_config, audio_config=audio_config)
+    recognizer = speechsdk.SpeechRecognizer(
+        speech_config=speech_config, audio_config=audio_config
+    )
     result = recognizer.recognize_once()
 
     if result.reason == speechsdk.ResultReason.RecognizedSpeech:
@@ -97,10 +102,11 @@ def stutter_test(file_name, lan_flag):
 
     Args:
         file_name (str): The path to the audio file to be analyzed.
-        language (str): The language code for transcription.
+        lan_flag (str): A language flag (e.g., "en", "si", "ta") for transcription.
 
     Returns:
-        dict: A dictionary containing the analysis results or an error message.
+        dict: A dictionary containing the analysis results and the transcript, or an error message.
+
     """
     try:
         language_mapping = {"en": "en-US", "si": "si-LK", "ta": "ta-LK"}
@@ -111,6 +117,7 @@ def stutter_test(file_name, lan_flag):
             return {"error": "Error transcribing audio."}
 
         analysis_result = analyze_stuttering_gemini(transcript)
+        analysis_result["transcript"] = transcript
         return analysis_result
     except Exception as e:
         return {"error": str(e)}
