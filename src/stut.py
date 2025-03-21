@@ -35,24 +35,21 @@ system_prompt = """
 """
 
 
-def transcribe_audio(file_name):
+def transcribe_audio(file_name, language):
     """Transcribe audio from a file using Azure Cognitive Services Speech SDK.
 
     Args:
-        file_name (str): The path to the audio file to be transcribed.
+        file_name (str): The path to the audio file.
+        language (str): The BCP-47 language code (default "en-US").
 
     Returns:
         str: The transcribed text if successful, None otherwise.
-
     """
-    speech_config = speechsdk.SpeechConfig(
-        subscription=azure_speech_key, region=azure_speech_region
-    )
+    speech_config = speechsdk.SpeechConfig(subscription=azure_speech_key, region=azure_speech_region)
+    speech_config.speech_recognition_language = language
     audio_config = speechsdk.audio.AudioConfig(filename=file_name)
 
-    recognizer = speechsdk.SpeechRecognizer(
-        speech_config=speech_config, audio_config=audio_config
-    )
+    recognizer = speechsdk.SpeechRecognizer(speech_config=speech_config, audio_config=audio_config)
     result = recognizer.recognize_once()
 
     if result.reason == speechsdk.ResultReason.RecognizedSpeech:
@@ -95,19 +92,21 @@ def analyze_stuttering_gemini(transcript):
         return {"error": str(e)}
 
 
-def stutter_test(file_name):
+def stutter_test(file_name, lan_flag):
     """Perform a stuttering analysis on an audio file.
 
     Args:
         file_name (str): The path to the audio file to be analyzed.
+        language (str): The language code for transcription.
 
     Returns:
         dict: A dictionary containing the analysis results or an error message.
-
     """
     try:
-        transcript = transcribe_audio(file_name)
-        print("Transcript:", transcript)
+        language_mapping = {"en": "en-US", "si": "si-LK", "ta": "ta-LK"}
+        language_code = language_mapping.get(lan_flag, "en-US")
+
+        transcript = transcribe_audio(file_name, language_code)
         if not transcript:
             return {"error": "Error transcribing audio."}
 
