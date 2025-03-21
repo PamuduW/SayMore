@@ -9,6 +9,7 @@ import {
   Share,
   Image,
 } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 
 interface UserRecord {
   score: number;
@@ -26,6 +27,7 @@ const ActivityScreen: React.FC<Props> = ({ userRecords }) => {
     highestScore: 0,
     totalQuizzes: 0,
   });
+  const navigation = useNavigation();
 
   // Update stats based on user records
   useEffect(() => {
@@ -53,12 +55,34 @@ const ActivityScreen: React.FC<Props> = ({ userRecords }) => {
       console.error(error);
     }
   };
+
 const theme = useTheme();
+ const handleBackPress = () => {
+    navigation.goBack();
+  };
 
   return (
     <ScrollView style={theme === 'dark' ? styles.darkContainer : styles.lightContainer}>
-      <Text style={theme === 'dark' ? styles.darkTitle: styles.lightTitle }>Activity</Text>
+    <View style={styles.headerContainer}>
+    <TouchableOpacity
+                  style={
+                    theme === 'dark'
+                      ? styles.darkBackButton
+                      : styles.lightBackButton
+                  }
+                  onPress={handleBackPress}>
+                  <Text
+                    style={
+                      theme === 'dark'
+                        ? styles.darkBackButtonText
+                        : styles.lightBackButtonText
+                    }>
+                    ←
+                  </Text>
+                </TouchableOpacity>
 
+      <Text style={theme === 'dark' ? styles.darkTitle: styles.lightTitle }>Activity</Text>
+      </View>
       {/* Progress Image */}
       <View style={styles.imageContainer}>
         <Image
@@ -99,9 +123,14 @@ const styles = StyleSheet.create({
   lightContainer: { flex: 1, padding: 20, backgroundColor: '#fff' },
 
   darkContainer: { flex: 1, padding: 20, backgroundColor: '#3A3A3A' },
+  headerContainer: {
+      flexDirection: 'row',
+      alignItems: 'center',
+    },
 
   lightTitle: {
     fontSize: 28,
+    flex: 1,
     fontWeight: 'bold',
     textAlign: 'center',
     marginVertical: 20,
@@ -109,6 +138,7 @@ const styles = StyleSheet.create({
   },
   darkTitle: {
     fontSize: 28,
+    flex:  1,
     fontWeight: 'bold',
     textAlign: 'center',
     marginVertical: 20,
@@ -180,6 +210,54 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginTop: 5,
   },
+   lightBackButton: {
+      width: 48,
+      height: 48,
+      backgroundColor: '#E6F7FF',
+      borderRadius: 12,
+      justifyContent: 'center',
+      alignItems: 'center',
+      shadowColor: '#000',
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: 0.2,
+      shadowRadius: 3,
+      elevation: 4,
+    },
+    darkBackButton: {
+      width: 48,
+      height: 48,
+      backgroundColor: '#FFF',
+      borderRadius: 12,
+      justifyContent: 'center',
+      alignItems: 'center',
+      shadowColor: '#000',
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: 0.2,
+      shadowRadius: 3,
+      elevation: 4,
+    },
+
+    lightBackButtonText: {
+      fontSize: 28,
+      fontWeight: 'bold',
+      color: '#2C3E50',
+      textAlign: 'center',
+      textAlignVertical: 'center',
+      includeFontPadding: false,
+      paddingBottom: 2, // Fine-tune vertical centering
+      lineHeight: 32, // Control line height to center text
+    },
+    darkBackButtonText: {
+      fontSize: 28,
+      fontWeight: 'bold',
+      color: '#000',
+      textAlign: 'center',
+      textAlignVertical: 'center',
+      includeFontPadding: false,
+      paddingBottom: 2,
+      lineHeight: 32,
+    },
+
   shareText: { color: 'white', fontSize: 16, fontWeight: 'bold' },
 });
 
