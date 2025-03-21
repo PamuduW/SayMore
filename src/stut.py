@@ -1,23 +1,22 @@
 import os
 import azure.cognitiveservices.speech as speechsdk
-import openai  # Correct import for Azure OpenAI
+import openai
 from dotenv import load_dotenv
+from google import genai
 
-# Load environment variables
 load_dotenv()
 
-# Print API key for debugging (REMOVE in production)
 print("Azure OpenAI Key:", os.getenv("AZURE_OPENAI_KEY"))
 print("Azure OpenAI Key:", os.getenv("AZURE_OPENAI_ENDPOINT"))
 
-# Azure Speech-to-Text Credentials
 AZURE_SPEECH_KEY = os.getenv("AZURE_SPEECH_KEY")
 AZURE_SPEECH_REGION = os.getenv("AZURE_SPEECH_REGION")
 
-# Azure OpenAI API Credentials
 AZURE_OPENAI_KEY = os.getenv("AZURE_OPENAI_KEY")
 AZURE_OPENAI_ENDPOINT = os.getenv("AZURE_OPENAI_ENDPOINT")
 AZURE_OPENAI_DEPLOYMENT = os.getenv("AZURE_OPENAI_DEPLOYMENT")
+
+client = genai.Client(api_key=os.getenv("GOOGLE_API_KEY"))
 
 system_prompt = """
     "You are an expert in speech and language pathology specializing in stuttering detection. "
@@ -34,7 +33,6 @@ system_prompt = """
 """
 
 def transcribe_audio(file_name):
-    """ Convert speech to text using Azure Speech-to-Text. """
     speech_config = speechsdk.SpeechConfig(subscription=AZURE_SPEECH_KEY, region=AZURE_SPEECH_REGION)
     audio_config = speechsdk.audio.AudioConfig(filename=file_name)
 
@@ -47,7 +45,6 @@ def transcribe_audio(file_name):
         return None
 
 def analyze_stuttering(transcript):
-    """ Analyze stuttering using Azure OpenAI GPT-4-Turbo. """
     client = openai.AzureOpenAI(
         api_key=AZURE_OPENAI_KEY,
         api_version="2023-12-01-preview",
@@ -55,7 +52,7 @@ def analyze_stuttering(transcript):
     )
 
     response = client.chat.completions.create(
-        model=AZURE_OPENAI_DEPLOYMENT,  # Use your deployment name
+        model=AZURE_OPENAI_DEPLOYMENT,
         messages=[
             {"role": "system", "content": system_prompt},
             {"role": "user", "content": transcript}
@@ -65,7 +62,6 @@ def analyze_stuttering(transcript):
     return response.choices[0].message.content
 
 def stutter_test(file_name):
-    """ Run speech-to-text and stuttering analysis. """
     try:
         transcript = transcribe_audio(file_name)
         print(transcript)
