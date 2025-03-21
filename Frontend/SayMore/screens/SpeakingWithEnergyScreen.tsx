@@ -14,16 +14,16 @@ import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
 import { VideoItem } from '../types/types';
 
-interface PerfectingYourPitchScreenProps { }
+interface SpeakingWithEnergyScreenProps { }
 
 const { width } = Dimensions.get('window');
 const videoBoxWidth = (width - 75) / 3;
 const videoBoxMargin = 15;
 const containerPadding = 20;
 
-const PerfectingYourPitchScreen: React.FC<PerfectingYourPitchScreenProps> = () => {
+const SpeakingWithEnergyScreen: React.FC<SpeakingWithEnergyScreenProps> = () => {
     const navigation = useNavigation();
-    const [pitchVideos, setPitchVideos] = useState<VideoItem[]>([]);
+    const [energyVideos, setEnergyVideos] = useState<VideoItem[]>([]);
     const [recommendedLessons, setRecommendedLessons] = useState<{
         category: string;
         documentId: string;
@@ -31,23 +31,23 @@ const PerfectingYourPitchScreen: React.FC<PerfectingYourPitchScreenProps> = () =
     }[]>([]);
     const [loading, setLoading] = useState(true);
 
-    const fetchPitchVideos = useCallback(async () => {
+    const fetchEnergyVideos = useCallback(async () => {
         try {
-            const pitchSnapshot = await firestore()
+            const energySnapshot = await firestore()
                 .collection('lesson_videos')
-                .doc('pitch')
+                .doc('energy')
                 .get();
 
-            if (pitchSnapshot.exists) {
-                const data = pitchSnapshot.data();
-                setPitchVideos((data?.videos as VideoItem[]) || []);
+            if (energySnapshot.exists) {
+                const data = energySnapshot.data();
+                setEnergyVideos((data?.videos as VideoItem[]) || []);
             } else {
-                console.log('Pitch document does not exist.');
-                setPitchVideos([]);
+                console.log('Energy document does not exist.');
+                setEnergyVideos([]);
             }
         } catch (error) {
-            console.error('Error fetching pitch videos:', error);
-            setPitchVideos([]);
+            console.error('Error fetching energy videos:', error);
+            setEnergyVideos([]);
         }
     }, []);
 
@@ -82,9 +82,9 @@ const PerfectingYourPitchScreen: React.FC<PerfectingYourPitchScreenProps> = () =
                     }
                 }
 
-                // Filter out Perfecting Your Pitch lessons
+                // Filter out Speaking with Energy lessons
                 const filteredLessons = lessonsWithVideos.filter(
-                    (lesson) => lesson.category !== 'Perfecting Your Pitch'
+                    (lesson) => lesson.category !== 'Speaking with Energy'
                 );
 
                 setRecommendedLessons(filteredLessons);
@@ -96,13 +96,13 @@ const PerfectingYourPitchScreen: React.FC<PerfectingYourPitchScreenProps> = () =
         };
         const loadData = async () => {
             setLoading(true);
-            await fetchPitchVideos();
+            await fetchEnergyVideos();
             await fetchRecommendedLessons();
             setLoading(false);
         };
 
         loadData();
-    }, [fetchPitchVideos]);
+    }, [fetchEnergyVideos]);
 
     const handleBackPress = () => {
         navigation.goBack();
@@ -127,7 +127,7 @@ const PerfectingYourPitchScreen: React.FC<PerfectingYourPitchScreenProps> = () =
                             <Text style={styles.backButtonText}>←</Text>
                         </TouchableOpacity>
                         <View style={styles.headerTextContainer}>
-                            <Text style={styles.headerText}>Perfecting Your Pitch</Text>
+                            <Text style={styles.headerText}>Speaking with Energy</Text>
                         </View>
                     </View>
 
@@ -138,11 +138,11 @@ const PerfectingYourPitchScreen: React.FC<PerfectingYourPitchScreenProps> = () =
                             <View style={styles.sectionContainer}>
                                 <Text style={styles.sectionTitle}>You Should Improve In :</Text>
 
-                                {pitchVideos.length > 0 ? (
+                                {energyVideos.length > 0 ? (
                                     <View style={styles.categoryContainer}>
-                                        <Text style={styles.categoryTitle}>Perfecting Your Pitch</Text>
+                                        <Text style={styles.categoryTitle}>Speaking with Energy</Text>
                                         <View style={styles.videosGrid}>
-                                            {pitchVideos.map((video, videoIndex) => (
+                                            {energyVideos.map((video, videoIndex) => (
                                                 <TouchableOpacity
                                                     key={videoIndex}
                                                     style={[
@@ -150,7 +150,7 @@ const PerfectingYourPitchScreen: React.FC<PerfectingYourPitchScreenProps> = () =
                                                         { width: videoBoxWidth, marginRight: videoBoxMargin },
                                                         videoIndex % 3 === 2 ? { marginRight: 0 } : null,
                                                     ]}
-                                                    onPress={() => handleVideoPress(video, 'Perfecting Your Pitch', 'pitch')}
+                                                    onPress={() => handleVideoPress(video, 'Speaking with Energy', 'energy')}
                                                 >
                                                     <Image
                                                         source={{ uri: video.thumbnail }}
@@ -336,4 +336,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default PerfectingYourPitchScreen;
+export default SpeakingWithEnergyScreen;

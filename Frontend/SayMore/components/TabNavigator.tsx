@@ -39,6 +39,8 @@ import LessonRedirectionStuttering from '../screens/LessonRedirectionStuttering'
 import LessonRedirectionScreen from '../screens/LessonRedirectionScreen';
 import CommunicationAndStageFrightScreen from '../screens/CommunicationAndStageFrightScreen';
 import ClarityScreen from '../screens/ClarityScreen';
+import PerfectingYourPitchScreen from '../screens/PerfectingYourPitchScreen';
+import SpeakingWithEnergyScreen from '../screens/SpeakingWithEnergyScreen';
 
 // Navigators
 const Tab = createBottomTabNavigator();
@@ -86,6 +88,8 @@ const MoreStack = () => (
     <Stack.Screen name="LessonRedirection" component={LessonRedirectionScreen} />
     <Stack.Screen name="CommunicationAndStageFrightScreen" component={CommunicationAndStageFrightScreen} />
     <Stack.Screen name="ClarityScreen" component={ClarityScreen} />
+    <Stack.Screen name="PerfectingYourPitchScreen" component={PerfectingYourPitchScreen} />
+    <Stack.Screen name="SpeakingWithEnergyScreen" component={SpeakingWithEnergyScreen} />
   </Stack.Navigator>
 );
 

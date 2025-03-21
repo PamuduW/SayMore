@@ -87,7 +87,7 @@ const LessonRedirectionScreen = () => {
                            ? styles.darkRedirectionButton
                            : styles.lightRedirectionButton,
                        ]}
-                       onPress={() => handlePress('LessonRedirectionStuttering')}>
+                       onPress={() => handlePress('PerfectingYourPitchScreen')}>
                        <Text
                          style={
                            theme === 'dark'
@@ -105,7 +105,61 @@ const LessonRedirectionScreen = () => {
                            ? styles.darkRedirectionButton
                            : styles.lightRedirectionButton,
                        ]}
+                       onPress={() => handlePress('SpeakingWithEnergyScreen')}>
+                       <Text
+                         style={
+                           theme === 'dark'
+                             ? styles.darkRedirectionText
+                             : styles.lightRedirectionText
+                         }>
+                         Speaking With Energy
+                       </Text>
+           </TouchableOpacity>
+
+           <TouchableOpacity
+                       style={[
+                         styles.redirectionButton,
+                         theme === 'dark'
+                           ? styles.darkRedirectionButton
+                           : styles.lightRedirectionButton,
+                       ]}
                        onPress={() => handlePress('LessonRedirectionStuttering')}>
+                       <Text
+                         style={
+                           theme === 'dark'
+                             ? styles.darkRedirectionText
+                             : styles.lightRedirectionText
+                         }>
+                         Stuttering
+                       </Text>
+           </TouchableOpacity>
+
+           <TouchableOpacity
+                       style={[
+                         styles.redirectionButton,
+                         theme === 'dark'
+                           ? styles.darkRedirectionButton
+                           : styles.lightRedirectionButton,
+                       ]}
+                       onPress={() => handlePress('PerfectingYourPitchScreen')}>
+                       <Text
+                         style={
+                           theme === 'dark'
+                             ? styles.darkRedirectionText
+                             : styles.lightRedirectionText
+                         }>
+                         Perfecting Your Pitch
+                       </Text>
+           </TouchableOpacity>
+
+           <TouchableOpacity
+                       style={[
+                         styles.redirectionButton,
+                         theme === 'dark'
+                           ? styles.darkRedirectionButton
+                           : styles.lightRedirectionButton,
+                       ]}
+                       onPress={() => handlePress('SpeakingWithEnergyScreen')}>
                        <Text
                          style={
                            theme === 'dark'
