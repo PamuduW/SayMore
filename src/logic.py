@@ -1,3 +1,5 @@
+import logging
+
 from src.ps_test import ps_test
 from src.stutter_test import stutter_test
 

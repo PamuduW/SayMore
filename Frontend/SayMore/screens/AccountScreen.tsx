@@ -36,11 +36,6 @@ export default function AccountScreen() {
     ).start();
   }, [borderAnimation]);
 
-  const borderInterpolation = borderAnimation.interpolate({
-    inputRange: [0, 1],
-    outputRange: ['#2D336B', '#7886C7'],
-  });
-
   const fetchUserData = async (showLoader = true) => {
     try {
       if (showLoader) setLoading(true);
@@ -256,23 +251,22 @@ const styles = StyleSheet.create({
   },
 
   menuContainer: { width: '100%', alignItems: 'center', marginBottom: 25 },
-
+  
   menuItemWrapper: {
-    borderRadius: 20,
+    borderRadius: 18,
     width: '100%',
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.2,
-    shadowRadius: 10,
-    elevation: 100,
-    marginBottom: 18,
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.15,
+    shadowRadius: 8,
+    elevation: 10,
+    marginBottom: 15,
   },
   menuItem: {
-    paddingVertical: 16,
+    paddingVertical: 14,
     alignItems: 'center',
     width: '100%',
-    borderRadius: 20,
-    elevation: 100,
+    borderRadius: 18,
   },
   menuText: {
     fontSize: 16,

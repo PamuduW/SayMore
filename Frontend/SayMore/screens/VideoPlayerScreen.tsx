@@ -22,6 +22,7 @@ import { WatchedVideo } from '../types/types';
 import firestore from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
 import { throttle } from 'lodash';
+import { useTheme } from '../components/ThemeContext';
 
 type RootStackParamList = {
   VideoPlayer: {
@@ -58,6 +59,7 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = ({
   route,
   navigation,
 }) => {
+  const theme = useTheme();
   const isFocused = useIsFocused();
   const { video, lessonTitle } = route.params;
   const { width, height } = Dimensions.get('window');
@@ -1000,10 +1002,12 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = ({
   return (
     <SafeAreaView style={styles.safeArea}>
       <StatusBar barStyle="dark-content" backgroundColor="#F0F8FF" />
-      <View style={styles.container}>
-        <View style={styles.header}>
+      <View style={theme === 'dark' ? styles.darkContainer : styles.container}>
+        <View style={theme === 'dark'?styles.darkHeader:styles.header}>
           <TouchableOpacity
-            style={styles.backButton}
+            style={
+              theme === 'light' ? styles.lightBackButton : styles.darkBackButton
+            }
             onPress={() => {
               checkPlayDuration();
               checkWatchingProgress();
@@ -1012,11 +1016,18 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = ({
               }
               navigation.goBack();
             }}>
-            <Text style={styles.backButtonText}>←</Text>
+            <Text
+              style={
+                theme === 'dark'
+                  ? styles.darkBackButtonText
+                  : styles.lightBackButtonText
+              }>
+              ←
+            </Text>
           </TouchableOpacity>
           <View style={styles.headerTextContainer}>
             <Text
-              style={styles.headerText}
+              style={theme === 'dark'?styles.darkHeaderText:styles.headerText}
               numberOfLines={1}
               ellipsizeMode="tail">
               {combinedTitle}
@@ -1027,7 +1038,7 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = ({
         <ScrollView
           style={styles.scrollContent}
           showsVerticalScrollIndicator={false}>
-          <View style={styles.videoContainer}>
+          <View style={theme === 'dark'?styles.darkVideoContainer:styles.videoContainer}>
             <YoutubeIframe
               height={playerHeight}
               width={playerWidth}
@@ -1045,7 +1056,7 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = ({
 
           {showSkipButton && previousWatchedPercentage && !playing && (
             <TouchableOpacity
-              style={styles.skipButton}
+              style={theme === 'dark'?styles.darkSkipButton:styles.skipButton}
               onPress={skipToLastWatched}>
               <Text style={styles.skipButtonText}>
                 Skip to {previousWatchedPercentage}% (Last Watched)
@@ -1053,17 +1064,17 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = ({
             </TouchableOpacity>
           )}
 
-          <View style={styles.videoInfoContainer}>
-            <Text style={styles.videoTitle}>{video.title}</Text>
-            <Text style={styles.lessonSubtitle}>{lessonTitle}</Text>
+          <View style={theme === 'dark'?styles.darkVideoInfoContainer:styles.videoInfoContainer}>
+            <Text style={theme === 'dark'?styles.darkVideoTitle:styles.videoTitle}>{video.title}</Text>
+            <Text style={theme === 'dark'?styles.darkLessonSubtitle:styles.darkLessonSubtitle}>{lessonTitle}</Text>
             {videoDuration > 0 && (
-              <Text style={styles.durationText}>
+              <Text style={theme === 'dark'?styles.darkDurationText:styles.durationText}>
                 Duration: {Math.floor(videoDuration / 60)}:
                 {String(Math.floor(videoDuration % 60)).padStart(2, '0')}
               </Text>
             )}
             <View style={styles.progressContainer}>
-              <Text style={styles.progressText}>
+              <Text style={theme === 'dark'?styles.darkProgressText:styles.progressText}>
                 {currentPercentage > 0
                   ? `You've watched ${currentPercentage}% of this video`
                   : 'Start watching to track progress'}
@@ -1084,14 +1095,14 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = ({
                   {getMilestonePointsText()}
                 </Text>
               )}
-              <View style={styles.milestonesContainer}>
-                <Text style={styles.milestonesText}>
+              <View style={theme === 'dark'?styles.darkMilestonesContainer:styles.milestonesContainer}>
+                <Text style={theme === 'dark'?styles.darkMilestonesText:styles.milestonesText}>
                   Milestones:
                   <Text
                     style={
                       reachedMilestonesRef.current.has(10)
                         ? styles.reachedMilestone
-                        : styles.unreachedMilestone
+                        : theme === 'dark'?styles.darkUnreachedMilestone:styles.unreachedMilestone
                     }>
                     {' '}
                     10%
@@ -1101,7 +1112,7 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = ({
                     style={
                       reachedMilestonesRef.current.has(25)
                         ? styles.reachedMilestone
-                        : styles.unreachedMilestone
+                        : theme === 'dark'?styles.darkUnreachedMilestone:styles.unreachedMilestone
                     }>
                     {' '}
                     25%
@@ -1111,7 +1122,7 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = ({
                     style={
                       reachedMilestonesRef.current.has(50)
                         ? styles.reachedMilestone
-                        : styles.unreachedMilestone
+                        : theme === 'dark'?styles.darkUnreachedMilestone:styles.unreachedMilestone
                     }>
                     {' '}
                     50%
@@ -1121,7 +1132,7 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = ({
                     style={
                       reachedMilestonesRef.current.has(75)
                         ? styles.reachedMilestone
-                        : styles.unreachedMilestone
+                        : theme === 'dark'?styles.darkUnreachedMilestone:styles.unreachedMilestone
                     }>
                     {' '}
                     75%
@@ -1131,7 +1142,7 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = ({
                     style={
                       reachedMilestonesRef.current.has(100)
                         ? styles.reachedMilestone
-                        : styles.unreachedMilestone
+                        : theme === 'dark'?styles.darkUnreachedMilestone:styles.unreachedMilestone
                     }>
                     {' '}
                     100%
@@ -1142,9 +1153,9 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = ({
           </View>
 
           {video.summary && (
-            <View style={styles.summaryOuterContainer}>
-              <View style={styles.summaryHeaderContainer}>
-                <Text style={styles.summaryHeaderText}>Summary</Text>
+            <View style={theme === 'dark'?styles.darkSummaryOuterContainer:styles.summaryOuterContainer}>
+              <View style={theme === 'dark'?styles.darkSummaryHeaderContainer:styles.summaryHeaderContainer}>
+                <Text style={theme === 'dark'?styles.darkSummaryHeaderText:styles.summaryHeaderText}>Summary</Text>
               </View>
               <View style={styles.summaryCardContainer}>
                 {video.summaryImage && (
@@ -1153,7 +1164,7 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = ({
                     style={styles.summaryImage}
                   />
                 )}
-                <Text style={styles.summaryText}>{video.summary}</Text>
+                <Text style={theme === 'dark'?styles.darkSummaryText:styles.summaryText}>{video.summary}</Text>
               </View>
             </View>
           )}
@@ -1173,6 +1184,10 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#F0F8FF',
   },
+  darkContainer: {
+    flex: 1,
+    backgroundColor: '#2B2B2B',
+  },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -1181,8 +1196,16 @@ const styles = StyleSheet.create({
     backgroundColor: '#F0F8FF',
     borderBottomWidth: 1,
     borderBottomColor: '#E1EEFB',
+  },darkHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    backgroundColor: '#2B2B2B',
+    borderBottomWidth: 1,
+    borderBottomColor: '#2B2B2B',
   },
-  backButton: {
+  lightBackButton: {
     width: 48,
     height: 48,
     backgroundColor: '#E6F7FF',
@@ -1195,10 +1218,34 @@ const styles = StyleSheet.create({
     shadowRadius: 3,
     elevation: 4,
   },
-  backButtonText: {
+  darkBackButton: {
+    width: 48,
+    height: 48,
+    backgroundColor: '#FFF',
+    borderRadius: 12,
+    justifyContent: 'center',
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 3,
+    elevation: 4,
+  },
+
+  lightBackButtonText: {
     fontSize: 28,
     fontWeight: 'bold',
     color: '#2C3E50',
+    textAlign: 'center',
+    textAlignVertical: 'center',
+    includeFontPadding: false,
+    paddingBottom: 2, // Fine-tune vertical centering
+    lineHeight: 32, // Control line height to center text
+  },
+  darkBackButtonText: {
+    fontSize: 28,
+    fontWeight: 'bold',
+    color: '#000',
     textAlign: 'center',
     textAlignVertical: 'center',
     includeFontPadding: false,
@@ -1209,10 +1256,16 @@ const styles = StyleSheet.create({
     flex: 1,
     marginLeft: 12,
   },
+
   headerText: {
     fontSize: 18,
     fontWeight: '600',
     color: '#003366',
+  },
+  darkHeaderText: {
+    fontSize: 18,
+    fontWeight: '600',
+    color: '#FFF',
   },
   scrollContent: {
     flex: 1,
@@ -1221,9 +1274,26 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#003366',
     marginBottom: -45,
+  },darkVideoContainer: {
+    alignItems: 'center',
+    backgroundColor: '#2b2b2b',
+    marginBottom: -45,
   },
   skipButton: {
     backgroundColor: '#003366',
+    paddingVertical: 10,
+    paddingHorizontal: 16,
+    borderRadius: 8,
+    marginHorizontal: 16,
+    marginTop: 16,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 3,
+    elevation: 4,
+  },darkSkipButton: {
+    backgroundColor: '#4c4c4c',
     paddingVertical: 10,
     paddingHorizontal: 16,
     borderRadius: 8,
@@ -1247,21 +1317,41 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: '#E1EEFB',
     marginBottom: 16,
+  },darkVideoInfoContainer: {
+    padding: 16,
+    backgroundColor: '#2B2B2B',
+    borderBottomWidth: 1,
+    borderBottomColor: '#2B2B2B',
+    marginBottom: 16,
   },
   videoTitle: {
     fontSize: 18,
     fontWeight: '600',
     color: '#003366',
     marginBottom: 4,
+  },darkVideoTitle: {
+    fontSize: 18,
+    fontWeight: '600',
+    color: '#FFF',
+    marginBottom: 4,
   },
   lessonSubtitle: {
     fontSize: 14,
     color: '#4A6D8C',
     marginBottom: 8,
+  },darkLessonSubtitle: {
+    fontSize: 14,
+    color: '#FFF',
+    marginBottom: 8,
   },
   durationText: {
     fontSize: 14,
     color: '#4A6D8C',
+    marginTop: 4,
+    marginBottom: 12,
+  },darkDurationText: {
+    fontSize: 14,
+    color: '#FFF',
     marginTop: 4,
     marginBottom: 12,
   },
@@ -1271,6 +1361,10 @@ const styles = StyleSheet.create({
   progressText: {
     fontSize: 14,
     color: '#003366',
+    marginBottom: 6,
+  },darkProgressText: {
+    fontSize: 14,
+    color: '#FFF',
     marginBottom: 6,
   },
   pointsText: {
@@ -1294,10 +1388,18 @@ const styles = StyleSheet.create({
     paddingTop: 8,
     borderTopWidth: 1,
     borderTopColor: '#E1EEFB',
+  },darkMilestonesContainer: {
+    marginTop: 8,
+    paddingTop: 8,
+    borderTopWidth: 1,
+    borderTopColor: '#fff',
   },
   milestonesText: {
     fontSize: 12,
     color: '#003366',
+  },darkMilestonesText: {
+    fontSize: 12,
+    color: '#FFF',
   },
   reachedMilestone: {
     color: '#4CAF50',
@@ -1305,12 +1407,25 @@ const styles = StyleSheet.create({
   },
   unreachedMilestone: {
     color: '#A0AEC0',
+  },darkUnreachedMilestone: {
+    color: '#FFF',
   },
   summaryOuterContainer: {
     marginHorizontal: 16,
     marginBottom: 24,
     borderRadius: 12,
     backgroundColor: '#FFFFFF',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+    overflow: 'hidden',
+  },darkSummaryOuterContainer: {
+    marginHorizontal: 16,
+    marginBottom: 24,
+    borderRadius: 12,
+    backgroundColor: '#3c3c3c',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
@@ -1324,11 +1439,23 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     borderTopLeftRadius: 12,
     borderTopRightRadius: 12,
+  },darkSummaryHeaderContainer: {
+    backgroundColor: '#4d4d4d',
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    borderTopLeftRadius: 12,
+    borderTopRightRadius: 12,
   },
   summaryHeaderText: {
     fontSize: 16,
     fontWeight: '600',
     color: '#003366',
+    textAlign: 'center',
+  },
+  darkSummaryHeaderText: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#FFF',
     textAlign: 'center',
   },
   summaryCardContainer: {
@@ -1344,6 +1471,10 @@ const styles = StyleSheet.create({
     fontSize: 16,
     lineHeight: 24,
     color: '#003366',
+  },darkSummaryText: {
+    fontSize: 16,
+    lineHeight: 24,
+    color: '#FFF',
   },
   skipButton: {
     backgroundColor: '#3498db',
@@ -1352,11 +1483,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     margin: 16,
   },
-  skipButtonText: {
-    color: '#fff',
-    fontSize: 16,
-    fontWeight: '600',
-  },
+
 });
 
 export default VideoPlayerScreen;

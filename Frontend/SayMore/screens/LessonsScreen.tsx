@@ -13,6 +13,7 @@ import { useNavigation } from '@react-navigation/native';
 import { Lesson } from '../types/types';
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
+import { useTheme } from '../components/ThemeContext';
 
 interface LessonsScreenProps {}
 
@@ -23,6 +24,7 @@ const LessonsScreen: React.FC<LessonsScreenProps> = () => {
   const navigation = useNavigation();
   const [firstName, setFirstName] = useState<string | null>(null);
 
+  const theme = useTheme();
   useEffect(() => {
     const fetchFirstName = async () => {
       const user = auth().currentUser;
@@ -118,19 +120,41 @@ const LessonsScreen: React.FC<LessonsScreenProps> = () => {
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      <ScrollView contentContainerStyle={styles.scrollContainer}>
-        <View style={styles.container}>
+      <ScrollView>
+        <View
+          style={
+            theme === 'dark' ? styles.darkContainer : styles.lightContainer
+          }>
           <View style={styles.headerContainer}>
             <TouchableOpacity
-              style={styles.backButton}
+              style={
+                theme === 'dark'
+                  ? styles.darkBackButton
+                  : styles.lightBackButton
+              }
               onPress={handleBackPress}>
-              <Text style={styles.backButtonText}>←</Text>
+              <Text
+                style={
+                  theme === 'dark'
+                    ? styles.darkBackButtonText
+                    : styles.lightBackButtonText
+                }>
+                ←
+              </Text>
             </TouchableOpacity>
             <View style={styles.headerTextContainer}>
-              <Text style={styles.headerText}>Hi {firstName},</Text>
+              <Text
+                style={
+                  theme === 'dark'
+                    ? styles.darkHeaderText
+                    : styles.lightHeaderText
+                }>
+                Hi {firstName},
+              </Text>
             </View>
           </View>
-          <Text style={styles.subText}>
+          <Text
+            style={theme === 'dark' ? styles.darkSubText : styles.lightSubText}>
             Unlock your potential as a confident speaker. Explore our
             educational videos, tips, and techniques designed to help you
             overcome stuttering, build confidence, and communicate with clarity
@@ -140,7 +164,12 @@ const LessonsScreen: React.FC<LessonsScreenProps> = () => {
             {lessons.map((lesson, index) => (
               <TouchableOpacity
                 key={index}
-                style={[styles.lessonButton, { width: itemWidth }]}
+                style={[
+                  theme === 'dark'
+                    ? styles.darkLessonButton
+                    : styles.lightLessonButton,
+                  { width: itemWidth },
+                ]}
                 onPress={() => handleLessonPress(lesson)}>
                 <View style={styles.imageContainer}>
                   <Image
@@ -149,7 +178,14 @@ const LessonsScreen: React.FC<LessonsScreenProps> = () => {
                     resizeMode="contain"
                   />
                 </View>
-                <Text style={styles.lessonText}>{lesson.title}</Text>
+                <Text
+                  style={
+                    theme === 'dark'
+                      ? styles.darkLessonText
+                      : styles.lightLessonText
+                  }>
+                  {lesson.title}
+                </Text>
               </TouchableOpacity>
             ))}
           </View>
@@ -164,12 +200,15 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#F9FBFC',
   },
-  scrollContainer: {
-    paddingBottom: 20,
-  },
-  container: {
+
+  lightContainer: {
     flex: 1,
     backgroundColor: '#F0F8FF',
+    padding: 20,
+  },
+  darkContainer: {
+    flex: 1,
+    backgroundColor: '#2B2B2B',
     padding: 20,
   },
   headerContainer: {
@@ -181,12 +220,19 @@ const styles = StyleSheet.create({
     flex: 1,
     marginLeft: 10,
   },
-  headerText: {
+
+  lightHeaderText: {
     fontSize: 28,
     fontWeight: 'bold',
     color: '#2C3E50',
   },
-  backButton: {
+  darkHeaderText: {
+    fontSize: 28,
+    fontWeight: 'bold',
+    color: '#fff',
+  },
+
+  lightBackButton: {
     width: 48,
     height: 48,
     backgroundColor: '#E6F7FF',
@@ -199,7 +245,21 @@ const styles = StyleSheet.create({
     shadowRadius: 3,
     elevation: 4,
   },
-  backButtonText: {
+  darkBackButton: {
+    width: 48,
+    height: 48,
+    backgroundColor: '#FFF',
+    borderRadius: 12,
+    justifyContent: 'center',
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 3,
+    elevation: 4,
+  },
+
+  lightBackButtonText: {
     fontSize: 28,
     fontWeight: 'bold',
     color: '#2C3E50',
@@ -209,9 +269,26 @@ const styles = StyleSheet.create({
     paddingBottom: 2, // Fine-tune vertical centering
     lineHeight: 32, // Control line height to center text
   },
-  subText: {
+  darkBackButtonText: {
+    fontSize: 28,
+    fontWeight: 'bold',
+    color: '#000',
+    textAlign: 'center',
+    textAlignVertical: 'center',
+    includeFontPadding: false,
+    paddingBottom: 2,
+    lineHeight: 32,
+  },
+
+  lightSubText: {
     fontSize: 17,
     color: 'black',
+    marginBottom: 24,
+    lineHeight: 24,
+  },
+  darkSubText: {
+    fontSize: 17,
+    color: 'white',
     marginBottom: 24,
     lineHeight: 24,
   },
@@ -220,8 +297,22 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
     justifyContent: 'space-between',
   },
-  lessonButton: {
+
+  lightLessonButton: {
     backgroundColor: '#FFFFFF',
+    borderRadius: 16,
+    paddingVertical: 12,
+    paddingHorizontal: 8,
+    marginBottom: 16,
+    elevation: 5,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    alignItems: 'center',
+  },
+  darkLessonButton: {
+    backgroundColor: '#3C3C3C',
     borderRadius: 16,
     paddingVertical: 12,
     paddingHorizontal: 8,
@@ -248,6 +339,18 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '600',
     color: '#34495E',
+    textAlign: 'center',
+  },
+  lightLessonText: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#34495E',
+    textAlign: 'center',
+  },
+  darkLessonText: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#FFF',
     textAlign: 'center',
   },
 });
