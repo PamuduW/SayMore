@@ -201,11 +201,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#F9FBFC',
   },
 
-  container: {
-    flex: 1,
-    backgroundColor: '#F0F8FF',
-    padding: 20,
-  },
   lightContainer: {
     flex: 1,
     backgroundColor: '#F0F8FF',
