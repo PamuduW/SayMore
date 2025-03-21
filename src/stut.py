@@ -1,22 +1,21 @@
 import os
 import azure.cognitiveservices.speech as speechsdk
-import openai
 from dotenv import load_dotenv
-from google import genai
+import google.generativeai as genai
+import json
 
 load_dotenv()
 
-print("Azure OpenAI Key:", os.getenv("AZURE_OPENAI_KEY"))
-print("Azure OpenAI Key:", os.getenv("AZURE_OPENAI_ENDPOINT"))
-
+# Azure Speech-to-Text Credentials
 AZURE_SPEECH_KEY = os.getenv("AZURE_SPEECH_KEY")
 AZURE_SPEECH_REGION = os.getenv("AZURE_SPEECH_REGION")
 
-AZURE_OPENAI_KEY = os.getenv("AZURE_OPENAI_KEY")
-AZURE_OPENAI_ENDPOINT = os.getenv("AZURE_OPENAI_ENDPOINT")
-AZURE_OPENAI_DEPLOYMENT = os.getenv("AZURE_OPENAI_DEPLOYMENT")
+# Google AI Studio API Credentials
+GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
 
-client = genai.Client(api_key=os.getenv("GOOGLE_API_KEY"))
+# Configure the Google generative AI library with your API key
+genai.configure(api_key=GOOGLE_API_KEY)
+model = genai.GenerativeModel('gemini-2.0-flash')
 
 system_prompt = """
     "You are an expert in speech and language pathology specializing in stuttering detection. "
@@ -33,6 +32,7 @@ system_prompt = """
 """
 
 def transcribe_audio(file_name):
+    """Convert speech to text using Azure Speech-to-Text."""
     speech_config = speechsdk.SpeechConfig(subscription=AZURE_SPEECH_KEY, region=AZURE_SPEECH_REGION)
     audio_config = speechsdk.audio.AudioConfig(filename=file_name)
 
@@ -44,31 +44,50 @@ def transcribe_audio(file_name):
     else:
         return None
 
-def analyze_stuttering(transcript):
-    client = openai.AzureOpenAI(
-        api_key=AZURE_OPENAI_KEY,
-        api_version="2023-12-01-preview",
-        azure_endpoint=AZURE_OPENAI_ENDPOINT
-    )
+def analyze_stuttering_gemini(transcript):
+    """
+    Analyzes the transcript for stuttering using the Google Generative AI model.
 
-    response = client.chat.completions.create(
-        model=AZURE_OPENAI_DEPLOYMENT,
-        messages=[
-            {"role": "system", "content": system_prompt},
-            {"role": "user", "content": transcript}
-        ]
-    )
+    Args:
+        transcript: The transcribed text to analyze.
 
-    return response.choices[0].message.content
+    Returns:
+        A dictionary containing the analysis results.
+    """
+    try:
+        prompt = system_prompt + "\n\nTranscript:\n" + transcript
+
+        # Call the Google Generative AI API using the selected model
+        response = model.generate_content(prompt)
+
+        if response and response.text:
+            # Remove markdown code fences (```) if present
+            cleaned_text = response.text.strip()
+            if cleaned_text.startswith("```"):
+                # Remove first line (e.g., "```json") and last line ("```")
+                cleaned_text = "\n".join(cleaned_text.splitlines()[1:-1]).strip()
+            try:
+                return json.loads(cleaned_text)
+            except json.JSONDecodeError:
+                print("Gemini's response was not valid JSON. Returning raw text.")
+                return {"raw_response": cleaned_text}
+        else:
+            print("Google Generative AI API returned an empty or invalid response.")
+            return {"error": "Google Generative AI API returned an empty or invalid response."}
+    except Exception as e:
+        print(f"Error during Google Generative AI API call: {e}")
+        return {"error": str(e)}
+
 
 def stutter_test(file_name):
+    """Run speech-to-text and stuttering analysis."""
     try:
         transcript = transcribe_audio(file_name)
-        print(transcript)
+        print("Transcript:", transcript)
         if not transcript:
             return {"error": "Error transcribing audio."}
 
-        analysis_result = analyze_stuttering(transcript)
+        analysis_result = analyze_stuttering_gemini(transcript)
         return analysis_result
     except Exception as e:
         return {"error": str(e)}
