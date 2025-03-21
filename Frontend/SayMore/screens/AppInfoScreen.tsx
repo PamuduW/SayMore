@@ -20,6 +20,7 @@ const AppInfoScreen = () => {
       {/* Header */}
       <View style={styles.headerBar}>
         <Text style={styles.headerText}>App Information</Text>
+        <View style={styles.headerUnderline} />
       </View>
 
       <View style={styles.contentWrapper}>
@@ -99,6 +100,14 @@ const styles = StyleSheet.create({
     color: '#2A2D57',
     marginBottom: 5,
   },
+
+  headerUnderline: {
+      marginTop: 6,
+      width: 210,
+      height: 3,
+      backgroundColor: '#D0D3E6',
+      borderRadius: 2,
+    },
 
   subText: {
     fontSize: 14,

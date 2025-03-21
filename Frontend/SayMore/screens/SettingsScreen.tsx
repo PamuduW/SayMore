@@ -12,7 +12,6 @@ import {
   Platform,
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
-import Ionicons from 'react-native-vector-icons/Ionicons'; // NEW IMPORT!
 import { useTheme } from '../components/ThemeContext';
 import { useNavigation } from '@react-navigation/native';
 import messaging from '@react-native-firebase/messaging';

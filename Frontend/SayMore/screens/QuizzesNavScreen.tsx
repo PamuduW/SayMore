@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, Image, StyleSheet } from 'react-native';
+import { View, Text, TouchableOpacity, Image, StyleSheet, ScrollView } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import LinearGradient from 'react-native-linear-gradient';
 import { useTheme } from '../components/ThemeContext';
@@ -20,28 +20,50 @@ const QuizzesNavScreen = () => {
 
   return (
     <LinearGradient
-      colors={theme === 'dark' ? ['#1C1C1C', '#3A3A3A'] : ['#2A2D57', '#577BC1']}
+      colors={theme === 'dark' ? ['#1C1C1C', '#3A3A3A'] : ['#577BC1', '#577BC1']}
+      start={{ x: 0, y: 0 }}
+      end={{ x: 1, y: 1 }}
       style={styles.container}>
 
-      <Text style={styles.title}>Quizzes & Challenges</Text>
+      <Text style={styles.title}>Quizzes and Challenges</Text>
 
-      {/* Public Speaking Card */}
-      <View style={styles.card}>
-        <Image source={require('../assets/quiznav.jpg')} style={styles.image} />
-        <Text style={styles.cardTitle}>Public Speaking</Text>
-        <TouchableOpacity style={styles.button} onPress={navigateToPublicSpeaking}>
-          <Text style={styles.buttonText}>Start</Text>
-        </TouchableOpacity>
-      </View>
+      <ScrollView contentContainerStyle={styles.cardsWrapper} showsVerticalScrollIndicator={false}>
 
-      {/* Stuttering Card */}
-      <View style={styles.card}>
-        <Image source={require('../assets/stutterquiz.png')} style={styles.image} />
-        <Text style={styles.cardTitle}>Stuttering</Text>
-        <TouchableOpacity style={styles.button} onPress={navigateToStuttering}>
-          <Text style={styles.buttonText}>Start</Text>
-        </TouchableOpacity>
-      </View>
+        {/* Public Speaking Card */}
+        <View style={styles.card}>
+          <View style={styles.imageWrapper}>
+            <Image source={require('../assets/quiznav.jpg')} style={styles.image} />
+          </View>
+          <Text style={styles.cardTitle}>Public Speaking</Text>
+          <TouchableOpacity activeOpacity={0.85} style={styles.button} onPress={navigateToPublicSpeaking}>
+            <LinearGradient
+              colors={['#3B5998', '#577BC1']}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 1 }}
+              style={styles.buttonGradient}>
+              <Text style={styles.buttonText}>Start</Text>
+            </LinearGradient>
+          </TouchableOpacity>
+        </View>
+
+        {/* Stuttering Card */}
+        <View style={styles.card}>
+          <View style={styles.imageWrapper}>
+            <Image source={require('../assets/stutterquiz.png')} style={styles.image} />
+          </View>
+          <Text style={styles.cardTitle}>Stuttering</Text>
+          <TouchableOpacity activeOpacity={0.85} style={styles.button} onPress={navigateToStuttering}>
+            <LinearGradient
+              colors={['#3B5998', '#577BC1']}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 1 }}
+              style={styles.buttonGradient}>
+              <Text style={styles.buttonText}>Start</Text>
+            </LinearGradient>
+          </TouchableOpacity>
+        </View>
+
+      </ScrollView>
 
     </LinearGradient>
   );
@@ -50,56 +72,78 @@ const QuizzesNavScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
-    alignItems: 'center',
+    paddingTop: 50,
+    paddingHorizontal: 20,
   },
   title: {
-    fontSize: 24,
+    fontSize: 26,
     fontWeight: 'bold',
     color: '#FFFFFF',
     marginBottom: 30,
-    alignSelf: 'center',
+    textAlign: 'center',
+    letterSpacing: 1,
+  },
+  cardsWrapper: {
+    alignItems: 'center',
+    paddingBottom: 30,
   },
   card: {
     backgroundColor: '#FFFFFF',
     borderRadius: 25,
     padding: 25,
-    width: '100%',
+    width: '95%',
     alignItems: 'center',
     marginBottom: 25,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 5 },
-    shadowOpacity: 0.15,
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.12,
     shadowRadius: 8,
     elevation: 8,
   },
+  imageWrapper: {
+    backgroundColor: '#F9FAFC',
+    padding: 12,
+    borderRadius: 20,
+    marginBottom: 18,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.12,
+    shadowRadius: 6,
+    elevation: 6,
+  },
   image: {
-    width: 250,
-    height: 150,
-    marginBottom: 15,
+    width: 230,
+    height: 140,
+    borderRadius: 12,
     resizeMode: 'contain',
   },
   cardTitle: {
-    fontSize: 18,
+    fontSize: 20,
     fontWeight: '700',
     color: '#2A2D57',
-    marginBottom: 15,
+    marginBottom: 20,
   },
   button: {
-    backgroundColor: '#3B5998',
-    paddingVertical: 12,
-    paddingHorizontal: 35,
-    borderRadius: 20,
+    width: '75%',
+    borderRadius: 25,
+    overflow: 'hidden',
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 3 },
+    shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.2,
-    shadowRadius: 4,
-    elevation: 4,
+    shadowRadius: 6,
+    elevation: 12,
+  },
+  buttonGradient: {
+    paddingVertical: 14,
+    borderRadius: 25,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   buttonText: {
-    fontSize: 15,
+    fontSize: 16,
     fontWeight: 'bold',
     color: '#FFFFFF',
+    letterSpacing: 0.6,
   },
 });
 
