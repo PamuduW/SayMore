@@ -17,9 +17,9 @@ import { Lesson, VideoItem, WatchedVideo } from '../types/types';
 interface LessonRedirectionPSProps { }
 
 const { width } = Dimensions.get('window');
-const videoBoxWidth = (width - 75) / 3; // 3 boxes per row with spacing adjusted
-const videoBoxMargin = 15; // Margin between video boxes
-const containerPadding = 20; // Padding for the main container
+const videoBoxWidth = (width - 75) / 3;
+const videoBoxMargin = 15;
+const containerPadding = 20;
 
 const LessonRedirectionPS: React.FC<LessonRedirectionPSProps> = () => {
     const navigation = useNavigation();
@@ -31,13 +31,12 @@ const LessonRedirectionPS: React.FC<LessonRedirectionPSProps> = () => {
     }[]>([]);
     const [loading, setLoading] = useState(true);
 
-    // **NEW: Function to fetch the most recent watched video**
     const fetchLastWatchedVideo = useCallback(async () => {
         try {
             const user = auth().currentUser;
             if (!user) {
                 console.log('No user logged in');
-                setLastWatchedVideo(null); // Clear any previous value
+                setLastWatchedVideo(null);
                 return;
             }
 
@@ -51,12 +50,11 @@ const LessonRedirectionPS: React.FC<LessonRedirectionPSProps> = () => {
                 const watchedVideos = userData?.watchedVideos as WatchedVideo[];
 
                 if (watchedVideos && watchedVideos.length > 0) {
-                    // Sort by timestamp to get the most recent
                     const sortedVideos = [...watchedVideos].sort((a, b) =>
                         new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
-                    ).reverse();  // **REVERSE THE ARRAY**
+                    ).reverse();
 
-                    setLastWatchedVideo(sortedVideos[0] || null); // Use first or null
+                    setLastWatchedVideo(sortedVideos[0] || null);
                 } else {
                     console.log('No watched videos found.');
                     setLastWatchedVideo(null);
@@ -67,7 +65,7 @@ const LessonRedirectionPS: React.FC<LessonRedirectionPSProps> = () => {
             }
         } catch (error) {
             console.error('Error fetching last watched video:', error);
-            setLastWatchedVideo(null); // Handle errors
+            setLastWatchedVideo(null);
         }
     }, []);
 
@@ -80,12 +78,12 @@ const LessonRedirectionPS: React.FC<LessonRedirectionPSProps> = () => {
                 if (lessonData.videos) {
                     const video = lessonData.videos.find((v: any) => v.videoId === videoId);
                     if (video) {
-                        return video as VideoItem;  // Return the full VideoItem if found
+                        return video as VideoItem;
                     }
                 }
             }
 
-            return null; // Video not found
+            return null;
         } catch (error) {
             console.error('Error fetching video details:', error);
             return null;
@@ -95,7 +93,6 @@ const LessonRedirectionPS: React.FC<LessonRedirectionPSProps> = () => {
     useEffect(() => {
         const fetchRecommendedLessons = async () => {
             try {
-                // Fetch all lesson categories for Public Speaking
                 const publicSpeakingLessons = [
                     { title: 'Communication Tips', documentId: 'communication_tips' },
                     { title: 'Managing Stage Fright', documentId: 'stage_fright' },
@@ -106,7 +103,6 @@ const LessonRedirectionPS: React.FC<LessonRedirectionPSProps> = () => {
 
                 const lessonsWithVideos = [];
 
-                // Fetch videos for each lesson category
                 for (const lesson of publicSpeakingLessons) {
                     const documentSnapshot = await firestore()
                         .collection('lesson_videos')
@@ -134,13 +130,13 @@ const LessonRedirectionPS: React.FC<LessonRedirectionPSProps> = () => {
         };
         const loadData = async () => {
             setLoading(true);
-            await fetchLastWatchedVideo(); // Load last watched video first
-            await fetchRecommendedLessons(); // Then load recommended lessons
+            await fetchLastWatchedVideo();
+            await fetchRecommendedLessons();
             setLoading(false);
         };
 
         loadData();
-    }, [fetchLastWatchedVideo]); //Only load fetchLastWatchedVideo in the useeffect hook
+    }, [fetchLastWatchedVideo]);
 
     const handleBackPress = () => {
         navigation.goBack();
@@ -158,7 +154,7 @@ const LessonRedirectionPS: React.FC<LessonRedirectionPSProps> = () => {
             const date = new Date(dateString);
             if (isNaN(date.getTime())) {
                 console.log('Invalid Date', dateString)
-                return dateString // If it's invalid just return the original string
+                return dateString
             }
             return date.toLocaleDateString('en-US', {
                 year: 'numeric',
@@ -166,11 +162,11 @@ const LessonRedirectionPS: React.FC<LessonRedirectionPSProps> = () => {
                 day: 'numeric',
                 hour: '2-digit',
                 minute: '2-digit',
-                hour12: true, // Ensure 12-hour format with AM/PM
+                hour12: true,
             });
         } catch (e) {
             console.log("error in date string", dateString)
-            return dateString; // If any error occurs during conversion
+            return dateString;
         }
     };
 
@@ -182,12 +178,11 @@ const LessonRedirectionPS: React.FC<LessonRedirectionPSProps> = () => {
 
                 if (videoDetails) {
                     navigation.navigate('VideoPlayer', {
-                        video: videoDetails, // Pass the full video details
+                        video: videoDetails,
                         lessonTitle: lastWatchedVideo.lessonTitle
                     });
                 } else {
                     console.log('Could not retrieve full video details for Last Watched. Using minimal info.');
-                    // If full details are not available, you can still navigate with the basic info
                     navigation.navigate('VideoPlayer', {
                         video: {
                             videoId: lastWatchedVideo.videoId,
@@ -199,7 +194,6 @@ const LessonRedirectionPS: React.FC<LessonRedirectionPSProps> = () => {
                 }
             } catch (error) {
                 console.error('Error navigating to last watched video:', error);
-                // If there is an error, navigate with the basic information available
                 navigation.navigate('VideoPlayer', {
                     video: {
                         videoId: lastWatchedVideo.videoId,
@@ -236,18 +230,16 @@ const LessonRedirectionPS: React.FC<LessonRedirectionPSProps> = () => {
                         <>
                             {lastWatchedVideo ? (
                                 <View style={styles.lastWatchedContainer}>
-                                    <Text style={styles.sectionTitle}>Last Watched</Text>
-                                    <View style={styles.lastWatchedContent}>
-                                        <TouchableOpacity
-                                            style={styles.lastWatchedVideoBox}
-                                            onPress={handleLastWatchedPress} // Call the function that also fetches details
-                                        >
-                                            <Image
-                                                source={{ uri: lastWatchedVideo.thumbnail }}
-                                                style={styles.lastWatchedThumbnail}
-                                                resizeMode="cover"
-                                            />
-                                        </TouchableOpacity>
+                                    <Text style={styles.sectionTitle}>Continue Watching</Text>
+                                    <TouchableOpacity
+                                        style={styles.lastWatchedContent}
+                                        onPress={handleLastWatchedPress}
+                                    >
+                                        <Image
+                                            source={{ uri: lastWatchedVideo.thumbnail }}
+                                            style={styles.lastWatchedThumbnail}
+                                            resizeMode="cover"
+                                        />
                                         <View style={styles.lastWatchedInfo}>
                                             <Text style={styles.lastWatchedTitle} numberOfLines={2}>
                                                 {lastWatchedVideo.title}
@@ -259,7 +251,7 @@ const LessonRedirectionPS: React.FC<LessonRedirectionPSProps> = () => {
                                                 {formatDate(lastWatchedVideo.timestamp)}
                                             </Text>
                                         </View>
-                                    </View>
+                                    </TouchableOpacity>
                                 </View>
                             ) : (
                                 <View style={styles.noLastWatchedContainer}>
@@ -283,8 +275,8 @@ const LessonRedirectionPS: React.FC<LessonRedirectionPSProps> = () => {
                                                             key={videoIndex}
                                                             style={[
                                                                 styles.videoBox,
-                                                                { width: videoBoxWidth, marginRight: videoBoxMargin }, // Apply dynamic width and margin
-                                                                videoIndex % 3 === 2 ? { marginRight: 0 } : null, // Remove right margin for the last video in each row
+                                                                { width: videoBoxWidth, marginRight: videoBoxMargin },
+                                                                videoIndex % 3 === 2 ? { marginRight: 0 } : null,
                                                             ]}
                                                             onPress={() => handleVideoPress(video, lessonCategory.category, lessonCategory.documentId)}
                                                         >
@@ -370,19 +362,23 @@ const styles = StyleSheet.create({
         padding: 16,
         marginBottom: 24,
         shadowColor: '#000',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.1,
-        shadowRadius: 6,
-        elevation: 4,
+        shadowOffset: { width: 0, height: 3 },
+        shadowOpacity: 0.15,
+        shadowRadius: 8,
+        elevation: 5,
     },
     sectionTitle: {
-        fontSize: 18,
+        fontSize: 20,
         fontWeight: '700',
         color: '#2C3E50',
         marginBottom: 12,
     },
     lastWatchedContent: {
         flexDirection: 'row',
+        alignItems: 'center',
+        padding: 8,
+        borderRadius: 12,
+        backgroundColor: '#F5FAFF'
     },
     lastWatchedVideoBox: {
         width: 120,
@@ -392,8 +388,9 @@ const styles = StyleSheet.create({
         backgroundColor: '#E1EEFB',
     },
     lastWatchedThumbnail: {
-        width: '100%',
-        height: '100%',
+        width: 120,
+        height: 90,
+        borderRadius: 10,
     },
     lastWatchedInfo: {
         flex: 1,
@@ -401,17 +398,17 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
     },
     lastWatchedTitle: {
-        fontSize: 16,
+        fontSize: 17,
         fontWeight: '600',
         color: '#34495E',
     },
     lastWatchedSubtitle: {
-        fontSize: 14,
+        fontSize: 15,
         color: '#7F8C8D',
         marginTop: 4,
     },
     lastWatchedTimestamp: {
-        fontSize: 12,
+        fontSize: 13,
         color: '#95A5A6',
         marginTop: 4,
     },
