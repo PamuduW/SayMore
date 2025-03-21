@@ -19,6 +19,8 @@ const NewScreens = [
   { title: 'Points', icon: require('../assets/points.png') },
   { title: 'Speech Therapy', icon: require('../assets/speech.png') },
   { title: 'Watched Lessons', icon: require('../assets/lesson.png') },
+  { title: 'Lesson Redirection PS', icon: require('../assets/lesson.png') },
+  { title: 'Lesson Redirection Stuttering', icon: require('../assets/lesson.png') },
 ];
 
 interface MoreScreenProps {
@@ -39,6 +41,10 @@ const MoreScreen: React.FC<MoreScreenProps> = ({ navigation }) => {
       navigation.navigate('SpeechTherapyScreen');
     } else if (title === 'Watched Lessons') {
       navigation.navigate('History');
+    } else if (title === 'Lesson Redirection PS') {
+      navigation.navigate('LessonRedirectionPS');
+    } else if (title === 'Lesson Redirection Stuttering') {
+      navigation.navigate('LessonRedirectionStuttering');
     }
   };
 
