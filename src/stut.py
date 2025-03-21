@@ -5,16 +5,21 @@ import azure.cognitiveservices.speech as speechsdk
 import google.generativeai as genai
 from dotenv import load_dotenv
 
+# Load environment variables from a .env file
 load_dotenv()
 
-asure_speech_key = os.getenv("AZURE_SPEECH_KEY")
-asure_speech_region = os.getenv("AZURE_SPEECH_REGION")
+# Retrieve Azure Speech API key and region from environment variables
+azure_speech_key = os.getenv("AZURE_SPEECH_KEY")
+azure_speech_region = os.getenv("AZURE_SPEECH_REGION")
 
+# Retrieve Google API key from environment variables
 google_api_key = os.getenv("GOOGLE_API_KEY")
 
+# Configure the Google Generative AI model with the API key
 genai.configure(api_key=google_api_key)
 model = genai.GenerativeModel("gemini-2.0-flash")
 
+# System prompt for the generative model to analyze stuttering in transcripts
 system_prompt = """
     "You are an expert in speech and language pathology specializing in stuttering detection. "
     "Analyze the transcript to detect stuttering patterns, including repetitions, prolongations, blocks, and cluttering. "
@@ -31,8 +36,17 @@ system_prompt = """
 
 
 def transcribe_audio(file_name):
+    """Transcribe audio from a file using Azure Cognitive Services Speech SDK.
+
+    Args:
+        file_name (str): The path to the audio file to be transcribed.
+
+    Returns:
+        str: The transcribed text if successful, None otherwise.
+
+    """
     speech_config = speechsdk.SpeechConfig(
-        subscription=asure_speech_key, region=asure_speech_region
+        subscription=azure_speech_key, region=azure_speech_region
     )
     audio_config = speechsdk.audio.AudioConfig(filename=file_name)
 
@@ -48,6 +62,15 @@ def transcribe_audio(file_name):
 
 
 def analyze_stuttering_gemini(transcript):
+    """Analyze a transcript for stuttering patterns using the Google Generative AI model.
+
+    Args:
+        transcript (str): The transcript text to be analyzed.
+
+    Returns:
+        dict: A dictionary containing the analysis results or an error message.
+
+    """
     try:
         prompt = system_prompt + "\n\nTranscript:\n" + transcript
 
@@ -73,6 +96,15 @@ def analyze_stuttering_gemini(transcript):
 
 
 def stutter_test(file_name):
+    """Perform a stuttering analysis on an audio file.
+
+    Args:
+        file_name (str): The path to the audio file to be analyzed.
+
+    Returns:
+        dict: A dictionary containing the analysis results or an error message.
+
+    """
     try:
         transcript = transcribe_audio(file_name)
         print("Transcript:", transcript)
