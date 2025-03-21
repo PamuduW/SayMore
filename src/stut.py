@@ -2,18 +2,18 @@ import json
 import os
 
 import azure.cognitiveservices.speech as speechsdk
-from dotenv import load_dotenv
 import google.generativeai as genai
+from dotenv import load_dotenv
 
 load_dotenv()
 
-asure_speech_key = os.getenv("asure_speech_key")
-asure_speech_region = os.getenv("asure_speech_region")
+asure_speech_key = os.getenv("AZURE_SPEECH_KEY")
+asure_speech_region = os.getenv("AZURE_SPEECH_REGION")
 
-google_api_key = os.getenv("google_api_key")
+google_api_key = os.getenv("GOOGLE_API_KEY")
 
 genai.configure(api_key=google_api_key)
-model = genai.GenerativeModel('gemini-2.0-flash')
+model = genai.GenerativeModel("gemini-2.0-flash")
 
 system_prompt = """
     "You are an expert in speech and language pathology specializing in stuttering detection. "
@@ -29,17 +29,23 @@ system_prompt = """
     "'confidence_score': Confidence level (0-1)."
 """
 
+
 def transcribe_audio(file_name):
-    speech_config = speechsdk.SpeechConfig(subscription=asure_speech_key, region=asure_speech_region)
+    speech_config = speechsdk.SpeechConfig(
+        subscription=asure_speech_key, region=asure_speech_region
+    )
     audio_config = speechsdk.audio.AudioConfig(filename=file_name)
 
-    recognizer = speechsdk.SpeechRecognizer(speech_config=speech_config, audio_config=audio_config)
+    recognizer = speechsdk.SpeechRecognizer(
+        speech_config=speech_config, audio_config=audio_config
+    )
     result = recognizer.recognize_once()
 
     if result.reason == speechsdk.ResultReason.RecognizedSpeech:
         return result.text
     else:
         return None
+
 
 def analyze_stuttering_gemini(transcript):
     try:
@@ -58,7 +64,9 @@ def analyze_stuttering_gemini(transcript):
                 return {"raw_response": cleaned_text}
         else:
             print("Google Generative AI API returned an empty or invalid response.")
-            return {"error": "Google Generative AI API returned an empty or invalid response."}
+            return {
+                "error": "Google Generative AI API returned an empty or invalid response."
+            }
     except Exception as e:
         print(f"Error during Google Generative AI API call: {e}")
         return {"error": str(e)}

@@ -1,7 +1,7 @@
-from datetime import datetime
 import json
 import logging
 import os
+from datetime import datetime
 
 from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException
@@ -139,9 +139,9 @@ def check_env_variables():
     """
     google_credentials = os.getenv("GOOGLE_APPLICATION_CREDENTIALS_JSON")
     firebase_credentials = os.getenv("FIREBASE_CREDENTIALS")
-    AZURE_SPEECH_KEY = os.getenv("AZURE_SPEECH_KEY")
-    AZURE_SPEECH_REGION = os.getenv("AZURE_SPEECH_REGION")
-    OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
+    asure_speech_key = os.getenv("AZURE_SPEECH_KEY")
+    asure_speech_region = os.getenv("AZURE_SPEECH_REGION")
+    google_api_key = os.getenv("GOOGLE_API_KEY")
 
     s = "...............................................................\n"
 
@@ -155,19 +155,19 @@ def check_env_variables():
     else:
         s += "FIREBASE_CREDENTIALS environment variable is set.\n"
 
-    if AZURE_SPEECH_KEY is None:
+    if asure_speech_key is None:
         s += "AZURE_SPEECH_KEY environment variable is not set.\n"
     else:
         s += "AZURE_SPEECH_KEY environment variable is set.\n"
 
-    if AZURE_SPEECH_REGION is None:
+    if asure_speech_region is None:
         s += "AZURE_SPEECH_REGION environment variable is not set.\n"
     else:
         s += "AZURE_SPEECH_REGION environment variable is set.\n"
 
-    if OPENAI_API_KEY is None:
-        s += "OPENAI_API_KEY environment variable is not set.\n"
+    if google_api_key is None:
+        s += "GOOGLE_API_KEY environment variable is not set.\n"
     else:
-        s += "OPENAI_API_KEY environment variable is set.\n"
+        s += "GOOGLE_API_KEY environment variable is set.\n"
 
     return s

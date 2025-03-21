@@ -1,8 +1,8 @@
 import json
 import os
 
-from openai import AzureOpenAI
 import speech_recognition as sr
+from openai import AzureOpenAI
 
 
 class Config:
@@ -61,9 +61,7 @@ def stutter_test(file_name):
         ]
 
         response = openai_client.chat.completions.create(
-            model=config.AZURE_OPENAI_DEPLOYMENT_ID,
-            messages=messages,
-            max_tokens=150
+            model=config.AZURE_OPENAI_DEPLOYMENT_ID, messages=messages, max_tokens=150
         )
 
         gpt_response = response.choices[0].message.content.strip()
