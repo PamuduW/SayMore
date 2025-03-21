@@ -1,16 +1,23 @@
 import os
 import azure.cognitiveservices.speech as speechsdk
-from openai import OpenAI
+import openai  # Correct import for Azure OpenAI
 from dotenv import load_dotenv
 
+# Load environment variables
 load_dotenv()
-print(os.getenv("OPENAI_API_KEY"))
 
+# Print API key for debugging (REMOVE in production)
+print("Azure OpenAI Key:", os.getenv("AZURE_OPENAI_KEY"))
+print("Azure OpenAI Key:", os.getenv("AZURE_OPENAI_ENDPOINT"))
+
+# Azure Speech-to-Text Credentials
 AZURE_SPEECH_KEY = os.getenv("AZURE_SPEECH_KEY")
 AZURE_SPEECH_REGION = os.getenv("AZURE_SPEECH_REGION")
 
-OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
-GPT_MODEL = "gpt-4-turbo"
+# Azure OpenAI API Credentials
+AZURE_OPENAI_KEY = os.getenv("AZURE_OPENAI_KEY")
+AZURE_OPENAI_ENDPOINT = os.getenv("AZURE_OPENAI_ENDPOINT")
+AZURE_OPENAI_DEPLOYMENT = os.getenv("AZURE_OPENAI_DEPLOYMENT")
 
 system_prompt = """
     "You are an expert in speech and language pathology specializing in stuttering detection. "
@@ -27,6 +34,7 @@ system_prompt = """
 """
 
 def transcribe_audio(file_name):
+    """ Convert speech to text using Azure Speech-to-Text. """
     speech_config = speechsdk.SpeechConfig(subscription=AZURE_SPEECH_KEY, region=AZURE_SPEECH_REGION)
     audio_config = speechsdk.audio.AudioConfig(filename=file_name)
 
@@ -39,10 +47,15 @@ def transcribe_audio(file_name):
         return None
 
 def analyze_stuttering(transcript):
-    client = OpenAI(api_key=OPENAI_API_KEY)
+    """ Analyze stuttering using Azure OpenAI GPT-4-Turbo. """
+    client = openai.AzureOpenAI(
+        api_key=AZURE_OPENAI_KEY,
+        api_version="2023-12-01-preview",
+        azure_endpoint=AZURE_OPENAI_ENDPOINT
+    )
 
     response = client.chat.completions.create(
-        model=GPT_MODEL,
+        model=AZURE_OPENAI_DEPLOYMENT,  # Use your deployment name
         messages=[
             {"role": "system", "content": system_prompt},
             {"role": "user", "content": transcript}
@@ -52,10 +65,13 @@ def analyze_stuttering(transcript):
     return response.choices[0].message.content
 
 def stutter_test(file_name):
-    try :
+    """ Run speech-to-text and stuttering analysis. """
+    try:
         transcript = transcribe_audio(file_name)
+        print(transcript)
         if not transcript:
             return {"error": "Error transcribing audio."}
+
         analysis_result = analyze_stuttering(transcript)
         return analysis_result
     except Exception as e:
