@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, StatusBar, ImageBackground } from 'react-native';
 import firestore from '@react-native-firebase/firestore';
+import auth from '@react-native-firebase/auth';
 import ProgressBar from 'react-native-progress/Bar';
 import { useTheme } from '../components/ThemeContext';
 
@@ -110,13 +111,38 @@ const StutteringQuestionScreen: React.FC = ({ navigation }: any) => {
     }
   };
 
-  const handleNextQuestion = () => {
+  const saveQuizAttempt = async () => {
+    try {
+      const user = auth().currentUser;
+      if (user) {
+        const attemptData = {
+          quizType: "Stuttering",
+          set: selectedSet,
+          score: score,
+          totalPoints: questions.length * 10,
+          timestamp: new Date().toISOString(),
+        };
+
+        const userDocRef = firestore().collection('User_Accounts').doc(user.uid);
+        await userDocRef.set({
+          quizAttempts: firestore.FieldValue.arrayUnion(attemptData),
+        }, { merge: true });
+
+        console.log('✅ Stuttering quiz attempt saved:', attemptData);
+      }
+    } catch (error) {
+      console.error('🔥 Error saving stuttering quiz attempt:', error);
+    }
+  };
+
+  const handleNextQuestion = async () => {
     if (currentQuestionIndex < questions.length - 1) {
       setCurrentQuestionIndex(currentQuestionIndex + 1);
       setSelectedAnswer(null);
       setIsCorrect(null);
       setShowConfirm(false);
     } else {
+      await saveQuizAttempt();
       navigation.navigate('PointsScreen', {
         points: score,
         totalPoints: questions.length * 10,
@@ -130,7 +156,6 @@ const StutteringQuestionScreen: React.FC = ({ navigation }: any) => {
 
   const handleBackPress = () => {
     if (selectedSet) {
-      // Exiting quiz back to topic selection
       setSelectedSet(null);
       setQuestions([]);
       setCurrentQuestionIndex(0);
@@ -140,20 +165,18 @@ const StutteringQuestionScreen: React.FC = ({ navigation }: any) => {
       setScore(0);
       setCompletedQuestions(0);
     } else {
-      // Exit screen
       navigation.goBack();
     }
   };
 
-  // Topic selection screen
+  const isLastQuestion = currentQuestionIndex === questions.length - 1;
+
   if (!selectedSet) {
     return (
       <ImageBackground source={backgroundImage} style={styles.background} resizeMode="cover">
         <View style={styles.overlay} />
         <View style={styles.container}>
           <StatusBar barStyle="light-content" />
-
-          {/* Back Button */}
           <TouchableOpacity
             onPress={handleBackPress}
             style={[
@@ -168,7 +191,6 @@ const StutteringQuestionScreen: React.FC = ({ navigation }: any) => {
               ←
             </Text>
           </TouchableOpacity>
-
           <Text style={styles.header}>Select a Quiz Topic</Text>
           <View style={styles.buttonContainer}>
             {['relaxation techniques', 'speech techniques', 'pronunciation'].map((topic, idx) => (
@@ -187,15 +209,11 @@ const StutteringQuestionScreen: React.FC = ({ navigation }: any) => {
     );
   }
 
-  const isLastQuestion = currentQuestionIndex === questions.length - 1;
-
   return (
     <ImageBackground source={backgroundImage} style={styles.background} resizeMode="cover">
       <View style={styles.overlay} />
       <View style={styles.container}>
         <StatusBar barStyle="light-content" />
-
-        {/* Back Button (Only on first question) */}
         {currentQuestionIndex === 0 && (
           <TouchableOpacity
             onPress={handleBackPress}
@@ -288,7 +306,6 @@ const styles = StyleSheet.create({
   finishButton: { backgroundColor: '#1abc9c', padding: 13, borderRadius: 10, marginTop: 20, width: '90%' },
   finishButtonText: { color: 'white', fontSize: 18, textAlign: 'center', fontWeight: 'bold' },
   buttonContainer: { alignItems: 'center' },
-
   backButton: { position: 'absolute', top: 50, left: 20, width: 48, height: 48, borderRadius: 12, justifyContent: 'center', alignItems: 'center', shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.2, shadowRadius: 3, elevation: 4 },
   backButtonLight: { backgroundColor: '#E6F7FF' },
   backButtonDark: { backgroundColor: '#FFF' },

@@ -43,7 +43,7 @@ const MoreScreen: React.FC<MoreScreenProps> = ({ navigation }) => {
     } else if (title === 'Watched Lessons') {
       navigation.navigate('History');
     } else if (title === 'Points') {
-      navigation.navigate('TotalPointsScreen');
+      navigation.navigate('PointsCategoryScreen');
     }
   };
 

@@ -7,6 +7,7 @@ import {
   ImageBackground,
 } from 'react-native';
 import firestore from '@react-native-firebase/firestore';
+import auth from '@react-native-firebase/auth';
 import ProgressBar from 'react-native-progress/Bar';
 
 interface AnswerOptions {
@@ -124,6 +125,33 @@ const PublicSpeakQuestionScreen: React.FC = ({ navigation, route }: any) => {
     }
   };
 
+  const saveQuizAttempt = async () => {
+    try {
+      const user = auth().currentUser;
+      if (user) {
+        const attemptData = {
+          quizType: 'Public Speaking',
+          difficulty: difficulty,
+          score: score,
+          totalPoints: questions.length * 10,
+          timestamp: new Date().toISOString(),
+        };
+
+        const userDocRef = firestore().collection('User_Accounts').doc(user.uid);
+        await userDocRef.set(
+          {
+            quizAttempts: firestore.FieldValue.arrayUnion(attemptData),
+          },
+          { merge: true }
+        );
+
+        console.log('✅ Public Speaking quiz attempt saved:', attemptData);
+      }
+    } catch (error) {
+      console.error('🔥 Error saving quiz attempt:', error);
+    }
+  };
+
   const handleNext = () => {
     if (currentQuestionIndex < questions.length - 1) {
       setCurrentQuestionIndex(currentQuestionIndex + 1);
@@ -135,7 +163,8 @@ const PublicSpeakQuestionScreen: React.FC = ({ navigation, route }: any) => {
 
   const isLastQuestion = currentQuestionIndex === questions.length - 1;
 
-  const handleFinish = () => {
+  const handleFinish = async () => {
+    await saveQuizAttempt();
     const totalPoints = questions.length * 10;
     navigation.navigate('PointsScreen', { points: score, totalPoints });
   };
@@ -185,13 +214,8 @@ const PublicSpeakQuestionScreen: React.FC = ({ navigation, route }: any) => {
             style={[
               styles.optionButton,
               selectedAnswer === index ? styles.selectedOption : {},
-              isCorrect !== null &&
-                index === correctIndex &&
-                styles.correctOption,
-              isCorrect !== null &&
-                index === selectedAnswer &&
-                !isCorrect &&
-                styles.incorrectOption,
+              isCorrect !== null && index === correctIndex && styles.correctOption,
+              isCorrect !== null && index === selectedAnswer && !isCorrect && styles.incorrectOption,
             ]}>
             <Text style={styles.optionText}>{option}</Text>
           </TouchableOpacity>
