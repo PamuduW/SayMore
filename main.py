@@ -139,6 +139,10 @@ def check_env_variables():
     """
     google_credentials = os.getenv("GOOGLE_APPLICATION_CREDENTIALS_JSON")
     firebase_credentials = os.getenv("FIREBASE_CREDENTIALS")
+    asure_speech_key = os.getenv("AZURE_SPEECH_KEY")
+    asure_speech_region = os.getenv("AZURE_SPEECH_REGION")
+    google_api_key = os.getenv("GOOGLE_API_KEY")
+
     s = "...............................................................\n"
 
     if google_credentials is None:
@@ -150,5 +154,20 @@ def check_env_variables():
         s += "FIREBASE_CREDENTIALS environment variable is not set.\n"
     else:
         s += "FIREBASE_CREDENTIALS environment variable is set.\n"
+
+    if asure_speech_key is None:
+        s += "AZURE_SPEECH_KEY environment variable is not set.\n"
+    else:
+        s += "AZURE_SPEECH_KEY environment variable is set.\n"
+
+    if asure_speech_region is None:
+        s += "AZURE_SPEECH_REGION environment variable is not set.\n"
+    else:
+        s += "AZURE_SPEECH_REGION environment variable is set.\n"
+
+    if google_api_key is None:
+        s += "GOOGLE_API_KEY environment variable is not set.\n"
+    else:
+        s += "GOOGLE_API_KEY environment variable is set.\n"
 
     return s

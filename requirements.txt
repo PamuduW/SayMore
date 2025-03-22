@@ -10,3 +10,5 @@ google-cloud-speech
 black
 ruff
 isort
+azure-cognitiveservices-speech
+google-generativeai
