@@ -58,7 +58,13 @@ const HomeStack = () => (
       name="AdditionalDetailsScreen"
       component={AdditionalDetailsScreen}
     />
-    <Stack.Screen name="UnderstandingAndOvercomingStutteringScreen" component={UnderstandingAndOvercomingStutteringScreen} />
+    <Stack.Screen
+      name="UnderstandingAndOvercomingStutteringScreen"
+      component={UnderstandingAndOvercomingStutteringScreen}
+    />
+    <Stack.Screen name="ClarityAndPitchScreen" component={ClarityAndPitchScreen} />
+    <Stack.Screen name="CommunicationAndStageFrightScreen" component={CommunicationAndStageFrightScreen} />
+    <Stack.Screen name="SpeakingWithEnergyScreen" component={SpeakingWithEnergyScreen} />
   </Stack.Navigator>
 );
 
@@ -124,6 +130,9 @@ const AccountStack = () => (
       component={AdditionalDetailsScreen}
     />
     <Stack.Screen name="UnderstandingAndOvercomingStutteringScreen" component={UnderstandingAndOvercomingStutteringScreen} />
+    <Stack.Screen name="ClarityAndPitchScreen" component={ClarityAndPitchScreen} />
+    <Stack.Screen name="CommunicationAndStageFrightScreen" component={CommunicationAndStageFrightScreen} />
+    <Stack.Screen name="SpeakingWithEnergyScreen" component={SpeakingWithEnergyScreen} />
   </Stack.Navigator>
 );
 
