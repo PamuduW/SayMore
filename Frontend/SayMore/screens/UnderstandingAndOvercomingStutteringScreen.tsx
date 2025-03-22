@@ -14,16 +14,17 @@ import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
 import { VideoItem } from '../types/types';
 
-interface PerfectingYourPitchScreenProps { }
+interface UnderstandingAndOvercomingStutteringScreenProps { }
 
 const { width } = Dimensions.get('window');
 const videoBoxWidth = (width - 75) / 3;
 const videoBoxMargin = 15;
 const containerPadding = 20;
 
-const PerfectingYourPitchScreen: React.FC<PerfectingYourPitchScreenProps> = () => {
+const UnderstandingAndOvercomingStutteringScreen: React.FC<UnderstandingAndOvercomingStutteringScreenProps> = () => {
     const navigation = useNavigation();
-    const [pitchVideos, setPitchVideos] = useState<VideoItem[]>([]);
+    const [understandingVideos, setUnderstandingVideos] = useState<VideoItem[]>([]);
+    const [overcomingVideos, setOvercomingVideos] = useState<VideoItem[]>([]);
     const [recommendedLessons, setRecommendedLessons] = useState<{
         category: string;
         documentId: string;
@@ -31,40 +32,51 @@ const PerfectingYourPitchScreen: React.FC<PerfectingYourPitchScreenProps> = () =
     }[]>([]);
     const [loading, setLoading] = useState(true);
 
-    const fetchPitchVideos = useCallback(async () => {
+    const fetchImprovementVideos = useCallback(async () => {
         try {
-            const pitchSnapshot = await firestore()
+            const understandingSnapshot = await firestore()
                 .collection('lesson_videos')
-                .doc('pitch')
+                .doc('understanding_stuttering')
                 .get();
 
-            if (pitchSnapshot.exists) {
-                const data = pitchSnapshot.data();
-                setPitchVideos((data?.videos as VideoItem[]) || []);
+            const overcomingSnapshot = await firestore()
+                .collection('lesson_videos')
+                .doc('overcoming_stuttering')
+                .get();
+
+            if (understandingSnapshot.exists) {
+                const data = understandingSnapshot.data();
+                setUnderstandingVideos((data?.videos as VideoItem[]) || []);
             } else {
-                console.log('Pitch document does not exist.');
-                setPitchVideos([]);
+                console.log('Understanding Stuttering document does not exist.');
+                setUnderstandingVideos([]);
+            }
+
+            if (overcomingSnapshot.exists) {
+                const data = overcomingSnapshot.data();
+                setOvercomingVideos((data?.videos as VideoItem[]) || []);
+            } else {
+                console.log('Overcoming Stuttering document does not exist.');
+                setOvercomingVideos([]);
             }
         } catch (error) {
-            console.error('Error fetching pitch videos:', error);
-            setPitchVideos([]);
+            console.error('Error fetching improvement videos:', error);
+            setUnderstandingVideos([]);
+            setOvercomingVideos([]);
         }
     }, []);
 
     useEffect(() => {
         const fetchRecommendedLessons = async () => {
             try {
-                const publicSpeakingLessons = [
-                    { title: 'Communication Tips', documentId: 'communication_tips' },
-                    { title: 'Managing Stage Fright', documentId: 'stage_fright' },
-                    { title: 'Clarity in Speech', documentId: 'clarity' },
-                    { title: 'Perfecting Your Pitch', documentId: 'pitch' },
-                    { title: 'Speaking with Energy', documentId: 'energy' },
+                const stutteringLessons = [
+                    { title: 'Speech Exercises', documentId: 'speech_exercises' },
+                    { title: 'Building Confidence', documentId: 'building_confidence' },
                 ];
 
                 const lessonsWithVideos = [];
 
-                for (const lesson of publicSpeakingLessons) {
+                for (const lesson of stutteringLessons) {
                     const documentSnapshot = await firestore()
                         .collection('lesson_videos')
                         .doc(lesson.documentId)
@@ -82,12 +94,7 @@ const PerfectingYourPitchScreen: React.FC<PerfectingYourPitchScreenProps> = () =
                     }
                 }
 
-                // Filter out Perfecting Your Pitch lessons
-                const filteredLessons = lessonsWithVideos.filter(
-                    (lesson) => lesson.category !== 'Perfecting Your Pitch'
-                );
-
-                setRecommendedLessons(filteredLessons);
+                setRecommendedLessons(lessonsWithVideos);
             } catch (error) {
                 console.error('Error fetching recommended lessons:', error);
             } finally {
@@ -96,13 +103,13 @@ const PerfectingYourPitchScreen: React.FC<PerfectingYourPitchScreenProps> = () =
         };
         const loadData = async () => {
             setLoading(true);
-            await fetchPitchVideos();
+            await fetchImprovementVideos();
             await fetchRecommendedLessons();
             setLoading(false);
         };
 
         loadData();
-    }, [fetchPitchVideos]);
+    }, [fetchImprovementVideos]);
 
     const handleBackPress = () => {
         navigation.goBack();
@@ -127,7 +134,7 @@ const PerfectingYourPitchScreen: React.FC<PerfectingYourPitchScreenProps> = () =
                             <Text style={styles.backButtonText}>←</Text>
                         </TouchableOpacity>
                         <View style={styles.headerTextContainer}>
-                            <Text style={styles.headerText}>Perfecting Your Pitch</Text>
+                            <Text style={styles.headerText}>Understanding & Overcoming Stuttering</Text>
                         </View>
                     </View>
 
@@ -136,34 +143,65 @@ const PerfectingYourPitchScreen: React.FC<PerfectingYourPitchScreenProps> = () =
                     ) : (
                         <>
                             <View style={styles.sectionContainer}>
-                                <Text style={styles.sectionTitle}>You Should Improve In :</Text>
+                                <Text style={styles.sectionTitle}>You Should Improve In:</Text>
 
-                                {pitchVideos.length > 0 ? (
-                                    <View style={styles.categoryContainer}>
-                                        <Text style={styles.categoryTitle}>Perfecting Your Pitch</Text>
-                                        <View style={styles.videosGrid}>
-                                            {pitchVideos.map((video, videoIndex) => (
-                                                <TouchableOpacity
-                                                    key={videoIndex}
-                                                    style={[
-                                                        styles.videoBox,
-                                                        { width: videoBoxWidth, marginRight: videoBoxMargin },
-                                                        videoIndex % 3 === 2 ? { marginRight: 0 } : null,
-                                                    ]}
-                                                    onPress={() => handleVideoPress(video, 'Perfecting Your Pitch', 'pitch')}
-                                                >
-                                                    <Image
-                                                        source={{ uri: video.thumbnail }}
-                                                        style={styles.videoThumbnail}
-                                                        resizeMode="cover"
-                                                    />
-                                                    <Text style={styles.videoTitle} numberOfLines={2}>
-                                                        {video.title}
-                                                    </Text>
-                                                </TouchableOpacity>
-                                            ))}
-                                        </View>
-                                    </View>
+                                {(understandingVideos.length > 0 || overcomingVideos.length > 0) ? (
+                                    <>
+                                        {understandingVideos.length > 0 && (
+                                            <View style={styles.categoryContainer}>
+                                                <Text style={styles.categoryTitle}>Understanding Stuttering</Text>
+                                                <View style={styles.videosGrid}>
+                                                    {understandingVideos.map((video, videoIndex) => (
+                                                        <TouchableOpacity
+                                                            key={videoIndex}
+                                                            style={[
+                                                                styles.videoBox,
+                                                                { width: videoBoxWidth, marginRight: videoBoxMargin },
+                                                                videoIndex % 3 === 2 ? { marginRight: 0 } : null,
+                                                            ]}
+                                                            onPress={() => handleVideoPress(video, 'Understanding Stuttering', 'understanding_stuttering')}
+                                                        >
+                                                            <Image
+                                                                source={{ uri: video.thumbnail }}
+                                                                style={styles.videoThumbnail}
+                                                                resizeMode="cover"
+                                                            />
+                                                            <Text style={styles.videoTitle} numberOfLines={2}>
+                                                                {video.title}
+                                                            </Text>
+                                                        </TouchableOpacity>
+                                                    ))}
+                                                </View>
+                                            </View>
+                                        )}
+                                        {overcomingVideos.length > 0 && (
+                                            <View style={styles.categoryContainer}>
+                                                <Text style={styles.categoryTitle}>Overcoming Stuttering</Text>
+                                                <View style={styles.videosGrid}>
+                                                    {overcomingVideos.map((video, videoIndex) => (
+                                                        <TouchableOpacity
+                                                            key={videoIndex}
+                                                            style={[
+                                                                styles.videoBox,
+                                                                { width: videoBoxWidth, marginRight: videoBoxMargin },
+                                                                videoIndex % 3 === 2 ? { marginRight: 0 } : null,
+                                                            ]}
+                                                            onPress={() => handleVideoPress(video, 'Overcoming Stuttering', 'overcoming_stuttering')}
+                                                        >
+                                                            <Image
+                                                                source={{ uri: video.thumbnail }}
+                                                                style={styles.videoThumbnail}
+                                                                resizeMode="cover"
+                                                            />
+                                                            <Text style={styles.videoTitle} numberOfLines={2}>
+                                                                {video.title}
+                                                            </Text>
+                                                        </TouchableOpacity>
+                                                    ))}
+                                                </View>
+                                            </View>
+                                        )}
+                                    </>
                                 ) : (
                                     <Text style={styles.noLessonsText}>No improvement videos available.</Text>
                                 )}
@@ -336,4 +374,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default PerfectingYourPitchScreen;
+export default UnderstandingAndOvercomingStutteringScreen;

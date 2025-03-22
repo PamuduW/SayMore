@@ -38,9 +38,9 @@ import LessonRedirectionPS from '../screens/LessonRedirectionPS';
 import LessonRedirectionStuttering from '../screens/LessonRedirectionStuttering';
 import LessonRedirectionScreen from '../screens/LessonRedirectionScreen';
 import CommunicationAndStageFrightScreen from '../screens/CommunicationAndStageFrightScreen';
-import ClarityScreen from '../screens/ClarityScreen';
-import PerfectingYourPitchScreen from '../screens/PerfectingYourPitchScreen';
+import ClarityAndPitchScreen from '../screens/ClarityAndPitchScreen';
 import SpeakingWithEnergyScreen from '../screens/SpeakingWithEnergyScreen';
+import UnderstandingAndOvercomingStutteringScreen from '../screens/UnderstandingAndOvercomingStutteringScreen';
 
 // Navigators
 const Tab = createBottomTabNavigator();
@@ -87,9 +87,9 @@ const MoreStack = () => (
     <Stack.Screen name="LessonRedirectionStuttering" component={LessonRedirectionStuttering} />
     <Stack.Screen name="LessonRedirection" component={LessonRedirectionScreen} />
     <Stack.Screen name="CommunicationAndStageFrightScreen" component={CommunicationAndStageFrightScreen} />
-    <Stack.Screen name="ClarityScreen" component={ClarityScreen} />
-    <Stack.Screen name="PerfectingYourPitchScreen" component={PerfectingYourPitchScreen} />
+    <Stack.Screen name="ClarityAndPitchScreen" component={ClarityAndPitchScreen} />
     <Stack.Screen name="SpeakingWithEnergyScreen" component={SpeakingWithEnergyScreen} />
+    <Stack.Screen name="UnderstandingAndOvercomingStutteringScreen" component={UnderstandingAndOvercomingStutteringScreen} />
   </Stack.Navigator>
 );
 

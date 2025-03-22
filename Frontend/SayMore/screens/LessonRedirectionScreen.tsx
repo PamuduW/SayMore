@@ -69,14 +69,14 @@ const LessonRedirectionScreen = () => {
                           ? styles.darkRedirectionButton
                           : styles.lightRedirectionButton,
                       ]}
-                      onPress={() => handlePress('ClarityScreen')}>
+                      onPress={() => handlePress('ClarityAndPitchScreen')}>
                       <Text
                         style={
                           theme === 'dark'
                             ? styles.darkRedirectionText
                             : styles.lightRedirectionText
                         }>
-                        Clarity
+                        Clarity & Perfecting Your Pitch
                       </Text>
            </TouchableOpacity>
 
@@ -87,24 +87,6 @@ const LessonRedirectionScreen = () => {
                            ? styles.darkRedirectionButton
                            : styles.lightRedirectionButton,
                        ]}
-                       onPress={() => handlePress('PerfectingYourPitchScreen')}>
-                       <Text
-                         style={
-                           theme === 'dark'
-                             ? styles.darkRedirectionText
-                             : styles.lightRedirectionText
-                         }>
-                         Perfecting Your Pitch
-                       </Text>
-           </TouchableOpacity>
-
-           <TouchableOpacity
-                       style={[
-                         styles.redirectionButton,
-                         theme === 'dark'
-                           ? styles.darkRedirectionButton
-                           : styles.lightRedirectionButton,
-                       ]}
                        onPress={() => handlePress('SpeakingWithEnergyScreen')}>
                        <Text
                          style={
@@ -141,50 +123,14 @@ const LessonRedirectionScreen = () => {
                            ? styles.darkRedirectionButton
                            : styles.lightRedirectionButton,
                        ]}
-                       onPress={() => handlePress('PerfectingYourPitchScreen')}>
+                       onPress={() => handlePress('UnderstandingAndOvercomingStutteringScreen')}>
                        <Text
                          style={
                            theme === 'dark'
                              ? styles.darkRedirectionText
                              : styles.lightRedirectionText
                          }>
-                         Perfecting Your Pitch
-                       </Text>
-           </TouchableOpacity>
-
-           <TouchableOpacity
-                       style={[
-                         styles.redirectionButton,
-                         theme === 'dark'
-                           ? styles.darkRedirectionButton
-                           : styles.lightRedirectionButton,
-                       ]}
-                       onPress={() => handlePress('SpeakingWithEnergyScreen')}>
-                       <Text
-                         style={
-                           theme === 'dark'
-                             ? styles.darkRedirectionText
-                             : styles.lightRedirectionText
-                         }>
-                         Speaking With Energy
-                       </Text>
-           </TouchableOpacity>
-
-           <TouchableOpacity
-                       style={[
-                         styles.redirectionButton,
-                         theme === 'dark'
-                           ? styles.darkRedirectionButton
-                           : styles.lightRedirectionButton,
-                       ]}
-                       onPress={() => handlePress('LessonRedirectionStuttering')}>
-                       <Text
-                         style={
-                           theme === 'dark'
-                             ? styles.darkRedirectionText
-                             : styles.lightRedirectionText
-                         }>
-                         Stuttering
+                         Understanding & Overcoming Stuttering
                        </Text>
            </TouchableOpacity>
         </View>

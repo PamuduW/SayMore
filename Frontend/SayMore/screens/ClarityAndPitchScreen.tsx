@@ -14,16 +14,17 @@ import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
 import { VideoItem } from '../types/types';
 
-interface ClarityScreenProps { }
+interface ClarityAndPitchScreenProps { }
 
 const { width } = Dimensions.get('window');
 const videoBoxWidth = (width - 75) / 3;
 const videoBoxMargin = 15;
 const containerPadding = 20;
 
-const ClarityScreen: React.FC<ClarityScreenProps> = () => {
+const ClarityAndPitchScreen: React.FC<ClarityAndPitchScreenProps> = () => {
     const navigation = useNavigation();
     const [clarityVideos, setClarityVideos] = useState<VideoItem[]>([]);
+    const [pitchVideos, setPitchVideos] = useState<VideoItem[]>([]);
     const [recommendedLessons, setRecommendedLessons] = useState<{
         category: string;
         documentId: string;
@@ -31,11 +32,16 @@ const ClarityScreen: React.FC<ClarityScreenProps> = () => {
     }[]>([]);
     const [loading, setLoading] = useState(true);
 
-    const fetchClarityVideos = useCallback(async () => {
+    const fetchClarityAndPitchVideos = useCallback(async () => {
         try {
             const claritySnapshot = await firestore()
                 .collection('lesson_videos')
                 .doc('clarity')
+                .get();
+
+            const pitchSnapshot = await firestore()
+                .collection('lesson_videos')
+                .doc('pitch')
                 .get();
 
             if (claritySnapshot.exists) {
@@ -45,9 +51,17 @@ const ClarityScreen: React.FC<ClarityScreenProps> = () => {
                 console.log('Clarity document does not exist.');
                 setClarityVideos([]);
             }
+            if (pitchSnapshot.exists) {
+                const data = pitchSnapshot.data();
+                setPitchVideos((data?.videos as VideoItem[]) || []);
+            } else {
+                console.log('Perfecting Your Pitch document does not exist.');
+                setPitchVideos([]);
+            }
         } catch (error) {
-            console.error('Error fetching clarity videos:', error);
+            console.error('Error fetching clarity and pitch videos:', error);
             setClarityVideos([]);
+            setPitchVideos([]);
         }
     }, []);
 
@@ -57,8 +71,6 @@ const ClarityScreen: React.FC<ClarityScreenProps> = () => {
                 const publicSpeakingLessons = [
                     { title: 'Communication Tips', documentId: 'communication_tips' },
                     { title: 'Managing Stage Fright', documentId: 'stage_fright' },
-                    { title: 'Clarity in Speech', documentId: 'clarity' },
-                    { title: 'Perfecting Your Pitch', documentId: 'pitch' },
                     { title: 'Speaking with Energy', documentId: 'energy' },
                 ];
 
@@ -82,12 +94,7 @@ const ClarityScreen: React.FC<ClarityScreenProps> = () => {
                     }
                 }
 
-                // Filter out Clarity lessons
-                const filteredLessons = lessonsWithVideos.filter(
-                    (lesson) => lesson.category !== 'Clarity in Speech'
-                );
-
-                setRecommendedLessons(filteredLessons);
+                setRecommendedLessons(lessonsWithVideos);
             } catch (error) {
                 console.error('Error fetching recommended lessons:', error);
             } finally {
@@ -96,13 +103,13 @@ const ClarityScreen: React.FC<ClarityScreenProps> = () => {
         };
         const loadData = async () => {
             setLoading(true);
-            await fetchClarityVideos();
+            await fetchClarityAndPitchVideos();
             await fetchRecommendedLessons();
             setLoading(false);
         };
 
         loadData();
-    }, [fetchClarityVideos]);
+    }, [fetchClarityAndPitchVideos]);
 
     const handleBackPress = () => {
         navigation.goBack();
@@ -127,7 +134,7 @@ const ClarityScreen: React.FC<ClarityScreenProps> = () => {
                             <Text style={styles.backButtonText}>←</Text>
                         </TouchableOpacity>
                         <View style={styles.headerTextContainer}>
-                            <Text style={styles.headerText}>Clarity in Speech</Text>
+                            <Text style={styles.headerText}>Clarity & Perfecting Pitch</Text>
                         </View>
                     </View>
 
@@ -138,32 +145,63 @@ const ClarityScreen: React.FC<ClarityScreenProps> = () => {
                             <View style={styles.sectionContainer}>
                                 <Text style={styles.sectionTitle}>You Should Improve In :</Text>
 
-                                {clarityVideos.length > 0 ? (
-                                    <View style={styles.categoryContainer}>
-                                        <Text style={styles.categoryTitle}>Clarity in Speech</Text>
-                                        <View style={styles.videosGrid}>
-                                            {clarityVideos.map((video, videoIndex) => (
-                                                <TouchableOpacity
-                                                    key={videoIndex}
-                                                    style={[
-                                                        styles.videoBox,
-                                                        { width: videoBoxWidth, marginRight: videoBoxMargin },
-                                                        videoIndex % 3 === 2 ? { marginRight: 0 } : null,
-                                                    ]}
-                                                    onPress={() => handleVideoPress(video, 'Clarity in Speech', 'clarity')}
-                                                >
-                                                    <Image
-                                                        source={{ uri: video.thumbnail }}
-                                                        style={styles.videoThumbnail}
-                                                        resizeMode="cover"
-                                                    />
-                                                    <Text style={styles.videoTitle} numberOfLines={2}>
-                                                        {video.title}
-                                                    </Text>
-                                                </TouchableOpacity>
-                                            ))}
-                                        </View>
-                                    </View>
+                                {(clarityVideos.length > 0 || pitchVideos.length > 0) ? (
+                                    <>
+                                        {clarityVideos.length > 0 && (
+                                            <View style={styles.categoryContainer}>
+                                                <Text style={styles.categoryTitle}>Clarity in Speech</Text>
+                                                <View style={styles.videosGrid}>
+                                                    {clarityVideos.map((video, videoIndex) => (
+                                                        <TouchableOpacity
+                                                            key={videoIndex}
+                                                            style={[
+                                                                styles.videoBox,
+                                                                { width: videoBoxWidth, marginRight: videoBoxMargin },
+                                                                videoIndex % 3 === 2 ? { marginRight: 0 } : null,
+                                                            ]}
+                                                            onPress={() => handleVideoPress(video, 'Clarity in Speech', 'clarity')}
+                                                        >
+                                                            <Image
+                                                                source={{ uri: video.thumbnail }}
+                                                                style={styles.videoThumbnail}
+                                                                resizeMode="cover"
+                                                            />
+                                                            <Text style={styles.videoTitle} numberOfLines={2}>
+                                                                {video.title}
+                                                            </Text>
+                                                        </TouchableOpacity>
+                                                    ))}
+                                                </View>
+                                            </View>
+                                        )}
+                                        {pitchVideos.length > 0 && (
+                                            <View style={styles.categoryContainer}>
+                                                <Text style={styles.categoryTitle}>Perfecting Your Pitch</Text>
+                                                <View style={styles.videosGrid}>
+                                                    {pitchVideos.map((video, videoIndex) => (
+                                                        <TouchableOpacity
+                                                            key={videoIndex}
+                                                            style={[
+                                                                styles.videoBox,
+                                                                { width: videoBoxWidth, marginRight: videoBoxMargin },
+                                                                videoIndex % 3 === 2 ? { marginRight: 0 } : null,
+                                                            ]}
+                                                            onPress={() => handleVideoPress(video, 'Perfecting Your Pitch', 'pitch')}
+                                                        >
+                                                            <Image
+                                                                source={{ uri: video.thumbnail }}
+                                                                style={styles.videoThumbnail}
+                                                                resizeMode="cover"
+                                                            />
+                                                            <Text style={styles.videoTitle} numberOfLines={2}>
+                                                                {video.title}
+                                                            </Text>
+                                                        </TouchableOpacity>
+                                                    ))}
+                                                </View>
+                                            </View>
+                                        )}
+                                    </>
                                 ) : (
                                     <Text style={styles.noLessonsText}>No improvement videos available.</Text>
                                 )}
@@ -336,4 +374,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default ClarityScreen;
+export default ClarityAndPitchScreen;
