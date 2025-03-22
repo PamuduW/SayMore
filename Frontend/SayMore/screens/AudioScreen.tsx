@@ -19,23 +19,28 @@ const AudioScreen: React.FC<AudioScreenProps> = ({ route }) => {
 
   if (!language && isPublicSpeaking) {
     return (
-      <View style={theme === 'dark'?styles.darkContainer:styles.container}>
+      <View style={theme === 'dark' ? styles.darkContainer : styles.container}>
         {/* White Panel for Language Selection */}
         <View style={styles.whitePanel}>
-          <Text style={theme === 'dark'?styles.darkHeaderText:styles.headerText}>Select a Language</Text>
+          <Text
+            style={
+              theme === 'dark' ? styles.darkHeaderText : styles.headerText
+            }>
+            Select a Language
+          </Text>
           <View style={styles.buttonGroup}>
             <TouchableOpacity
-              style={theme === 'dark'?styles.darkButton:styles.button}
+              style={theme === 'dark' ? styles.darkButton : styles.button}
               onPress={() => selectLanguage('en')}>
               <Text style={styles.buttonText}>English</Text>
             </TouchableOpacity>
             <TouchableOpacity
-              style={theme === 'dark'?styles.darkButton:styles.button}
+              style={theme === 'dark' ? styles.darkButton : styles.button}
               onPress={() => selectLanguage('si')}>
               <Text style={styles.buttonText}>සිංහල</Text>
             </TouchableOpacity>
             <TouchableOpacity
-              style={theme === 'dark'?styles.darkButton:styles.button}
+              style={theme === 'dark' ? styles.darkButton : styles.button}
               onPress={() => selectLanguage('ta')}>
               <Text style={styles.buttonText}>தமிழ்</Text>
             </TouchableOpacity>
@@ -46,9 +51,10 @@ const AudioScreen: React.FC<AudioScreenProps> = ({ route }) => {
   }
 
   return (
-    <View style={theme === 'dark'?styles.darkContainer:styles.container}>
+    <View style={theme === 'dark' ? styles.darkContainer : styles.container}>
       {/* No White Panel here for Audio */}
-      <Text style={theme === 'dark'?styles.darkHeaderText:styles.headerText}>
+      <Text
+        style={theme === 'dark' ? styles.darkHeaderText : styles.headerText}>
         {isPublicSpeaking ? '🎤 Public Speaking' : '🗣️ Stuttering'}
       </Text>
       {isPublicSpeaking && (
@@ -65,7 +71,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#007AFF',
-  },darkContainer: {
+  },
+  darkContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
@@ -104,7 +111,8 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
     shadowRadius: 6,
-  },darkButton: {
+  },
+  darkButton: {
     paddingVertical: 12,
     paddingHorizontal: 35,
     borderRadius: 25,
@@ -132,7 +140,8 @@ const styles = StyleSheet.create({
     color: '#000',
     textAlign: 'center',
     color: '#007AFF',
-  },darkHeaderText: {
+  },
+  darkHeaderText: {
     fontSize: 28,
     fontWeight: 'bold',
     marginBottom: 20,

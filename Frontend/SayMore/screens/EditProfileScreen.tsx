@@ -86,7 +86,10 @@ export default function EditProfileScreen({ navigation }) {
   if (loading) {
     return (
       <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color={theme === 'dark' ? '#FFFFFF' : '#2A2D57'} />
+        <ActivityIndicator
+          size="large"
+          color={theme === 'dark' ? '#FFFFFF' : '#2A2D57'}
+        />
       </View>
     );
   }
@@ -98,10 +101,14 @@ export default function EditProfileScreen({ navigation }) {
       }
       style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollArea}>
-        <Text style={[styles.header, theme === 'dark' && styles.darkHeader]}>Edit Profile</Text>
+        <Text style={[styles.header, theme === 'dark' && styles.darkHeader]}>
+          Edit Profile
+        </Text>
 
         <View style={styles.inputContainer}>
-          <Text style={[styles.label, theme === 'dark' && styles.darkLabel]}>Name</Text>
+          <Text style={[styles.label, theme === 'dark' && styles.darkLabel]}>
+            Name
+          </Text>
           <TextInput
             style={[styles.input, theme === 'dark' && styles.darkInput]}
             value={fname}
@@ -110,7 +117,9 @@ export default function EditProfileScreen({ navigation }) {
             placeholderTextColor={theme === 'dark' ? '#888' : '#aaa'}
           />
 
-          <Text style={[styles.label, theme === 'dark' && styles.darkLabel]}>Surname</Text>
+          <Text style={[styles.label, theme === 'dark' && styles.darkLabel]}>
+            Surname
+          </Text>
           <TextInput
             style={[styles.input, theme === 'dark' && styles.darkInput]}
             value={sname}
@@ -119,7 +128,9 @@ export default function EditProfileScreen({ navigation }) {
             placeholderTextColor={theme === 'dark' ? '#888' : '#aaa'}
           />
 
-          <Text style={[styles.label, theme === 'dark' && styles.darkLabel]}>Date of Birth</Text>
+          <Text style={[styles.label, theme === 'dark' && styles.darkLabel]}>
+            Date of Birth
+          </Text>
           <TextInput
             style={[styles.input, theme === 'dark' && styles.darkInput]}
             value={dob}
@@ -128,7 +139,9 @@ export default function EditProfileScreen({ navigation }) {
             placeholderTextColor={theme === 'dark' ? '#888' : '#aaa'}
           />
 
-          <Text style={[styles.label, theme === 'dark' && styles.darkLabel]}>Username</Text>
+          <Text style={[styles.label, theme === 'dark' && styles.darkLabel]}>
+            Username
+          </Text>
           <TextInput
             style={[styles.input, theme === 'dark' && styles.darkInput]}
             value={username}
@@ -137,11 +150,16 @@ export default function EditProfileScreen({ navigation }) {
             placeholderTextColor={theme === 'dark' ? '#888' : '#aaa'}
           />
 
-          <Text style={[styles.label, theme === 'dark' && styles.darkLabel]}>Email</Text>
+          <Text style={[styles.label, theme === 'dark' && styles.darkLabel]}>
+            Email
+          </Text>
           <TextInput
             style={[
               styles.input,
-              { backgroundColor: theme === 'dark' ? '#555' : '#D0D3E6', color: theme === 'dark' ? '#FFFFFF' : '#2A2D57' },
+              {
+                backgroundColor: theme === 'dark' ? '#555' : '#D0D3E6',
+                color: theme === 'dark' ? '#FFFFFF' : '#2A2D57',
+              },
             ]}
             value={email}
             editable={false}

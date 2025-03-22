@@ -19,8 +19,6 @@ interface Props {
   userRecords: UserRecord[];
 }
 
-
-
 const ActivityScreen: React.FC<Props> = ({ userRecords }) => {
   const [stats, setStats] = useState({
     avgScore: 0,
@@ -56,32 +54,33 @@ const ActivityScreen: React.FC<Props> = ({ userRecords }) => {
     }
   };
 
-const theme = useTheme();
- const handleBackPress = () => {
+  const theme = useTheme();
+  const handleBackPress = () => {
     navigation.goBack();
   };
 
   return (
-    <ScrollView style={theme === 'dark' ? styles.darkContainer : styles.lightContainer}>
-    <View style={styles.headerContainer}>
-    <TouchableOpacity
-                  style={
-                    theme === 'dark'
-                      ? styles.darkBackButton
-                      : styles.lightBackButton
-                  }
-                  onPress={handleBackPress}>
-                  <Text
-                    style={
-                      theme === 'dark'
-                        ? styles.darkBackButtonText
-                        : styles.lightBackButtonText
-                    }>
-                    ←
-                  </Text>
-                </TouchableOpacity>
+    <ScrollView
+      style={theme === 'dark' ? styles.darkContainer : styles.lightContainer}>
+      <View style={styles.headerContainer}>
+        <TouchableOpacity
+          style={
+            theme === 'dark' ? styles.darkBackButton : styles.lightBackButton
+          }
+          onPress={handleBackPress}>
+          <Text
+            style={
+              theme === 'dark'
+                ? styles.darkBackButtonText
+                : styles.lightBackButtonText
+            }>
+            ←
+          </Text>
+        </TouchableOpacity>
 
-      <Text style={theme === 'dark' ? styles.darkTitle: styles.lightTitle }>Activity</Text>
+        <Text style={theme === 'dark' ? styles.darkTitle : styles.lightTitle}>
+          Activity
+        </Text>
       </View>
       {/* Progress Image */}
       <View style={styles.imageContainer}>
@@ -107,12 +106,19 @@ const theme = useTheme();
         </Text>
       </View>
 
-      <Text style={theme === 'dark' ? styles.darkFooterText : styles.lightFooterText}>
+      <Text
+        style={
+          theme === 'dark' ? styles.darkFooterText : styles.lightFooterText
+        }>
         Your scores have been steadily improving! 🚀 Keep up the amazing work
         and let’s aim even higher! 💪🔥 You’re doing fantastic! 🌟
       </Text>
 
-      <TouchableOpacity style={theme === 'dark' ? styles.darkShareButton : styles.lightShareButton} onPress={handleShare}>
+      <TouchableOpacity
+        style={
+          theme === 'dark' ? styles.darkShareButton : styles.lightShareButton
+        }
+        onPress={handleShare}>
         <Text style={styles.shareText}>➤ Share Your Activity</Text>
       </TouchableOpacity>
     </ScrollView>
@@ -124,9 +130,9 @@ const styles = StyleSheet.create({
 
   darkContainer: { flex: 1, padding: 20, backgroundColor: '#3A3A3A' },
   headerContainer: {
-      flexDirection: 'row',
-      alignItems: 'center',
-    },
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
 
   lightTitle: {
     fontSize: 28,
@@ -138,7 +144,7 @@ const styles = StyleSheet.create({
   },
   darkTitle: {
     fontSize: 28,
-    flex:  1,
+    flex: 1,
     fontWeight: 'bold',
     textAlign: 'center',
     marginVertical: 20,
@@ -210,53 +216,53 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginTop: 5,
   },
-   lightBackButton: {
-      width: 48,
-      height: 48,
-      backgroundColor: '#E6F7FF',
-      borderRadius: 12,
-      justifyContent: 'center',
-      alignItems: 'center',
-      shadowColor: '#000',
-      shadowOffset: { width: 0, height: 2 },
-      shadowOpacity: 0.2,
-      shadowRadius: 3,
-      elevation: 4,
-    },
-    darkBackButton: {
-      width: 48,
-      height: 48,
-      backgroundColor: '#FFF',
-      borderRadius: 12,
-      justifyContent: 'center',
-      alignItems: 'center',
-      shadowColor: '#000',
-      shadowOffset: { width: 0, height: 2 },
-      shadowOpacity: 0.2,
-      shadowRadius: 3,
-      elevation: 4,
-    },
+  lightBackButton: {
+    width: 48,
+    height: 48,
+    backgroundColor: '#E6F7FF',
+    borderRadius: 12,
+    justifyContent: 'center',
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 3,
+    elevation: 4,
+  },
+  darkBackButton: {
+    width: 48,
+    height: 48,
+    backgroundColor: '#FFF',
+    borderRadius: 12,
+    justifyContent: 'center',
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 3,
+    elevation: 4,
+  },
 
-    lightBackButtonText: {
-      fontSize: 28,
-      fontWeight: 'bold',
-      color: '#2C3E50',
-      textAlign: 'center',
-      textAlignVertical: 'center',
-      includeFontPadding: false,
-      paddingBottom: 2, // Fine-tune vertical centering
-      lineHeight: 32, // Control line height to center text
-    },
-    darkBackButtonText: {
-      fontSize: 28,
-      fontWeight: 'bold',
-      color: '#000',
-      textAlign: 'center',
-      textAlignVertical: 'center',
-      includeFontPadding: false,
-      paddingBottom: 2,
-      lineHeight: 32,
-    },
+  lightBackButtonText: {
+    fontSize: 28,
+    fontWeight: 'bold',
+    color: '#2C3E50',
+    textAlign: 'center',
+    textAlignVertical: 'center',
+    includeFontPadding: false,
+    paddingBottom: 2, // Fine-tune vertical centering
+    lineHeight: 32, // Control line height to center text
+  },
+  darkBackButtonText: {
+    fontSize: 28,
+    fontWeight: 'bold',
+    color: '#000',
+    textAlign: 'center',
+    textAlignVertical: 'center',
+    includeFontPadding: false,
+    paddingBottom: 2,
+    lineHeight: 32,
+  },
 
   shareText: { color: 'white', fontSize: 16, fontWeight: 'bold' },
 });

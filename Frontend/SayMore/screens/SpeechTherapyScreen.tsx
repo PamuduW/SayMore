@@ -48,9 +48,7 @@ const SpeechTherapyScreen = () => {
 
   return (
     <View
-      style={
-        theme === 'dark' ? styles.darkContainer : styles.lightContainer
-      }>
+      style={theme === 'dark' ? styles.darkContainer : styles.lightContainer}>
       {/* Header with Back Button */}
       <View style={styles.headerBar}>
         <TouchableOpacity
