@@ -9,14 +9,14 @@ import {
 } from 'react-native';
 import auth from '@react-native-firebase/auth';
 import LinearGradient from 'react-native-linear-gradient';
-import { useTheme } from '../components/ThemeContext'; // Import useTheme
+import { useTheme } from '../components/ThemeContext';
 
 export default function ChangePasswordScreen({ navigation }) {
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
 
-  const theme = useTheme(); // Detect theme
+  const theme = useTheme();
 
   const reauthenticate = async password => {
     const user = auth().currentUser;
@@ -47,20 +47,31 @@ export default function ChangePasswordScreen({ navigation }) {
           : ['#2A2D57', '#577BC1']
       }
       style={styles.container}>
-      <Text
-        style={[
-          styles.header,
-          { color: theme === 'dark' ? '#FFFFFF' : '#FFFFFF' },
-        ]}>
-        Change Password
-      </Text>
+
+      {/* Header Row with Back Button and Title */}
+      <View style={styles.headerBar}>
+        <TouchableOpacity
+          onPress={() => navigation.goBack()}
+          style={[
+            styles.backButton,
+            theme === 'dark' ? styles.backButtonDark : styles.backButtonLight,
+          ]}>
+          <Text
+            style={[
+              styles.backButtonText,
+              theme === 'dark' && styles.backButtonTextDark,
+            ]}>
+            ←
+          </Text>
+        </TouchableOpacity>
+
+        <Text style={styles.headerTitle}>Change Password</Text>
+
+        <View style={styles.placeholder} />
+      </View>
 
       <View style={styles.inputContainer}>
-        <Text
-          style={[
-            styles.label,
-            { color: theme === 'dark' ? '#FFFFFF' : '#FFFFFF' },
-          ]}>
+        <Text style={[styles.label, { color: '#FFFFFF' }]}>
           Current Password
         </Text>
         <TextInput
@@ -74,15 +85,11 @@ export default function ChangePasswordScreen({ navigation }) {
           value={currentPassword}
           onChangeText={setCurrentPassword}
           placeholder="Enter Current Password"
-          placeholderTextColor={theme === 'dark' ? '#aaa' : '#aaa'}
+          placeholderTextColor="#aaa"
           secureTextEntry
         />
 
-        <Text
-          style={[
-            styles.label,
-            { color: theme === 'dark' ? '#FFFFFF' : '#FFFFFF' },
-          ]}>
+        <Text style={[styles.label, { color: '#FFFFFF' }]}>
           New Password
         </Text>
         <TextInput
@@ -96,15 +103,11 @@ export default function ChangePasswordScreen({ navigation }) {
           value={newPassword}
           onChangeText={setNewPassword}
           placeholder="Enter New Password"
-          placeholderTextColor={theme === 'dark' ? '#aaa' : '#aaa'}
+          placeholderTextColor="#aaa"
           secureTextEntry
         />
 
-        <Text
-          style={[
-            styles.label,
-            { color: theme === 'dark' ? '#FFFFFF' : '#FFFFFF' },
-          ]}>
+        <Text style={[styles.label, { color: '#FFFFFF' }]}>
           Confirm Password
         </Text>
         <TextInput
@@ -118,7 +121,7 @@ export default function ChangePasswordScreen({ navigation }) {
           value={confirmPassword}
           onChangeText={setConfirmPassword}
           placeholder="Confirm New Password"
-          placeholderTextColor={theme === 'dark' ? '#aaa' : '#aaa'}
+          placeholderTextColor="#aaa"
           secureTextEntry
         />
       </View>
@@ -144,12 +147,21 @@ export default function ChangePasswordScreen({ navigation }) {
 
 const styles = StyleSheet.create({
   container: { flex: 1, paddingTop: 40, paddingHorizontal: 20 },
-  header: {
-    fontSize: 26,
+
+  headerBar: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
     marginBottom: 30,
-    textAlign: 'center',
+  },
+
+  headerTitle: {
+    fontSize: 26,
+    color: '#fff',
     fontWeight: 'bold',
   },
+
+  placeholder: { width: 48 }, // For spacing balance
 
   inputContainer: { marginBottom: 20 },
 
@@ -173,4 +185,35 @@ const styles = StyleSheet.create({
   },
 
   confirmText: { color: '#fff', fontWeight: 'bold', fontSize: 16 },
+
+  backButton: {
+    width: 48,
+    height: 48,
+    borderRadius: 12,
+    justifyContent: 'center',
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 3,
+    elevation: 4,
+  },
+  backButtonLight: {
+    backgroundColor: '#E6F7FF',
+  },
+  backButtonDark: {
+    backgroundColor: '#FFF',
+  },
+  backButtonText: {
+    fontSize: 28,
+    fontWeight: 'bold',
+    color: '#2C3E50',
+    textAlign: 'center',
+    includeFontPadding: false,
+    paddingBottom: 2,
+    lineHeight: 32,
+  },
+  backButtonTextDark: {
+    color: '#000',
+  },
 });

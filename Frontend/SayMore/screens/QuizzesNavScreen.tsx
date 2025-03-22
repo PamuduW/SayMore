@@ -18,6 +18,10 @@ const QuizzesNavScreen = () => {
     });
   };
 
+  const handleBackPress = () => {
+    navigation.goBack();
+  };
+
   return (
     <LinearGradient
       colors={theme === 'dark' ? ['#1C1C1C', '#3A3A3A'] : ['#577BC1', '#8AAEE0']}
@@ -25,7 +29,24 @@ const QuizzesNavScreen = () => {
       end={{ x: 1, y: 1 }}
       style={styles.container}>
 
-      <Text style={styles.title}>Quizzes and Challenges</Text>
+      {/* Back Button */}
+      <View style={styles.headerBar}>
+        <TouchableOpacity
+          onPress={handleBackPress}
+          style={[
+            styles.backButton,
+            theme === 'dark' ? styles.backButtonDark : styles.backButtonLight,
+          ]}>
+          <Text
+            style={[
+              styles.backButtonText,
+              theme === 'dark' && styles.backButtonTextDark,
+            ]}>
+            ←
+          </Text>
+        </TouchableOpacity>
+        <Text style={styles.headerTitle}>Quizzes and Challenges</Text>
+      </View>
 
       <ScrollView contentContainerStyle={styles.cardsWrapper} showsVerticalScrollIndicator={false}>
 
@@ -75,12 +96,46 @@ const styles = StyleSheet.create({
     paddingTop: 50,
     paddingHorizontal: 20,
   },
-  title: {
+  headerBar: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 25,
+  },
+  backButton: {
+    width: 48,
+    height: 48,
+    borderRadius: 12,
+    justifyContent: 'center',
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 3,
+    elevation: 4,
+    marginRight: 10,
+  },
+  backButtonLight: {
+    backgroundColor: '#E6F7FF',
+  },
+  backButtonDark: {
+    backgroundColor: '#FFF',
+  },
+  backButtonText: {
+    fontSize: 28,
+    fontWeight: 'bold',
+    color: '#2C3E50',
+    textAlign: 'center',
+    includeFontPadding: false,
+    paddingBottom: 2,
+    lineHeight: 32,
+  },
+  backButtonTextDark: {
+    color: '#000',
+  },
+  headerTitle: {
     fontSize: 26,
     fontWeight: 'bold',
     color: '#FFFFFF',
-    marginBottom: 30,
-    textAlign: 'center',
     letterSpacing: 1,
   },
   cardsWrapper: {

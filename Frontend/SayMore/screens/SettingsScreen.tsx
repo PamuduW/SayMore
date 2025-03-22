@@ -59,6 +59,10 @@ export default function SettingsScreen() {
     }
   };
 
+  const handleBackPress = () => {
+    navigation.goBack();
+  };
+
   const preferences = [
     { label: 'Notifications', toggle: 'notifications' },
     { label: 'Dark Mode', toggle: 'darkmode' },
@@ -142,13 +146,26 @@ export default function SettingsScreen() {
       <StatusBar barStyle="light-content" />
 
       <View style={styles.headerBar}>
+        <TouchableOpacity
+          onPress={handleBackPress}
+          style={[
+            styles.backButton,
+            theme === 'dark' ? styles.backButtonDark : styles.backButtonLight,
+          ]}>
+          <Text
+            style={[
+              styles.backButtonText,
+              theme === 'dark' && styles.backButtonTextDark,
+            ]}>
+            ←
+          </Text>
+        </TouchableOpacity>
+
         <Text style={styles.header}>Settings</Text>
+
         <Image
           source={SettingsIcon}
-          style={[
-            styles.headerIconRight,
-            { tintColor: '#FFFFFF' },
-          ]}
+          style={[styles.headerIconRight, { tintColor: '#FFFFFF' }]}
         />
       </View>
 
@@ -194,7 +211,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingHorizontal: 25,
+    paddingHorizontal: 20,
     marginBottom: 25,
   },
 
@@ -299,5 +316,37 @@ const styles = StyleSheet.create({
   },
   optionTextDark: {
     color: '#FFFFFF',
+  },
+
+  backButton: {
+    width: 48,
+    height: 48,
+    borderRadius: 12,
+    justifyContent: 'center',
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 3,
+    elevation: 4,
+    marginRight: 10,
+  },
+  backButtonLight: {
+    backgroundColor: '#E6F7FF',
+  },
+  backButtonDark: {
+    backgroundColor: '#FFF',
+  },
+  backButtonText: {
+    fontSize: 28,
+    fontWeight: 'bold',
+    color: '#2C3E50',
+    textAlign: 'center',
+    includeFontPadding: false,
+    paddingBottom: 2,
+    lineHeight: 32,
+  },
+  backButtonTextDark: {
+    color: '#000',
   },
 });
