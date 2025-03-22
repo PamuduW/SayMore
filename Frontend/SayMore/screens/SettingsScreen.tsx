@@ -140,10 +140,7 @@ export default function SettingsScreen() {
         <Text style={styles.header}>Settings</Text>
         <Image
           source={SettingsIcon}
-          style={[
-            styles.headerIconRight,
-            { tintColor: '#FFFFFF' },
-          ]}
+          style={[styles.headerIconRight, { tintColor: '#FFFFFF' }]}
         />
       </View>
 

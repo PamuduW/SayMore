@@ -71,21 +71,18 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
 
   return (
     <LinearGradient
-      colors={theme === 'dark' ? ['#1C1C1C', '#3A3A3A'] : ['#577BC1', '#577BC1']}
-      style={styles.container}
-    >
+      colors={
+        theme === 'dark' ? ['#1C1C1C', '#3A3A3A'] : ['#577BC1', '#577BC1']
+      }
+      style={styles.container}>
       <View style={styles.header}>
         <Image style={styles.icon} source={require('../assets/iconTop.png')} />
 
         <Text style={styles.greeting}>
           Hello {userData?.fname ? userData.fname : ''}
         </Text>
-        <Text style={styles.welcomeMessage}>
-          Welcome to SayMore!
-        </Text>
-        <Text style={styles.tagline}>
-          Enhance your speech & confidence
-        </Text>
+        <Text style={styles.welcomeMessage}>Welcome to SayMore!</Text>
+        <Text style={styles.tagline}>Enhance your speech & confidence</Text>
       </View>
 
       <View style={styles.testContainer}>
@@ -102,16 +99,14 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
                 style={[
                   styles.optionButtonWrapper,
                   { borderColor: borderInterpolation },
-                ]}
-              >
+                ]}>
                 <LinearGradient
                   colors={
                     theme === 'dark'
                       ? ['#1C1C1C', '#3A3A3A']
                       : ['#3B5998', '#577BC1']
                   }
-                  style={styles.optionButton}
-                >
+                  style={styles.optionButton}>
                   <Text style={styles.optionText}>{option}</Text>
                 </LinearGradient>
               </Animated.View>
@@ -129,7 +124,7 @@ const styles = StyleSheet.create({
   header: {
     alignItems: 'center',
     marginBottom: 30,
-    paddingHorizontal: 10
+    paddingHorizontal: 10,
   },
   icon: { width: 80, height: 80, marginBottom: 10 },
 

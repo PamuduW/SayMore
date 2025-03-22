@@ -41,11 +41,13 @@ const PointsScreen = ({ route, navigation }) => {
       colors={['#3B5998', '#577BC1']}
       style={styles.container}
       start={{ x: 0, y: 0 }}
-      end={{ x: 1, y: 1 }}
-    >
+      end={{ x: 1, y: 1 }}>
       <Animated.Image
         source={require('../assets/trophy.png')}
-        style={[styles.trophyImage, { opacity: fadeAnim, transform: [{ scale: scaleAnim }] }]}
+        style={[
+          styles.trophyImage,
+          { opacity: fadeAnim, transform: [{ scale: scaleAnim }] },
+        ]}
       />
 
       <Animated.Text style={[styles.title, { opacity: fadeAnim }]}>
@@ -59,8 +61,7 @@ const PointsScreen = ({ route, navigation }) => {
             opacity: fadeAnim,
             transform: [{ scale: scaleAnim }],
           },
-        ]}
-      >
+        ]}>
         <Text style={styles.pointsText}>You Scored:</Text>
         <Text style={styles.points}>
           {points} / {totalPoints}
@@ -72,8 +73,7 @@ const PointsScreen = ({ route, navigation }) => {
           colors={['#4CAF50', '#2ecc71']}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 1 }}
-          style={styles.quizButton}
-        >
+          style={styles.quizButton}>
           <Text style={styles.quizButtonText}>Go to Quizzes & Challenges</Text>
         </LinearGradient>
       </TouchableOpacity>
