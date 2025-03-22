@@ -9,18 +9,19 @@ import {
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import LinearGradient from 'react-native-linear-gradient';
-import { useColorScheme } from 'react-native';
+import { useTheme } from '../components/ThemeContext';
 
 const AppInfoScreen = () => {
   const navigation = useNavigation();
-  const colorScheme = useColorScheme();
-  const isDarkMode = colorScheme === 'dark';
+  const theme = useTheme();
 
   return (
     <LinearGradient
-      colors={isDarkMode ? ['#1C1C1C', '#3A3A3A'] : ['#2A2D57', '#577BC1']}
+      colors={
+        theme === 'dark' ? ['#1C1C1C', '#3A3A3A'] : ['#2A2D57', '#577BC1']
+      }
       style={styles.container}>
-      <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
+      <StatusBar barStyle="light-content" />
 
       {/* Header */}
       <View style={styles.headerBar}>
@@ -32,24 +33,25 @@ const AppInfoScreen = () => {
         <ScrollView
           style={[
             styles.scrollContainer,
-            isDarkMode ? styles.scrollContainerDark : styles.scrollContainerLight,
+            theme === 'dark' && styles.darkScrollContainer,
           ]}
           contentContainerStyle={styles.scrollContent}>
-          <Text style={[styles.title, isDarkMode ? styles.titleDark : styles.titleLight]}>
+          <Text style={[styles.title, theme === 'dark' && styles.darkTitle]}>
             SayMore App
           </Text>
-          <Text style={[styles.subText, isDarkMode ? styles.subTextDark : styles.subTextLight]}>
+          <Text
+            style={[styles.subText, theme === 'dark' && styles.darkSubText]}>
             Version: 1.0.0
           </Text>
 
           <Text
             style={[
               styles.sectionHeader,
-              isDarkMode ? styles.sectionHeaderDark : styles.sectionHeaderLight,
+              theme === 'dark' && styles.darkSectionHeader,
             ]}>
             Overview
           </Text>
-          <Text style={[styles.text, isDarkMode ? styles.textDark : styles.textLight]}>
+          <Text style={[styles.text, theme === 'dark' && styles.darkText]}>
             SayMore is your personal companion for improving public speaking and
             speech fluency. Whether you're looking to overcome stuttering,
             refine your pronunciation, or build confidence in front of an
@@ -60,11 +62,11 @@ const AppInfoScreen = () => {
           <Text
             style={[
               styles.sectionHeader,
-              isDarkMode ? styles.sectionHeaderDark : styles.sectionHeaderLight,
+              theme === 'dark' && styles.darkSectionHeader,
             ]}>
             Features
           </Text>
-          <Text style={[styles.text, isDarkMode ? styles.textDark : styles.textLight]}>
+          <Text style={[styles.text, theme === 'dark' && styles.darkText]}>
             - Public Speaking Practice{'\n'}- Stuttering Assistance Exercises
             {'\n'}- Personalized Audio Feedback{'\n'}- Progress Analysis and
             Metrics{'\n'}- Customizable User Profile
@@ -73,11 +75,11 @@ const AppInfoScreen = () => {
           <Text
             style={[
               styles.sectionHeader,
-              isDarkMode ? styles.sectionHeaderDark : styles.sectionHeaderLight,
+              theme === 'dark' && styles.darkSectionHeader,
             ]}>
             Developer
           </Text>
-          <Text style={[styles.text, isDarkMode ? styles.textDark : styles.textLight]}>
+          <Text style={[styles.text, theme === 'dark' && styles.darkText]}>
             Developed by SayMore Team{'\n'}
             For support or inquiries:{'\n'}
             Email: support@saymoreapp.com
@@ -85,10 +87,7 @@ const AppInfoScreen = () => {
         </ScrollView>
 
         <TouchableOpacity
-          style={[
-            styles.backButton,
-            isDarkMode ? styles.backButtonDark : styles.backButtonLight,
-          ]}
+          style={[styles.backButton, theme === 'dark' && styles.darkBackButton]}
           onPress={() => navigation.goBack()}>
           <Text style={styles.backButtonText}>Back</Text>
         </TouchableOpacity>
@@ -138,6 +137,10 @@ const styles = StyleSheet.create({
     backgroundColor: '#2B2B2B',
   },
 
+  darkScrollContainer: {
+    backgroundColor: '#1a1a1a',
+  },
+
   scrollContent: { padding: 25 },
 
   title: {
@@ -152,6 +155,10 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
   },
 
+  darkTitle: {
+    color: '#FFFFFF',
+  },
+
   subText: {
     fontSize: 14,
     marginBottom: 20,
@@ -161,6 +168,10 @@ const styles = StyleSheet.create({
   },
   subTextDark: {
     color: '#CCCCCC',
+  },
+
+  darkSubText: {
+    color: '#FFFFFF',
   },
 
   sectionHeader: {
@@ -176,6 +187,10 @@ const styles = StyleSheet.create({
     color: '#DDDDDD',
   },
 
+  darkSectionHeader: {
+    color: '#FFFFFF',
+  },
+
   text: {
     fontSize: 15.5,
     lineHeight: 24,
@@ -184,6 +199,10 @@ const styles = StyleSheet.create({
     color: '#2A2D57',
   },
   textDark: {
+    color: '#FFFFFF',
+  },
+
+  darkText: {
     color: '#FFFFFF',
   },
 
@@ -205,6 +224,10 @@ const styles = StyleSheet.create({
   },
   backButtonDark: {
     backgroundColor: '#444444',
+  },
+
+  darkBackButton: {
+    backgroundColor: '#1a1a1a',
   },
 
   backButtonText: {

@@ -1003,7 +1003,7 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = ({
     <SafeAreaView style={styles.safeArea}>
       <StatusBar barStyle="dark-content" backgroundColor="#F0F8FF" />
       <View style={theme === 'dark' ? styles.darkContainer : styles.container}>
-        <View style={theme === 'dark'?styles.darkHeader:styles.header}>
+        <View style={theme === 'dark' ? styles.darkHeader : styles.header}>
           <TouchableOpacity
             style={
               theme === 'light' ? styles.lightBackButton : styles.darkBackButton
@@ -1027,7 +1027,9 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = ({
           </TouchableOpacity>
           <View style={styles.headerTextContainer}>
             <Text
-              style={theme === 'dark'?styles.darkHeaderText:styles.headerText}
+              style={
+                theme === 'dark' ? styles.darkHeaderText : styles.headerText
+              }
               numberOfLines={1}
               ellipsizeMode="tail">
               {combinedTitle}
@@ -1038,7 +1040,12 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = ({
         <ScrollView
           style={styles.scrollContent}
           showsVerticalScrollIndicator={false}>
-          <View style={theme === 'dark'?styles.darkVideoContainer:styles.videoContainer}>
+          <View
+            style={
+              theme === 'dark'
+                ? styles.darkVideoContainer
+                : styles.videoContainer
+            }>
             <YoutubeIframe
               height={playerHeight}
               width={playerWidth}
@@ -1056,7 +1063,9 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = ({
 
           {showSkipButton && previousWatchedPercentage && !playing && (
             <TouchableOpacity
-              style={theme === 'dark'?styles.darkSkipButton:styles.skipButton}
+              style={
+                theme === 'dark' ? styles.darkSkipButton : styles.skipButton
+              }
               onPress={skipToLastWatched}>
               <Text style={styles.skipButtonText}>
                 Skip to {previousWatchedPercentage}% (Last Watched)
@@ -1064,17 +1073,44 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = ({
             </TouchableOpacity>
           )}
 
-          <View style={theme === 'dark'?styles.darkVideoInfoContainer:styles.videoInfoContainer}>
-            <Text style={theme === 'dark'?styles.darkVideoTitle:styles.videoTitle}>{video.title}</Text>
-            <Text style={theme === 'dark'?styles.darkLessonSubtitle:styles.darkLessonSubtitle}>{lessonTitle}</Text>
+          <View
+            style={
+              theme === 'dark'
+                ? styles.darkVideoInfoContainer
+                : styles.videoInfoContainer
+            }>
+            <Text
+              style={
+                theme === 'dark' ? styles.darkVideoTitle : styles.videoTitle
+              }>
+              {video.title}
+            </Text>
+            <Text
+              style={
+                theme === 'dark'
+                  ? styles.darkLessonSubtitle
+                  : styles.darkLessonSubtitle
+              }>
+              {lessonTitle}
+            </Text>
             {videoDuration > 0 && (
-              <Text style={theme === 'dark'?styles.darkDurationText:styles.durationText}>
+              <Text
+                style={
+                  theme === 'dark'
+                    ? styles.darkDurationText
+                    : styles.durationText
+                }>
                 Duration: {Math.floor(videoDuration / 60)}:
                 {String(Math.floor(videoDuration % 60)).padStart(2, '0')}
               </Text>
             )}
             <View style={styles.progressContainer}>
-              <Text style={theme === 'dark'?styles.darkProgressText:styles.progressText}>
+              <Text
+                style={
+                  theme === 'dark'
+                    ? styles.darkProgressText
+                    : styles.progressText
+                }>
                 {currentPercentage > 0
                   ? `You've watched ${currentPercentage}% of this video`
                   : 'Start watching to track progress'}
@@ -1095,14 +1131,26 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = ({
                   {getMilestonePointsText()}
                 </Text>
               )}
-              <View style={theme === 'dark'?styles.darkMilestonesContainer:styles.milestonesContainer}>
-                <Text style={theme === 'dark'?styles.darkMilestonesText:styles.milestonesText}>
+              <View
+                style={
+                  theme === 'dark'
+                    ? styles.darkMilestonesContainer
+                    : styles.milestonesContainer
+                }>
+                <Text
+                  style={
+                    theme === 'dark'
+                      ? styles.darkMilestonesText
+                      : styles.milestonesText
+                  }>
                   Milestones:
                   <Text
                     style={
                       reachedMilestonesRef.current.has(10)
                         ? styles.reachedMilestone
-                        : theme === 'dark'?styles.darkUnreachedMilestone:styles.unreachedMilestone
+                        : theme === 'dark'
+                          ? styles.darkUnreachedMilestone
+                          : styles.unreachedMilestone
                     }>
                     {' '}
                     10%
@@ -1112,7 +1160,9 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = ({
                     style={
                       reachedMilestonesRef.current.has(25)
                         ? styles.reachedMilestone
-                        : theme === 'dark'?styles.darkUnreachedMilestone:styles.unreachedMilestone
+                        : theme === 'dark'
+                          ? styles.darkUnreachedMilestone
+                          : styles.unreachedMilestone
                     }>
                     {' '}
                     25%
@@ -1122,7 +1172,9 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = ({
                     style={
                       reachedMilestonesRef.current.has(50)
                         ? styles.reachedMilestone
-                        : theme === 'dark'?styles.darkUnreachedMilestone:styles.unreachedMilestone
+                        : theme === 'dark'
+                          ? styles.darkUnreachedMilestone
+                          : styles.unreachedMilestone
                     }>
                     {' '}
                     50%
@@ -1132,7 +1184,9 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = ({
                     style={
                       reachedMilestonesRef.current.has(75)
                         ? styles.reachedMilestone
-                        : theme === 'dark'?styles.darkUnreachedMilestone:styles.unreachedMilestone
+                        : theme === 'dark'
+                          ? styles.darkUnreachedMilestone
+                          : styles.unreachedMilestone
                     }>
                     {' '}
                     75%
@@ -1142,7 +1196,9 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = ({
                     style={
                       reachedMilestonesRef.current.has(100)
                         ? styles.reachedMilestone
-                        : theme === 'dark'?styles.darkUnreachedMilestone:styles.unreachedMilestone
+                        : theme === 'dark'
+                          ? styles.darkUnreachedMilestone
+                          : styles.unreachedMilestone
                     }>
                     {' '}
                     100%
@@ -1153,9 +1209,26 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = ({
           </View>
 
           {video.summary && (
-            <View style={theme === 'dark'?styles.darkSummaryOuterContainer:styles.summaryOuterContainer}>
-              <View style={theme === 'dark'?styles.darkSummaryHeaderContainer:styles.summaryHeaderContainer}>
-                <Text style={theme === 'dark'?styles.darkSummaryHeaderText:styles.summaryHeaderText}>Summary</Text>
+            <View
+              style={
+                theme === 'dark'
+                  ? styles.darkSummaryOuterContainer
+                  : styles.summaryOuterContainer
+              }>
+              <View
+                style={
+                  theme === 'dark'
+                    ? styles.darkSummaryHeaderContainer
+                    : styles.summaryHeaderContainer
+                }>
+                <Text
+                  style={
+                    theme === 'dark'
+                      ? styles.darkSummaryHeaderText
+                      : styles.summaryHeaderText
+                  }>
+                  Summary
+                </Text>
               </View>
               <View style={styles.summaryCardContainer}>
                 {video.summaryImage && (
@@ -1164,7 +1237,14 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = ({
                     style={styles.summaryImage}
                   />
                 )}
-                <Text style={theme === 'dark'?styles.darkSummaryText:styles.summaryText}>{video.summary}</Text>
+                <Text
+                  style={
+                    theme === 'dark'
+                      ? styles.darkSummaryText
+                      : styles.summaryText
+                  }>
+                  {video.summary}
+                </Text>
               </View>
             </View>
           )}
@@ -1196,7 +1276,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#F0F8FF',
     borderBottomWidth: 1,
     borderBottomColor: '#E1EEFB',
-  },darkHeader: {
+  },
+  darkHeader: {
     flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: 16,
@@ -1274,7 +1355,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#003366',
     marginBottom: -45,
-  },darkVideoContainer: {
+  },
+  darkVideoContainer: {
     alignItems: 'center',
     backgroundColor: '#2b2b2b',
     marginBottom: -45,
@@ -1292,7 +1374,8 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.2,
     shadowRadius: 3,
     elevation: 4,
-  },darkSkipButton: {
+  },
+  darkSkipButton: {
     backgroundColor: '#4c4c4c',
     paddingVertical: 10,
     paddingHorizontal: 16,
@@ -1317,7 +1400,8 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: '#E1EEFB',
     marginBottom: 16,
-  },darkVideoInfoContainer: {
+  },
+  darkVideoInfoContainer: {
     padding: 16,
     backgroundColor: '#2B2B2B',
     borderBottomWidth: 1,
@@ -1329,7 +1413,8 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     color: '#003366',
     marginBottom: 4,
-  },darkVideoTitle: {
+  },
+  darkVideoTitle: {
     fontSize: 18,
     fontWeight: '600',
     color: '#FFF',
@@ -1339,7 +1424,8 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#4A6D8C',
     marginBottom: 8,
-  },darkLessonSubtitle: {
+  },
+  darkLessonSubtitle: {
     fontSize: 14,
     color: '#FFF',
     marginBottom: 8,
@@ -1349,7 +1435,8 @@ const styles = StyleSheet.create({
     color: '#4A6D8C',
     marginTop: 4,
     marginBottom: 12,
-  },darkDurationText: {
+  },
+  darkDurationText: {
     fontSize: 14,
     color: '#FFF',
     marginTop: 4,
@@ -1362,7 +1449,8 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#003366',
     marginBottom: 6,
-  },darkProgressText: {
+  },
+  darkProgressText: {
     fontSize: 14,
     color: '#FFF',
     marginBottom: 6,
@@ -1388,7 +1476,8 @@ const styles = StyleSheet.create({
     paddingTop: 8,
     borderTopWidth: 1,
     borderTopColor: '#E1EEFB',
-  },darkMilestonesContainer: {
+  },
+  darkMilestonesContainer: {
     marginTop: 8,
     paddingTop: 8,
     borderTopWidth: 1,
@@ -1397,7 +1486,8 @@ const styles = StyleSheet.create({
   milestonesText: {
     fontSize: 12,
     color: '#003366',
-  },darkMilestonesText: {
+  },
+  darkMilestonesText: {
     fontSize: 12,
     color: '#FFF',
   },
@@ -1407,7 +1497,8 @@ const styles = StyleSheet.create({
   },
   unreachedMilestone: {
     color: '#A0AEC0',
-  },darkUnreachedMilestone: {
+  },
+  darkUnreachedMilestone: {
     color: '#FFF',
   },
   summaryOuterContainer: {
@@ -1421,7 +1512,8 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 3,
     overflow: 'hidden',
-  },darkSummaryOuterContainer: {
+  },
+  darkSummaryOuterContainer: {
     marginHorizontal: 16,
     marginBottom: 24,
     borderRadius: 12,
@@ -1439,7 +1531,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     borderTopLeftRadius: 12,
     borderTopRightRadius: 12,
-  },darkSummaryHeaderContainer: {
+  },
+  darkSummaryHeaderContainer: {
     backgroundColor: '#4d4d4d',
     paddingVertical: 12,
     paddingHorizontal: 16,
@@ -1471,7 +1564,8 @@ const styles = StyleSheet.create({
     fontSize: 16,
     lineHeight: 24,
     color: '#003366',
-  },darkSummaryText: {
+  },
+  darkSummaryText: {
     fontSize: 16,
     lineHeight: 24,
     color: '#FFF',
@@ -1483,7 +1577,6 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     margin: 16,
   },
-
 });
 
 export default VideoPlayerScreen;

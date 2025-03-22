@@ -34,33 +34,64 @@ const TermsAndConditionsScreen = () => {
         </View>
 
         <ScrollView
-          style={[styles.scrollContainer, theme === 'dark' ? styles.scrollContainerDark : styles.scrollContainerLight]}
+          style={[
+            styles.scrollContainer,
+            theme === 'dark' && styles.darkScrollContainer,
+          ]}
           contentContainerStyle={styles.scrollContent}>
-          <Text style={[styles.text, theme === 'dark' ? styles.textDark : styles.textLight]}>
+          <Text style={[styles.text, theme === 'dark' && styles.darkText]}>
             By using SayMore, you agree to the following:
             {'\n\n'}
-            1. <Text style={theme === 'dark' ? styles.boldTextDark : styles.boldTextLight}>Account Information:</Text> Provide
-            accurate and truthful personal information during registration and
-            ensure your account remains secure.
+            1.{' '}
+            <Text
+              style={[
+                styles.boldText,
+                theme === 'dark' && styles.darkBoldText,
+              ]}>
+              Account Information:
+            </Text>{' '}
+            Provide accurate and truthful personal information during
+            registration and ensure your account remains secure.
             {'\n\n'}
-            2. <Text style={theme === 'dark' ? styles.boldTextDark : styles.boldTextLight}>App Usage:</Text> Use the app
-            solely for personal speech improvement and not as a substitute for
-            professional therapy, diagnosis, or advice.
+            2.{' '}
+            <Text
+              style={[
+                styles.boldText,
+                theme === 'dark' && styles.darkBoldText,
+              ]}>
+              App Usage:
+            </Text>{' '}
+            Use the app solely for personal speech improvement and not as a
+            substitute for professional therapy, diagnosis, or advice.
             {'\n\n'}
-            3. <Text style={theme === 'dark' ? styles.boldTextDark : styles.boldTextLight}>Data Usage:</Text> Allow secure
-            processing of your data, such as audio recordings and progress
-            metrics, for personalized feedback and service improvement. Your
-            data will be handled in accordance with our Privacy Policy.
+            3.{' '}
+            <Text
+              style={[
+                styles.boldText,
+                theme === 'dark' && styles.darkBoldText,
+              ]}>
+              Data Usage:
+            </Text>{' '}
+            Allow secure processing of your data, such as audio recordings and
+            progress metrics, for personalized feedback and service improvement.
+            Your data will be handled in accordance with our Privacy Policy.
             {'\n\n'}
-            4. <Text style={theme === 'dark' ? styles.boldTextDark : styles.boldTextLight}>Prohibited Actions:</Text> Refrain
-            from misuse of the app, including sharing inappropriate, offensive,
-            or harmful content, attempting unauthorized access, or using the app
-            for commercial purposes.
+            4.{' '}
+            <Text
+              style={[
+                styles.boldText,
+                theme === 'dark' && styles.darkBoldText,
+              ]}>
+              Prohibited Actions:
+            </Text>{' '}
+            Refrain from misuse of the app, including sharing inappropriate,
+            offensive, or harmful content, attempting unauthorized access, or
+            using the app for commercial purposes.
           </Text>
         </ScrollView>
 
         <TouchableOpacity
-          style={[styles.backButton, theme === 'dark' ? styles.backButtonDark : styles.backButtonLight]}
+          style={[styles.backButton, theme === 'dark' && styles.darkBackButton]}
           onPress={() => navigation.goBack()}>
           <Text style={styles.backButtonText}>Back</Text>
         </TouchableOpacity>
@@ -126,6 +157,10 @@ const styles = StyleSheet.create({
     backgroundColor: '#2B2B2B',
   },
 
+  darkScrollContainer: {
+    backgroundColor: '#1a1a1a',
+  },
+
   scrollContent: {
     padding: 25,
   },
@@ -141,12 +176,20 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
   },
 
-  boldTextLight: {
+  darkText: {
+    color: '#FFFFFF',
+  },
+
+  boldText: {
     fontWeight: '700',
     color: '#3B5998',
   },
   boldTextDark: {
     fontWeight: '700',
+    color: '#FFFFFF',
+  },
+
+  darkBoldText: {
     color: '#FFFFFF',
   },
 
@@ -168,6 +211,10 @@ const styles = StyleSheet.create({
   },
   backButtonDark: {
     backgroundColor: '#1C1C1C',
+  },
+
+  darkBackButton: {
+    backgroundColor: '#1a1a1a',
   },
 
   backButtonText: {
