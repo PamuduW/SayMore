@@ -26,6 +26,7 @@ const AppInfoScreen = () => {
       {/* Header */}
       <View style={styles.headerBar}>
         <Text style={styles.headerText}>App Information</Text>
+        <View style={styles.headerUnderline} />
       </View>
 
       <View style={styles.contentWrapper}>
@@ -111,16 +112,29 @@ const styles = StyleSheet.create({
     letterSpacing: 1,
   },
 
+  headerUnderline: {
+    marginTop: 6,
+    width: 210,
+    height: 3,
+    backgroundColor: '#D0D3E6',
+    borderRadius: 2,
+  },
+
   contentWrapper: { flex: 1, paddingHorizontal: 20 },
 
   scrollContainer: {
-    backgroundColor: '#FFFFFF',
     borderRadius: 22,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.12,
     shadowRadius: 7,
     elevation: 9,
+  },
+  scrollContainerLight: {
+    backgroundColor: '#FFFFFF',
+  },
+  scrollContainerDark: {
+    backgroundColor: '#2B2B2B',
   },
 
   darkScrollContainer: {
@@ -132,8 +146,13 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: '#2A2D57',
     marginBottom: 5,
+  },
+  titleLight: {
+    color: '#2A2D57',
+  },
+  titleDark: {
+    color: '#FFFFFF',
   },
 
   darkTitle: {
@@ -142,8 +161,13 @@ const styles = StyleSheet.create({
 
   subText: {
     fontSize: 14,
-    color: '#3B5998',
     marginBottom: 20,
+  },
+  subTextLight: {
+    color: '#3B5998',
+  },
+  subTextDark: {
+    color: '#CCCCCC',
   },
 
   darkSubText: {
@@ -153,9 +177,14 @@ const styles = StyleSheet.create({
   sectionHeader: {
     fontSize: 18,
     fontWeight: '700',
-    color: '#3B5998',
     marginTop: 15,
     marginBottom: 8,
+  },
+  sectionHeaderLight: {
+    color: '#3B5998',
+  },
+  sectionHeaderDark: {
+    color: '#DDDDDD',
   },
 
   darkSectionHeader: {
@@ -164,8 +193,13 @@ const styles = StyleSheet.create({
 
   text: {
     fontSize: 15.5,
-    color: '#2A2D57',
     lineHeight: 24,
+  },
+  textLight: {
+    color: '#2A2D57',
+  },
+  textDark: {
+    color: '#FFFFFF',
   },
 
   darkText: {
@@ -176,7 +210,6 @@ const styles = StyleSheet.create({
     marginTop: 20,
     marginBottom: 15,
     alignSelf: 'center',
-    backgroundColor: '#3B5998',
     paddingVertical: 12,
     paddingHorizontal: 32,
     borderRadius: 25,
@@ -185,6 +218,12 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.18,
     shadowRadius: 7,
     elevation: 7,
+  },
+  backButtonLight: {
+    backgroundColor: '#3B5998',
+  },
+  backButtonDark: {
+    backgroundColor: '#444444',
   },
 
   darkBackButton: {

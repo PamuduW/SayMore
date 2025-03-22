@@ -23,7 +23,6 @@ const PrivacyCookiesScreen = () => {
       style={styles.container}>
       <StatusBar barStyle="light-content" />
 
-      {/* Header */}
       <View style={styles.headerBar}>
         <Text style={styles.headerText}>Privacy & Cookies</Text>
         <View style={styles.headerUnderline} />
@@ -97,9 +96,8 @@ const PrivacyCookiesScreen = () => {
               standards.
             </Text>
           </ScrollView>
-        </LinearGradient>
+        </View>
 
-        {/* Back Button */}
         <TouchableOpacity
           style={[styles.backButton, theme === 'dark' && styles.darkBackButton]}
           onPress={() => navigation.goBack()}>
@@ -150,7 +148,19 @@ const styles = StyleSheet.create({
     marginBottom: 15,
   },
 
-  scrollContainer: {
+  scrollContainerLight: {
+    backgroundColor: '#ECEFF9',
+    borderRadius: 28,
+    width: '100%',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.08,
+    shadowRadius: 6,
+    elevation: 6,
+  },
+
+  scrollContainerDark: {
+    backgroundColor: '#2B2B2B',
     borderRadius: 28,
     width: '100%',
     shadowColor: '#000',
@@ -164,10 +174,16 @@ const styles = StyleSheet.create({
     padding: 24,
   },
 
-  text: {
+  textLight: {
     fontSize: 15,
-    color: '#2A2D57',
     lineHeight: 24,
+    color: '#2A2D57',
+  },
+
+  textDark: {
+    fontSize: 15,
+    lineHeight: 24,
+    color: '#FFFFFF',
   },
 
   darkText: {
@@ -187,10 +203,25 @@ const styles = StyleSheet.create({
     marginTop: 25,
     marginBottom: 15,
     alignSelf: 'center',
-    backgroundColor: '#3B5998',
     paddingVertical: 12,
     paddingHorizontal: 32,
     borderRadius: 25,
+    backgroundColor: '#3B5998',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 5 },
+    shadowOpacity: 0.18,
+    shadowRadius: 7,
+    elevation: 7,
+  },
+
+  backButtonDark: {
+    marginTop: 25,
+    marginBottom: 15,
+    alignSelf: 'center',
+    paddingVertical: 12,
+    paddingHorizontal: 32,
+    borderRadius: 25,
+    backgroundColor: '#1C1C1C',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 5 },
     shadowOpacity: 0.18,

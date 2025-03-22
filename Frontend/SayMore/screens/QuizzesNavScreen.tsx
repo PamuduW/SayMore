@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, Image, StyleSheet } from 'react-native';
+import { View, Text, TouchableOpacity, Image, StyleSheet, ScrollView } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import LinearGradient from 'react-native-linear-gradient';
 import { useTheme } from '../components/ThemeContext';
@@ -9,11 +9,10 @@ const QuizzesNavScreen = () => {
   const theme = useTheme();
 
   const navigateToPublicSpeaking = () => {
-    navigation.navigate('Difficulty', { type: 'PublicSpeaking' }); // Public Speaking goes to Difficulty screen
+    navigation.navigate('Difficulty', { type: 'PublicSpeaking' });
   };
 
   const navigateToStuttering = () => {
-    // Directly navigate to StutteringQuestionScreen with the default set_name
     navigation.navigate('StutteringQuestionScreen', {
       set_name: 'relaxation techniques',
     });
@@ -21,27 +20,51 @@ const QuizzesNavScreen = () => {
 
   return (
     <LinearGradient
-      colors={
-        theme === 'dark' ? ['#1C1C1C', '#3A3A3A'] : ['#2A2D57', '#577BC1']
-      }
+      colors={theme === 'dark' ? ['#1C1C1C', '#3A3A3A'] : ['#577BC1', '#8AAEE0']}
+      start={{ x: 0, y: 0 }}
+      end={{ x: 1, y: 1 }}
       style={styles.container}>
-      <Text style={styles.title}>Quizzes And Challenges</Text>
-      <View style={styles.card}>
-        <Image source={require('../assets/quiznav.jpg')} style={styles.image} />
-        <View style={styles.buttonContainer}>
-          <TouchableOpacity
-            style={styles.button}
-            onPress={navigateToPublicSpeaking}>
-            <Text style={styles.buttonText}>Public Speaking</Text>
-          </TouchableOpacity>
 
-          <TouchableOpacity
-            style={styles.button}
-            onPress={navigateToStuttering}>
-            <Text style={styles.buttonText}>Stuttering</Text>
+      <Text style={styles.title}>Quizzes and Challenges</Text>
+
+      <ScrollView contentContainerStyle={styles.cardsWrapper} showsVerticalScrollIndicator={false}>
+
+        {/* Public Speaking Card */}
+        <View style={[styles.card, theme === 'dark' && styles.cardDark]}>
+          <View style={[styles.imageWrapper, theme === 'dark' && styles.imageWrapperDark]}>
+            <Image source={require('../assets/quiznav.jpg')} style={styles.image} />
+          </View>
+          <Text style={[styles.cardTitle, theme === 'dark' && styles.cardTitleDark]}>Public Speaking</Text>
+          <TouchableOpacity activeOpacity={0.85} style={styles.button} onPress={navigateToPublicSpeaking}>
+            <LinearGradient
+              colors={theme === 'dark' ? ['#4A4A4A', '#6B6B6B'] : ['#3B5998', '#577BC1']}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 1 }}
+              style={styles.buttonGradient}>
+              <Text style={styles.buttonText}>Start</Text>
+            </LinearGradient>
           </TouchableOpacity>
         </View>
-      </View>
+
+        {/* Stuttering Card */}
+        <View style={[styles.card, theme === 'dark' && styles.cardDark]}>
+          <View style={[styles.imageWrapper, theme === 'dark' && styles.imageWrapperDark]}>
+            <Image source={require('../assets/stutterquiz.png')} style={styles.image} />
+          </View>
+          <Text style={[styles.cardTitle, theme === 'dark' && styles.cardTitleDark]}>Stuttering</Text>
+          <TouchableOpacity activeOpacity={0.85} style={styles.button} onPress={navigateToStuttering}>
+            <LinearGradient
+              colors={theme === 'dark' ? ['#4A4A4A', '#6B6B6B'] : ['#3B5998', '#577BC1']}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 1 }}
+              style={styles.buttonGradient}>
+              <Text style={styles.buttonText}>Start</Text>
+            </LinearGradient>
+          </TouchableOpacity>
+        </View>
+
+      </ScrollView>
+
     </LinearGradient>
   );
 };
@@ -49,53 +72,87 @@ const QuizzesNavScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
-    alignItems: 'center',
+    paddingTop: 50,
+    paddingHorizontal: 20,
   },
   title: {
-    fontSize: 22,
+    fontSize: 26,
     fontWeight: 'bold',
     color: '#FFFFFF',
-    marginBottom: 20,
-    alignSelf: 'flex-start',
+    marginBottom: 30,
+    textAlign: 'center',
+    letterSpacing: 1,
+  },
+  cardsWrapper: {
+    alignItems: 'center',
+    paddingBottom: 30,
   },
   card: {
     backgroundColor: '#FFFFFF',
     borderRadius: 25,
     padding: 25,
+    width: '95%',
     alignItems: 'center',
+    marginBottom: 25,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.12,
+    shadowRadius: 8,
+    elevation: 8,
+  },
+  cardDark: {
+    backgroundColor: '#2B2B2B',
+  },
+  imageWrapper: {
+    backgroundColor: '#F9FAFC',
+    padding: 12,
+    borderRadius: 20,
+    marginBottom: 18,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.12,
+    shadowRadius: 6,
+    elevation: 6,
+  },
+  imageWrapperDark: {
+    backgroundColor: '#1C1C1C',
+  },
+  image: {
+    width: 230,
+    height: 140,
+    borderRadius: 12,
+    resizeMode: 'contain',
+  },
+  cardTitle: {
+    fontSize: 20,
+    fontWeight: '700',
+    color: '#2A2D57',
+    marginBottom: 20,
+  },
+  cardTitleDark: {
+    color: '#FFFFFF',
+  },
+  button: {
+    width: '75%',
+    borderRadius: 25,
+    overflow: 'hidden',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.2,
-    shadowRadius: 5,
-    elevation: 6,
+    shadowRadius: 6,
+    elevation: 12,
   },
-  image: {
-    width: 250,
-    height: 150,
-    marginBottom: 15,
-    resizeMode: 'contain',
-  },
-  buttonContainer: {
-    flexDirection: 'row',
+  buttonGradient: {
+    paddingVertical: 14,
+    borderRadius: 25,
+    alignItems: 'center',
     justifyContent: 'center',
-    gap: 15,
-  },
-  button: {
-    backgroundColor: '#FFFFFF',
-    paddingVertical: 12,
-    paddingHorizontal: 20,
-    borderRadius: 20,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 3,
-    elevation: 3,
   },
   buttonText: {
-    fontSize: 14,
+    fontSize: 16,
     fontWeight: 'bold',
-    color: '#2A2D57',
+    color: '#FFFFFF',
+    letterSpacing: 0.6,
   },
 });
 

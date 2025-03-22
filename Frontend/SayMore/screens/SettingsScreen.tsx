@@ -112,8 +112,8 @@ export default function SettingsScreen() {
         <Switch
           value={notificationsEnabled}
           onValueChange={toggleNotifications}
-          trackColor={{ false: '#D0D3E6', true: '#3B5998' }}
-          thumbColor={notificationsEnabled ? '#FFFFFF' : '#f4f3f4'}
+          trackColor={{ false: '#777777', true: '#FFFFFF' }}
+          thumbColor={notificationsEnabled ? '#FFFFFF' : '#444444'}
         />
       )}
 
@@ -121,8 +121,8 @@ export default function SettingsScreen() {
         <Switch
           value={isDarkMode}
           onValueChange={setIsDarkMode}
-          trackColor={{ false: '#D0D3E6', true: '#3B5998' }}
-          thumbColor={isDarkMode ? '#FFFFFF' : '#f4f3f4'}
+          trackColor={{ false: '#777777', true: '#FFFFFF' }}
+          thumbColor={isDarkMode ? '#FFFFFF' : '#444444'}
         />
       )}
     </TouchableOpacity>
@@ -138,7 +138,13 @@ export default function SettingsScreen() {
 
       <View style={styles.headerBar}>
         <Text style={styles.header}>Settings</Text>
-        <Image source={SettingsIcon} style={styles.headerIconRight} />
+        <Image
+          source={SettingsIcon}
+          style={[
+            styles.headerIconRight,
+            { tintColor: '#FFFFFF' },
+          ]}
+        />
       </View>
 
       <ScrollView contentContainerStyle={styles.scrollArea}>
@@ -196,7 +202,6 @@ const styles = StyleSheet.create({
   headerIconRight: {
     width: 28,
     height: 28,
-    tintColor: '#FFFFFF',
   },
 
   scrollArea: {
@@ -205,15 +210,21 @@ const styles = StyleSheet.create({
   },
 
   sectionContainer: {
-    backgroundColor: '#FFFFFF',
-    borderRadius: 20,
-    padding: 20,
-    marginBottom: 20,
+    borderRadius: 25,
+    padding: 22,
+    marginBottom: 25,
+    elevation: 6,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.1,
-    shadowRadius: 8,
-    elevation: 8,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.2,
+    shadowRadius: 5,
+  },
+
+  sectionLight: {
+    backgroundColor: '#FFFFFF',
+  },
+  sectionDark: {
+    backgroundColor: '#1C1C1C',
   },
 
   darkSectionContainer: {
@@ -221,10 +232,15 @@ const styles = StyleSheet.create({
   },
 
   sectionTitle: {
-    fontSize: 18,
+    fontSize: 22,
+    marginBottom: 18,
+    fontWeight: 'bold',
+  },
+  sectionTitleLight: {
     color: '#2A2D57',
-    marginBottom: 15,
-    fontWeight: '700',
+  },
+  sectionTitleDark: {
+    color: '#FFFFFF',
   },
 
   darkSectionTitle: {
@@ -235,15 +251,26 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    backgroundColor: '#F7F9FC',
-    paddingVertical: 14,
-    paddingHorizontal: 10,
-    borderRadius: 12,
-    marginBottom: 12,
+    paddingVertical: 16,
+    paddingHorizontal: 14,
+    borderRadius: 20,
+    marginBottom: 14,
+  },
+
+  optionLight: {
+    backgroundColor: '#FFFFFF',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.1,
-    shadowRadius: 6,
+    shadowOpacity: 0.2,
+    shadowRadius: 5,
+    elevation: 6,
+  },
+  optionDark: {
+    backgroundColor: '#2B2B2B',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.2,
+    shadowRadius: 5,
     elevation: 6,
   },
 
@@ -259,13 +286,22 @@ const styles = StyleSheet.create({
   optionIcon: {
     width: 22,
     height: 22,
-    tintColor: '#3B5998',
     marginRight: 12,
+  },
+
+  iconLight: {
+    tintColor: '#3B5998',
+  },
+  iconDark: {
+    tintColor: '#FFFFFF',
   },
 
   optionText: {
     fontSize: 16,
-    fontWeight: '500',
+    fontWeight: '600',
+  },
+
+  optionTextLight: {
     color: '#2A2D57',
   },
 

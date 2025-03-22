@@ -9,11 +9,14 @@ import {
 } from 'react-native';
 import auth from '@react-native-firebase/auth';
 import LinearGradient from 'react-native-linear-gradient';
+import { useTheme } from '../components/ThemeContext'; // Import useTheme
 
 export default function ChangePasswordScreen({ navigation }) {
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+
+  const theme = useTheme(); // Detect theme
 
   const reauthenticate = async password => {
     const user = auth().currentUser;
@@ -37,37 +40,85 @@ export default function ChangePasswordScreen({ navigation }) {
   };
 
   return (
-    <LinearGradient colors={['#2A2D57', '#577BC1']} style={styles.container}>
-      <Text style={styles.header}>Change Password</Text>
+    <LinearGradient
+      colors={
+        theme === 'dark'
+          ? ['#1C1C1C', '#3A3A3A']
+          : ['#2A2D57', '#577BC1']
+      }
+      style={styles.container}>
+      <Text
+        style={[
+          styles.header,
+          { color: theme === 'dark' ? '#FFFFFF' : '#FFFFFF' },
+        ]}>
+        Change Password
+      </Text>
 
       <View style={styles.inputContainer}>
-        <Text style={styles.label}>Current Password</Text>
+        <Text
+          style={[
+            styles.label,
+            { color: theme === 'dark' ? '#FFFFFF' : '#FFFFFF' },
+          ]}>
+          Current Password
+        </Text>
         <TextInput
-          style={styles.input}
+          style={[
+            styles.input,
+            {
+              backgroundColor: theme === 'dark' ? '#2B2B2B' : '#FFFFFF',
+              color: theme === 'dark' ? '#FFFFFF' : '#2A2D57',
+            },
+          ]}
           value={currentPassword}
           onChangeText={setCurrentPassword}
           placeholder="Enter Current Password"
-          placeholderTextColor="#aaa"
+          placeholderTextColor={theme === 'dark' ? '#aaa' : '#aaa'}
           secureTextEntry
         />
 
-        <Text style={styles.label}>New Password</Text>
+        <Text
+          style={[
+            styles.label,
+            { color: theme === 'dark' ? '#FFFFFF' : '#FFFFFF' },
+          ]}>
+          New Password
+        </Text>
         <TextInput
-          style={styles.input}
+          style={[
+            styles.input,
+            {
+              backgroundColor: theme === 'dark' ? '#2B2B2B' : '#FFFFFF',
+              color: theme === 'dark' ? '#FFFFFF' : '#2A2D57',
+            },
+          ]}
           value={newPassword}
           onChangeText={setNewPassword}
           placeholder="Enter New Password"
-          placeholderTextColor="#aaa"
+          placeholderTextColor={theme === 'dark' ? '#aaa' : '#aaa'}
           secureTextEntry
         />
 
-        <Text style={styles.label}>Confirm Password</Text>
+        <Text
+          style={[
+            styles.label,
+            { color: theme === 'dark' ? '#FFFFFF' : '#FFFFFF' },
+          ]}>
+          Confirm Password
+        </Text>
         <TextInput
-          style={styles.input}
+          style={[
+            styles.input,
+            {
+              backgroundColor: theme === 'dark' ? '#2B2B2B' : '#FFFFFF',
+              color: theme === 'dark' ? '#FFFFFF' : '#2A2D57',
+            },
+          ]}
           value={confirmPassword}
           onChangeText={setConfirmPassword}
           placeholder="Confirm New Password"
-          placeholderTextColor="#aaa"
+          placeholderTextColor={theme === 'dark' ? '#aaa' : '#aaa'}
           secureTextEntry
         />
       </View>
@@ -76,7 +127,11 @@ export default function ChangePasswordScreen({ navigation }) {
         onPress={handleChangePassword}
         style={{ marginTop: 20 }}>
         <LinearGradient
-          colors={['#00C6FF', '#0072FF']} // New vibrant blue gradient
+          colors={
+            theme === 'dark'
+              ? ['#3A3A3A', '#4A4A4A']
+              : ['#00C6FF', '#0072FF']
+          }
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 1 }}
           style={styles.confirmButton}>
@@ -91,7 +146,6 @@ const styles = StyleSheet.create({
   container: { flex: 1, paddingTop: 40, paddingHorizontal: 20 },
   header: {
     fontSize: 26,
-    color: '#fff',
     marginBottom: 30,
     textAlign: 'center',
     fontWeight: 'bold',
@@ -100,18 +154,15 @@ const styles = StyleSheet.create({
   inputContainer: { marginBottom: 20 },
 
   label: {
-    color: '#FFFFFF',
     marginBottom: 8,
     fontSize: 15,
     fontWeight: '600',
   },
 
   input: {
-    backgroundColor: '#fff',
     borderRadius: 12,
     padding: 12,
     marginBottom: 20,
-    color: '#2A2D57',
   },
 
   confirmButton: {

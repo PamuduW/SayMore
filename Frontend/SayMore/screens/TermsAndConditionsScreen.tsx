@@ -6,7 +6,6 @@ import {
   StyleSheet,
   ScrollView,
   StatusBar,
-  Image,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import LinearGradient from 'react-native-linear-gradient';
@@ -24,7 +23,6 @@ const TermsAndConditionsScreen = () => {
       style={styles.container}>
       <StatusBar barStyle="light-content" />
 
-      {/* Header */}
       <View style={styles.headerBar}>
         <Text style={styles.headerText}>Terms & Conditions</Text>
         <View style={styles.headerUnderline} />
@@ -145,13 +143,18 @@ const styles = StyleSheet.create({
   },
 
   scrollContainer: {
-    backgroundColor: '#FFFFFF',
     borderRadius: 25,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 6 },
     shadowOpacity: 0.1,
     shadowRadius: 8,
     elevation: 8,
+  },
+  scrollContainerLight: {
+    backgroundColor: '#FFFFFF',
+  },
+  scrollContainerDark: {
+    backgroundColor: '#2B2B2B',
   },
 
   darkScrollContainer: {
@@ -164,8 +167,13 @@ const styles = StyleSheet.create({
 
   text: {
     fontSize: 16,
-    color: '#2A2D57',
     lineHeight: 26,
+  },
+  textLight: {
+    color: '#2A2D57',
+  },
+  textDark: {
+    color: '#FFFFFF',
   },
 
   darkText: {
@@ -176,6 +184,10 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     color: '#3B5998',
   },
+  boldTextDark: {
+    fontWeight: '700',
+    color: '#FFFFFF',
+  },
 
   darkBoldText: {
     color: '#FFFFFF',
@@ -185,7 +197,6 @@ const styles = StyleSheet.create({
     marginTop: 20,
     marginBottom: 20,
     alignSelf: 'center',
-    backgroundColor: '#3B5998',
     paddingVertical: 12,
     paddingHorizontal: 30,
     borderRadius: 25,
@@ -194,6 +205,12 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.2,
     shadowRadius: 6,
     elevation: 6,
+  },
+  backButtonLight: {
+    backgroundColor: '#3B5998',
+  },
+  backButtonDark: {
+    backgroundColor: '#1C1C1C',
   },
 
   darkBackButton: {
