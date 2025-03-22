@@ -93,7 +93,7 @@ const VideoListScreen = () => {
   const renderItem = useCallback(
     ({ item }: { item: VideoItem }) => (
       <TouchableOpacity
-        style={styles.videoItem}
+        style={theme ==='dark'?styles.darkVideoItem:styles.videoItem}
         onPress={() => handleVideoPress(item)}>
         {item.thumbnail ? (
           <Image source={{ uri: item.thumbnail }} style={styles.thumbnail} />
@@ -257,6 +257,18 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     padding: 15,
     backgroundColor: '#E6F7FF',
+    borderRadius: 12,
+    marginBottom: 10,
+    alignItems: 'center',
+    elevation: 4,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3,
+  },darkVideoItem: {
+    flexDirection: 'row',
+    padding: 15,
+    backgroundColor: '#FFF',
     borderRadius: 12,
     marginBottom: 10,
     alignItems: 'center',

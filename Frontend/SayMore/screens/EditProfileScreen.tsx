@@ -86,7 +86,7 @@ export default function EditProfileScreen({ navigation }) {
   if (loading) {
     return (
       <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color="#2A2D57" />
+        <ActivityIndicator size="large" color={theme === 'dark' ? '#FFFFFF' : '#2A2D57'} />
       </View>
     );
   }
@@ -98,50 +98,50 @@ export default function EditProfileScreen({ navigation }) {
       }
       style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollArea}>
-        <Text style={styles.header}>Edit Profile</Text>
+        <Text style={[styles.header, theme === 'dark' && styles.darkHeader]}>Edit Profile</Text>
 
         <View style={styles.inputContainer}>
-          <Text style={styles.label}>Name</Text>
+          <Text style={[styles.label, theme === 'dark' && styles.darkLabel]}>Name</Text>
           <TextInput
-            style={styles.input}
+            style={[styles.input, theme === 'dark' && styles.darkInput]}
             value={fname}
             onChangeText={setFname}
             placeholder="Enter Name"
-            placeholderTextColor="#aaa"
+            placeholderTextColor={theme === 'dark' ? '#888' : '#aaa'}
           />
 
-          <Text style={styles.label}>Surname</Text>
+          <Text style={[styles.label, theme === 'dark' && styles.darkLabel]}>Surname</Text>
           <TextInput
-            style={styles.input}
+            style={[styles.input, theme === 'dark' && styles.darkInput]}
             value={sname}
             onChangeText={setSname}
             placeholder="Enter Surname"
-            placeholderTextColor="#aaa"
+            placeholderTextColor={theme === 'dark' ? '#888' : '#aaa'}
           />
 
-          <Text style={styles.label}>Date of Birth</Text>
+          <Text style={[styles.label, theme === 'dark' && styles.darkLabel]}>Date of Birth</Text>
           <TextInput
-            style={styles.input}
+            style={[styles.input, theme === 'dark' && styles.darkInput]}
             value={dob}
             onChangeText={setDob}
             placeholder="YYYY-MM-DD"
-            placeholderTextColor="#aaa"
+            placeholderTextColor={theme === 'dark' ? '#888' : '#aaa'}
           />
 
-          <Text style={styles.label}>Username</Text>
+          <Text style={[styles.label, theme === 'dark' && styles.darkLabel]}>Username</Text>
           <TextInput
-            style={styles.input}
+            style={[styles.input, theme === 'dark' && styles.darkInput]}
             value={username}
             onChangeText={setUsername}
             placeholder="Enter Username"
-            placeholderTextColor="#aaa"
+            placeholderTextColor={theme === 'dark' ? '#888' : '#aaa'}
           />
 
-          <Text style={styles.label}>Email</Text>
+          <Text style={[styles.label, theme === 'dark' && styles.darkLabel]}>Email</Text>
           <TextInput
             style={[
               styles.input,
-              { backgroundColor: '#D0D3E6', color: '#2A2D57' },
+              { backgroundColor: theme === 'dark' ? '#555' : '#D0D3E6', color: theme === 'dark' ? '#FFFFFF' : '#2A2D57' },
             ]}
             value={email}
             editable={false}
@@ -192,6 +192,10 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
 
+  darkHeader: {
+    color: '#FFFFFF',
+  },
+
   inputContainer: { marginBottom: 20 },
 
   label: {
@@ -201,12 +205,21 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
 
+  darkLabel: {
+    color: '#FFFFFF',
+  },
+
   input: {
     backgroundColor: '#fff',
     borderRadius: 12,
     padding: 12,
     marginBottom: 20,
     color: '#2A2D57',
+  },
+
+  darkInput: {
+    backgroundColor: '#555',
+    color: '#FFFFFF',
   },
 
   button: {

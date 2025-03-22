@@ -12,6 +12,7 @@ import { WatchedVideo } from '../types/types';
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
 import { useNavigation } from '@react-navigation/native';
+import {useTheme} from '../components/ThemeContext';
 
 interface HistoryScreenProps {}
 
@@ -19,7 +20,7 @@ const HistoryScreen: React.FC<HistoryScreenProps> = () => {
   const [watchedVideos, setWatchedVideos] = useState<WatchedVideo[]>([]);
   const [loading, setLoading] = useState(true);
   const navigation = useNavigation();
-
+  const theme = useTheme();
   useEffect(() => {
     const fetchWatchedVideos = async () => {
       try {
@@ -147,7 +148,7 @@ const HistoryScreen: React.FC<HistoryScreenProps> = () => {
   const renderItem = useCallback(
     ({ item }: { item: WatchedVideo }) => (
       <TouchableOpacity
-        style={styles.historyItem}
+        style={theme === 'dark'? styles.darkHistoryItem:styles.historyItem}
         onPress={() => handleVideoPress(item)}>
         <Image
           source={{
@@ -156,36 +157,50 @@ const HistoryScreen: React.FC<HistoryScreenProps> = () => {
           style={styles.thumbnail}
         />
         <View style={styles.videoDetails}>
-          <Text style={styles.historyTitle}>{item.title}</Text>
-          <Text style={styles.historyTimestamp}>
+          <Text style={theme === 'dark'?styles.darkHistoryTitle:styles.historyTitle}>{item.title}</Text>
+          <Text style={theme === 'dark'?styles.darkHistoryTimeStamp:styles.historyTimestamp}>
             Watched on: {item.timestamp}
           </Text>
-          <Text style={styles.historyLesson}>Lesson: {item.lessonTitle}</Text>
+          <Text style={theme === 'dark'?styles.darkHistoryLesson:styles.historyLesson}>Lesson: {item.lessonTitle}</Text>
         </View>
       </TouchableOpacity>
     ),
     [handleVideoPress]
   );
 
+    const handleBackPress = () => {
+        navigation.goBack();
+    };
   return (
-    <View style={styles.container}>
+    <View style={theme === 'dark'? styles.darkContainer:styles.container}>
       <View style={styles.headerContainer}>
         <TouchableOpacity
-          onPress={() => navigation.goBack()}
-          style={styles.backButton}>
-          <Text style={styles.backButtonText}>←</Text>
-        </TouchableOpacity>
-        <Text style={styles.header}>Watched Video History</Text>
+                      style={
+                        theme === 'dark'
+                          ? styles.darkBackButton
+                          : styles.lightBackButton
+                      }
+                      onPress={handleBackPress}>
+                      <Text
+                        style={
+                          theme === 'dark'
+                            ? styles.darkBackButtonText
+                            : styles.lightBackButtonText
+                        }>
+                        ←
+                      </Text>
+                    </TouchableOpacity>
+        <Text style={theme === 'dark'? styles.darkHeader:styles.header}>Watched Video History</Text>
       </View>
 
       {loading ? (
         <View style={styles.loadingContainer}>
           <ActivityIndicator size="large" color="#003366" />
-          <Text style={styles.loadingText}>Loading history...</Text>
+          <Text style={theme === 'dark' ? styles.darkLoadingText:styles.loadingText}>Loading history...</Text>
         </View>
       ) : watchedVideos.length === 0 ? (
         <View style={styles.emptyContainer}>
-          <Text style={styles.emptyText}>No watched videos yet</Text>
+          <Text style={theme==='dark'?styles.darkEmptyText:styles.emptyText}>No watched videos yet</Text>
         </View>
       ) : (
         <FlatList
@@ -210,6 +225,11 @@ const styles = StyleSheet.create({
     padding: 20,
     backgroundColor: '#F0F8FF',
   },
+  darkContainer: {
+    flex: 1,
+    padding: 20,
+    backgroundColor: '#2B2B2B',
+  },
   headerContainer: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -220,6 +240,11 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginLeft: 10,
     color: '#003366',
+  },darkHeader: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginLeft: 10,
+    color: '#FFF',
   },
   historyItem: {
     flexDirection: 'row',
@@ -228,6 +253,16 @@ const styles = StyleSheet.create({
     borderBottomColor: '#ADD8E6',
     alignItems: 'center',
     backgroundColor: '#E6F7FF',
+    borderRadius: 8,
+    marginBottom: 8,
+    elevation: 2,
+  },darkHistoryItem: {
+    flexDirection: 'row',
+    padding: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: '#1a1a1a',
+    alignItems: 'center',
+    backgroundColor: '#1a1a1a',
     borderRadius: 8,
     marginBottom: 8,
     elevation: 2,
@@ -246,24 +281,73 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
     color: '#003366',
+  },darkHistoryTitle: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#fff',
   },
   historyTimestamp: {
     fontSize: 12,
     color: '#778899',
+  },darkHistoryTimeStamp: {
+    fontSize: 12,
+    color: '#fff',
   },
   historyLesson: {
     fontSize: 14,
     color: '#333',
+  },darkHistoryLesson: {
+    fontSize: 14,
+    color: '#fff',
   },
-  backButton: {
-    padding: 5,
-    borderRadius: 5,
-  },
-  backButtonText: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: '#003366',
-  },
+   lightBackButton: {
+      width: 48,
+      height: 48,
+      backgroundColor: '#E6F7FF',
+      borderRadius: 12,
+      justifyContent: 'center',
+      alignItems: 'center',
+      shadowColor: '#000',
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: 0.2,
+      shadowRadius: 3,
+      elevation: 4,
+    },
+    darkBackButton: {
+      width: 48,
+      height: 48,
+      backgroundColor: '#FFF',
+      borderRadius: 12,
+      justifyContent: 'center',
+      alignItems: 'center',
+      shadowColor: '#000',
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: 0.2,
+      shadowRadius: 3,
+      elevation: 4,
+    },
+
+    lightBackButtonText: {
+      fontSize: 28,
+      fontWeight: 'bold',
+      color: '#2C3E50',
+      textAlign: 'center',
+      textAlignVertical: 'center',
+      includeFontPadding: false,
+      paddingBottom: 2, // Fine-tune vertical centering
+      lineHeight: 32, // Control line height to center text
+    },
+    darkBackButtonText: {
+      fontSize: 28,
+      fontWeight: 'bold',
+      color: '#000',
+      textAlign: 'center',
+      textAlignVertical: 'center',
+      includeFontPadding: false,
+      paddingBottom: 2,
+      lineHeight: 32,
+    },
+
   loadingContainer: {
     flex: 1,
     justifyContent: 'center',
@@ -272,6 +356,10 @@ const styles = StyleSheet.create({
   loadingText: {
     fontSize: 16,
     color: '#003366',
+    marginTop: 10,
+  },darkLoadingText: {
+    fontSize: 16,
+    color: '#FFF',
     marginTop: 10,
   },
   emptyContainer: {
@@ -282,6 +370,9 @@ const styles = StyleSheet.create({
   emptyText: {
     fontSize: 16,
     color: '#003366',
+  },darkEmptyText: {
+    fontSize: 16,
+    color: '#FFF',
   },
 });
 
