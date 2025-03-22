@@ -11,4 +11,4 @@ black
 ruff
 isort
 azure-cognitiveservices-speech
-openai
+google-generativeai
