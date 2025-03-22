@@ -45,12 +45,14 @@ const MoreScreen: React.FC<MoreScreenProps> = ({ navigation }) => {
     } else if (title === 'Progress') {
       navigation.navigate('QandCProgressScreen');
     }
-  };  // <-- This closing brace was missing
+  }; // <-- This closing brace was missing
 
   return (
     <ScrollView showsVerticalScrollIndicator={false}>
       <LinearGradient
-        colors={theme === 'dark' ? ['#1C1C1C', '#3A3A3A'] : ['#577BC1', '#577BC1']}
+        colors={
+          theme === 'dark' ? ['#1C1C1C', '#3A3A3A'] : ['#577BC1', '#577BC1']
+        }
         style={styles.container}>
         <View style={styles.titleContainer}>
           <Text style={styles.title}>Explore More</Text>
@@ -66,7 +68,6 @@ const MoreScreen: React.FC<MoreScreenProps> = ({ navigation }) => {
                 theme === 'dark' ? styles.darkCard : styles.lightCard,
               ]}
               onPress={() => handlePress(item.title)}>
-
               <Image source={item.icon} style={styles.iconElevated} />
 
               <Text

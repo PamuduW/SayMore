@@ -1,5 +1,12 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, StatusBar, ImageBackground } from 'react-native';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+  StatusBar,
+  ImageBackground,
+} from 'react-native';
 import firestore from '@react-native-firebase/firestore';
 import ProgressBar from 'react-native-progress/Bar';
 import { useTheme } from '../components/ThemeContext';
@@ -48,7 +55,10 @@ const StutteringQuestionScreen: React.FC = ({ navigation }: any) => {
   // Fetch and shuffle questions + answers
   const fetchQuestions = async (setName: string) => {
     try {
-      const doc = await firestore().collection('Questions').doc('Stuttering_Ques').get();
+      const doc = await firestore()
+        .collection('Questions')
+        .doc('Stuttering_Ques')
+        .get();
       if (!doc.exists) return;
 
       const data = doc.data();
@@ -60,17 +70,20 @@ const StutteringQuestionScreen: React.FC = ({ navigation }: any) => {
           const questionData = data[setMappings[setName]][key];
 
           // Convert answers to array
-          const answersArray = Object.entries(questionData.Answers).map(([ansKey, value]) => ({
-            key: ansKey,
-            value,
-          }));
+          const answersArray = Object.entries(questionData.Answers).map(
+            ([ansKey, value]) => ({
+              key: ansKey,
+              value,
+            })
+          );
 
           // Shuffle answers
           const shuffledAnswers = shuffleArray(answersArray);
 
           // Find new correct index after shuffle
           const originalCorrectKey = `A${questionData.Correct}`;
-          const newCorrectIndex = shuffledAnswers.findIndex(a => a.key === originalCorrectKey) + 1;
+          const newCorrectIndex =
+            shuffledAnswers.findIndex(a => a.key === originalCorrectKey) + 1;
 
           return {
             id: key,
@@ -136,18 +149,30 @@ const StutteringQuestionScreen: React.FC = ({ navigation }: any) => {
 
   if (!selectedSet) {
     return (
-      <ImageBackground source={backgroundImage} style={styles.background} resizeMode="cover">
+      <ImageBackground
+        source={backgroundImage}
+        style={styles.background}
+        resizeMode="cover">
         <View style={styles.overlay} />
         <View style={styles.container}>
           <StatusBar barStyle="light-content" />
           <Text style={styles.header}>Select a Quiz Topic</Text>
           <View style={styles.buttonContainer}>
-            {['relaxation techniques', 'speech techniques', 'pronunciation'].map((topic, idx) => (
+            {[
+              'relaxation techniques',
+              'speech techniques',
+              'pronunciation',
+            ].map((topic, idx) => (
               <TouchableOpacity
                 key={idx}
-                style={theme === 'dark' ? styles.optionButtonDark : styles.optionButton}
+                style={
+                  theme === 'dark'
+                    ? styles.optionButtonDark
+                    : styles.optionButton
+                }
                 onPress={() => fetchQuestions(topic)}>
-                <Text style={[styles.optionText, { color: getOptionTextColor() }]}>
+                <Text
+                  style={[styles.optionText, { color: getOptionTextColor() }]}>
                   {topic.replace(/\b\w/g, c => c.toUpperCase())}
                 </Text>
               </TouchableOpacity>
@@ -161,7 +186,10 @@ const StutteringQuestionScreen: React.FC = ({ navigation }: any) => {
   const isLastQuestion = currentQuestionIndex === questions.length - 1;
 
   return (
-    <ImageBackground source={backgroundImage} style={styles.background} resizeMode="cover">
+    <ImageBackground
+      source={backgroundImage}
+      style={styles.background}
+      resizeMode="cover">
       <View style={styles.overlay} />
       <View style={styles.container}>
         <StatusBar barStyle="light-content" />
@@ -176,26 +204,42 @@ const StutteringQuestionScreen: React.FC = ({ navigation }: any) => {
           color="#289e1b"
           style={styles.progressBar}
         />
-        <Text style={styles.question}>{questions[currentQuestionIndex].Question}</Text>
+        <Text style={styles.question}>
+          {questions[currentQuestionIndex].Question}
+        </Text>
 
-        {Object.values(questions[currentQuestionIndex].Answers).map((option, index) => {
-          const correctAnswer = getCorrectAnswer(questions[currentQuestionIndex]);
-          const isSelected = selectedAnswer === option;
-          return (
-            <TouchableOpacity
-              key={index}
-              onPress={() => handleAnswerSelection(option)}
-              disabled={isCorrect !== null}
-              style={[
-                theme === 'dark' ? styles.optionButtonDark : styles.optionButton,
-                isSelected ? styles.selectedOption : {},
-                isCorrect !== null && option === correctAnswer && styles.correctOption,
-                isCorrect !== null && option === selectedAnswer && !isCorrect && styles.incorrectOption,
-              ]}>
-              <Text style={[styles.optionText, { color: getOptionTextColor() }]}>{option}</Text>
-            </TouchableOpacity>
-          );
-        })}
+        {Object.values(questions[currentQuestionIndex].Answers).map(
+          (option, index) => {
+            const correctAnswer = getCorrectAnswer(
+              questions[currentQuestionIndex]
+            );
+            const isSelected = selectedAnswer === option;
+            return (
+              <TouchableOpacity
+                key={index}
+                onPress={() => handleAnswerSelection(option)}
+                disabled={isCorrect !== null}
+                style={[
+                  theme === 'dark'
+                    ? styles.optionButtonDark
+                    : styles.optionButton,
+                  isSelected ? styles.selectedOption : {},
+                  isCorrect !== null &&
+                    option === correctAnswer &&
+                    styles.correctOption,
+                  isCorrect !== null &&
+                    option === selectedAnswer &&
+                    !isCorrect &&
+                    styles.incorrectOption,
+                ]}>
+                <Text
+                  style={[styles.optionText, { color: getOptionTextColor() }]}>
+                  {option}
+                </Text>
+              </TouchableOpacity>
+            );
+          }
+        )}
 
         {showConfirm && (
           <TouchableOpacity
@@ -209,7 +253,10 @@ const StutteringQuestionScreen: React.FC = ({ navigation }: any) => {
           <TouchableOpacity
             onPress={handleNextQuestion}
             style={isLastQuestion ? styles.finishButton : styles.nextButton}>
-            <Text style={isLastQuestion ? styles.finishButtonText : styles.nextButtonText}>
+            <Text
+              style={
+                isLastQuestion ? styles.finishButtonText : styles.nextButtonText
+              }>
               {isLastQuestion ? 'Finish Quiz' : 'Next Question'}
             </Text>
           </TouchableOpacity>
@@ -231,9 +278,19 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  header: { fontSize: 28, fontWeight: 'bold', marginBottom: 30, color: '#FFFFFF' },
+  header: {
+    fontSize: 28,
+    fontWeight: 'bold',
+    marginBottom: 30,
+    color: '#FFFFFF',
+  },
   progressText: { fontSize: 16, marginBottom: 10, color: '#FFFFFF' },
-  question: { fontSize: 22, textAlign: 'center', marginBottom: 20, color: '#FFFFFF' },
+  question: {
+    fontSize: 22,
+    textAlign: 'center',
+    marginBottom: 20,
+    color: '#FFFFFF',
+  },
   progressBar: { marginBottom: 20, borderRadius: 10 },
   optionButton: {
     backgroundColor: '#d6eaf8',
@@ -260,7 +317,12 @@ const styles = StyleSheet.create({
     marginVertical: 15,
     width: '90%',
   },
-  confirmButtonText: { color: 'white', fontSize: 18, textAlign: 'center', fontWeight: 'bold' },
+  confirmButtonText: {
+    color: 'white',
+    fontSize: 18,
+    textAlign: 'center',
+    fontWeight: 'bold',
+  },
   nextButton: {
     backgroundColor: '#3498db',
     padding: 13,
@@ -268,7 +330,12 @@ const styles = StyleSheet.create({
     marginTop: 20,
     width: '90%',
   },
-  nextButtonText: { color: 'white', fontSize: 18, textAlign: 'center', fontWeight: 'bold' },
+  nextButtonText: {
+    color: 'white',
+    fontSize: 18,
+    textAlign: 'center',
+    fontWeight: 'bold',
+  },
   finishButton: {
     backgroundColor: '#1abc9c',
     padding: 13,
@@ -276,7 +343,12 @@ const styles = StyleSheet.create({
     marginTop: 20,
     width: '90%',
   },
-  finishButtonText: { color: 'white', fontSize: 18, textAlign: 'center', fontWeight: 'bold' },
+  finishButtonText: {
+    color: 'white',
+    fontSize: 18,
+    textAlign: 'center',
+    fontWeight: 'bold',
+  },
   buttonContainer: { alignItems: 'center' },
 });
 

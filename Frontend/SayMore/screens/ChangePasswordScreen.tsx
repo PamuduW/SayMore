@@ -42,9 +42,7 @@ export default function ChangePasswordScreen({ navigation }) {
   return (
     <LinearGradient
       colors={
-        theme === 'dark'
-          ? ['#1C1C1C', '#3A3A3A']
-          : ['#2A2D57', '#577BC1']
+        theme === 'dark' ? ['#1C1C1C', '#3A3A3A'] : ['#2A2D57', '#577BC1']
       }
       style={styles.container}>
       <Text
@@ -128,9 +126,7 @@ export default function ChangePasswordScreen({ navigation }) {
         style={{ marginTop: 20 }}>
         <LinearGradient
           colors={
-            theme === 'dark'
-              ? ['#3A3A3A', '#4A4A4A']
-              : ['#00C6FF', '#0072FF']
+            theme === 'dark' ? ['#3A3A3A', '#4A4A4A'] : ['#00C6FF', '#0072FF']
           }
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 1 }}

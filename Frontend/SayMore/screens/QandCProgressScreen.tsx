@@ -1,5 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, ActivityIndicator, ScrollView } from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  ActivityIndicator,
+  ScrollView,
+} from 'react-native';
 import firestore from '@react-native-firebase/firestore';
 
 interface ProgressData {
@@ -53,8 +59,12 @@ const QandCProgressScreen: React.FC = () => {
           progressData.map((entry, index) => (
             <View key={index} style={styles.itemContainer}>
               <Text style={styles.attemptText}>Attempt {index + 1}</Text>
-              <Text style={styles.pointsText}>Points: {entry.publicSpeakingPoints}</Text>
-              <Text style={styles.dateText}>Date: {new Date(entry.date).toLocaleDateString()}</Text>
+              <Text style={styles.pointsText}>
+                Points: {entry.publicSpeakingPoints}
+              </Text>
+              <Text style={styles.dateText}>
+                Date: {new Date(entry.date).toLocaleDateString()}
+              </Text>
             </View>
           ))
         )}
@@ -69,8 +79,12 @@ const QandCProgressScreen: React.FC = () => {
           progressData.map((entry, index) => (
             <View key={index} style={styles.itemContainer}>
               <Text style={styles.attemptText}>Attempt {index + 1}</Text>
-              <Text style={styles.pointsText}>Points: {entry.stutteringPoints}</Text>
-              <Text style={styles.dateText}>Date: {new Date(entry.date).toLocaleDateString()}</Text>
+              <Text style={styles.pointsText}>
+                Points: {entry.stutteringPoints}
+              </Text>
+              <Text style={styles.dateText}>
+                Date: {new Date(entry.date).toLocaleDateString()}
+              </Text>
             </View>
           ))
         )}

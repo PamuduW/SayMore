@@ -90,7 +90,9 @@ export default function AccountScreen() {
 
   return (
     <LinearGradient
-      colors={theme === 'dark' ? ['#1C1C1C', '#3A3A3A'] : ['#577BC1', '#577BC1']}
+      colors={
+        theme === 'dark' ? ['#1C1C1C', '#3A3A3A'] : ['#577BC1', '#577BC1']
+      }
       style={styles.container}>
       <View style={theme === 'dark' ? styles.darkCard : styles.lightCard}>
         <TouchableOpacity
@@ -251,7 +253,7 @@ const styles = StyleSheet.create({
   },
 
   menuContainer: { width: '100%', alignItems: 'center', marginBottom: 25 },
-  
+
   menuItemWrapper: {
     borderRadius: 18,
     width: '100%',

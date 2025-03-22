@@ -96,7 +96,7 @@ const PrivacyCookiesScreen = () => {
               standards.
             </Text>
           </ScrollView>
-        </View>
+        </LinearGradient>
 
         <TouchableOpacity
           style={[styles.backButton, theme === 'dark' && styles.darkBackButton]}
