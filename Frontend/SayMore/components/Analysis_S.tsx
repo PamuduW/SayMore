@@ -2,13 +2,15 @@ import React, { useEffect, useState } from 'react';
 import { Text, StyleSheet, ScrollView, View, Button } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 
-const Analysis_S = ({ filename, acc_id, type }) => {
-  const [responseData, setResponseData] = useState(null);
+interface AnalysisSProps {
+  filename: string;
+  acc_id: string;
+  type: string;
+}
+
+const Analysis_S: React.FC<AnalysisSProps> = ({ filename, acc_id, type }) => {
+  const [responseData, setResponseData] = useState<any>(null);
   const navigation = useNavigation();
-  const [data, setData] = useState({
-    labels: ['stutter_score', 'stutter_score'],
-    data: [0, 0],
-  });
 
   useEffect(() => {
     const sendPostRequest = async () => {
@@ -29,18 +31,13 @@ const Analysis_S = ({ filename, acc_id, type }) => {
           }
         );
 
-        if (!response.ok)
+        if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
+        }
 
         const responseInfo = await response.json();
         setResponseData(responseInfo);
-        setData({
-          labels: ['stutter_score', 'stutter_score'],
-          data: [
-            responseInfo.result.stutter_score / 100,
-            responseInfo.result.stutter_score / 100,
-          ],
-        });
+
       } catch (error) {
         console.error('Error sending POST request:', error);
       }
@@ -53,9 +50,11 @@ const Analysis_S = ({ filename, acc_id, type }) => {
     if (responseData) {
       const { result } = responseData;
       const { stutter_feedback } = result;
+      const stutter_count = result.stutter_count;  // Extract stutter_count
 
       navigation.navigate('FeedbackScreen_S', {
         stutter_feedback,
+        stutter_count, // Pass stutter_count to FeedbackScreen_S
       });
     }
   };
