@@ -28,14 +28,14 @@ const HistoryScreen: React.FC<HistoryScreenProps> = () => {
         const user = auth().currentUser;
 
         if (!user) {
-          console.log('No user signed in. Cannot fetch history.');
+          //console.log('No user signed in. Cannot fetch history.');
           setWatchedVideos([]);
           setLoading(false);
           return;
         }
 
         const userId = user.uid;
-        console.log(`Fetching history for User ID: ${userId}`);
+        //console.log(`Fetching history for User ID: ${userId}`);
 
         const userDoc = await firestore()
           .collection('User_Accounts')
@@ -47,18 +47,18 @@ const HistoryScreen: React.FC<HistoryScreenProps> = () => {
           if (data && data.watchedVideos) {
             // Get all videos, already sorted with newest first
             const videos = data.watchedVideos.slice().reverse();
-            console.log('Watched videos loaded:', videos.length);
+            //console.log('Watched videos loaded:', videos.length);
             setWatchedVideos(videos);
           } else {
-            console.log('No watched videos found in user data');
+            //console.log('No watched videos found in user data');
             setWatchedVideos([]);
           }
         } else {
-          console.log('User document does not exist.');
+          //console.log('User document does not exist.');
           setWatchedVideos([]);
         }
       } catch (error) {
-        console.error('Error fetching watched videos:', error);
+        //console.error('Error fetching watched videos:', error);
         setWatchedVideos([]);
       } finally {
         setLoading(false);
@@ -97,7 +97,7 @@ const HistoryScreen: React.FC<HistoryScreenProps> = () => {
         // If we couldn't find the video with all details, return what we have
         return null;
       } catch (error) {
-        console.error('Error fetching video details:', error);
+        //console.error('Error fetching video details:', error);
         return null;
       }
     },
@@ -128,7 +128,7 @@ const HistoryScreen: React.FC<HistoryScreenProps> = () => {
           lessonTitle: video.lessonTitle,
         });
       } catch (error) {
-        console.error('Error navigating to video:', error);
+        //console.error('Error navigating to video:', error);
         // If there's an error, navigate with what we have
         navigation.navigate('VideoPlayer', {
           video: {

@@ -86,7 +86,7 @@ const Analysis_PS = ({ filename, acc_id, type, language }) => {
           ],
         });
       } catch (error) {
-        console.error('Error sending POST request:', error);
+        //console.error('Error sending POST request:', error);
       }
     };
 

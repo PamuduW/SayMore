@@ -49,11 +49,11 @@ const VideoListScreen = () => {
           setVideos([]);
         }
       } else {
-        console.log('Document does not exist');
+        //console.log('Document does not exist');
         setVideos([]);
       }
     } catch (error) {
-      console.error('Error fetching videos:', error);
+      //console.error('Error fetching videos:', error);
       setVideos([]);
     } finally {
       setLoading(false);

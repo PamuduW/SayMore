@@ -46,7 +46,7 @@ const LessonsScreen: React.FC<LessonsScreenProps> = () => {
             setFirstName('there');
           }
         } catch (error) {
-          console.error('Error fetching first name:', error);
+          //console.error('Error fetching first name:', error);
           setFirstName('there');
         }
       } else {

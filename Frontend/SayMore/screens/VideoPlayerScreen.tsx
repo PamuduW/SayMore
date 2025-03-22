@@ -144,7 +144,7 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = ({
       try {
         const user = auth().currentUser;
         if (!user) {
-          console.log('No user logged in, cannot award points');
+          //console.log('No user logged in, cannot award points');
           return;
         }
 
@@ -171,12 +171,8 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = ({
         } else {
           showNotification(`${milestone}% milestone reached! +${points} point`);
         }
-
-        console.log(
-          `User ${userId} awarded ${points} points for reaching ${milestone}% of ${video.title}`
-        );
       } catch (error) {
-        console.error('Error awarding points:', error);
+        //console.error('Error awarding points:', error);
       }
     },
     [video, lessonTitle, showNotification]
@@ -273,7 +269,7 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = ({
 
             if (!allowedSkip && currentTime - previousTimeRef.current > 3) {
               videoPlayerRef.current.seekTo(previousTimeRef.current);
-              console.log('Preventing forward skip!');
+              //console.log('Preventing forward skip!');
 
               showNotification(
                 'Cannot skip forward. Watch the content sequentially.'
@@ -294,7 +290,7 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = ({
           );
           throttledSetCurrentPercentage(percentageWatched);
         } catch (error) {
-          console.error('Error polling video position:', error);
+          //console.error('Error polling video position:', error);
         }
       }
     }, 1000);
@@ -318,9 +314,6 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = ({
     try {
       const user = auth().currentUser;
       if (!user) {
-        console.log(
-          'No user logged in, cannot fetch previous watched percentage'
-        );
         return;
       }
 
@@ -357,13 +350,9 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = ({
           incompleteEntries.length > 0 ? incompleteEntries[0] : null;
 
         if (completedVideoEntry) {
-          console.log('Found completed video entry');
+          //console.log('Found completed video entry');
           completedVideoEntryRef.current = completedVideoEntry;
 
-          // Set up for rewatching
-          console.log(
-            'Video was previously completed. Setting up for rewatching.'
-          );
           setIsRewatching(true);
 
           // Initialize milestones and points earned for rewatch.
@@ -374,9 +363,6 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = ({
           if (latestIncompleteEntry) {
             const incompletePercentage =
               latestIncompleteEntry.percentageWatched;
-            console.log(
-              `Found incomplete rewatch session at ${incompletePercentage}%`
-            );
 
             if (incompletePercentage >= 5) {
               setPreviousWatchedPercentage(incompletePercentage);
@@ -401,9 +387,6 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = ({
         } else if (latestIncompleteEntry) {
           // No completion but has incomplete progress
           const incompletePercentage = latestIncompleteEntry.percentageWatched;
-          console.log(
-            `Found video in history with ${incompletePercentage}% watched`
-          );
 
           if (incompletePercentage >= 5) {
             setPreviousWatchedPercentage(incompletePercentage);
@@ -433,7 +416,7 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = ({
         }
       }
     } catch (error) {
-      console.error('Error fetching previous watched percentage:', error);
+      //console.error('Error fetching previous watched percentage:', error);
     }
   }, [video.videoId, videoDuration]);
 
@@ -445,9 +428,9 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = ({
 
         const targetTime = Math.max(0, skipToTime - 2);
 
-        console.log('Previous watched percentage:', previousWatchedPercentage);
-        console.log('Video duration:', videoDuration);
-        console.log('Skipping to time:', targetTime);
+        //console.log('Previous watched percentage:', previousWatchedPercentage);
+        //console.log('Video duration:', videoDuration);
+        //console.log('Skipping to time:', targetTime);
 
         await videoPlayerRef.current.seekTo(targetTime);
 
@@ -477,7 +460,7 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = ({
         );
         setShowSkipButton(false);
       } catch (error) {
-        console.error('Error skipping to previous position:', error);
+        //console.error('Error skipping to previous position:', error);
         showNotification('Could not skip to previous position');
       }
     }
@@ -487,7 +470,7 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = ({
     try {
       if (videoPlayerRef.current) {
         const duration = await videoPlayerRef.current.getDuration();
-        console.log('Video duration:', duration, 'seconds');
+        //console.log('Video duration:', duration, 'seconds');
         setVideoDuration(duration);
 
         // Start position polling once we have duration
@@ -504,37 +487,37 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = ({
         setCurrentVideoId(`${video.videoId}_${timestamp}`);
       }
     } catch (error) {
-      console.error('Error getting video duration:', error);
+      //console.error('Error getting video duration:', error);
     }
   }, [startPositionPolling, fetchPreviousWatchedPercentage, video.videoId]);
 
   const saveWatchedVideo = useCallback(async () => {
-    console.log('saveWatchedVideo called');
+    //console.log('saveWatchedVideo called');
 
     if (isSavingRef.current) {
-      console.log('Skipping save: currently saving');
+      //console.log('Skipping save: currently saving');
       return;
     }
 
     if (!currentVideoId) {
-      console.log('No currentVideoId. Aborting saveWatchedVideo.');
+      //console.log('No currentVideoId. Aborting saveWatchedVideo.');
       return;
     }
 
     const user = auth().currentUser;
     if (!user) {
-      console.log('No user is currently signed in. Aborting saveWatchedVideo.');
+      //console.log('No user is currently signed in. Aborting saveWatchedVideo.');
       return;
     }
 
     // Set saving flag immediately to prevent concurrent save attempts
     isSavingRef.current = true;
-    console.log('Starting to save video to history');
+    //console.log('Starting to save video to history');
 
     const now = new Date();
     const timestamp = now.toLocaleString();
     const userId = user.uid;
-    console.log('Saving video to history for User ID:', userId);
+    //console.log('Saving video to history for User ID:', userId);
 
     const actualPercentage =
       videoDuration > 0
@@ -542,10 +525,6 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = ({
         : 0;
 
     const percentageWatched = Math.round(actualPercentage * 10) / 10;
-
-    console.log(
-      `Saving watchedDuration: ${watchedDurationRef.current}s out of ${videoDuration}s (${percentageWatched}%)`
-    );
 
     const watchedVideoData: WatchedVideo = {
       videoId: video.videoId,
@@ -569,11 +548,11 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = ({
 
         // Handle saving for a rewatch session
         if (isRewatching) {
-          console.log('Handling save for rewatch session');
+          //console.log('Handling save for rewatch session');
 
           // If this is a finished rewatch (100%)
           if (percentageWatched >= 98) {
-            console.log('Rewatch completed to 100%');
+            //console.log('Rewatch completed to 100%');
 
             // Find any incomplete rewatch entries (not the completed one)
             const incompleteRewatchEntries = existingVideos.filter(
@@ -601,10 +580,6 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = ({
                 watchedVideos:
                   firestore.FieldValue.arrayUnion(watchedVideoData),
               });
-
-            console.log(
-              'Added new completed rewatch entry while preserving original completion'
-            );
           } else {
             const existingRewatchEntry = existingVideos.find(
               (v: WatchedVideo) =>
@@ -616,10 +591,6 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = ({
             if (existingRewatchEntry) {
               // Only update if new percentage is higher
               if (percentageWatched > existingRewatchEntry.percentageWatched) {
-                console.log(
-                  `Updating rewatch percentage from ${existingRewatchEntry.percentageWatched}% to ${percentageWatched}%`
-                );
-
                 // Remove existing rewatch entry
                 await firestore()
                   .collection('User_Accounts')
@@ -637,14 +608,7 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = ({
                     watchedVideos:
                       firestore.FieldValue.arrayUnion(watchedVideoData),
                   });
-
-                console.log(
-                  'Updated incomplete rewatch entry with higher percentage'
-                );
               } else {
-                console.log(
-                  'No update needed for rewatch - existing percentage is higher or equal'
-                );
               }
             } else {
               await firestore()
@@ -655,12 +619,12 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = ({
                     firestore.FieldValue.arrayUnion(watchedVideoData),
                 });
 
-              console.log('Added new incomplete rewatch entry');
+              //console.log('Added new incomplete rewatch entry');
             }
           }
         } else {
           // Handle save for first-watch session
-          console.log('Handling save for first-watch session');
+          //console.log('Handling save for first-watch session');
 
           const existingVideoIndex = existingVideos.findIndex(
             (v: WatchedVideo) => v.videoId === video.videoId
@@ -670,17 +634,10 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = ({
             const existingVideo = existingVideos[existingVideoIndex];
             const existingPercentage = existingVideo.percentageWatched || 0;
 
-            console.log(
-              `Found existing video entry with ${existingPercentage}% watched`
-            );
-            console.log(`Current percentage watched: ${percentageWatched}%`);
+            //console.log(`Current percentage watched: ${percentageWatched}%`);
 
             // Only update if new percentage is higher
             if (percentageWatched > existingPercentage) {
-              console.log(
-                `Updating percentage watched from ${existingPercentage}% to ${percentageWatched}%`
-              );
-
               // Remove existing entry
               await firestore()
                 .collection('User_Accounts')
@@ -698,14 +655,7 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = ({
                   watchedVideos:
                     firestore.FieldValue.arrayUnion(watchedVideoData),
                 });
-
-              console.log(
-                'Updated existing video history with higher percentage'
-              );
             } else {
-              console.log(
-                'No update needed - existing percentage is higher or equal'
-              );
             }
           } else {
             // Add new entry for first watch
@@ -717,20 +667,20 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = ({
                   firestore.FieldValue.arrayUnion(watchedVideoData),
               });
 
-            console.log('Added new first-watch entry');
+            //console.log('Added new first-watch entry');
           }
         }
 
         videoSavedRef.current = true;
-        console.log('videoSavedRef.current set to true');
+        //console.log('videoSavedRef.current set to true');
       } else {
-        console.log("User Doc Doesn't Exist!");
+        //console.log("User Doc Doesn't Exist!");
       }
     } catch (error) {
-      console.error('Error saving watched video to User_Accounts:', error);
+      //console.error('Error saving watched video to User_Accounts:', error);
     } finally {
       isSavingRef.current = false;
-      console.log('isSavingRef.current set to false');
+      //console.log('isSavingRef.current set to false');
     }
   }, [
     video,
@@ -745,7 +695,7 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = ({
     if (playStartTimeRef.current !== null && !hasPlayedEnoughRef.current) {
       const playDuration = Date.now() - playStartTimeRef.current;
       if (playDuration >= 1000) {
-        console.log(`Video played for ${playDuration}ms - marking as watched`);
+        //console.log(`Video played for ${playDuration}ms - marking as watched`);
         hasPlayedEnoughRef.current = true;
       }
     }
@@ -772,7 +722,7 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = ({
 
   const onStateChange = useCallback(
     async (state: string) => {
-      console.log('YouTube player state changed:', state);
+      //console.log('YouTube player state changed:', state);
 
       if (state === 'playing') {
         setPlaying(true);
@@ -780,7 +730,7 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = ({
 
         if (playStartTimeRef.current === null) {
           playStartTimeRef.current = Date.now();
-          console.log('Video playback started, starting timer');
+          //console.log('Video playback started, starting timer');
         }
       } else if (
         state === 'paused' ||
@@ -799,14 +749,11 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = ({
         if (state === 'ended') {
           watchedDurationRef.current = videoDuration;
           setCurrentPercentage(100);
-          console.log('Total points earned:', totalPointsEarnedRef.current);
+          //console.log('Total points earned:', totalPointsEarnedRef.current);
 
           reachedMilestonesRef.current.add(100);
           const milestoneCompletionPoints = calculateCompletionPoints(); // Calculate points
-          console.log(
-            'Milestone completion points:',
-            milestoneCompletionPoints
-          );
+
           totalPointsEarnedRef.current += milestoneCompletionPoints; // Add to earned points
 
           const finalPoints = totalPointsEarnedRef.current;
@@ -827,7 +774,7 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = ({
               maxPossiblePoints: calculateMaxPoints(videoDuration),
             });
           } catch (error) {
-            console.error('Error navigating to PointsScreen:', error);
+            //console.error('Error navigating to PointsScreen:', error);
             showNotification(
               'Error showing points screen. Please try again later.'
             );
@@ -904,12 +851,12 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = ({
       hasPlayedEnoughRef.current = false;
 
       return () => {
-        console.log('VideoPlayer screen is losing focus');
+        //console.log('VideoPlayer screen is losing focus');
         checkPlayDuration();
         checkWatchingProgress();
 
         if (hasPlayedEnoughRef.current && !videoSavedRef.current) {
-          console.log('Saving video on navigation away');
+          //console.log('Saving video on navigation away');
           saveWatchedVideo();
         }
 
@@ -938,7 +885,7 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = ({
 
   useEffect(() => {
     return () => {
-      console.log('Component unmounting, final save check');
+      //console.log('Component unmounting, final save check');
       checkWatchingProgress();
 
       if (
