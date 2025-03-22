@@ -79,7 +79,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
         <Image style={styles.icon} source={require('../assets/iconTop.png')} />
 
         <Text style={styles.greeting}>
-          Hello {userData?.fname ? userData.fname : ''}
+          Hello {userData?.fname ? userData.fname : ''},
         </Text>
         <Text style={styles.welcomeMessage}>Welcome to SayMore!</Text>
         <Text style={styles.tagline}>Enhance your speech & confidence</Text>

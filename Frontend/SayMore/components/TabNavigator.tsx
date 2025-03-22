@@ -33,7 +33,11 @@ import UserAccIcon from '../assets/useracc.png';
 import TermsAndConditionsScreen from '../screens/TermsAndConditionsScreen';
 import PrivacyCookiesScreen from '../screens/PrivacyCookiesScreen';
 import AppInfoScreen from '../screens/AppInfoScreen';
-import QandCProgressScreen from '../screens/QandCProgressScreen';
+import LessonsPointsScreen from '../screens/LessonsPointsScreen';
+import TotalPointsScreen from '../screens/TotalPointsScreen';
+import PointsCategoryScreen from '../screens/PointsCategoryScreen';
+import QuizPointHistoryScreen from '../screens/QuizPointHistoryScreen';
+
 
 // Navigators
 const Tab = createBottomTabNavigator();
@@ -62,8 +66,12 @@ const MoreStack = () => (
     <Stack.Screen name="Lessons" component={LessonsScreen} />
     <Stack.Screen name="VideoList" component={VideoListScreen} />
     <Stack.Screen name="VideoPlayer" component={VideoPlayerScreen} />
+    <Stack.Screen name="LessonsPointsScreen" component={LessonsPointsScreen} />
     <Stack.Screen name="History" component={HistoryScreen} />
     <Stack.Screen name="QuizzesNavScreen" component={QuizzesNavScreen} />
+    <Stack.Screen name="PointsCategoryScreen" component={PointsCategoryScreen} />
+    <Stack.Screen name="TotalPointsScreen" component={TotalPointsScreen} />
+    <Stack.Screen name="QuizPointHistoryScreen" component={QuizPointHistoryScreen} />
     <Stack.Screen name="Difficulty" component={Difficulty} />
     <Stack.Screen
       name="PublicSpeakQuestionScreen"
@@ -75,7 +83,6 @@ const MoreStack = () => (
     />
     <Stack.Screen name="PointsScreen" component={PointsScreen} />
     <Stack.Screen name="SpeechTherapyScreen" component={SpeechTherapyScreen} />
-    <Stack.Screen name="QandCProgressScreen" component={QandCProgressScreen} />
   </Stack.Navigator>
 );
 

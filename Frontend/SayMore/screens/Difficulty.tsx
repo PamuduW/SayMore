@@ -1,11 +1,5 @@
 import React from 'react';
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  StyleSheet,
-  ImageBackground,
-} from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, ImageBackground } from 'react-native';
 
 const Difficulty: React.FC = ({ navigation }: any) => {
   const handleSelection = (level: string) => {
@@ -51,7 +45,7 @@ const styles = StyleSheet.create({
   image: { flex: 1 },
   overlay: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: 'rgba(0, 0, 0, 0.7)', // Dark overlay for reduced opacity effect
+    backgroundColor: 'rgba(0, 0, 0, 0.7)',
   },
   container: {
     position: 'absolute',

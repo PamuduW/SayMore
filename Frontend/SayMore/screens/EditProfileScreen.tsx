@@ -37,17 +37,14 @@ export default function EditProfileScreen({ navigation }) {
             const data = userDoc.data();
             setFname(data.fname || '');
             setSname(data.sname || '');
-
-            // Format only date part (YYYY-MM-DD)
             if (data.dob) {
               const formattedDate = data.dob.split('T')[0];
               setDob(formattedDate);
             } else {
               setDob('');
             }
-
             setUsername(data.username || '');
-            setEmail(currentUser.email); // Set email from Firebase Auth
+            setEmail(currentUser.email);
           }
         }
       } catch (error) {
@@ -86,10 +83,7 @@ export default function EditProfileScreen({ navigation }) {
   if (loading) {
     return (
       <View style={styles.loadingContainer}>
-        <ActivityIndicator
-          size="large"
-          color={theme === 'dark' ? '#FFFFFF' : '#2A2D57'}
-        />
+        <ActivityIndicator size="large" color="#2A2D57" />
       </View>
     );
   }
@@ -101,65 +95,72 @@ export default function EditProfileScreen({ navigation }) {
       }
       style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollArea}>
-        <Text style={[styles.header, theme === 'dark' && styles.darkHeader]}>
-          Edit Profile
-        </Text>
+
+        {/* Header with Back Button & Title */}
+        <View style={styles.headerBar}>
+          <TouchableOpacity
+            onPress={() => navigation.goBack()}
+            style={[
+              styles.backButton,
+              theme === 'dark' ? styles.backButtonDark : styles.backButtonLight,
+            ]}>
+            <Text
+              style={[
+                styles.backButtonText,
+                theme === 'dark' && styles.backButtonTextDark,
+              ]}>
+              ←
+            </Text>
+          </TouchableOpacity>
+
+          <Text style={styles.headerTitle}>Edit Profile</Text>
+
+          {/* Empty placeholder View for spacing */}
+          <View style={styles.placeholder} />
+        </View>
 
         <View style={styles.inputContainer}>
-          <Text style={[styles.label, theme === 'dark' && styles.darkLabel]}>
-            Name
-          </Text>
+          <Text style={styles.label}>Name</Text>
           <TextInput
-            style={[styles.input, theme === 'dark' && styles.darkInput]}
+            style={styles.input}
             value={fname}
             onChangeText={setFname}
             placeholder="Enter Name"
-            placeholderTextColor={theme === 'dark' ? '#888' : '#aaa'}
+            placeholderTextColor="#aaa"
           />
 
-          <Text style={[styles.label, theme === 'dark' && styles.darkLabel]}>
-            Surname
-          </Text>
+          <Text style={styles.label}>Surname</Text>
           <TextInput
-            style={[styles.input, theme === 'dark' && styles.darkInput]}
+            style={styles.input}
             value={sname}
             onChangeText={setSname}
             placeholder="Enter Surname"
-            placeholderTextColor={theme === 'dark' ? '#888' : '#aaa'}
+            placeholderTextColor="#aaa"
           />
 
-          <Text style={[styles.label, theme === 'dark' && styles.darkLabel]}>
-            Date of Birth
-          </Text>
+          <Text style={styles.label}>Date of Birth</Text>
           <TextInput
-            style={[styles.input, theme === 'dark' && styles.darkInput]}
+            style={styles.input}
             value={dob}
             onChangeText={setDob}
             placeholder="YYYY-MM-DD"
-            placeholderTextColor={theme === 'dark' ? '#888' : '#aaa'}
+            placeholderTextColor="#aaa"
           />
 
-          <Text style={[styles.label, theme === 'dark' && styles.darkLabel]}>
-            Username
-          </Text>
+          <Text style={styles.label}>Username</Text>
           <TextInput
-            style={[styles.input, theme === 'dark' && styles.darkInput]}
+            style={styles.input}
             value={username}
             onChangeText={setUsername}
             placeholder="Enter Username"
-            placeholderTextColor={theme === 'dark' ? '#888' : '#aaa'}
+            placeholderTextColor="#aaa"
           />
 
-          <Text style={[styles.label, theme === 'dark' && styles.darkLabel]}>
-            Email
-          </Text>
+          <Text style={styles.label}>Email</Text>
           <TextInput
             style={[
               styles.input,
-              {
-                backgroundColor: theme === 'dark' ? '#555' : '#D0D3E6',
-                color: theme === 'dark' ? '#FFFFFF' : '#2A2D57',
-              },
+              { backgroundColor: '#D0D3E6', color: '#2A2D57' },
             ]}
             value={email}
             editable={false}
@@ -193,6 +194,7 @@ export default function EditProfileScreen({ navigation }) {
             <Text style={styles.buttonText}>Change Password</Text>
           </LinearGradient>
         </TouchableOpacity>
+
       </ScrollView>
     </LinearGradient>
   );
@@ -202,17 +204,20 @@ const styles = StyleSheet.create({
   container: { flex: 1, paddingTop: 40 },
   scrollArea: { paddingHorizontal: 20, paddingBottom: 40 },
 
-  header: {
+  headerBar: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 30,
+  },
+
+  headerTitle: {
     fontSize: 26,
     color: '#fff',
-    marginBottom: 30,
-    textAlign: 'center',
     fontWeight: 'bold',
   },
 
-  darkHeader: {
-    color: '#FFFFFF',
-  },
+  placeholder: { width: 48 }, // For spacing on right side
 
   inputContainer: { marginBottom: 20 },
 
@@ -223,21 +228,12 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
 
-  darkLabel: {
-    color: '#FFFFFF',
-  },
-
   input: {
     backgroundColor: '#fff',
     borderRadius: 12,
     padding: 12,
     marginBottom: 20,
     color: '#2A2D57',
-  },
-
-  darkInput: {
-    backgroundColor: '#555',
-    color: '#FFFFFF',
   },
 
   button: {
@@ -253,5 +249,36 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+
+  backButton: {
+    width: 48,
+    height: 48,
+    borderRadius: 12,
+    justifyContent: 'center',
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 3,
+    elevation: 4,
+  },
+  backButtonLight: {
+    backgroundColor: '#E6F7FF',
+  },
+  backButtonDark: {
+    backgroundColor: '#FFF',
+  },
+  backButtonText: {
+    fontSize: 28,
+    fontWeight: 'bold',
+    color: '#2C3E50',
+    textAlign: 'center',
+    includeFontPadding: false,
+    paddingBottom: 2,
+    lineHeight: 32,
+  },
+  backButtonTextDark: {
+    color: '#000',
   },
 });
