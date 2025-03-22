@@ -34,6 +34,8 @@ import TermsAndConditionsScreen from '../screens/TermsAndConditionsScreen';
 import PrivacyCookiesScreen from '../screens/PrivacyCookiesScreen';
 import AppInfoScreen from '../screens/AppInfoScreen';
 import LessonsPointsScreen from '../screens/LessonsPointsScreen';
+import TotalPointsScreen from '../screens/TotalPointsScreen';
+
 // Navigators
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -64,6 +66,7 @@ const MoreStack = () => (
     <Stack.Screen name="LessonsPointsScreen" component={LessonsPointsScreen} />
     <Stack.Screen name="History" component={HistoryScreen} />
     <Stack.Screen name="QuizzesNavScreen" component={QuizzesNavScreen} />
+    <Stack.Screen name="TotalPointsScreen" component={TotalPointsScreen} />
     <Stack.Screen name="Difficulty" component={Difficulty} />
     <Stack.Screen
       name="PublicSpeakQuestionScreen"
