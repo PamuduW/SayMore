@@ -1,14 +1,34 @@
 import React from 'react';
-import { Text, StyleSheet, ScrollView } from 'react-native';
+import { Text, StyleSheet, ScrollView, Button, Alert } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 
-const FeedbackScreen_S = ({ route }) => {
-  const { stutter_feedback } = route.params;
+interface FeedbackScreen_SProps {
+  route: {
+    params: {
+      stutter_feedback: string;
+      stutter_score: number;
+    };
+  };
+}
+
+const FeedbackScreen_S: React.FC<FeedbackScreen_SProps> = ({ route }) => {
+  const { stutter_feedback, stutter_score } = route.params;
+  const navigation = useNavigation();
+
+  const handleImprove = () => {
+    if (stutter_score < 40) {
+      navigation.navigate('LessonRedirectionStuttering');
+    } else {
+      navigation.navigate('UnderstandingAndOvercomingStutteringScreen');
+    }
+  };
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <Text style={styles.title}>Feedback</Text>
       <Text style={styles.label}>Stutter feedback:</Text>
       <Text style={styles.value}>{stutter_feedback}</Text>
+      <Button title="Improve" onPress={handleImprove} />
     </ScrollView>
   );
 };

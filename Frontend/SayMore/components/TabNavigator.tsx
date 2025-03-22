@@ -58,6 +58,7 @@ const HomeStack = () => (
       name="AdditionalDetailsScreen"
       component={AdditionalDetailsScreen}
     />
+    <Stack.Screen name="UnderstandingAndOvercomingStutteringScreen" component={UnderstandingAndOvercomingStutteringScreen} />
   </Stack.Navigator>
 );
 
@@ -122,6 +123,7 @@ const AccountStack = () => (
       name="AdditionalDetailsScreen"
       component={AdditionalDetailsScreen}
     />
+    <Stack.Screen name="UnderstandingAndOvercomingStutteringScreen" component={UnderstandingAndOvercomingStutteringScreen} />
   </Stack.Navigator>
 );
 

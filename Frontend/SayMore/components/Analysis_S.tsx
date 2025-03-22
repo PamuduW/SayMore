@@ -2,13 +2,16 @@ import React, { useEffect, useState } from 'react';
 import { Text, StyleSheet, ScrollView, View, Button } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 
-const Analysis_S = ({ filename, acc_id, type }) => {
-  const [responseData, setResponseData] = useState(null);
+interface Analysis_SProps {
+  filename: string;
+  acc_id: string;
+  type: string;
+}
+
+const Analysis_S: React.FC<Analysis_SProps> = ({ filename, acc_id, type }) => {
+  const [responseData, setResponseData] = useState<any>(null);
   const navigation = useNavigation();
-  const [data, setData] = useState({
-    labels: ['stutter_score', 'stutter_score'],
-    data: [0, 0],
-  });
+  const [stutterScore, setStutterScore] = useState<number | null>(null); // Store stutter score
 
   useEffect(() => {
     const sendPostRequest = async () => {
@@ -29,20 +32,35 @@ const Analysis_S = ({ filename, acc_id, type }) => {
           }
         );
 
-        if (!response.ok)
-          throw new Error(`HTTP error! status: ${response.status}`);
+        if (!response.ok) {
+          const errorText = await response.text(); // Get error message from the response
+          throw new Error(`HTTP error! status: ${response.status}, body: ${errorText}`);
+        }
 
         const responseInfo = await response.json();
         setResponseData(responseInfo);
-        setData({
-          labels: ['stutter_score', 'stutter_score'],
-          data: [
-            responseInfo.result.stutter_score / 100,
-            responseInfo.result.stutter_score / 100,
-          ],
-        });
-      } catch (error) {
+        const score = responseInfo?.result?.stutter_score;
+
+        if (typeof score === 'number') {
+            setStutterScore(score);
+        } else if (typeof score === 'string') {
+            const parsedScore = parseInt(score, 10);
+            if (!isNaN(parsedScore)) {
+                setStutterScore(parsedScore);
+            } else {
+                console.error("Could not parse stutter_score to number");
+                setStutterScore(0); // Set a default value or handle the error appropriately
+            }
+        } else {
+            console.error("stutter_score is not a number or string");
+            setStutterScore(0);
+        }
+
+
+      } catch (error: any) {
         console.error('Error sending POST request:', error);
+        // You might want to set an error state here to display an error message to the user.
+        // Example:  setError("Failed to analyze. Please try again.");
       }
     };
 
@@ -50,12 +68,13 @@ const Analysis_S = ({ filename, acc_id, type }) => {
   }, [filename, acc_id, type]);
 
   const handleNext = () => {
-    if (responseData) {
+    if (responseData && stutterScore !== null) {
       const { result } = responseData;
       const { stutter_feedback } = result;
 
       navigation.navigate('FeedbackScreen_S', {
         stutter_feedback,
+        stutter_score: stutterScore, // Pass the score
       });
     }
   };
@@ -63,7 +82,7 @@ const Analysis_S = ({ filename, acc_id, type }) => {
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <Text>Analysis Screen</Text>
-      {responseData && (
+      {responseData && stutterScore !== null && (
         <View>
           <Text style={styles.jsonText}>
             {JSON.stringify(responseData, null, 2)}
