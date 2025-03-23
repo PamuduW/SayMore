@@ -55,11 +55,11 @@ const SpeechTherapyScreen = () => {
   const borderAnimation = new Animated.Value(0);
 
   const handleCall = (phoneNumber: string) => {
-    Linking.openURL(tel:${phoneNumber});
+    Linking.openURL(`tel:${phoneNumber}`);
   };
 
   const handleEmail = (email: string) => {
-    Linking.openURL(mailto:${email});
+    Linking.openURL(`mailto:${email}`);
   };
 
   // Animation loop for border effect
