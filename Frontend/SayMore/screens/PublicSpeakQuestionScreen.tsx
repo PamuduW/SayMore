@@ -192,7 +192,6 @@ const PublicSpeakQuestionScreen: React.FC = ({ navigation, route }: any) => {
       resizeMode="cover">
       <View style={styles.overlay} />
       <View style={styles.container}>
-
         {/* Header with Back Button */}
         <View style={styles.headerBar}>
           <TouchableOpacity

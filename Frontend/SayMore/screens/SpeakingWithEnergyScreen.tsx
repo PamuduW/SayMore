@@ -128,7 +128,10 @@ const SpeakingWithEnergyScreen: React.FC<
             <TouchableOpacity
               style={styles.backButton}
               onPress={handleBackPress}>
-              <Text style={styles.backButtonText}>←</Text>
+              <Image
+                              source={require('../assets/back.png')} // Update this path to your back.png location
+                              style={styles.backButtonImage}
+                            />
             </TouchableOpacity>
             <View style={styles.headerTextContainer}>
               <Text style={styles.headerText}>Speaking with Energy</Text>
@@ -258,7 +261,7 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    backgroundColor: '#F0F8FF',
+    backgroundColor: '#B9D9EB',
     padding: containerPadding,
   },
   headerContainer: {
@@ -270,6 +273,10 @@ const styles = StyleSheet.create({
     flex: 1,
     marginLeft: 10,
   },
+  backButtonImage: {
+      width: 24,
+      height: 24,
+    },
   headerText: {
     fontSize: 28,
     fontWeight: 'bold',

@@ -210,7 +210,10 @@ const HistoryScreen: React.FC<HistoryScreenProps> = () => {
 
       {loading ? (
         <View style={styles.loadingContainer}>
-          <ActivityIndicator size="large" color={theme === 'dark' ? '#FFFFFF' : '#003366'} />
+          <ActivityIndicator
+            size="large"
+            color={theme === 'dark' ? '#FFFFFF' : '#003366'}
+          />
           <Text
             style={
               theme === 'dark' ? styles.darkLoadingText : styles.loadingText

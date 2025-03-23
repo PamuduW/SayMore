@@ -1,5 +1,13 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, StatusBar, SafeAreaView, Image } from 'react-native';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+  StatusBar,
+  SafeAreaView,
+  Image,
+} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import { useTheme } from '../components/ThemeContext';
 import { useNavigation } from '@react-navigation/native';
@@ -18,12 +26,15 @@ const PointsCategoryScreen: React.FC = () => {
 
   return (
     <LinearGradient
-      colors={theme === 'dark' ? ['#000000', '#222222'] : ['#577BC1', '#3B5998']}
-      style={styles.container}
-    >
-      <StatusBar barStyle="light-content" backgroundColor={theme === 'dark' ? '#000' : '#577BC1'} />
+      colors={
+        theme === 'dark' ? ['#000000', '#222222'] : ['#577BC1', '#3B5998']
+      }
+      style={styles.container}>
+      <StatusBar
+        barStyle="light-content"
+        backgroundColor={theme === 'dark' ? '#000' : '#577BC1'}
+      />
       <SafeAreaView style={styles.safeArea}>
-
         {/* Header Row with Back Button */}
         <View style={styles.headerBar}>
           <TouchableOpacity
@@ -64,89 +75,105 @@ const PointsCategoryScreen: React.FC = () => {
           <TouchableOpacity
             style={[
               styles.optionButton,
-              { backgroundColor: theme === 'dark' ? '#333333' : '#FFFFFF' }
+              { backgroundColor: theme === 'dark' ? '#333333' : '#FFFFFF' },
             ]}
-            onPress={() => handlePress('Lessons Points')}
-          >
+            onPress={() => handlePress('Lessons Points')}>
             <View style={styles.optionContent}>
-              <View style={[
-                styles.iconContainer,
-                {backgroundColor: theme === 'dark' ? '#222222' : '#E6F7FF'}
-              ]}>
-                <Text style={[
-                  styles.iconText,
-                  {color: theme === 'dark' ? '#FFFFFF' : '#3B5998'}
-                ]}>📚</Text>
+              <View
+                style={[
+                  styles.iconContainer,
+                  { backgroundColor: theme === 'dark' ? '#222222' : '#E6F7FF' },
+                ]}>
+                <Text
+                  style={[
+                    styles.iconText,
+                    { color: theme === 'dark' ? '#FFFFFF' : '#3B5998' },
+                  ]}>
+                  📚
+                </Text>
               </View>
               <View style={styles.optionTextContainer}>
-                <Text style={[
-                  styles.optionText,
-                  { color: theme === 'dark' ? '#FFFFFF' : '#2A2D57' }
-                ]}>
+                <Text
+                  style={[
+                    styles.optionText,
+                    { color: theme === 'dark' ? '#FFFFFF' : '#2A2D57' },
+                  ]}>
                   Lessons Points
                 </Text>
-                <Text style={[
-                  styles.optionSubText,
-                  { color: theme === 'dark' ? '#AAAAAA' : '#666666' }
-                ]}>
+                <Text
+                  style={[
+                    styles.optionSubText,
+                    { color: theme === 'dark' ? '#AAAAAA' : '#666666' },
+                  ]}>
                   View points earned from completing lessons
                 </Text>
               </View>
-              <Text style={[
-                styles.arrowText,
-                { color: theme === 'dark' ? '#FFFFFF' : '#3B5998' }
-              ]}>→</Text>
+              <Text
+                style={[
+                  styles.arrowText,
+                  { color: theme === 'dark' ? '#FFFFFF' : '#3B5998' },
+                ]}>
+                →
+              </Text>
             </View>
           </TouchableOpacity>
 
           <TouchableOpacity
             style={[
               styles.optionButton,
-              { backgroundColor: theme === 'dark' ? '#333333' : '#FFFFFF' }
+              { backgroundColor: theme === 'dark' ? '#333333' : '#FFFFFF' },
             ]}
-            onPress={() => handlePress('Quizzes & Challenges Points')}
-          >
+            onPress={() => handlePress('Quizzes & Challenges Points')}>
             <View style={styles.optionContent}>
-              <View style={[
-                styles.iconContainer,
-                {backgroundColor: theme === 'dark' ? '#222222' : '#E6F7FF'}
-              ]}>
-                <Text style={[
-                  styles.iconText,
-                  {color: theme === 'dark' ? '#FFFFFF' : '#3B5998'}
-                ]}>🏆</Text>
+              <View
+                style={[
+                  styles.iconContainer,
+                  { backgroundColor: theme === 'dark' ? '#222222' : '#E6F7FF' },
+                ]}>
+                <Text
+                  style={[
+                    styles.iconText,
+                    { color: theme === 'dark' ? '#FFFFFF' : '#3B5998' },
+                  ]}>
+                  🏆
+                </Text>
               </View>
               <View style={styles.optionTextContainer}>
-                <Text style={[
-                  styles.optionText,
-                  { color: theme === 'dark' ? '#FFFFFF' : '#2A2D57' }
-                ]}>
+                <Text
+                  style={[
+                    styles.optionText,
+                    { color: theme === 'dark' ? '#FFFFFF' : '#2A2D57' },
+                  ]}>
                   Quizzes & Challenges
                 </Text>
-                <Text style={[
-                  styles.optionSubText,
-                  { color: theme === 'dark' ? '#AAAAAA' : '#666666' }
-                ]}>
+                <Text
+                  style={[
+                    styles.optionSubText,
+                    { color: theme === 'dark' ? '#AAAAAA' : '#666666' },
+                  ]}>
                   View points earned from activities
                 </Text>
               </View>
-              <Text style={[
-                styles.arrowText,
-                { color: theme === 'dark' ? '#FFFFFF' : '#3B5998' }
-              ]}>→</Text>
+              <Text
+                style={[
+                  styles.arrowText,
+                  { color: theme === 'dark' ? '#FFFFFF' : '#3B5998' },
+                ]}>
+                →
+              </Text>
             </View>
           </TouchableOpacity>
         </View>
 
         <View style={styles.footer}>
-          <Text style={[
-            styles.footerText,
-            { color: theme === 'dark' ? '#AAAAAA' : '#D0D3E6' }
-          ]}>
+          <Text
+            style={[
+              styles.footerText,
+              { color: theme === 'dark' ? '#AAAAAA' : '#D0D3E6' },
+            ]}>
             Points help you track your progress in SayMore
           </Text>
         </View>
-
       </SafeAreaView>
     </LinearGradient>
   );
@@ -154,12 +181,12 @@ const PointsCategoryScreen: React.FC = () => {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1
+    flex: 1,
   },
 
   safeArea: {
     flex: 1,
-    width: '100%'
+    width: '100%',
   },
 
   headerBar: {

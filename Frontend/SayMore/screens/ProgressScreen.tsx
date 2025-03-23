@@ -40,7 +40,8 @@ const ProgressScreen = () => {
 
   const borderInterpolation = borderAnimation.interpolate({
     inputRange: [0, 1],
-    outputRange: theme === 'dark' ? ['#444444', '#AAAAAA'] : ['#2D336B', '#7886C7'],
+    outputRange:
+      theme === 'dark' ? ['#444444', '#AAAAAA'] : ['#2D336B', '#7886C7'],
   });
 
   useEffect(() => {
@@ -89,50 +90,71 @@ const ProgressScreen = () => {
           borderColor: borderInterpolation,
           borderWidth: 2,
           backgroundColor: theme === 'dark' ? '#121212' : '#FFFFFF',
-        }
-      ]}
-    >
+        },
+      ]}>
       <View style={styles.thumbnailContainer}>
         <Image
-          source={{ uri: item.thumbnail || 'https://via.placeholder.com/120x100' }}
+          source={{
+            uri: item.thumbnail || 'https://via.placeholder.com/120x100',
+          }}
           style={styles.thumbnail}
         />
         <LinearGradient
-          colors={theme === 'dark' ? ['rgba(30, 30, 30, 0.8)', 'rgba(60, 60, 60, 0.8)'] : ['rgba(59, 89, 152, 0.8)', 'rgba(87, 123, 193, 0.8)']}
-          style={styles.watchProgressBadge}
-        >
-          <Text style={styles.watchProgressText}>{item.percentageWatched}%</Text>
+          colors={
+            theme === 'dark'
+              ? ['rgba(30, 30, 30, 0.8)', 'rgba(60, 60, 60, 0.8)']
+              : ['rgba(59, 89, 152, 0.8)', 'rgba(87, 123, 193, 0.8)']
+          }
+          style={styles.watchProgressBadge}>
+          <Text style={styles.watchProgressText}>
+            {item.percentageWatched}%
+          </Text>
         </LinearGradient>
       </View>
 
       <View style={styles.videoDetails}>
         <Text
-          style={[styles.videoTitle, { color: theme === 'dark' ? '#FFFFFF' : '#2A2D57' }]}
-          numberOfLines={2}
-        >
+          style={[
+            styles.videoTitle,
+            { color: theme === 'dark' ? '#FFFFFF' : '#2A2D57' },
+          ]}
+          numberOfLines={2}>
           {item.title}
         </Text>
         <Text
-          style={[styles.lessonTitle, { color: theme === 'dark' ? '#AAAAAA' : '#718096' }]}
-          numberOfLines={1}
-        >
+          style={[
+            styles.lessonTitle,
+            { color: theme === 'dark' ? '#AAAAAA' : '#718096' },
+          ]}
+          numberOfLines={1}>
           {item.lessonTitle}
         </Text>
 
         <View style={styles.progressContainer}>
           <View
-            style={[styles.progressBarBackground, { backgroundColor: theme === 'dark' ? '#333333' : '#E2E8F0' }]}
-          >
+            style={[
+              styles.progressBarBackground,
+              { backgroundColor: theme === 'dark' ? '#333333' : '#E2E8F0' },
+            ]}>
             <LinearGradient
-              colors={theme === 'dark' ? ['#555555', '#777777'] : ['#3B5998', '#577BC1']}
-              style={[styles.progressBarFill, { width: `${item.percentageWatched}%` }]}
+              colors={
+                theme === 'dark'
+                  ? ['#555555', '#777777']
+                  : ['#3B5998', '#577BC1']
+              }
+              style={[
+                styles.progressBarFill,
+                { width: `${item.percentageWatched}%` },
+              ]}
             />
           </View>
         </View>
 
         <Text
-          style={[styles.timestamp, { color: theme === 'dark' ? '#BBBBBB' : '#718096' }]}
-        >
+          style={[
+            styles.timestamp,
+            { color: theme === 'dark' ? '#BBBBBB' : '#718096' },
+          ]}>
           {item.timestamp || 'Recently watched'}
         </Text>
       </View>
@@ -141,33 +163,44 @@ const ProgressScreen = () => {
 
   const chartData = {
     // Using empty strings for labels to hide X-axis text
-    labels: watchedVideos.map(() => ""),
+    labels: watchedVideos.map(() => ''),
     datasets: [
       {
-        data: watchedVideos.length > 0
-          ? watchedVideos.map((video) => video.percentageWatched || 0)
-          : [0, 0],
-        color: () => theme === 'dark' ? '#777777' : '#577BC1',
+        data:
+          watchedVideos.length > 0
+            ? watchedVideos.map(video => video.percentageWatched || 0)
+            : [0, 0],
+        color: () => (theme === 'dark' ? '#777777' : '#577BC1'),
       },
     ],
   };
 
   const EmptyListComponent = () => (
     <View style={styles.emptyContainer}>
-      <Text style={[styles.emptyText, { color: theme === 'dark' ? '#FFFFFF' : '#2A2D57' }]}>
+      <Text
+        style={[
+          styles.emptyText,
+          { color: theme === 'dark' ? '#FFFFFF' : '#2A2D57' },
+        ]}>
         No videos watched yet
       </Text>
-      <Text style={[styles.emptySubtext, { color: theme === 'dark' ? '#AAAAAA' : '#718096' }]}>
-        Start watching videos to track your progress and improve your speech skills.
+      <Text
+        style={[
+          styles.emptySubtext,
+          { color: theme === 'dark' ? '#AAAAAA' : '#718096' },
+        ]}>
+        Start watching videos to track your progress and improve your speech
+        skills.
       </Text>
     </View>
   );
 
   return (
     <LinearGradient
-      colors={theme === 'dark' ? ['#000000', '#121212'] : ['#577BC1', '#577BC1']}
-      style={styles.container}
-    >
+      colors={
+        theme === 'dark' ? ['#000000', '#121212'] : ['#577BC1', '#577BC1']
+      }
+      style={styles.container}>
       <StatusBar
         barStyle="light-content"
         backgroundColor={theme === 'dark' ? '#000000' : '#577BC1'}
@@ -175,28 +208,51 @@ const ProgressScreen = () => {
       <SafeAreaView style={styles.safeArea}>
         <View style={styles.header}>
           <TouchableOpacity
-            style={[styles.backButton, { backgroundColor: theme === 'dark' ? '#333333' : '#E6F7FF' }]}
-            onPress={handleBackPress}
-          >
-            <Text style={[styles.backButtonText, { color: theme === 'dark' ? '#FFFFFF' : '#2C3E50' }]}>←</Text>
+            style={[
+              styles.backButton,
+              { backgroundColor: theme === 'dark' ? '#333333' : '#E6F7FF' },
+            ]}
+            onPress={handleBackPress}>
+            <Text
+              style={[
+                styles.backButtonText,
+                { color: theme === 'dark' ? '#FFFFFF' : '#2C3E50' },
+              ]}>
+              ←
+            </Text>
           </TouchableOpacity>
           <Text style={styles.headerText}>Your Progress</Text>
           <View style={styles.spacer} />
         </View>
 
-        <View style={[styles.contentContainer, { backgroundColor: theme === 'dark' ? '#121212' : '#FFFFFF' }]}>
+        <View
+          style={[
+            styles.contentContainer,
+            { backgroundColor: theme === 'dark' ? '#121212' : '#FFFFFF' },
+          ]}>
           <ScrollView showsVerticalScrollIndicator={false}>
             <View style={styles.chartSection}>
-              <Text style={[styles.sectionTitle, { color: theme === 'dark' ? '#FFFFFF' : '#2A2D57' }]}>
+              <Text
+                style={[
+                  styles.sectionTitle,
+                  { color: theme === 'dark' ? '#FFFFFF' : '#2A2D57' },
+                ]}>
                 Watch Progress
               </Text>
-              <Text style={[styles.sectionSubtitle, { color: theme === 'dark' ? '#AAAAAA' : '#718096' }]}>
-                {watchedVideos.length} {watchedVideos.length === 1 ? 'video' : 'videos'} tracked
+              <Text
+                style={[
+                  styles.sectionSubtitle,
+                  { color: theme === 'dark' ? '#AAAAAA' : '#718096' },
+                ]}>
+                {watchedVideos.length}{' '}
+                {watchedVideos.length === 1 ? 'video' : 'videos'} tracked
               </Text>
 
               <Animated.View
-                style={[styles.chartContainer, { borderColor: borderInterpolation, borderWidth: 2 }]}
-              >
+                style={[
+                  styles.chartContainer,
+                  { borderColor: borderInterpolation, borderWidth: 2 },
+                ]}>
                 {watchedVideos.length > 0 ? (
                   <LineChart
                     data={chartData}
@@ -205,18 +261,23 @@ const ProgressScreen = () => {
                     yAxisSuffix="%"
                     chartConfig={{
                       backgroundColor: theme === 'dark' ? '#333333' : '#3B5998',
-                      backgroundGradientFrom: theme === 'dark' ? '#333333' : '#3B5998',
-                      backgroundGradientTo: theme === 'dark' ? '#555555' : '#577BC1',
+                      backgroundGradientFrom:
+                        theme === 'dark' ? '#333333' : '#3B5998',
+                      backgroundGradientTo:
+                        theme === 'dark' ? '#555555' : '#577BC1',
                       decimalPlaces: 0,
                       color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-                      labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+                      labelColor: (opacity = 1) =>
+                        `rgba(255, 255, 255, ${opacity})`,
                       style: { borderRadius: 16 },
                       propsForDots: {
                         r: '6',
                         strokeWidth: '2',
                         stroke: theme === 'dark' ? '#AAAAAA' : '#FFFFFF',
                       },
-                      hidePointsAtIndex: [...Array(watchedVideos.length).keys()].filter(i => i % 2 !== 0),
+                      hidePointsAtIndex: [
+                        ...Array(watchedVideos.length).keys(),
+                      ].filter(i => i % 2 !== 0),
                     }}
                     bezier
                     style={{
@@ -228,10 +289,21 @@ const ProgressScreen = () => {
                   />
                 ) : (
                   <View style={styles.noDataContainer}>
-                    <Text style={{ color: theme === 'dark' ? '#FFFFFF' : '#2A2D57', fontSize: 16, textAlign: 'center' }}>
+                    <Text
+                      style={{
+                        color: theme === 'dark' ? '#FFFFFF' : '#2A2D57',
+                        fontSize: 16,
+                        textAlign: 'center',
+                      }}>
                       No progress data yet
                     </Text>
-                    <Text style={{ color: theme === 'dark' ? '#AAAAAA' : '#718096', fontSize: 14, textAlign: 'center', marginTop: 8 }}>
+                    <Text
+                      style={{
+                        color: theme === 'dark' ? '#AAAAAA' : '#718096',
+                        fontSize: 14,
+                        textAlign: 'center',
+                        marginTop: 8,
+                      }}>
                       Watch videos to see your progress over time
                     </Text>
                   </View>
@@ -240,7 +312,11 @@ const ProgressScreen = () => {
             </View>
 
             <View style={styles.videosSection}>
-              <Text style={[styles.sectionTitle, { color: theme === 'dark' ? '#FFFFFF' : '#2A2D57' }]}>
+              <Text
+                style={[
+                  styles.sectionTitle,
+                  { color: theme === 'dark' ? '#FFFFFF' : '#2A2D57' },
+                ]}>
                 Recently Watched
               </Text>
 

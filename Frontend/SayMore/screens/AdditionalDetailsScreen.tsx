@@ -1,5 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { Text, StyleSheet, ScrollView, Button, Dimensions } from 'react-native';
+import {
+  Text,
+  StyleSheet,
+  ScrollView,
+  Button,
+  Dimensions,
+  Image,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { LineChart } from 'react-native-chart-kit';
 
@@ -11,9 +20,9 @@ const chartConfig = {
   backgroundGradientTo: 'transparent',
   backgroundGradientToOpacity: 0,
   color: (opacity = 1) => `rgba(0, 0, 255, ${opacity})`,
-  strokeWidth: 2, // optional, default 3
+  strokeWidth: 2,
   barPercentage: 0.5,
-  useShadowColorFromDataset: false, // optional
+  useShadowColorFromDataset: false,
 };
 
 const AdditionalDetailsScreen = ({ route }) => {
@@ -220,58 +229,92 @@ const AdditionalDetailsScreen = ({ route }) => {
     });
   };
 
+  const handleBack = () => {
+    navigation.goBack();
+  };
+
   return (
     <ScrollView contentContainerStyle={styles.container}>
+      {/* Back Button */}
+      <TouchableOpacity onPress={handleBack} style={styles.backButtonContainer}>
+        <Image
+          source={require('../assets/back.png')}
+          style={styles.backButton}
+        />
+      </TouchableOpacity>
+
       <Text style={styles.title}>Additional Details</Text>
-      <LineChart
-        data={pitch_graph_data}
-        width={screenWidth}
-        height={256}
-        verticalLabelRotation={30}
-        chartConfig={chartConfig}
-        bezier
-      />
-      <LineChart
-        data={hnr_graph_data}
-        width={screenWidth}
-        height={256}
-        verticalLabelRotation={30}
-        chartConfig={chartConfig}
-        bezier
-      />
-      <LineChart
-        data={shimmer_graph_data}
-        width={screenWidth}
-        height={256}
-        verticalLabelRotation={30}
-        chartConfig={chartConfig}
-        bezier
-      />
-      <LineChart
-        data={jitter_graph_data}
-        width={screenWidth}
-        height={256}
-        verticalLabelRotation={30}
-        chartConfig={chartConfig}
-        bezier
-      />
-      <LineChart
-        data={intensity_graph_data}
-        width={screenWidth}
-        height={256}
-        verticalLabelRotation={30}
-        chartConfig={chartConfig}
-        bezier
-      />
-      <LineChart
-        data={energy_graph_data}
-        width={screenWidth}
-        height={256}
-        verticalLabelRotation={30}
-        chartConfig={chartConfig}
-        bezier
-      />
-      <Button title="Next" onPress={handleNext} />
+
+      <View style={styles.chartContainer}>
+        <LineChart
+          data={pitch_graph_data}
+          width={screenWidth}
+          height={250}
+          verticalLabelRotation={30}
+          chartConfig={chartConfig}
+          bezier
+        />
+      </View>
+
+      <View style={styles.chartContainer}>
+        <LineChart
+          data={hnr_graph_data}
+          width={screenWidth}
+          height={250}
+          verticalLabelRotation={30}
+          chartConfig={chartConfig}
+          bezier
+        />
+      </View>
+
+      <View style={styles.chartContainer}>
+        <LineChart
+          data={shimmer_graph_data}
+          width={screenWidth}
+          height={250}
+          verticalLabelRotation={30}
+          chartConfig={chartConfig}
+          bezier
+        />
+      </View>
+
+      <View style={styles.chartContainer}>
+        <LineChart
+          data={jitter_graph_data}
+          width={screenWidth}
+          height={250}
+          verticalLabelRotation={30}
+          chartConfig={chartConfig}
+          bezier
+        />
+      </View>
+
+      <View style={styles.chartContainer}>
+        <LineChart
+          data={intensity_graph_data}
+          width={screenWidth}
+          height={250}
+          verticalLabelRotation={30}
+          chartConfig={chartConfig}
+          bezier
+        />
+      </View>
+
+      <View style={styles.chartContainer}>
+        <LineChart
+          data={energy_graph_data}
+          width={screenWidth}
+          height={250}
+          verticalLabelRotation={30}
+          chartConfig={chartConfig}
+          bezier
+        />
+      </View>
+
+      {/* Next Button */}
+      <View style={styles.buttonContainer}>
+        <Button title="Next" onPress={handleNext} color="#4CAF50" />
+      </View>
     </ScrollView>
   );
 };
@@ -279,23 +322,36 @@ const AdditionalDetailsScreen = ({ route }) => {
 const styles = StyleSheet.create({
   container: {
     flexGrow: 1,
-    justifyContent: 'center',
+    justifyContent: 'flex-start',
     alignItems: 'center',
     padding: 16,
+    backgroundColor: '#002244',
   },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
+  backButtonContainer: {
+    alignSelf: 'flex-start',
     marginBottom: 20,
   },
-  label: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginTop: 10,
+  backButton: {
+    width: 30,
+    height: 30,
   },
-  value: {
-    fontSize: 16,
-    marginBottom: 10,
+  title: {
+    fontSize: 28,
+    fontWeight: 'bold',
+    color: '#fff',
+    marginBottom: 20,
+  },
+  chartContainer: {
+    marginBottom: 20,
+    width: '100%',
+    backgroundColor: '#f0f0f0',
+    borderRadius: 10,
+    overflow: 'hidden',
+  },
+  buttonContainer: {
+    marginTop: 30,
+    width: '80%',
+    borderRadius: 10,
   },
 });
 

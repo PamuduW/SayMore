@@ -95,12 +95,12 @@ export default function SettingsScreen() {
             item.label === 'Notifications'
               ? NotificationIcon
               : item.label === 'Dark Mode'
-              ? DarkModeIcon
-              : item.label === 'Terms & Conditions'
-              ? ConditionsIcon
-              : item.label === 'Privacy & Cookies'
-              ? CookiesIcon
-              : AppInfoIcon
+                ? DarkModeIcon
+                : item.label === 'Terms & Conditions'
+                  ? ConditionsIcon
+                  : item.label === 'Privacy & Cookies'
+                    ? CookiesIcon
+                    : AppInfoIcon
           }
           style={[
             styles.optionIcon,
@@ -177,7 +177,9 @@ export default function SettingsScreen() {
           <Text
             style={[
               styles.sectionTitle,
-              theme === 'dark' ? styles.sectionTitleDark : styles.sectionTitleLight,
+              theme === 'dark'
+                ? styles.sectionTitleDark
+                : styles.sectionTitleLight,
             ]}>
             Preferences
           </Text>
@@ -192,7 +194,9 @@ export default function SettingsScreen() {
           <Text
             style={[
               styles.sectionTitle,
-              theme === 'dark' ? styles.sectionTitleDark : styles.sectionTitleLight,
+              theme === 'dark'
+                ? styles.sectionTitleDark
+                : styles.sectionTitleLight,
             ]}>
             Information
           </Text>
