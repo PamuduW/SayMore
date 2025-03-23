@@ -22,7 +22,6 @@ const TestHistory_PS: React.FC = () => {
   const { testId } = route.params; // received testId from TestHistory.tsx
   const [loading, setLoading] = useState<boolean>(true);
   const [responseData, setResponseData] = useState<any>(null);
-  const [showMore, setShowMore] = useState<boolean>(false);
   const [data, setData] = useState({
     labels: ['Energy', 'Voice', 'Final'],
     data: [0, 0, 0],
@@ -161,49 +160,64 @@ const TestHistory_PS: React.FC = () => {
     if (responseData) {
       const pitch_labels = Object.keys(
         responseData['Voice_Quality_&_Stability_Data'].pitch_data
-      );
-      const pitch_dataset = pitch_labels.map(
-        key =>
-          responseData['Voice_Quality_&_Stability_Data'].pitch_data[key]
-            .mean_pitch_ST
-      );
+      ).reverse();
+      const pitch_dataset = pitch_labels
+        .map(
+          key =>
+            responseData['Voice_Quality_&_Stability_Data'].pitch_data[key]
+              .mean_pitch_ST
+        )
+        .reverse();
 
       const hnr_labels = Object.keys(
         responseData['Voice_Quality_&_Stability_Data'].hnr_data
-      );
-      const hnr_dataset = hnr_labels.map(
-        key => responseData['Voice_Quality_&_Stability_Data'].hnr_data[key]
-      );
+      ).reverse();
+      const hnr_dataset = hnr_labels
+        .map(
+          key => responseData['Voice_Quality_&_Stability_Data'].hnr_data[key]
+        )
+        .reverse();
 
       const shimmer_labels = Object.keys(
         responseData['Voice_Quality_&_Stability_Data'].shimmer_data
-      );
-      const shimmer_dataset = shimmer_labels.map(
-        key => responseData['Voice_Quality_&_Stability_Data'].shimmer_data[key]
-      );
+      ).reverse();
+      const shimmer_dataset = shimmer_labels
+        .map(
+          key =>
+            responseData['Voice_Quality_&_Stability_Data'].shimmer_data[key]
+        )
+        .reverse();
 
       const jitter_labels = Object.keys(
         responseData['Voice_Quality_&_Stability_Data'].jitter_data
-      );
-      const jitter_dataset = jitter_labels.map(
-        key => responseData['Voice_Quality_&_Stability_Data'].jitter_data[key]
-      );
+      ).reverse();
+      const jitter_dataset = jitter_labels
+        .map(
+          key => responseData['Voice_Quality_&_Stability_Data'].jitter_data[key]
+        )
+        .reverse();
 
       const intensity_labels = Object.keys(
         responseData['Speech_Intensity_&_Energy_Data'].intensity_analysis
-      );
-      const intensity_dataset = intensity_labels.map(
-        key =>
-          responseData['Speech_Intensity_&_Energy_Data'].intensity_analysis[key]
-      );
+      ).reverse();
+      const intensity_dataset = intensity_labels
+        .map(
+          key =>
+            responseData['Speech_Intensity_&_Energy_Data'].intensity_analysis[
+              key
+            ]
+        )
+        .reverse();
 
       const energy_labels = Object.keys(
         responseData['Speech_Intensity_&_Energy_Data'].energy_analysis
-      );
-      const energy_dataset = energy_labels.map(
-        key =>
-          responseData['Speech_Intensity_&_Energy_Data'].energy_analysis[key]
-      );
+      ).reverse();
+      const energy_dataset = energy_labels
+        .map(
+          key =>
+            responseData['Speech_Intensity_&_Energy_Data'].energy_analysis[key]
+        )
+        .reverse();
 
       setPitch_graph_data(prevData => ({
         ...prevData,
