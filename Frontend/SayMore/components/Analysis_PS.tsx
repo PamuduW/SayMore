@@ -7,6 +7,7 @@ import {
   View,
   Dimensions,
   Alert,
+  ActivityIndicator,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { ProgressChart } from 'react-native-chart-kit';
@@ -60,6 +61,7 @@ const Analysis_PS: React.FC<Analysis_PSProps> = ({
   language,
 }) => {
   const [responseData, setResponseData] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
   const navigation = useNavigation();
   const [data, setData] = useState({
     labels: [
@@ -75,9 +77,9 @@ const Analysis_PS: React.FC<Analysis_PSProps> = ({
     backgroundGradientTo: 'transparent',
     backgroundGradientToOpacity: 0,
     color: (opacity = 1) => `rgba(0, 0, 255, ${opacity})`,
-    strokeWidth: 2, // optional, default 3
+    strokeWidth: 2,
     barPercentage: 0.5,
-    useShadowColorFromDataset: false, // optional
+    useShadowColorFromDataset: false,
   };
 
   useEffect(() => {
@@ -131,7 +133,9 @@ const Analysis_PS: React.FC<Analysis_PSProps> = ({
           ],
         });
       } catch (error) {
-        //console.error('Error sending POST request:', error);
+        // Optionally handle error here
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -288,6 +292,15 @@ const Analysis_PS: React.FC<Analysis_PSProps> = ({
     }
   };
 
+  if (loading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color="blue" />
+        <Text>Analyzing Speech...</Text>
+      </View>
+    );
+  }
+
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <Text style={styles.progressChartText}>Analysis Screen</Text>
@@ -393,14 +406,12 @@ const Analysis_PS: React.FC<Analysis_PSProps> = ({
           </Text>
 
           <Text style={styles.scoreText}>Transcription</Text>
-          <Text>{responseData.result.transcription[0].transcript}</Text>
+          <Text>
+            {responseData.result.transcription[0].transcript}
+          </Text>
 
-          <Button title="Next" onPress={handleNext} style={styles.button} />
-          <Button
-            title="Additional Details"
-            onPress={handleDetails}
-            style={styles.button}
-          />
+          <Button title="Next" onPress={handleNext} />
+          <Button title="Additional Details" onPress={handleDetails} />
         </View>
       )}
     </ScrollView>
@@ -413,6 +424,11 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     padding: 16,
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   scoreText: {
     fontSize: 18,
