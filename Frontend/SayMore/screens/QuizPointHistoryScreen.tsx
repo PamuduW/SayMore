@@ -35,6 +35,23 @@ const QuizPointHistoryScreen: React.FC = ({ navigation }: any) => {
   const theme = useTheme();
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const scrollAnim = useRef(new Animated.Value(0)).current;
+  const borderAnimation = useRef(new Animated.Value(0)).current;
+
+  // Animation for border
+  useEffect(() => {
+    Animated.loop(
+      Animated.timing(borderAnimation, {
+        toValue: 1,
+        duration: 1800,
+        useNativeDriver: false,
+      })
+    ).start();
+  }, [borderAnimation]);
+
+  const borderInterpolation = borderAnimation.interpolate({
+    inputRange: [0, 1],
+    outputRange: theme === 'dark' ? ['#444444', '#AAAAAA'] : ['#2D336B', '#7886C7'],
+  });
 
   // Define mappings for quiz difficulties and sets
   const difficultyMap = {
@@ -167,6 +184,8 @@ const QuizPointHistoryScreen: React.FC = ({ navigation }: any) => {
                 outputRange: [50, 0]
               })
             }],
+            borderColor: borderInterpolation,
+            borderWidth: 2,
           },
         ]}
       >
@@ -189,25 +208,36 @@ const QuizPointHistoryScreen: React.FC = ({ navigation }: any) => {
               {item.quizType === 'Public Speaking' ? 'Public Speaking Quiz' : 'Stuttering Quiz'}
             </Text>
 
-            {item.quizType === 'Public Speaking' && item.difficulty && (
-              <View style={styles.tagContainer}>
-                <Text style={[styles.tagText, { backgroundColor: theme === 'dark' ? '#333333' : '#EAEEFF' }]}>
-                  {item.difficulty}
-                </Text>
-              </View>
-            )}
+            <View style={styles.tagContainer}>
+              {item.quizType === 'Public Speaking' && item.difficulty && (
+                <LinearGradient
+                  colors={theme === 'dark' ? ['#333333', '#444444'] : ['#EAEEFF', '#D0D3E6']}
+                  style={styles.tagBackground}
+                >
+                  <Text style={[styles.tagText, { color: theme === 'dark' ? '#FFFFFF' : '#2A2D57' }]}>
+                    {item.difficulty}
+                  </Text>
+                </LinearGradient>
+              )}
 
-            {item.quizType === 'Stuttering' && item.set && (
-              <View style={styles.tagContainer}>
-                <Text style={[styles.tagText, { backgroundColor: theme === 'dark' ? '#333333' : '#EAEEFF' }]}>
-                  {item.set}
-                </Text>
-              </View>
-            )}
+              {item.quizType === 'Stuttering' && item.set && (
+                <LinearGradient
+                  colors={theme === 'dark' ? ['#333333', '#444444'] : ['#EAEEFF', '#D0D3E6']}
+                  style={styles.tagBackground}
+                >
+                  <Text style={[styles.tagText, { color: theme === 'dark' ? '#FFFFFF' : '#2A2D57' }]}>
+                    {item.set}
+                  </Text>
+                </LinearGradient>
+              )}
+            </View>
           </View>
         </View>
 
-        <View style={styles.cardFooter}>
+        <View style={[
+          styles.cardFooter,
+          { borderTopColor: theme === 'dark' ? '#333333' : '#EEEEEE' }
+        ]}>
           <Text style={[styles.attemptDate, { color: theme === 'dark' ? '#888' : '#718096' }]}>
             {moment(item.timestamp).format('MMM Do YYYY, h:mm A')}
           </Text>
@@ -229,9 +259,12 @@ const QuizPointHistoryScreen: React.FC = ({ navigation }: any) => {
 
   const renderSectionHeader = ({ section: { title } }: { section: { title: string } }) => (
     <View style={styles.sectionHeaderContainer}>
-      <View style={[styles.iconContainer, { backgroundColor: theme === 'dark' ? '#333333' : '#EAEEFF' }]}>
+      <LinearGradient
+        colors={theme === 'dark' ? ['#333333', '#444444'] : ['#3B5998', '#577BC1']}
+        style={styles.iconContainer}
+      >
         <Text style={styles.sectionIcon}>{getQuizIcon(title)}</Text>
-      </View>
+      </LinearGradient>
       <Text style={[styles.quizTypeTitle, { color: theme === 'dark' ? '#FFFFFF' : '#2A2D57' }]}>
         {title} Quizzes
       </Text>
@@ -240,6 +273,14 @@ const QuizPointHistoryScreen: React.FC = ({ navigation }: any) => {
 
   const renderEmptyComponent = () => (
     <View style={styles.emptyContainer}>
+      <Animated.View
+        style={[
+          styles.emptyIconContainer,
+          { borderColor: borderInterpolation }
+        ]}
+      >
+        <Text style={styles.emptyIcon}>📝</Text>
+      </Animated.View>
       <Text style={[styles.emptyText, { color: theme === 'dark' ? '#FFFFFF' : '#2A2D57' }]}>
         No quiz attempts yet
       </Text>
@@ -257,6 +298,25 @@ const QuizPointHistoryScreen: React.FC = ({ navigation }: any) => {
       <Text style={[styles.headerSubtitle, { color: theme === 'dark' ? '#AAAAAA' : '#718096' }]}>
         {sectionData.reduce((total, section) => total + section.data.length, 0)} attempts total
       </Text>
+    </View>
+  );
+
+  const loadingComponent = () => (
+    <View style={styles.loadingContainer}>
+      <Animated.View
+        style={[
+          styles.loadingCircle,
+          { borderColor: borderInterpolation }
+        ]}
+      >
+        <LinearGradient
+          colors={theme === 'dark' ? ['#333333', '#444444'] : ['#3B5998', '#577BC1']}
+          style={styles.loadingInnerCircle}
+        >
+          <Text style={styles.loadingIcon}>📊</Text>
+        </LinearGradient>
+      </Animated.View>
+      <Text style={styles.loadingText}>Loading your quiz history...</Text>
     </View>
   );
 
@@ -284,34 +344,38 @@ const QuizPointHistoryScreen: React.FC = ({ navigation }: any) => {
           <View style={styles.spacer} />
         </View>
 
-        <Animated.View
-          style={[
-            styles.contentContainer,
-            {
-              backgroundColor: theme === 'dark' ? '#121212' : '#F5F8FF',
-              opacity: fadeAnim,
-            }
-          ]}
-        >
-          <SectionList
-            sections={sectionData}
-            keyExtractor={(item, index) => item.quizType + index}
-            renderItem={renderAttemptItem}
-            renderSectionHeader={renderSectionHeader}
-            ListEmptyComponent={renderEmptyComponent}
-            ListHeaderComponent={headerComponent}
-            contentContainerStyle={[
-              styles.listContainer,
-              sectionData.length === 0 && { flex: 1, justifyContent: 'center' }
+        {loading ? (
+          loadingComponent()
+        ) : (
+          <Animated.View
+            style={[
+              styles.contentContainer,
+              {
+                backgroundColor: theme === 'dark' ? '#121212' : '#FFFFFF',
+                opacity: fadeAnim,
+              }
             ]}
-            stickySectionHeadersEnabled={false}
-            showsVerticalScrollIndicator={false}
-            onScroll={Animated.event(
-              [{ nativeEvent: { contentOffset: { y: scrollAnim } } }],
-              { useNativeDriver: false }
-            )}
-          />
-        </Animated.View>
+          >
+            <SectionList
+              sections={sectionData}
+              keyExtractor={(item, index) => item.quizType + index}
+              renderItem={renderAttemptItem}
+              renderSectionHeader={renderSectionHeader}
+              ListEmptyComponent={renderEmptyComponent}
+              ListHeaderComponent={headerComponent}
+              contentContainerStyle={[
+                styles.listContainer,
+                sectionData.length === 0 && { flex: 1, justifyContent: 'center' }
+              ]}
+              stickySectionHeadersEnabled={false}
+              showsVerticalScrollIndicator={false}
+              onScroll={Animated.event(
+                [{ nativeEvent: { contentOffset: { y: scrollAnim } } }],
+                { useNativeDriver: false }
+              )}
+            />
+          </Animated.View>
+        )}
       </SafeAreaView>
     </LinearGradient>
   );
@@ -343,7 +407,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   headerText: {
-    fontSize: 22,
+    fontSize: 24,
     fontWeight: 'bold',
     color: '#FFFFFF',
     textAlign: 'center',
@@ -356,15 +420,14 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 30,
     borderTopRightRadius: 30,
     overflow: 'hidden',
+    paddingTop: 24,
   },
   listContainer: {
     paddingBottom: 30,
-    paddingHorizontal: 16,
+    paddingHorizontal: 20,
   },
   listHeader: {
-    paddingTop: 24,
     paddingBottom: 16,
-    paddingHorizontal: 16,
   },
   headerTitle: {
     fontSize: 24,
@@ -377,23 +440,27 @@ const styles = StyleSheet.create({
   sectionHeaderContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingTop: 20,
-    paddingBottom: 12,
-    paddingHorizontal: 16,
+    paddingTop: 24,
+    paddingBottom: 16,
   },
   iconContainer: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
+    width: 42,
+    height: 42,
+    borderRadius: 21,
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: 12,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
   },
   sectionIcon: {
     fontSize: 20,
   },
   quizTypeTitle: {
-    fontSize: 20,
+    fontSize: 22,
     fontWeight: 'bold',
   },
   attemptCard: {
@@ -414,14 +481,14 @@ const styles = StyleSheet.create({
     marginRight: 16,
   },
   scoreCircle: {
-    width: 60,
-    height: 60,
-    borderRadius: 30,
+    width: 64,
+    height: 64,
+    borderRadius: 32,
     justifyContent: 'center',
     alignItems: 'center',
-    elevation: 2,
+    elevation: 3,
     shadowColor: '#000',
-    shadowOpacity: 0.1,
+    shadowOpacity: 0.2,
     shadowRadius: 4,
     shadowOffset: { width: 0, height: 2 },
   },
@@ -429,6 +496,7 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
     fontWeight: 'bold',
     fontSize: 16,
+    textAlign: 'center',
   },
   detailsContainer: {
     flex: 1,
@@ -437,20 +505,27 @@ const styles = StyleSheet.create({
   attemptText: {
     fontSize: 18,
     fontWeight: 'bold',
-    marginBottom: 8,
+    marginBottom: 10,
   },
   tagContainer: {
     flexDirection: 'row',
     flexWrap: 'wrap',
   },
-  tagText: {
+  tagBackground: {
     paddingHorizontal: 12,
-    paddingVertical: 4,
+    paddingVertical: 6,
     borderRadius: 12,
-    fontSize: 14,
-    overflow: 'hidden',
     marginRight: 8,
     marginBottom: 8,
+    elevation: 1,
+    shadowColor: '#000',
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
+    shadowOffset: { width: 0, height: 1 },
+  },
+  tagText: {
+    fontSize: 14,
+    fontWeight: '600',
   },
   cardFooter: {
     flexDirection: 'row',
@@ -459,19 +534,19 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 12,
     borderTopWidth: 1,
-    borderTopColor: '#EEEEEE',
   },
   attemptDate: {
-    fontSize: 14,
-  },
-  attemptSubText: {
-    marginTop: 4,
     fontSize: 14,
   },
   percentContainer: {
     paddingHorizontal: 12,
     paddingVertical: 6,
     borderRadius: 12,
+    elevation: 2,
+    shadowColor: '#000',
+    shadowOpacity: 0.1,
+    shadowRadius: 3,
+    shadowOffset: { width: 0, height: 1 },
   },
   percentText: {
     color: '#FFFFFF',
@@ -485,6 +560,18 @@ const styles = StyleSheet.create({
     paddingVertical: 60,
     paddingHorizontal: 24,
   },
+  emptyIconContainer: {
+    width: 100,
+    height: 100,
+    borderRadius: 50,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 24,
+    borderWidth: 3,
+  },
+  emptyIcon: {
+    fontSize: 36,
+  },
   emptyText: {
     fontSize: 22,
     fontWeight: 'bold',
@@ -495,6 +582,42 @@ const styles = StyleSheet.create({
     fontSize: 16,
     textAlign: 'center',
     lineHeight: 24,
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: 24,
+  },
+  loadingCircle: {
+    width: 120,
+    height: 120,
+    borderRadius: 60,
+    borderWidth: 3,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 24,
+    padding: 5,
+  },
+  loadingInnerCircle: {
+    width: '100%',
+    height: '100%',
+    borderRadius: 55,
+    justifyContent: 'center',
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 6,
+  },
+  loadingIcon: {
+    fontSize: 40,
+  },
+  loadingText: {
+    fontSize: 18,
+    color: '#FFFFFF',
+    textAlign: 'center',
   },
 });
 
