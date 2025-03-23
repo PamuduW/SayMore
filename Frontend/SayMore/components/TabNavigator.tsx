@@ -130,7 +130,6 @@ const AccountStack = () => (
   <Stack.Navigator screenOptions={{ headerShown: false }}>
     <Stack.Screen name="AccountScreen" component={AccountScreen} />
     <Stack.Screen name="SettingsScreen" component={SettingsScreen} />
-    <Stack.Screen name="ActivityScreen" component={ActivityScreen} />
     <Stack.Screen name="EditProfileScreen" component={EditProfileScreen} />
     <Stack.Screen
       name="ChangePasswordScreen"
@@ -145,15 +144,6 @@ const AccountStack = () => (
       component={PrivacyCookiesScreen}
     />
     <Stack.Screen name="AppInfoScreen" component={AppInfoScreen} />
-    <Stack.Screen name="HomeScreen" component={HomeScreen} />
-    <Stack.Screen name="Audio" component={AudioScreen} />
-    <Stack.Screen name="AnalysisScreen" component={AnalysisScreen} />
-    <Stack.Screen name="FeedbackScreen_PS" component={FeedbackScreen_PS} />
-    <Stack.Screen name="FeedbackScreen_S" component={FeedbackScreen_S} />
-    <Stack.Screen
-      name="AdditionalDetailsScreen"
-      component={AdditionalDetailsScreen}
-    />
   </Stack.Navigator>
 );
 
