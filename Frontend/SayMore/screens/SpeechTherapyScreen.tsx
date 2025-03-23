@@ -4,6 +4,7 @@ import { useTheme } from '../components/ThemeContext';
 import { useNavigation } from '@react-navigation/native';
 import LinearGradient from 'react-native-linear-gradient';
 
+// List of therapists with their details
 const therapists = [
   {
     id: '1',
@@ -50,19 +51,21 @@ const therapists = [
 ];
 
 const SpeechTherapyScreen = () => {
-  const theme = useTheme();
-  const navigation = useNavigation();
-  const borderAnimation = new Animated.Value(0);
+  const theme = useTheme(); // Get the current theme (dark/light)
+  const navigation = useNavigation(); // Access navigation functions
+  const borderAnimation = new Animated.Value(0); // Animated value for border effect
 
+  // Function to initiate a phone call
   const handleCall = (phoneNumber: string) => {
     Linking.openURL(`tel:${phoneNumber}`);
   };
 
+  // Function to open the email client
   const handleEmail = (email: string) => {
     Linking.openURL(`mailto:${email}`);
   };
 
-  // Animation loop for border effect
+  // Animation loop for a border effect on the therapist cards
   Animated.loop(
     Animated.timing(borderAnimation, {
       toValue: 1,
@@ -71,6 +74,7 @@ const SpeechTherapyScreen = () => {
     })
   ).start();
 
+  // Interpolates colors for the animated border effect
   const borderInterpolation = borderAnimation.interpolate({
     inputRange: [0, 1],
     outputRange: ['#2D336B', '#7886C7'],
@@ -81,7 +85,7 @@ const SpeechTherapyScreen = () => {
       colors={theme === 'dark' ? ['#1C1C1C', '#3A3A3A'] : ['#577BC1', '#577BC1']}
       style={styles.container}
     >
-      {/* Header */}
+      {/* Header with back button and title */}
       <View style={styles.header}>
         <TouchableOpacity
           onPress={() => navigation.goBack()}
@@ -95,7 +99,7 @@ const SpeechTherapyScreen = () => {
         <View style={{ width: 48 }} />
       </View>
 
-      {/* Therapist List */}
+      {/* Scrollable list of therapists */}
       <ScrollView contentContainerStyle={styles.scrollContainer}>
         {therapists.map(item => (
           <View
