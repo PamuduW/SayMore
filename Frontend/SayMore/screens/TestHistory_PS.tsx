@@ -308,7 +308,7 @@ const styles = StyleSheet.create({
   },
   feedbackBlock: {
     marginBottom: 20,
-    backgroundColor: '#034694',
+    backgroundColor: '#3e5a8f',
     padding: 16,
     borderRadius: 15,
   },

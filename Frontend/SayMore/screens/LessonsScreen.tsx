@@ -203,7 +203,7 @@ const styles = StyleSheet.create({
 
   lightContainer: {
     flex: 1,
-    backgroundColor: '#F0F8FF',
+    backgroundColor: '#577BC1',
     padding: 20,
   },
   darkContainer: {

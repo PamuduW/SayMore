@@ -10,6 +10,7 @@ import {
   Image,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import LinearGradient from 'react-native-linear-gradient';
 
 interface UserRecord {
   score: number;
@@ -90,21 +91,50 @@ const ActivityScreen: React.FC<Props> = ({ userRecords }) => {
         />
       </View>
 
-      <View style={theme === 'dark' ? styles.darkInfoBox : styles.lightInfoBox}>
-        <Text style={styles.infoText}>
-          Total Videos Watched: {stats.totalQuizzes}
-        </Text>
-      </View>
-      <View style={theme === 'dark' ? styles.darkInfoBox : styles.lightInfoBox}>
-        <Text style={styles.infoText}>
-          Total Public Speaking Quizzes Taken: {stats.totalQuizzes}
-        </Text>
-      </View>
-      <View style={theme === 'dark' ? styles.darkInfoBox : styles.lightInfoBox}>
-        <Text style={styles.infoText}>
-          Total Stuttering Quizzes Taken: {stats.totalQuizzes}
-        </Text>
-      </View>
+      <LinearGradient
+        colors={
+          theme === 'dark' ? ['#4A4A4A', '#6B6B6B'] : ['#3B5998', '#577BC1']
+        }
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 1 }}
+        style={styles.infoBoxGradient}>
+        <View
+          style={theme === 'dark' ? styles.darkInfoBox : styles.lightInfoBox}>
+          <Text style={styles.infoText}>
+            Total Videos Watched: {stats.totalQuizzes}
+          </Text>
+        </View>
+      </LinearGradient>
+
+      <LinearGradient
+        colors={
+          theme === 'dark' ? ['#4A4A4A', '#6B6B6B'] : ['#3B5998', '#577BC1']
+        }
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 1 }}
+        style={styles.infoBoxGradient}>
+        <View
+          style={theme === 'dark' ? styles.darkInfoBox : styles.lightInfoBox}>
+          <Text style={styles.infoText}>
+            Total Public Speaking Quizzes Taken: {stats.totalQuizzes}
+          </Text>
+        </View>
+      </LinearGradient>
+
+      <LinearGradient
+        colors={
+          theme === 'dark' ? ['#4A4A4A', '#6B6B6B'] : ['#3B5998', '#577BC1']
+        }
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 1 }}
+        style={styles.infoBoxGradient}>
+        <View
+          style={theme === 'dark' ? styles.darkInfoBox : styles.lightInfoBox}>
+          <Text style={styles.infoText}>
+            Total Stuttering Quizzes Taken: {stats.totalQuizzes}
+          </Text>
+        </View>
+      </LinearGradient>
 
       <Text
         style={
@@ -114,26 +144,54 @@ const ActivityScreen: React.FC<Props> = ({ userRecords }) => {
         and let’s aim even higher! 💪🔥 You’re doing fantastic! 🌟
       </Text>
 
-      <TouchableOpacity
-        style={
-          theme === 'dark' ? styles.darkShareButton : styles.lightShareButton
+      <LinearGradient
+        colors={
+          theme === 'dark' ? ['#4A4A4A', '#6B6B6B'] : ['#3B5998', '#577BC1']
         }
-        onPress={handleShare}>
-        <Text style={styles.shareText}>➤ Share Your Activity</Text>
-      </TouchableOpacity>
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 1 }}
+        style={styles.shareButtonGradient}>
+        <TouchableOpacity
+          style={
+            theme === 'dark' ? styles.darkShareButton : styles.lightShareButton
+          }
+          onPress={handleShare}>
+          <Text style={styles.shareText}>➤ Share Your Activity</Text>
+        </TouchableOpacity>
+      </LinearGradient>
     </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
-  lightContainer: { flex: 1, padding: 20, backgroundColor: '#fff' },
+  lightContainer: { flex: 1, padding: 20, backgroundColor: '#577BC1' },
 
   darkContainer: { flex: 1, padding: 20, backgroundColor: '#3A3A3A' },
   headerContainer: {
     flexDirection: 'row',
     alignItems: 'center',
   },
-
+  infoBoxGradient: {
+    borderRadius: 10,
+    marginVertical: 10,
+    overflow: 'hidden',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.2,
+    shadowRadius: 6,
+    elevation: 12,
+  },
+  shareButtonGradient: {
+    borderRadius: 10,
+    marginVertical: 10,
+    overflow: 'hidden',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.2,
+    shadowRadius: 6,
+    elevation: 12,
+    marginBottom: 60,
+  },
   lightTitle: {
     fontSize: 28,
     flex: 1,
@@ -164,14 +222,12 @@ const styles = StyleSheet.create({
   },
 
   lightInfoBox: {
-    backgroundColor: '#007AFF',
     padding: 20,
     borderRadius: 10,
     marginVertical: 10,
     alignItems: 'center',
   },
   darkInfoBox: {
-    backgroundColor: '#2B2B2B',
     padding: 20,
     borderRadius: 10,
     marginVertical: 10,
@@ -203,14 +259,12 @@ const styles = StyleSheet.create({
     marginTop: 5,
   },
   lightShareButton: {
-    backgroundColor: '#007AFF',
     padding: 15,
     borderRadius: 10,
     alignItems: 'center',
     marginTop: 5,
   },
   darkShareButton: {
-    backgroundColor: '#2B2B2B',
     padding: 15,
     borderRadius: 10,
     alignItems: 'center',
