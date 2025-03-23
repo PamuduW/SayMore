@@ -39,7 +39,6 @@ import PointsCategoryScreen from '../screens/PointsCategoryScreen';
 import QuizPointHistoryScreen from '../screens/QuizPointHistoryScreen';
 import LessonRedirectionStuttering from '../screens/LessonRedirectionStuttering';
 import UnderstandingAndOvercomingStutteringScreen from '../screens/UnderstandingAndOvercomingStutteringScreen';
-/
 
 
 // Navigators
