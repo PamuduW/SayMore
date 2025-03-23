@@ -20,7 +20,7 @@ const NewScreens = [
   { title: 'Points', icon: require('../assets/points.png') },
   { title: 'Speech Therapy', icon: require('../assets/speech.png') },
   { title: 'Watched Lessons', icon: require('../assets/lesson.png') },
-  { title: 'Test History', icon: require('../assets/lesson.png') },
+  { title: 'Test History', icon: require('../assets/refresh.png') },
 ];
 
 interface MoreScreenProps {

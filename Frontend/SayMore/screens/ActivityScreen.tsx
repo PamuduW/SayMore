@@ -13,6 +13,7 @@ import {
 import { useNavigation } from '@react-navigation/native';
 import firestore from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
+import LinearGradient from 'react-native-linear-gradient';
 
 interface Props {
   userRecords: { score: number }[];
@@ -271,12 +272,16 @@ const ActivityScreen: React.FC<Props> = ({
         You're doing great! Keep up the effort and continue learning! 🌟
       </Text>
 
-      <TouchableOpacity
-        style={
-          theme === 'dark' ? styles.darkShareButton : styles.lightShareButton
-        }
-        onPress={handleShare}>
-        <Text style={styles.shareText}>➤ Share Your Activity</Text>
+      <TouchableOpacity activeOpacity={0.85} onPress={handleShare}>
+        <LinearGradient
+          colors={
+            theme === 'dark' ? ['#4A4A4A', '#6B6B6B'] : ['#3B5998', '#577BC1']
+          }
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 1 }}
+          style={styles.buttonGradient}>
+          <Text style={styles.shareText}>➤ Share Your Activity</Text>
+        </LinearGradient>
       </TouchableOpacity>
     </ScrollView>
   );
@@ -292,7 +297,7 @@ const styles = StyleSheet.create({
   lightContainer: {
     flex: 1,
     padding: 20,
-    backgroundColor: '#F5F7FA',
+    backgroundColor: '#577BC1',
   },
   darkContainer: {
     flex: 1,
@@ -493,6 +498,14 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#EEE',
     lineHeight: 22,
+  },
+  buttonGradient: {
+    paddingVertical: 14,
+    borderRadius: 25,
+    alignItems: 'center',
+    justifyContent: 'center',
+    elevation: 12,
+    marginBottom: 20,
   },
   lightShareButton: {
     backgroundColor: '#0070E0',
