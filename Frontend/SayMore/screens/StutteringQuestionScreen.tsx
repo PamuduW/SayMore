@@ -207,7 +207,9 @@ const StutteringQuestionScreen: React.FC = ({ navigation }: any) => {
               onPress={handleBackPress}
               style={[
                 styles.backButton,
-                theme === 'dark' ? styles.backButtonDark : styles.backButtonLight,
+                theme === 'dark'
+                  ? styles.backButtonDark
+                  : styles.backButtonLight,
               ]}>
               <Text
                 style={[
@@ -233,7 +235,10 @@ const StutteringQuestionScreen: React.FC = ({ navigation }: any) => {
                   }
                   onPress={() => fetchQuestions(topic)}>
                   <Text
-                    style={[styles.optionText, { color: getOptionTextColor() }]}>
+                    style={[
+                      styles.optionText,
+                      { color: getOptionTextColor() },
+                    ]}>
                     {topic.replace(/\b\w/g, c => c.toUpperCase())}
                   </Text>
                 </TouchableOpacity>
@@ -261,7 +266,9 @@ const StutteringQuestionScreen: React.FC = ({ navigation }: any) => {
               onPress={handleBackPress}
               style={[
                 styles.backButton,
-                theme === 'dark' ? styles.backButtonDark : styles.backButtonLight,
+                theme === 'dark'
+                  ? styles.backButtonDark
+                  : styles.backButtonLight,
               ]}>
               <Text
                 style={[
@@ -313,7 +320,10 @@ const StutteringQuestionScreen: React.FC = ({ navigation }: any) => {
                       styles.incorrectOption,
                   ]}>
                   <Text
-                    style={[styles.optionText, { color: getOptionTextColor() }]}>
+                    style={[
+                      styles.optionText,
+                      { color: getOptionTextColor() },
+                    ]}>
                     {option}
                   </Text>
                 </TouchableOpacity>
@@ -335,7 +345,9 @@ const StutteringQuestionScreen: React.FC = ({ navigation }: any) => {
               style={isLastQuestion ? styles.finishButton : styles.nextButton}>
               <Text
                 style={
-                  isLastQuestion ? styles.finishButtonText : styles.nextButtonText
+                  isLastQuestion
+                    ? styles.finishButtonText
+                    : styles.nextButtonText
                 }>
                 {isLastQuestion ? 'Finish Quiz' : 'Next Question'}
               </Text>
@@ -540,10 +552,10 @@ const styles = StyleSheet.create({
     zIndex: 10,
   },
   backButtonLight: {
-    backgroundColor: 'rgba(230, 247, 255, 0.9)'
+    backgroundColor: 'rgba(230, 247, 255, 0.9)',
   },
   backButtonDark: {
-    backgroundColor: 'rgba(255, 255, 255, 0.9)'
+    backgroundColor: 'rgba(255, 255, 255, 0.9)',
   },
   backButtonText: {
     fontSize: 28,
@@ -556,7 +568,7 @@ const styles = StyleSheet.create({
   backButtonTextDark: { color: '#000' },
   bottomPadding: {
     height: 40, // Add extra space at the bottom for scrolling
-  }
+  },
 });
 
 export default StutteringQuestionScreen;

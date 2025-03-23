@@ -28,8 +28,7 @@ const ProgressCategoryScreen: React.FC = () => {
       colors={
         theme === 'dark' ? ['#000000', '#222222'] : ['#577BC1', '#3B5998']
       }
-      style={styles.container}
-    >
+      style={styles.container}>
       <StatusBar
         barStyle="light-content"
         backgroundColor={theme === 'dark' ? '#000' : '#577BC1'}
@@ -42,14 +41,14 @@ const ProgressCategoryScreen: React.FC = () => {
             style={[
               styles.backButton,
               theme === 'dark' ? styles.backButtonDark : styles.backButtonLight,
-            ]}
-          >
+            ]}>
             <Text
               style={[
                 styles.backButtonText,
-                theme === 'dark' ? styles.backButtonTextDark : styles.backButtonTextLight,
-              ]}
-            >
+                theme === 'dark'
+                  ? styles.backButtonTextDark
+                  : styles.backButtonTextLight,
+              ]}>
               ←
             </Text>
           </TouchableOpacity>
@@ -79,8 +78,7 @@ const ProgressCategoryScreen: React.FC = () => {
                 ? styles.optionButtonDark
                 : styles.optionButtonLight,
             ]}
-            onPress={() => handlePress('Video Progress')}
-          >
+            onPress={() => handlePress('Video Progress')}>
             <View style={styles.optionContent}>
               <View
                 style={[
@@ -88,16 +86,14 @@ const ProgressCategoryScreen: React.FC = () => {
                   theme === 'dark'
                     ? styles.iconContainerDark
                     : styles.iconContainerLight,
-                ]}
-              >
+                ]}>
                 <Text
                   style={[
                     styles.iconText,
                     theme === 'dark'
                       ? styles.iconTextDark
                       : styles.iconTextLight,
-                  ]}
-                >
+                  ]}>
                   🎥
                 </Text>
               </View>
@@ -108,8 +104,7 @@ const ProgressCategoryScreen: React.FC = () => {
                     theme === 'dark'
                       ? styles.optionTextDark
                       : styles.optionTextLight,
-                  ]}
-                >
+                  ]}>
                   Video Progress
                 </Text>
                 <Text
@@ -118,8 +113,7 @@ const ProgressCategoryScreen: React.FC = () => {
                     theme === 'dark'
                       ? styles.optionSubTextDark
                       : styles.optionSubTextLight,
-                  ]}
-                >
+                  ]}>
                   See how much of your videos you’ve watched
                 </Text>
               </View>
@@ -129,8 +123,7 @@ const ProgressCategoryScreen: React.FC = () => {
                   theme === 'dark'
                     ? styles.arrowTextDark
                     : styles.arrowTextLight,
-                ]}
-              >
+                ]}>
                 →
               </Text>
             </View>
@@ -143,8 +136,7 @@ const ProgressCategoryScreen: React.FC = () => {
                 ? styles.optionButtonDark
                 : styles.optionButtonLight,
             ]}
-            onPress={() => handlePress('Quiz Progress')}
-          >
+            onPress={() => handlePress('Quiz Progress')}>
             <View style={styles.optionContent}>
               <View
                 style={[
@@ -152,16 +144,14 @@ const ProgressCategoryScreen: React.FC = () => {
                   theme === 'dark'
                     ? styles.iconContainerDark
                     : styles.iconContainerLight,
-                ]}
-              >
+                ]}>
                 <Text
                   style={[
                     styles.iconText,
                     theme === 'dark'
                       ? styles.iconTextDark
                       : styles.iconTextLight,
-                  ]}
-                >
+                  ]}>
                   📝
                 </Text>
               </View>
@@ -172,8 +162,7 @@ const ProgressCategoryScreen: React.FC = () => {
                     theme === 'dark'
                       ? styles.optionTextDark
                       : styles.optionTextLight,
-                  ]}
-                >
+                  ]}>
                   Quiz Progress
                 </Text>
                 <Text
@@ -182,8 +171,7 @@ const ProgressCategoryScreen: React.FC = () => {
                     theme === 'dark'
                       ? styles.optionSubTextDark
                       : styles.optionSubTextLight,
-                  ]}
-                >
+                  ]}>
                   Check your quiz scores and history
                 </Text>
               </View>
@@ -193,8 +181,7 @@ const ProgressCategoryScreen: React.FC = () => {
                   theme === 'dark'
                     ? styles.arrowTextDark
                     : styles.arrowTextLight,
-                ]}
-              >
+                ]}>
                 →
               </Text>
             </View>
@@ -207,8 +194,7 @@ const ProgressCategoryScreen: React.FC = () => {
             style={[
               styles.footerText,
               theme === 'dark' ? styles.footerTextDark : styles.footerTextLight,
-            ]}
-          >
+            ]}>
             Track your progress and keep improving!
           </Text>
         </View>
@@ -238,7 +224,12 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     alignItems: 'center',
   },
-  titleText: { fontSize: 28, fontWeight: 'bold', color: '#FFFFFF', marginBottom: 8 },
+  titleText: {
+    fontSize: 28,
+    fontWeight: 'bold',
+    color: '#FFFFFF',
+    marginBottom: 8,
+  },
   subtitleText: { fontSize: 16, color: '#D0D3E6', textAlign: 'center' },
   backButton: {
     width: 48,
@@ -283,7 +274,14 @@ const styles = StyleSheet.create({
   optionButtonDark: { backgroundColor: '#333333' },
   optionButtonLight: { backgroundColor: '#FFFFFF' },
   optionContent: { flexDirection: 'row', alignItems: 'center' },
-  iconContainer: { width: 50, height: 50, borderRadius: 12, justifyContent: 'center', alignItems: 'center', marginRight: 15 },
+  iconContainer: {
+    width: 50,
+    height: 50,
+    borderRadius: 12,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 15,
+  },
   iconContainerDark: { backgroundColor: '#222222' },
   iconContainerLight: { backgroundColor: '#E6F7FF' },
   iconText: { fontSize: 24 },

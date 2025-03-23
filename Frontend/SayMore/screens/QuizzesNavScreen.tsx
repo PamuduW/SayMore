@@ -29,7 +29,6 @@ const QuizzesNavScreen = () => {
     navigation.navigate('MoreScreen');
   };
 
-
   return (
     <LinearGradient
       colors={
