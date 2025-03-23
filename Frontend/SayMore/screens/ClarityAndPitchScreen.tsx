@@ -131,7 +131,10 @@ const ClarityAndPitchScreen: React.FC<ClarityAndPitchScreenProps> = () => {
             <TouchableOpacity
               style={styles.backButton}
               onPress={handleBackPress}>
-              <Text style={styles.backButtonText}>←</Text>
+              <Image
+                source={require('../assets/back.png')} // Update this path to your back.png location
+                style={styles.backButtonImage}
+              />
             </TouchableOpacity>
             <View style={styles.headerTextContainer}>
               <Text style={styles.headerText}>Clarity & Perfecting Pitch</Text>
@@ -306,7 +309,7 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    backgroundColor: '#F0F8FF',
+    backgroundColor: '#B9D9EB',
     padding: containerPadding,
   },
   headerContainer: {
@@ -336,15 +339,9 @@ const styles = StyleSheet.create({
     shadowRadius: 3,
     elevation: 4,
   },
-  backButtonText: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    color: '#2C3E50',
-    textAlign: 'center',
-    textAlignVertical: 'center',
-    includeFontPadding: false,
-    paddingBottom: 2,
-    lineHeight: 32,
+  backButtonImage: {
+    width: 24,
+    height: 24,
   },
   sectionContainer: {
     marginBottom: 24,
