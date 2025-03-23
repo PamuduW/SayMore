@@ -14,22 +14,23 @@ import { useTheme } from '../components/ThemeContext';
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
 
+// Define the props for the HomeScreen component
 interface HomeScreenProps {
   navigation: NavigationProp<any>;
 }
 
 const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
-  useNotifications();
-  const theme = useTheme();
+  useNotifications(); // Custom hook for handling notifications
+  const theme = useTheme(); // Get current theme (dark or light)
 
-  const [userData, setUserData] = useState(null);
-  const borderAnimation = useRef(new Animated.Value(0)).current;
+  const [userData, setUserData] = useState(null); // State to store user data
+  const borderAnimation = useRef(new Animated.Value(0)).current; // Animation for border color
 
-  // Fetch user data (only first name)
+  // Fetch user data (only first name) from Firestore
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const currentUser = auth().currentUser;
+        const currentUser = auth().currentUser; // Get currently logged-in user
         if (currentUser) {
           const userDoc = await firestore()
             .collection('User_Accounts')
@@ -37,18 +38,18 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
             .get();
 
           if (userDoc.exists) {
-            setUserData(userDoc.data());
+            setUserData(userDoc.data()); // Set user data if document exists
           }
         }
       } catch (error) {
-        console.log('Error fetching user data: ', error);
+        console.log('Error fetching user data: ', error); // Log errors
       }
     };
 
     fetchUserData();
   }, []);
 
-  // Animation
+  // Border color animation loop
   useEffect(() => {
     Animated.loop(
       Animated.timing(borderAnimation, {
@@ -59,15 +60,17 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
     ).start();
   }, [borderAnimation]);
 
+  // Interpolate border color based on theme
   const borderInterpolation = borderAnimation.interpolate({
     inputRange: [0, 1],
     outputRange:
       theme === 'dark' ? ['#FFFFFF', '#AAAAAA'] : ['#2D336B', '#7886C7'],
   });
 
+  // Handle button press and navigate accordingly
   const handlePress = (option: string) => {
     const isPublicSpeaking = option === 'Public Speaking';
-    navigation.navigate('Audio', { isPublicSpeaking });
+    navigation.navigate('Audio', { isPublicSpeaking }); // Navigate to Audio screen
   };
 
   return (
@@ -76,6 +79,8 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
         theme === 'dark' ? ['#000000', '#222222'] : ['#577BC1', '#577BC1']
       }
       style={styles.container}>
+
+      {/* Header Section */}
       <View style={styles.header}>
         <Image style={styles.icon} source={require('../assets/iconTop.png')} />
 
@@ -92,6 +97,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
         </Text>
       </View>
 
+      {/* Test Section */}
       <View
         style={[
           styles.testContainer,
@@ -109,6 +115,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
           source={require('../assets/public-speaking.png')}
         />
 
+        {/* Test Options */}
         <View style={styles.testOptions}>
           {['Public Speaking', 'Stuttering'].map((option, index) => (
             <TouchableOpacity key={index} onPress={() => handlePress(option)}>
@@ -135,6 +142,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
   );
 };
 
+// Styles for the components
 const styles = StyleSheet.create({
   container: { flex: 1, padding: 20, justifyContent: 'center' },
 
