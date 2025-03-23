@@ -19,7 +19,10 @@ type RootStackParamList = {
   };
 };
 
-type LessonsPointsScreenRouteProp = RouteProp<RootStackParamList, 'LessonsPointsScreen'>;
+type LessonsPointsScreenRouteProp = RouteProp<
+  RootStackParamList,
+  'LessonsPointsScreen'
+>;
 
 const { width } = Dimensions.get('window');
 
@@ -29,12 +32,7 @@ const LessonsPointsScreen: React.FC = () => {
   const { points, videoTitle, milestones, maxPossiblePoints } = route.params;
 
   useEffect(() => {
-    console.log('PointsScreen params:', {
-      points,
-      videoTitle,
-      milestones,
-      maxPossiblePoints,
-    });
+    // Perform any necessary actions with the params
   }, [points, videoTitle, milestones, maxPossiblePoints]);
 
   // Get messaging based on points earned

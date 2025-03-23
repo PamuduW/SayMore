@@ -137,7 +137,9 @@ const PublicSpeakQuestionScreen: React.FC = ({ navigation, route }: any) => {
           timestamp: new Date().toISOString(),
         };
 
-        const userDocRef = firestore().collection('User_Accounts').doc(user.uid);
+        const userDocRef = firestore()
+          .collection('User_Accounts')
+          .doc(user.uid);
         await userDocRef.set(
           {
             quizAttempts: firestore.FieldValue.arrayUnion(attemptData),
@@ -214,8 +216,13 @@ const PublicSpeakQuestionScreen: React.FC = ({ navigation, route }: any) => {
             style={[
               styles.optionButton,
               selectedAnswer === index ? styles.selectedOption : {},
-              isCorrect !== null && index === correctIndex && styles.correctOption,
-              isCorrect !== null && index === selectedAnswer && !isCorrect && styles.incorrectOption,
+              isCorrect !== null &&
+                index === correctIndex &&
+                styles.correctOption,
+              isCorrect !== null &&
+                index === selectedAnswer &&
+                !isCorrect &&
+                styles.incorrectOption,
             ]}>
             <Text style={styles.optionText}>{option}</Text>
           </TouchableOpacity>

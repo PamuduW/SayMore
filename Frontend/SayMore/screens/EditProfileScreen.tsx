@@ -95,7 +95,6 @@ export default function EditProfileScreen({ navigation }) {
       }
       style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollArea}>
-
         {/* Header with Back Button & Title */}
         <View style={styles.headerBar}>
           <TouchableOpacity
@@ -194,7 +193,6 @@ export default function EditProfileScreen({ navigation }) {
             <Text style={styles.buttonText}>Change Password</Text>
           </LinearGradient>
         </TouchableOpacity>
-
       </ScrollView>
     </LinearGradient>
   );
