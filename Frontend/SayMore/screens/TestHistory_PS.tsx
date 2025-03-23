@@ -24,11 +24,7 @@ const TestHistory_PS: React.FC = () => {
   const [responseData, setResponseData] = useState<any>(null);
   const [showMore, setShowMore] = useState<boolean>(false);
   const [data, setData] = useState({
-    labels: [
-      'final_energy_score',
-      'final_voice_score',
-      'final_public_speaking_score',
-    ],
+    labels: ['Energy', 'Voice', 'Final'],
     data: [0, 0, 0],
   });
   const chartConfig = {
@@ -66,11 +62,7 @@ const TestHistory_PS: React.FC = () => {
           if (psData && psData[testId]) {
             setResponseData(psData[testId]);
             setData({
-              labels: [
-                'final_energy_score',
-                'final_voice_score',
-                'final_public_speaking_score',
-              ],
+              labels: ['Energy', 'Voice', 'Final'],
               data: [
                 psData[testId]['Speech_Intensity_&_Energy_Data']
                   .final_energy_score / 100,
@@ -151,54 +143,53 @@ const TestHistory_PS: React.FC = () => {
 
               <View style={styles.feedbackBlock}>
                 <Text style={styles.label}>Voice Quality & Stability Data</Text>
-
-                <Text>
+                <Text style={styles.value}>
                   Final Voice Score:{' '}
                   {
                     responseData['Voice_Quality_&_Stability_Data']
                       .final_voice_score
                   }
                 </Text>
-                <Text>
+                <Text style={styles.value}>
                   variation_score:{' '}
                   {
                     responseData['Voice_Quality_&_Stability_Data']
                       .variation_score
                   }
                 </Text>
-                <Text>
+                <Text style={styles.value}>
                   stability_score:{' '}
                   {
                     responseData['Voice_Quality_&_Stability_Data']
                       .stability_score
                   }
                 </Text>
-                <Text>
+                <Text style={styles.value}>
                   speaking_speed:{' '}
                   {
                     responseData['Voice_Quality_&_Stability_Data']
                       .speaking_speed
                   }
                 </Text>
-                <Text>
+                <Text style={styles.value}>
                   clarity:{' '}
                   {responseData['Voice_Quality_&_Stability_Data'].clarity}
                 </Text>
-                <Text>
+                <Text style={styles.value}>
                   overall_jitter_score:{' '}
                   {
                     responseData['Voice_Quality_&_Stability_Data']
                       .overall_jitter_score
                   }
                 </Text>
-                <Text>
+                <Text style={styles.value}>
                   overall_shimmer_score:{' '}
                   {
                     responseData['Voice_Quality_&_Stability_Data']
                       .overall_shimmer_score
                   }
                 </Text>
-                <Text>
+                <Text style={styles.value}>
                   overall_hnr_score:{' '}
                   {
                     responseData['Voice_Quality_&_Stability_Data']
@@ -207,31 +198,41 @@ const TestHistory_PS: React.FC = () => {
                 </Text>
               </View>
 
-              <Text style={styles.scoreText}>
-                Speech Intensity & Energy Data
-              </Text>
-              <Text>
-                final_energy_score:{' '}
-                {
-                  responseData['Speech_Intensity_&_Energy_Data']
-                    .final_energy_score
-                }
-              </Text>
-              <Text>
-                intensity_score:{' '}
-                {responseData['Speech_Intensity_&_Energy_Data'].intensity_score}
-              </Text>
-              <Text>
-                energy_score:{' '}
-                {responseData['Speech_Intensity_&_Energy_Data'].energy_score}
-              </Text>
-              <Text>
-                variation_score:{' '}
-                {responseData['Speech_Intensity_&_Energy_Data'].variation_score}
-              </Text>
+              <View style={styles.feedbackBlock}>
+                <Text style={styles.label}>Speech Intensity & Energy Data</Text>
+                <Text style={styles.value}>
+                  final_energy_score:{' '}
+                  {
+                    responseData['Speech_Intensity_&_Energy_Data']
+                      .final_energy_score
+                  }
+                </Text>
+                <Text style={styles.value}>
+                  intensity_score:{' '}
+                  {
+                    responseData['Speech_Intensity_&_Energy_Data']
+                      .intensity_score
+                  }
+                </Text>
+                <Text style={styles.value}>
+                  energy_score:{' '}
+                  {responseData['Speech_Intensity_&_Energy_Data'].energy_score}
+                </Text>
+                <Text style={styles.value}>
+                  variation_score:{' '}
+                  {
+                    responseData['Speech_Intensity_&_Energy_Data']
+                      .variation_score
+                  }
+                </Text>
+              </View>
 
-              <Text style={styles.scoreText}>Transcription</Text>
-              <Text>{responseData.transcription[0].transcript}</Text>
+              <View style={styles.feedbackBlock}>
+                <Text style={styles.label}>Transcription</Text>
+                <Text style={styles.value}>
+                  {responseData.transcription[0].transcript}
+                </Text>
+              </View>
             </View>
           )}
         </ScrollView>

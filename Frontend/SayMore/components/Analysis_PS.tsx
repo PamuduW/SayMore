@@ -64,11 +64,7 @@ const Analysis_PS: React.FC<Analysis_PSProps> = ({
   const [loading, setLoading] = useState(true);
   const navigation = useNavigation();
   const [data, setData] = useState({
-    labels: [
-      'final_energy_score',
-      'final_voice_score',
-      'final_public_speaking_score',
-    ],
+    labels: ['Energy', 'Voice', 'Final'],
     data: [0, 0, 0],
   });
   const chartConfig = {
@@ -119,11 +115,7 @@ const Analysis_PS: React.FC<Analysis_PSProps> = ({
 
         setResponseData(responseInfo);
         setData({
-          labels: [
-            'final_energy_score',
-            'final_voice_score',
-            'final_public_speaking_score',
-          ],
+          labels: ['Energy', 'Voice', 'Final'],
           data: [
             responseInfo.result['Speech_Intensity_&_Energy_Data']
               .final_energy_score / 100,
