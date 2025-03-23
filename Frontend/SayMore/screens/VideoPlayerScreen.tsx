@@ -81,10 +81,7 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = ({
   const checkPointsIntervalRef = useRef<NodeJS.Timeout | null>(null);
   const reachedMilestonesRef = useRef<Set<number>>(new Set());
   const totalPointsEarnedRef = useRef<number>(0);
-
   const positionPollingRef = useRef<NodeJS.Timeout | null>(null);
-
-  const [_, _setCurrentTime] = useState(0);
   const previousTimeRef = useRef(0);
   const [largestMilestone, setLargestMilestone] = useState(0);
 
@@ -226,14 +223,7 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = ({
     } catch (error) {
       //console.error('Error checking watching progress:', error);
     }
-  }, [
-    playing,
-    videoDuration,
-    awardPoints,
-    largestMilestone,
-    isRewatching,
-    showNotification,
-  ]);
+  }, [playing, videoDuration, awardPoints, largestMilestone]);
 
   const throttledSetCurrentPercentage = useCallback(
     throttle((percentage: number) => {
@@ -682,14 +672,7 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = ({
       isSavingRef.current = false;
       //console.log('isSavingRef.current set to false');
     }
-  }, [
-    video,
-    lessonTitle,
-    videoDuration,
-    currentVideoId,
-    isRewatching,
-    showNotification,
-  ]);
+  }, [video, lessonTitle, videoDuration, currentVideoId, isRewatching]);
 
   const checkPlayDuration = useCallback(() => {
     if (playStartTimeRef.current !== null && !hasPlayedEnoughRef.current) {
