@@ -49,7 +49,7 @@ import SpeakingWithEnergyScreen from '../screens/SpeakingWithEnergyScreen';
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
 
-// Home Stack
+// Home Stack - The stack navigator for the "Home" section, includes all the screens related to Home.
 const HomeStack = () => (
   <Stack.Navigator screenOptions={{ headerShown: false }}>
     <Stack.Screen name="HomeScreen" component={HomeScreen} />
@@ -57,36 +57,18 @@ const HomeStack = () => (
     <Stack.Screen name="AnalysisScreen" component={AnalysisScreen} />
     <Stack.Screen name="FeedbackScreen_PS" component={FeedbackScreen_PS} />
     <Stack.Screen name="FeedbackScreen_S" component={FeedbackScreen_S} />
-    <Stack.Screen
-      name="AdditionalDetailsScreen"
-      component={AdditionalDetailsScreen}
-    />
+    <Stack.Screen name="AdditionalDetailsScreen" component={AdditionalDetailsScreen} />
     {/* Moved UnderstandingAndOvercomingStuttering to HomeStack to match desired structure */}
-    <Stack.Screen
-      name="UnderstandingAndOvercomingStutteringScreen"
-      component={UnderstandingAndOvercomingStutteringScreen}
-    />
-    <Stack.Screen
-      name="LessonRedirectionStuttering"
-      component={LessonRedirectionStuttering}
-    />
-    <Stack.Screen
-      name="ClarityAndPitchScreen"
-      component={ClarityAndPitchScreen}
-    />
-    <Stack.Screen
-      name="CommunicationAndStageFrightScreen"
-      component={CommunicationAndStageFrightScreen}
-    />
-    <Stack.Screen
-      name="SpeakingWithEnergyScreen"
-      component={SpeakingWithEnergyScreen}
-    />
+    <Stack.Screen name="UnderstandingAndOvercomingStutteringScreen" component={UnderstandingAndOvercomingStutteringScreen} />
+    <Stack.Screen name="LessonRedirectionStuttering" component={LessonRedirectionStuttering} />
+    <Stack.Screen name="ClarityAndPitchScreen" component={ClarityAndPitchScreen} />
+    <Stack.Screen name="CommunicationAndStageFrightScreen" component={CommunicationAndStageFrightScreen} />
+    <Stack.Screen name="SpeakingWithEnergyScreen" component={SpeakingWithEnergyScreen} />
     <Stack.Screen name="LessonRedirectionPS" component={LessonRedirectionPS} />
   </Stack.Navigator>
 );
 
-// More Stack
+// More Stack - The stack navigator for the "More" section, includes all the screens related to lessons, quizzes, and history.
 const MoreStack = () => (
   <Stack.Navigator screenOptions={{ headerShown: false }}>
     <Stack.Screen name="MoreScreen" component={MoreScreen} />
@@ -97,67 +79,40 @@ const MoreStack = () => (
     <Stack.Screen name="LessonsPointsScreen" component={LessonsPointsScreen} />
     <Stack.Screen name="History" component={HistoryScreen} />
     <Stack.Screen name="QuizzesNavScreen" component={QuizzesNavScreen} />
-    <Stack.Screen
-      name="PointsCategoryScreen"
-      component={PointsCategoryScreen}
-    />
+    <Stack.Screen name="PointsCategoryScreen" component={PointsCategoryScreen} />
     <Stack.Screen name="TotalPointsScreen" component={TotalPointsScreen} />
-    <Stack.Screen
-      name="QuizPointHistoryScreen"
-      component={QuizPointHistoryScreen}
-    />
+    <Stack.Screen name="QuizPointHistoryScreen" component={QuizPointHistoryScreen} />
     <Stack.Screen name="ProgressScreen" component={ProgressScreen} />
     <Stack.Screen name="Difficulty" component={Difficulty} />
-    <Stack.Screen
-      name="PublicSpeakQuestionScreen"
-      component={PublicSpeakQuestionScreen}
-    />
-    <Stack.Screen
-      name="StutteringQuestionScreen"
-      component={StutteringQuestionScreen}
-    />
+    <Stack.Screen name="PublicSpeakQuestionScreen" component={PublicSpeakQuestionScreen} />
+    <Stack.Screen name="StutteringQuestionScreen" component={StutteringQuestionScreen} />
     <Stack.Screen name="PointsScreen" component={PointsScreen} />
     <Stack.Screen name="SpeechTherapyScreen" component={SpeechTherapyScreen} />
-    <Stack.Screen
-      name="LessonRedirectionStuttering"
-      component={LessonRedirectionStuttering}
-    />
+    <Stack.Screen name="LessonRedirectionStuttering" component={LessonRedirectionStuttering} />
   </Stack.Navigator>
 );
 
-// Account Stack
+// Account Stack - The stack navigator for the "Account" section, includes screens related to user settings, profile, and security.
 const AccountStack = () => (
   <Stack.Navigator screenOptions={{ headerShown: false }}>
     <Stack.Screen name="AccountScreen" component={AccountScreen} />
     <Stack.Screen name="SettingsScreen" component={SettingsScreen} />
     <Stack.Screen name="ActivityScreen" component={ActivityScreen} />
     <Stack.Screen name="EditProfileScreen" component={EditProfileScreen} />
-    <Stack.Screen
-      name="ChangePasswordScreen"
-      component={ChangePasswordScreen}
-    />
-    <Stack.Screen
-      name="TermsAndConditionsScreen"
-      component={TermsAndConditionsScreen}
-    />
-    <Stack.Screen
-      name="PrivacyCookiesScreen"
-      component={PrivacyCookiesScreen}
-    />
+    <Stack.Screen name="ChangePasswordScreen" component={ChangePasswordScreen} />
+    <Stack.Screen name="TermsAndConditionsScreen" component={TermsAndConditionsScreen} />
+    <Stack.Screen name="PrivacyCookiesScreen" component={PrivacyCookiesScreen} />
     <Stack.Screen name="AppInfoScreen" component={AppInfoScreen} />
     <Stack.Screen name="HomeScreen" component={HomeScreen} />
     <Stack.Screen name="Audio" component={AudioScreen} />
     <Stack.Screen name="AnalysisScreen" component={AnalysisScreen} />
     <Stack.Screen name="FeedbackScreen_PS" component={FeedbackScreen_PS} />
     <Stack.Screen name="FeedbackScreen_S" component={FeedbackScreen_S} />
-    <Stack.Screen
-      name="AdditionalDetailsScreen"
-      component={AdditionalDetailsScreen}
-    />
+    <Stack.Screen name="AdditionalDetailsScreen" component={AdditionalDetailsScreen} />
   </Stack.Navigator>
 );
 
-// Tab Options
+// Tab Options - Function to set the appearance and behavior of the tab bar based on the theme.
 const screenOptions = (route, theme) => {
   const icons = {
     Home: HomeIcon,
@@ -179,20 +134,20 @@ const screenOptions = (route, theme) => {
         ]}
       />
     ),
-    tabBarActiveTintColor: theme === 'dark' ? '#FFFFFF' : '#003366',
-    tabBarInactiveTintColor: 'gray',
+    tabBarActiveTintColor: theme === 'dark' ? '#FFFFFF' : '#003366', // Adjusting the active tab icon color based on the theme.
+    tabBarInactiveTintColor: 'gray', // Default color for inactive tabs.
     tabBarStyle: {
-      backgroundColor: theme === 'dark' ? '#333333' : '#F0F8FF',
+      backgroundColor: theme === 'dark' ? '#333333' : '#F0F8FF', // Tab bar color based on the theme.
       borderTopWidth: 0,
       elevation: 0,
     },
-    headerShown: false,
+    headerShown: false, // Hiding the header in the bottom tab bar screens.
   };
 };
 
-// Main Tab Navigator
+// Main Tab Navigator - The main bottom tab navigation structure combining all the screens.
 const TabNavigator = () => {
-  const theme = useTheme();
+  const theme = useTheme(); // Fetch current theme (light/dark)
 
   return (
     <Tab.Navigator screenOptions={({ route }) => screenOptions(route, theme)}>
@@ -203,23 +158,23 @@ const TabNavigator = () => {
   );
 };
 
-// Styles
+// Styles - Styling for the icons and tab bar.
 const styles = StyleSheet.create({
   icon: {
     width: 25,
     height: 25,
   },
   activeIcon: {
-    tintColor: '#003366',
+    tintColor: '#003366', // Active icon color (default theme).
   },
   lightActiveIcon: {
-    tintColor: '#003366',
+    tintColor: '#003366', // Active icon color for light theme.
   },
   darkActiveIcon: {
-    tintColor: '#FFFFFF',
+    tintColor: '#FFFFFF', // Active icon color for dark theme.
   },
   inactiveIcon: {
-    tintColor: 'gray',
+    tintColor: 'gray', // Inactive icon color.
   },
 });
 
