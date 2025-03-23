@@ -39,6 +39,7 @@ const AdditionalDetailsScreen = ({ route }) => {
     jitter_data = {},
     intensity_analysis = {},
     energy_analysis = {},
+    threeSmallestScores = [],
   } = route.params || {};
 
   const [pitch_graph_data, setPitch_graph_data] = useState({
@@ -226,6 +227,7 @@ const AdditionalDetailsScreen = ({ route }) => {
       voiceDynamicFeedback,
       speechBaseFeedback,
       speechDynamicFeedback,
+      threeSmallestScores,
     });
   };
 
