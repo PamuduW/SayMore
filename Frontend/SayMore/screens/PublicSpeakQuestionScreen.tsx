@@ -40,7 +40,6 @@ const PublicSpeakQuestionScreen: React.FC = ({ navigation, route }: any) => {
   const [isNextButtonVisible, setIsNextButtonVisible] = useState(false);
   const [score, setScore] = useState(0);
   const [loading, setLoading] = useState<boolean>(true);
-  const [progress, setProgress] = useState<number>(0);
   const [completedQuestions, setCompletedQuestions] = useState(0);
 
   useEffect(() => {
@@ -111,7 +110,6 @@ const PublicSpeakQuestionScreen: React.FC = ({ navigation, route }: any) => {
 
       setShuffledOptions(shuffledAnswers);
       setCorrectIndex(correctAnswerIndex);
-      setProgress(currentQuestionIndex / questions.length);
     }
   }, [currentQuestionIndex, questions]);
 
@@ -127,7 +125,6 @@ const PublicSpeakQuestionScreen: React.FC = ({ navigation, route }: any) => {
       if (correct) setScore(score + 10);
       setIsConfirmButtonVisible(false);
       setIsNextButtonVisible(true);
-      setProgress((currentQuestionIndex + 1) / questions.length);
       setCompletedQuestions(prev => prev + 1);
     }
   };
