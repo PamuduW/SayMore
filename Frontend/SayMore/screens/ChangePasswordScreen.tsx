@@ -68,16 +68,11 @@ export default function ChangePasswordScreen({ navigation }) {
       </View>
 
       <View style={styles.inputContainer}>
-        <Text style={[styles.label, { color: '#FFFFFF' }]}>
-          Current Password
-        </Text>
+        <Text style={[styles.label, styles.labelColor]}>Current Password</Text>
         <TextInput
           style={[
             styles.input,
-            {
-              backgroundColor: theme === 'dark' ? '#2B2B2B' : '#FFFFFF',
-              color: theme === 'dark' ? '#FFFFFF' : '#2A2D57',
-            },
+            theme === 'dark' ? styles.inputDark : styles.inputLight,
           ]}
           value={currentPassword}
           onChangeText={setCurrentPassword}
@@ -86,14 +81,11 @@ export default function ChangePasswordScreen({ navigation }) {
           secureTextEntry
         />
 
-        <Text style={[styles.label, { color: '#FFFFFF' }]}>New Password</Text>
+        <Text style={[styles.label, styles.labelColor]}>New Password</Text>
         <TextInput
           style={[
             styles.input,
-            {
-              backgroundColor: theme === 'dark' ? '#2B2B2B' : '#FFFFFF',
-              color: theme === 'dark' ? '#FFFFFF' : '#2A2D57',
-            },
+            theme === 'dark' ? styles.inputDark : styles.inputLight,
           ]}
           value={newPassword}
           onChangeText={setNewPassword}
@@ -102,16 +94,11 @@ export default function ChangePasswordScreen({ navigation }) {
           secureTextEntry
         />
 
-        <Text style={[styles.label, { color: '#FFFFFF' }]}>
-          Confirm Password
-        </Text>
+        <Text style={[styles.label, styles.labelColor]}>Confirm Password</Text>
         <TextInput
           style={[
             styles.input,
-            {
-              backgroundColor: theme === 'dark' ? '#2B2B2B' : '#FFFFFF',
-              color: theme === 'dark' ? '#FFFFFF' : '#2A2D57',
-            },
+            theme === 'dark' ? styles.inputDark : styles.inputLight,
           ]}
           value={confirmPassword}
           onChangeText={setConfirmPassword}
@@ -123,7 +110,7 @@ export default function ChangePasswordScreen({ navigation }) {
 
       <TouchableOpacity
         onPress={handleChangePassword}
-        style={{ marginTop: 20 }}>
+        style={styles.confirmButtonContainer}>
         <LinearGradient
           colors={
             theme === 'dark' ? ['#3A3A3A', '#4A4A4A'] : ['#00C6FF', '#0072FF']
@@ -164,10 +151,28 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
 
+  labelColor: {
+    color: '#FFFFFF',
+  },
+
   input: {
     borderRadius: 12,
     padding: 12,
     marginBottom: 20,
+  },
+
+  inputDark: {
+    backgroundColor: '#2B2B2B',
+    color: '#FFFFFF',
+  },
+
+  inputLight: {
+    backgroundColor: '#FFFFFF',
+    color: '#2A2D57',
+  },
+
+  confirmButtonContainer: {
+    marginTop: 20,
   },
 
   confirmButton: {

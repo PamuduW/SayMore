@@ -82,12 +82,6 @@ const SpeechTherapyScreen = () => {
     })
   ).start();
 
-  // Interpolates colors for the animated border effect
-  const borderInterpolation = borderAnimation.interpolate({
-    inputRange: [0, 1],
-    outputRange: ['#2D336B', '#7886C7'],
-  });
-
   return (
     <LinearGradient
       colors={
@@ -117,7 +111,7 @@ const SpeechTherapyScreen = () => {
           ]}>
           Speech Therapists
         </Text>
-        <View style={{ width: 48 }} />
+        <View style={styles.headerSpacer} />
       </View>
 
       {/* Scrollable list of therapists */}
@@ -195,7 +189,7 @@ const styles = StyleSheet.create({
   headerTitle: { fontSize: 24, fontWeight: 'bold', letterSpacing: 0.5 },
   headerTitleLight: { color: '#003366' },
   headerTitleDark: { color: '#FFFFFF' },
-
+  headerSpacer: { width: 48 },
   scrollContainer: { paddingTop: 10 },
   card: {
     padding: 20,
@@ -211,7 +205,6 @@ const styles = StyleSheet.create({
   name: { fontSize: 18, fontWeight: 'bold', marginBottom: 5 },
   details: { fontSize: 14, marginBottom: 8 },
   contact: { fontSize: 14, marginTop: 8 },
-
   textWhite: { color: '#FFFFFF' },
   textDark: { color: '#003366' },
   textGrey: { color: '#AAAAAA' },

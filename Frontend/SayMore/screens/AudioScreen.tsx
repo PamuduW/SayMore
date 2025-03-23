@@ -137,7 +137,6 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginBottom: 20,
     marginTop: 20,
-    color: '#000',
     textAlign: 'center',
     color: '#007AFF',
   },
@@ -148,7 +147,6 @@ const styles = StyleSheet.create({
     marginTop: 20,
     color: '#000',
     textAlign: 'center',
-    color: '#000',
   },
   subText: {
     fontSize: 18,

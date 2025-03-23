@@ -75,7 +75,6 @@ export default function EditProfileScreen({ navigation }) {
         navigation.goBack();
       }
     } catch (error) {
-      console.log(error);
       Alert.alert('Error', error.message);
     }
   };
@@ -119,14 +118,11 @@ export default function EditProfileScreen({ navigation }) {
         </View>
 
         <View style={styles.inputContainer}>
-          <Text style={[styles.label, { color: '#FFFFFF' }]}>Name</Text>
+          <Text style={[styles.label, styles.labelColor]}>Name</Text>
           <TextInput
             style={[
               styles.input,
-              {
-                backgroundColor: theme === 'dark' ? '#2B2B2B' : '#FFFFFF',
-                color: theme === 'dark' ? '#FFFFFF' : '#2A2D57',
-              },
+              theme === 'dark' ? styles.inputDark : styles.inputLight,
             ]}
             value={fname}
             onChangeText={setFname}
@@ -134,14 +130,11 @@ export default function EditProfileScreen({ navigation }) {
             placeholderTextColor="#aaa"
           />
 
-          <Text style={[styles.label, { color: '#FFFFFF' }]}>Surname</Text>
+          <Text style={[styles.label, styles.labelColor]}>Surname</Text>
           <TextInput
             style={[
               styles.input,
-              {
-                backgroundColor: theme === 'dark' ? '#2B2B2B' : '#FFFFFF',
-                color: theme === 'dark' ? '#FFFFFF' : '#2A2D57',
-              },
+              theme === 'dark' ? styles.inputDark : styles.inputLight,
             ]}
             value={sname}
             onChangeText={setSname}
@@ -149,16 +142,11 @@ export default function EditProfileScreen({ navigation }) {
             placeholderTextColor="#aaa"
           />
 
-          <Text style={[styles.label, { color: '#FFFFFF' }]}>
-            Date of Birth
-          </Text>
+          <Text style={[styles.label, styles.labelColor]}>Date of Birth</Text>
           <TextInput
             style={[
               styles.input,
-              {
-                backgroundColor: theme === 'dark' ? '#2B2B2B' : '#FFFFFF',
-                color: theme === 'dark' ? '#FFFFFF' : '#2A2D57',
-              },
+              theme === 'dark' ? styles.inputDark : styles.inputLight,
             ]}
             value={dob}
             onChangeText={setDob}
@@ -166,14 +154,11 @@ export default function EditProfileScreen({ navigation }) {
             placeholderTextColor="#aaa"
           />
 
-          <Text style={[styles.label, { color: '#FFFFFF' }]}>Username</Text>
+          <Text style={[styles.label, styles.labelColor]}>Username</Text>
           <TextInput
             style={[
               styles.input,
-              {
-                backgroundColor: theme === 'dark' ? '#2B2B2B' : '#FFFFFF',
-                color: theme === 'dark' ? '#FFFFFF' : '#2A2D57',
-              },
+              theme === 'dark' ? styles.inputDark : styles.inputLight,
             ]}
             value={username}
             onChangeText={setUsername}
@@ -181,14 +166,11 @@ export default function EditProfileScreen({ navigation }) {
             placeholderTextColor="#aaa"
           />
 
-          <Text style={[styles.label, { color: '#FFFFFF' }]}>Email</Text>
+          <Text style={[styles.label, styles.labelColor]}>Email</Text>
           <TextInput
             style={[
               styles.input,
-              {
-                backgroundColor: theme === 'dark' ? '#1E1E1E' : '#D0D3E6',
-                color: theme === 'dark' ? '#999999' : '#2A2D57',
-              },
+              theme === 'dark' ? styles.inputEmailDark : styles.inputEmailLight,
             ]}
             value={email}
             editable={false}
@@ -196,7 +178,7 @@ export default function EditProfileScreen({ navigation }) {
         </View>
 
         {/* Save Changes Button */}
-        <TouchableOpacity onPress={handleSave} style={{ marginBottom: 15 }}>
+        <TouchableOpacity onPress={handleSave} style={styles.buttonMargin}>
           <LinearGradient
             colors={
               theme === 'dark' ? ['#3A3A3A', '#4A4A4A'] : ['#00C6FF', '#0072FF']
@@ -211,7 +193,7 @@ export default function EditProfileScreen({ navigation }) {
         {/* Cancel Changes Button */}
         <TouchableOpacity
           onPress={() => navigation.goBack()}
-          style={{ marginBottom: 15 }}>
+          style={styles.buttonMargin}>
           <LinearGradient
             colors={['#e74c3c', '#ff6b6b']}
             start={{ x: 0, y: 0 }}
@@ -264,10 +246,34 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
 
+  labelColor: {
+    color: '#FFFFFF',
+  },
+
   input: {
     borderRadius: 12,
     padding: 12,
     marginBottom: 20,
+  },
+
+  inputDark: {
+    backgroundColor: '#2B2B2B',
+    color: '#FFFFFF',
+  },
+
+  inputLight: {
+    backgroundColor: '#FFFFFF',
+    color: '#2A2D57',
+  },
+
+  inputEmailDark: {
+    backgroundColor: '#1E1E1E',
+    color: '#999999',
+  },
+
+  inputEmailLight: {
+    backgroundColor: '#D0D3E6',
+    color: '#2A2D57',
   },
 
   button: {
@@ -314,5 +320,9 @@ const styles = StyleSheet.create({
   },
   backButtonTextDark: {
     color: '#000',
+  },
+
+  buttonMargin: {
+    marginBottom: 15,
   },
 });

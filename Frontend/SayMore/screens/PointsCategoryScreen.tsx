@@ -6,7 +6,6 @@ import {
   StyleSheet,
   StatusBar,
   SafeAreaView,
-  Image,
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import { useTheme } from '../components/ThemeContext';
@@ -52,11 +51,11 @@ const PointsCategoryScreen: React.FC = () => {
             </Text>
           </TouchableOpacity>
 
-          <Text style={[styles.headerTitle, { color: '#FFFFFF' }]}>
+          <Text style={[styles.headerTitle, styles.headerTitleColor]}>
             Points Categories
           </Text>
 
-          <View style={{ width: 48 }} />
+          <View style={styles.headerSpacer} />
         </View>
 
         {/* Spacer to push title down */}
@@ -75,19 +74,25 @@ const PointsCategoryScreen: React.FC = () => {
           <TouchableOpacity
             style={[
               styles.optionButton,
-              { backgroundColor: theme === 'dark' ? '#333333' : '#FFFFFF' },
+              theme === 'dark'
+                ? styles.optionButtonDark
+                : styles.optionButtonLight,
             ]}
             onPress={() => handlePress('Lessons Points')}>
             <View style={styles.optionContent}>
               <View
                 style={[
                   styles.iconContainer,
-                  { backgroundColor: theme === 'dark' ? '#222222' : '#E6F7FF' },
+                  theme === 'dark'
+                    ? styles.iconContainerDark
+                    : styles.iconContainerLight,
                 ]}>
                 <Text
                   style={[
                     styles.iconText,
-                    { color: theme === 'dark' ? '#FFFFFF' : '#3B5998' },
+                    theme === 'dark'
+                      ? styles.iconTextDark
+                      : styles.iconTextLight,
                   ]}>
                   📚
                 </Text>
@@ -96,14 +101,18 @@ const PointsCategoryScreen: React.FC = () => {
                 <Text
                   style={[
                     styles.optionText,
-                    { color: theme === 'dark' ? '#FFFFFF' : '#2A2D57' },
+                    theme === 'dark'
+                      ? styles.optionTextDark
+                      : styles.optionTextLight,
                   ]}>
                   Lessons Points
                 </Text>
                 <Text
                   style={[
                     styles.optionSubText,
-                    { color: theme === 'dark' ? '#AAAAAA' : '#666666' },
+                    theme === 'dark'
+                      ? styles.optionSubTextDark
+                      : styles.optionSubTextLight,
                   ]}>
                   View points earned from completing lessons
                 </Text>
@@ -111,7 +120,9 @@ const PointsCategoryScreen: React.FC = () => {
               <Text
                 style={[
                   styles.arrowText,
-                  { color: theme === 'dark' ? '#FFFFFF' : '#3B5998' },
+                  theme === 'dark'
+                    ? styles.arrowTextDark
+                    : styles.arrowTextLight,
                 ]}>
                 →
               </Text>
@@ -121,19 +132,25 @@ const PointsCategoryScreen: React.FC = () => {
           <TouchableOpacity
             style={[
               styles.optionButton,
-              { backgroundColor: theme === 'dark' ? '#333333' : '#FFFFFF' },
+              theme === 'dark'
+                ? styles.optionButtonDark
+                : styles.optionButtonLight,
             ]}
             onPress={() => handlePress('Quizzes & Challenges Points')}>
             <View style={styles.optionContent}>
               <View
                 style={[
                   styles.iconContainer,
-                  { backgroundColor: theme === 'dark' ? '#222222' : '#E6F7FF' },
+                  theme === 'dark'
+                    ? styles.iconContainerDark
+                    : styles.iconContainerLight,
                 ]}>
                 <Text
                   style={[
                     styles.iconText,
-                    { color: theme === 'dark' ? '#FFFFFF' : '#3B5998' },
+                    theme === 'dark'
+                      ? styles.iconTextDark
+                      : styles.iconTextLight,
                   ]}>
                   🏆
                 </Text>
@@ -142,14 +159,18 @@ const PointsCategoryScreen: React.FC = () => {
                 <Text
                   style={[
                     styles.optionText,
-                    { color: theme === 'dark' ? '#FFFFFF' : '#2A2D57' },
+                    theme === 'dark'
+                      ? styles.optionTextDark
+                      : styles.optionTextLight,
                   ]}>
                   Quizzes & Challenges
                 </Text>
                 <Text
                   style={[
                     styles.optionSubText,
-                    { color: theme === 'dark' ? '#AAAAAA' : '#666666' },
+                    theme === 'dark'
+                      ? styles.optionSubTextDark
+                      : styles.optionSubTextLight,
                   ]}>
                   View points earned from activities
                 </Text>
@@ -157,7 +178,9 @@ const PointsCategoryScreen: React.FC = () => {
               <Text
                 style={[
                   styles.arrowText,
-                  { color: theme === 'dark' ? '#FFFFFF' : '#3B5998' },
+                  theme === 'dark'
+                    ? styles.arrowTextDark
+                    : styles.arrowTextLight,
                 ]}>
                 →
               </Text>
@@ -169,7 +192,7 @@ const PointsCategoryScreen: React.FC = () => {
           <Text
             style={[
               styles.footerText,
-              { color: theme === 'dark' ? '#AAAAAA' : '#D0D3E6' },
+              theme === 'dark' ? styles.footerTextDark : styles.footerTextLight,
             ]}>
             Points help you track your progress in SayMore
           </Text>
@@ -203,6 +226,14 @@ const styles = StyleSheet.create({
     fontSize: 22,
     fontWeight: 'bold',
     textAlign: 'center',
+  },
+
+  headerTitleColor: {
+    color: '#FFFFFF',
+  },
+
+  headerSpacer: {
+    width: 48,
   },
 
   // Add spacer to push title down
@@ -278,6 +309,13 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
   },
 
+  optionButtonDark: {
+    backgroundColor: '#333333',
+  },
+  optionButtonLight: {
+    backgroundColor: '#FFFFFF',
+  },
+
   optionContent: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -292,8 +330,22 @@ const styles = StyleSheet.create({
     marginRight: 15,
   },
 
+  iconContainerDark: {
+    backgroundColor: '#222222',
+  },
+  iconContainerLight: {
+    backgroundColor: '#E6F7FF',
+  },
+
   iconText: {
     fontSize: 24,
+  },
+
+  iconTextDark: {
+    color: '#FFFFFF',
+  },
+  iconTextLight: {
+    color: '#3B5998',
   },
 
   optionTextContainer: {
@@ -306,13 +358,34 @@ const styles = StyleSheet.create({
     marginBottom: 4,
   },
 
+  optionTextDark: {
+    color: '#FFFFFF',
+  },
+  optionTextLight: {
+    color: '#2A2D57',
+  },
+
   optionSubText: {
     fontSize: 14,
+  },
+
+  optionSubTextDark: {
+    color: '#AAAAAA',
+  },
+  optionSubTextLight: {
+    color: '#666666',
   },
 
   arrowText: {
     fontSize: 22,
     fontWeight: 'bold',
+  },
+
+  arrowTextDark: {
+    color: '#FFFFFF',
+  },
+  arrowTextLight: {
+    color: '#3B5998',
   },
 
   footer: {
@@ -323,6 +396,13 @@ const styles = StyleSheet.create({
   footerText: {
     fontSize: 14,
     textAlign: 'center',
+  },
+
+  footerTextDark: {
+    color: '#AAAAAA',
+  },
+  footerTextLight: {
+    color: '#D0D3E6',
   },
 });
 

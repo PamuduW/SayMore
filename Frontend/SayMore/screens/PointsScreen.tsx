@@ -1,8 +1,6 @@
 import React, { useMemo } from 'react';
 import {
-  View,
   Text,
-  Image,
   StyleSheet,
   Animated,
   TouchableOpacity,

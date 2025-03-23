@@ -22,7 +22,6 @@ import { useNavigation } from '@react-navigation/native';
 
 const ProgressScreen = () => {
   const [watchedVideos, setWatchedVideos] = useState<WatchedVideo[]>([]);
-  const [loading, setLoading] = useState(true);
   const theme = useTheme();
   const navigation = useNavigation();
   const borderAnimation = useRef(new Animated.Value(0)).current;
@@ -49,7 +48,6 @@ const ProgressScreen = () => {
       try {
         const user = auth().currentUser;
         if (!user) {
-          setLoading(false);
           return;
         }
 
@@ -69,9 +67,7 @@ const ProgressScreen = () => {
           setWatchedVideos(recentVideos);
         }
       } catch (error) {
-        console.error('Error fetching user data:', error);
-      } finally {
-        setLoading(false);
+        Alert.alert('Error', 'Error fetching user data');
       }
     };
 
@@ -88,9 +84,8 @@ const ProgressScreen = () => {
         styles.videoCard,
         {
           borderColor: borderInterpolation,
-          borderWidth: 2,
-          backgroundColor: theme === 'dark' ? '#121212' : '#FFFFFF',
         },
+        theme === 'dark' ? styles.videoCardDark : styles.videoCardLight,
       ]}>
       <View style={styles.thumbnailContainer}>
         <Image
@@ -116,7 +111,7 @@ const ProgressScreen = () => {
         <Text
           style={[
             styles.videoTitle,
-            { color: theme === 'dark' ? '#FFFFFF' : '#2A2D57' },
+            theme === 'dark' ? styles.videoTitleDark : styles.videoTitleLight,
           ]}
           numberOfLines={2}>
           {item.title}
@@ -124,7 +119,7 @@ const ProgressScreen = () => {
         <Text
           style={[
             styles.lessonTitle,
-            { color: theme === 'dark' ? '#AAAAAA' : '#718096' },
+            theme === 'dark' ? styles.lessonTitleDark : styles.lessonTitleLight,
           ]}
           numberOfLines={1}>
           {item.lessonTitle}
@@ -134,7 +129,9 @@ const ProgressScreen = () => {
           <View
             style={[
               styles.progressBarBackground,
-              { backgroundColor: theme === 'dark' ? '#333333' : '#E2E8F0' },
+              theme === 'dark'
+                ? styles.progressBarBackgroundDark
+                : styles.progressBarBackgroundLight,
             ]}>
             <LinearGradient
               colors={
@@ -153,7 +150,7 @@ const ProgressScreen = () => {
         <Text
           style={[
             styles.timestamp,
-            { color: theme === 'dark' ? '#BBBBBB' : '#718096' },
+            theme === 'dark' ? styles.timestampDark : styles.timestampLight,
           ]}>
           {item.timestamp || 'Recently watched'}
         </Text>
@@ -175,26 +172,6 @@ const ProgressScreen = () => {
     ],
   };
 
-  const EmptyListComponent = () => (
-    <View style={styles.emptyContainer}>
-      <Text
-        style={[
-          styles.emptyText,
-          { color: theme === 'dark' ? '#FFFFFF' : '#2A2D57' },
-        ]}>
-        No videos watched yet
-      </Text>
-      <Text
-        style={[
-          styles.emptySubtext,
-          { color: theme === 'dark' ? '#AAAAAA' : '#718096' },
-        ]}>
-        Start watching videos to track your progress and improve your speech
-        skills.
-      </Text>
-    </View>
-  );
-
   return (
     <LinearGradient
       colors={
@@ -210,13 +187,15 @@ const ProgressScreen = () => {
           <TouchableOpacity
             style={[
               styles.backButton,
-              { backgroundColor: theme === 'dark' ? '#333333' : '#E6F7FF' },
+              theme === 'dark' ? styles.backButtonDark : styles.backButtonLight,
             ]}
             onPress={handleBackPress}>
             <Text
               style={[
                 styles.backButtonText,
-                { color: theme === 'dark' ? '#FFFFFF' : '#2C3E50' },
+                theme === 'dark'
+                  ? styles.backButtonTextDark
+                  : styles.backButtonTextLight,
               ]}>
               ←
             </Text>
@@ -228,21 +207,27 @@ const ProgressScreen = () => {
         <View
           style={[
             styles.contentContainer,
-            { backgroundColor: theme === 'dark' ? '#121212' : '#FFFFFF' },
+            theme === 'dark'
+              ? styles.contentContainerDark
+              : styles.contentContainerLight,
           ]}>
           <ScrollView showsVerticalScrollIndicator={false}>
             <View style={styles.chartSection}>
               <Text
                 style={[
                   styles.sectionTitle,
-                  { color: theme === 'dark' ? '#FFFFFF' : '#2A2D57' },
+                  theme === 'dark'
+                    ? styles.sectionTitleDark
+                    : styles.sectionTitleLight,
                 ]}>
                 Watch Progress
               </Text>
               <Text
                 style={[
                   styles.sectionSubtitle,
-                  { color: theme === 'dark' ? '#AAAAAA' : '#718096' },
+                  theme === 'dark'
+                    ? styles.sectionSubtitleDark
+                    : styles.sectionSubtitleLight,
                 ]}>
                 {watchedVideos.length}{' '}
                 {watchedVideos.length === 1 ? 'video' : 'videos'} tracked
@@ -251,7 +236,7 @@ const ProgressScreen = () => {
               <Animated.View
                 style={[
                   styles.chartContainer,
-                  { borderColor: borderInterpolation, borderWidth: 2 },
+                  { borderColor: borderInterpolation },
                 ]}>
                 {watchedVideos.length > 0 ? (
                   <LineChart
@@ -280,30 +265,28 @@ const ProgressScreen = () => {
                       ].filter(i => i % 2 !== 0),
                     }}
                     bezier
-                    style={{
-                      marginVertical: 8,
-                      borderRadius: 16,
-                    }}
+                    style={styles.chartStyle}
                     withHorizontalLabels={true}
                     withVerticalLabels={false}
                   />
                 ) : (
                   <View style={styles.noDataContainer}>
                     <Text
-                      style={{
-                        color: theme === 'dark' ? '#FFFFFF' : '#2A2D57',
-                        fontSize: 16,
-                        textAlign: 'center',
-                      }}>
+                      style={[
+                        styles.noDataText,
+                        theme === 'dark'
+                          ? styles.noDataTextDark
+                          : styles.noDataTextLight,
+                      ]}>
                       No progress data yet
                     </Text>
                     <Text
-                      style={{
-                        color: theme === 'dark' ? '#AAAAAA' : '#718096',
-                        fontSize: 14,
-                        textAlign: 'center',
-                        marginTop: 8,
-                      }}>
+                      style={[
+                        styles.noDataSubtext,
+                        theme === 'dark'
+                          ? styles.noDataSubtextDark
+                          : styles.noDataSubtextLight,
+                      ]}>
                       Watch videos to see your progress over time
                     </Text>
                   </View>
@@ -315,7 +298,9 @@ const ProgressScreen = () => {
               <Text
                 style={[
                   styles.sectionTitle,
-                  { color: theme === 'dark' ? '#FFFFFF' : '#2A2D57' },
+                  theme === 'dark'
+                    ? styles.sectionTitleDark
+                    : styles.sectionTitleLight,
                 ]}>
                 Recently Watched
               </Text>
@@ -329,7 +314,7 @@ const ProgressScreen = () => {
                   contentContainerStyle={styles.videosList}
                 />
               ) : (
-                <EmptyListComponent />
+                <EmptyListComponent theme={theme} />
               )}
             </View>
           </ScrollView>
@@ -338,6 +323,26 @@ const ProgressScreen = () => {
     </LinearGradient>
   );
 };
+
+const EmptyListComponent = ({ theme }) => (
+  <View style={styles.emptyContainer}>
+    <Text
+      style={[
+        styles.emptyText,
+        theme === 'dark' ? styles.emptyTextDark : styles.emptyTextLight,
+      ]}>
+      No videos watched yet
+    </Text>
+    <Text
+      style={[
+        styles.emptySubtext,
+        theme === 'dark' ? styles.emptySubtextDark : styles.emptySubtextLight,
+      ]}>
+      Start watching videos to track your progress and improve your speech
+      skills.
+    </Text>
+  </View>
+);
 
 const styles = StyleSheet.create({
   safeArea: {
@@ -360,9 +365,21 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  backButtonDark: {
+    backgroundColor: '#333333',
+  },
+  backButtonLight: {
+    backgroundColor: '#E6F7FF',
+  },
   backButtonText: {
     fontSize: 28,
     fontWeight: 'bold',
+  },
+  backButtonTextDark: {
+    color: '#FFFFFF',
+  },
+  backButtonTextLight: {
+    color: '#2C3E50',
   },
   headerText: {
     fontSize: 24,
@@ -380,6 +397,12 @@ const styles = StyleSheet.create({
     paddingTop: 24,
     overflow: 'hidden',
   },
+  contentContainerDark: {
+    backgroundColor: '#121212',
+  },
+  contentContainerLight: {
+    backgroundColor: '#FFFFFF',
+  },
   chartSection: {
     paddingHorizontal: 20,
     marginBottom: 24,
@@ -393,15 +416,32 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginBottom: 4,
   },
+  sectionTitleDark: {
+    color: '#FFFFFF',
+  },
+  sectionTitleLight: {
+    color: '#2A2D57',
+  },
   sectionSubtitle: {
     fontSize: 16,
     marginBottom: 16,
+  },
+  sectionSubtitleDark: {
+    color: '#AAAAAA',
+  },
+  sectionSubtitleLight: {
+    color: '#718096',
   },
   chartContainer: {
     borderRadius: 20,
     overflow: 'hidden',
     padding: 8,
     backgroundColor: 'transparent',
+    borderWidth: 2,
+  },
+  chartStyle: {
+    marginVertical: 8,
+    borderRadius: 16,
   },
   videosList: {
     paddingTop: 8,
@@ -416,6 +456,12 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 6,
     elevation: 4,
+  },
+  videoCardDark: {
+    backgroundColor: '#121212',
+  },
+  videoCardLight: {
+    backgroundColor: '#FFFFFF',
   },
   thumbnailContainer: {
     position: 'relative',
@@ -451,9 +497,21 @@ const styles = StyleSheet.create({
     marginBottom: 4,
     lineHeight: 22,
   },
+  videoTitleDark: {
+    color: '#FFFFFF',
+  },
+  videoTitleLight: {
+    color: '#2A2D57',
+  },
   lessonTitle: {
     fontSize: 14,
     marginBottom: 8,
+  },
+  lessonTitleDark: {
+    color: '#AAAAAA',
+  },
+  lessonTitleLight: {
+    color: '#718096',
   },
   progressContainer: {
     marginBottom: 8,
@@ -463,6 +521,12 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     overflow: 'hidden',
   },
+  progressBarBackgroundDark: {
+    backgroundColor: '#333333',
+  },
+  progressBarBackgroundLight: {
+    backgroundColor: '#E2E8F0',
+  },
   progressBarFill: {
     height: '100%',
     borderRadius: 4,
@@ -470,6 +534,12 @@ const styles = StyleSheet.create({
   timestamp: {
     fontSize: 12,
     alignSelf: 'flex-end',
+  },
+  timestampDark: {
+    color: '#BBBBBB',
+  },
+  timestampLight: {
+    color: '#718096',
   },
   emptyContainer: {
     alignItems: 'center',
@@ -483,17 +553,50 @@ const styles = StyleSheet.create({
     marginTop: 16,
     textAlign: 'center',
   },
+  emptyTextDark: {
+    color: '#FFFFFF',
+  },
+  emptyTextLight: {
+    color: '#2A2D57',
+  },
   emptySubtext: {
     fontSize: 16,
     textAlign: 'center',
     marginTop: 12,
     lineHeight: 24,
   },
+  emptySubtextDark: {
+    color: '#AAAAAA',
+  },
+  emptySubtextLight: {
+    color: '#718096',
+  },
   noDataContainer: {
     height: 220,
     justifyContent: 'center',
     alignItems: 'center',
     padding: 20,
+  },
+  noDataText: {
+    fontSize: 16,
+    textAlign: 'center',
+  },
+  noDataTextDark: {
+    color: '#FFFFFF',
+  },
+  noDataTextLight: {
+    color: '#2A2D57',
+  },
+  noDataSubtext: {
+    fontSize: 14,
+    textAlign: 'center',
+    marginTop: 8,
+  },
+  noDataSubtextDark: {
+    color: '#AAAAAA',
+  },
+  noDataSubtextLight: {
+    color: '#718096',
   },
 });
 
