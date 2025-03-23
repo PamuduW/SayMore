@@ -78,7 +78,7 @@ const FeedbackScreen_PS: React.FC<FeedbackScreen_PSProps> = ({ route }) => {
         <Text style={styles.title}>Your Speech Feedback</Text>
 
         <View style={styles.feedbackBlock}>
-          <Text style={styles.label}>Score</Text>
+          <Text style={styles.label}>Final Public Speaking Score</Text>
           <Text style={styles.valueHighlight}>
             {final_public_speaking_score}
           </Text>
@@ -164,6 +164,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#FFFFFF',
     marginBottom: 8,
+    textAlign: 'center',
   },
   value: {
     fontSize: 16,
@@ -173,6 +174,7 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: 'bold',
     color: '#FFD700',
+    textAlign: 'center',
   },
   subtitle: {
     fontSize: 20,

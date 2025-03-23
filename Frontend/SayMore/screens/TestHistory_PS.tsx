@@ -12,8 +12,10 @@ import auth from '@react-native-firebase/auth';
 import { ProgressChart } from 'react-native-chart-kit';
 import LinearGradient from 'react-native-linear-gradient';
 import { useTheme } from '../components/ThemeContext';
+import { useRoute } from '@react-navigation/native';
 
 const screenWidth = Dimensions.get('window').width;
+const parentViewWidth = screenWidth - 70; // Assuming 16 padding on each side
 
 const TestHistory_PS: React.FC = () => {
   const route = useRoute<any>();
@@ -112,103 +114,139 @@ const TestHistory_PS: React.FC = () => {
 
   return (
     <ScrollView>
-      <ScrollView contentContainerStyle={styles.container}>
-        <Text style={styles.progressChartText}>Your Analysis Screen</Text>
-        <ProgressChart
-          data={data}
-          width={screenWidth}
-          height={220}
-          strokeWidth={16}
-          radius={32}
-          chartConfig={chartConfig}
-          hideLegend={false}
-        />
-        {responseData && (
-          <View>
-            <Text style={styles.scoreText}>
-              Final Public Speaking Score:{' '}
-              {responseData.final_public_speaking_score}
-            </Text>
-            <Text style={styles.scoreText}>
-              Overall Confidence Score: {responseData.overall_confidence}
-            </Text>
-
-            <Text style={styles.scoreText}>Voice Quality & Stability Data</Text>
-            <Text>
-              Final Voice Score:{' '}
-              {responseData['Voice_Quality_&_Stability_Data'].final_voice_score}
-            </Text>
-            <Text>
-              variation_score:{' '}
-              {responseData['Voice_Quality_&_Stability_Data'].variation_score}
-            </Text>
-            <Text>
-              stability_score:{' '}
-              {responseData['Voice_Quality_&_Stability_Data'].stability_score}
-            </Text>
-            <Text>
-              speaking_speed:{' '}
-              {responseData['Voice_Quality_&_Stability_Data'].speaking_speed}
-            </Text>
-            <Text>
-              clarity: {responseData['Voice_Quality_&_Stability_Data'].clarity}
-            </Text>
-            <Text>
-              overall_jitter_score:{' '}
-              {
-                responseData['Voice_Quality_&_Stability_Data']
-                  .overall_jitter_score
-              }
-            </Text>
-            <Text>
-              overall_shimmer_score:{' '}
-              {
-                responseData['Voice_Quality_&_Stability_Data']
-                  .overall_shimmer_score
-              }
-            </Text>
-            <Text>
-              overall_hnr_score:{' '}
-              {responseData['Voice_Quality_&_Stability_Data'].overall_hnr_score}
-            </Text>
-
-            <Text style={styles.scoreText}>Speech Intensity & Energy Data</Text>
-            <Text>
-              final_energy_score:{' '}
-              {
-                responseData['Speech_Intensity_&_Energy_Data']
-                  .final_energy_score
-              }
-            </Text>
-            <Text>
-              intensity_score:{' '}
-              {responseData['Speech_Intensity_&_Energy_Data'].intensity_score}
-            </Text>
-            <Text>
-              energy_score:{' '}
-              {responseData['Speech_Intensity_&_Energy_Data'].energy_score}
-            </Text>
-            <Text>
-              variation_score:{' '}
-              {responseData['Speech_Intensity_&_Energy_Data'].variation_score}
-            </Text>
-
-            <Text style={styles.scoreText}>Transcription</Text>
-            <Text>{responseData.transcription[0].transcript}</Text>
-          </View>
-        )}
-      </ScrollView>
-
       <LinearGradient
         colors={
           theme === 'dark' ? ['#1C1C1C', '#3A3A3A'] : ['#577BC1', '#577BC1']
         }
         style={styles.container}>
         <ScrollView contentContainerStyle={styles.content}>
+          <Text style={styles.title}>Your Speech Analysis</Text>
+          <View style={styles.feedbackBlock}>
+            <ProgressChart
+              data={data}
+              width={parentViewWidth}
+              height={220}
+              strokeWidth={16}
+              radius={32}
+              chartConfig={chartConfig}
+              hideLegend={false}
+            />
+          </View>
+
+          {responseData && (
+            <View>
+              <View style={styles.feedbackBlock}>
+                <Text style={styles.label}>Final Public Speaking Score</Text>
+                <Text style={styles.valueHighlight}>
+                  {responseData.final_public_speaking_score}
+                </Text>
+              </View>
+
+              <View style={styles.feedbackBlock}>
+                <Text style={styles.label}>Overall Confidence Score</Text>
+                <Text style={styles.valueHighlight}>
+                  {responseData.overall_confidence}
+                </Text>
+              </View>
+
+              <View style={styles.feedbackBlock}>
+                <Text style={styles.label}>Voice Quality & Stability Data</Text>
+
+                <Text>
+                  Final Voice Score:{' '}
+                  {
+                    responseData['Voice_Quality_&_Stability_Data']
+                      .final_voice_score
+                  }
+                </Text>
+                <Text>
+                  variation_score:{' '}
+                  {
+                    responseData['Voice_Quality_&_Stability_Data']
+                      .variation_score
+                  }
+                </Text>
+                <Text>
+                  stability_score:{' '}
+                  {
+                    responseData['Voice_Quality_&_Stability_Data']
+                      .stability_score
+                  }
+                </Text>
+                <Text>
+                  speaking_speed:{' '}
+                  {
+                    responseData['Voice_Quality_&_Stability_Data']
+                      .speaking_speed
+                  }
+                </Text>
+                <Text>
+                  clarity:{' '}
+                  {responseData['Voice_Quality_&_Stability_Data'].clarity}
+                </Text>
+                <Text>
+                  overall_jitter_score:{' '}
+                  {
+                    responseData['Voice_Quality_&_Stability_Data']
+                      .overall_jitter_score
+                  }
+                </Text>
+                <Text>
+                  overall_shimmer_score:{' '}
+                  {
+                    responseData['Voice_Quality_&_Stability_Data']
+                      .overall_shimmer_score
+                  }
+                </Text>
+                <Text>
+                  overall_hnr_score:{' '}
+                  {
+                    responseData['Voice_Quality_&_Stability_Data']
+                      .overall_hnr_score
+                  }
+                </Text>
+              </View>
+
+              <Text style={styles.scoreText}>
+                Speech Intensity & Energy Data
+              </Text>
+              <Text>
+                final_energy_score:{' '}
+                {
+                  responseData['Speech_Intensity_&_Energy_Data']
+                    .final_energy_score
+                }
+              </Text>
+              <Text>
+                intensity_score:{' '}
+                {responseData['Speech_Intensity_&_Energy_Data'].intensity_score}
+              </Text>
+              <Text>
+                energy_score:{' '}
+                {responseData['Speech_Intensity_&_Energy_Data'].energy_score}
+              </Text>
+              <Text>
+                variation_score:{' '}
+                {responseData['Speech_Intensity_&_Energy_Data'].variation_score}
+              </Text>
+
+              <Text style={styles.scoreText}>Transcription</Text>
+              <Text>{responseData.transcription[0].transcript}</Text>
+            </View>
+          )}
+        </ScrollView>
+      </LinearGradient>
+
+      <LinearGradient
+        colors={
+          theme === 'dark' ? ['#3A3A3A', '#1C1C1C'] : ['#577BC1', '#577BC1']
+        }
+        style={styles.container}>
+        <ScrollView contentContainerStyle={styles.content}>
           <Text style={styles.title}>Your Speech Feedback</Text>
 
           <View style={styles.feedbackBlock}>
-            <Text style={styles.label}>Score</Text>
+            <Text style={styles.label}>Final Public Speaking Score</Text>
             <Text style={styles.valueHighlight}>
               {responseData.final_public_speaking_score}
             </Text>
@@ -248,29 +286,17 @@ const TestHistory_PS: React.FC = () => {
 
 const styles = StyleSheet.create({
   container: {
-    flexGrow: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    flex: 1,
     padding: 16,
+  },
+  content: {
+    paddingBottom: 40,
+    paddingTop: 50,
   },
   loadingContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-  },
-  scoreText: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginVertical: 10,
-  },
-  progressChartText: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: 'blue',
-  },
-  content: {
-    paddingBottom: 40,
-    paddingTop: 50,
   },
   title: {
     fontSize: 28,
@@ -290,6 +316,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#FFFFFF',
     marginBottom: 8,
+    textAlign: 'center',
   },
   value: {
     fontSize: 16,
@@ -299,6 +326,7 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: 'bold',
     color: '#FFD700',
+    textAlign: 'center',
   },
 });
 
