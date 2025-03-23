@@ -2,8 +2,8 @@ import json
 import os
 
 import azure.cognitiveservices.speech as speechsdk
-import google.generativeai as genai
 from dotenv import load_dotenv
+import google.generativeai as genai
 
 # Load environment variables from a .env file
 load_dotenv()
