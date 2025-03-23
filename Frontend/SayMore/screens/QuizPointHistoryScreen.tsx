@@ -297,7 +297,7 @@ const QuizPointHistoryScreen: React.FC = ({ navigation }: any) => {
         <View
           style={[
             styles.cardFooter,
-            { borderTopColor: theme === 'dark' ? '#333333' : '#EEEEEE' },
+            theme === 'dark' ? styles.cardFooterDark : styles.cardFooterLight,
           ]}>
           <Text style={[styles.attemptDate, dynamicStyles.dateText]}>
             {moment(item.timestamp).format('MMM Do YYYY, h:mm A')}
@@ -349,7 +349,7 @@ const QuizPointHistoryScreen: React.FC = ({ navigation }: any) => {
       <Text
         style={[
           styles.emptySubtext,
-          { color: theme === 'dark' ? '#AAAAAA' : '#718096' },
+          theme === 'dark' ? styles.emptySubtextDark : styles.emptySubtextLight,
         ]}>
         Complete quizzes to track your progress here.
       </Text>
@@ -419,10 +419,7 @@ const QuizPointHistoryScreen: React.FC = ({ navigation }: any) => {
               ListHeaderComponent={headerComponent}
               contentContainerStyle={[
                 styles.listContainer,
-                sectionData.length === 0 && {
-                  flex: 1,
-                  justifyContent: 'center',
-                },
+                sectionData.length === 0 && styles.centeredContent,
               ]}
               stickySectionHeadersEnabled={false}
               showsVerticalScrollIndicator={false}
@@ -675,6 +672,22 @@ const styles = StyleSheet.create({
     fontSize: 18,
     color: '#FFFFFF',
     textAlign: 'center',
+  },
+  cardFooterDark: {
+    borderTopColor: '#333333',
+  },
+  cardFooterLight: {
+    borderTopColor: '#EEEEEE',
+  },
+  emptySubtextDark: {
+    color: '#AAAAAA',
+  },
+  emptySubtextLight: {
+    color: '#718096',
+  },
+  centeredContent: {
+    flex: 1,
+    justifyContent: 'center',
   },
 });
 
