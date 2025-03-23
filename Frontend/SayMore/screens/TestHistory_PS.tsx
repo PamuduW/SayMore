@@ -4,14 +4,12 @@ import {
   View,
   Text,
   ActivityIndicator,
-  TouchableOpacity,
   StyleSheet,
   Dimensions,
 } from 'react-native';
 import firestore from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
-import { useRoute, useNavigation } from '@react-navigation/native';
-import { ProgressChart, LineChart } from 'react-native-chart-kit';
+import { ProgressChart } from 'react-native-chart-kit';
 import LinearGradient from 'react-native-linear-gradient';
 import { useTheme } from '../components/ThemeContext';
 
@@ -19,7 +17,6 @@ const screenWidth = Dimensions.get('window').width;
 
 const TestHistory_PS: React.FC = () => {
   const route = useRoute<any>();
-  const navigation = useNavigation();
   const { testId } = route.params; // received testId from TestHistory.tsx
   const [loading, setLoading] = useState<boolean>(true);
   const [responseData, setResponseData] = useState<any>(null);
@@ -61,9 +58,9 @@ const TestHistory_PS: React.FC = () => {
           .get();
 
         if (userDoc.exists) {
-          const data = userDoc.data();
+          const userData = userDoc.data();
           // Assuming public speaking tests are stored under results.PS_Check keyed by testId.
-          const psData = data?.results?.PS_Check;
+          const psData = userData?.results?.PS_Check;
           if (psData && psData[testId]) {
             setResponseData(psData[testId]);
             setData({
@@ -226,7 +223,9 @@ const TestHistory_PS: React.FC = () => {
 
           <View style={styles.feedbackBlock}>
             <Text style={styles.label}>Voice Quality</Text>
-            <Text style={styles.value}>{responseData['Voice_Quality_&_Stability_Data'].base_feedback}</Text>
+            <Text style={styles.value}>
+              {responseData['Voice_Quality_&_Stability_Data'].base_feedback}
+            </Text>
             <Text style={styles.value}>
               {responseData['Voice_Quality_&_Stability_Data'].dynamic_feedback}
             </Text>
@@ -234,7 +233,9 @@ const TestHistory_PS: React.FC = () => {
 
           <View style={styles.feedbackBlock}>
             <Text style={styles.label}>Speech Energy</Text>
-            <Text style={styles.value}>{responseData['Speech_Intensity_&_Energy_Data'].base_feedback}</Text>
+            <Text style={styles.value}>
+              {responseData['Speech_Intensity_&_Energy_Data'].base_feedback}
+            </Text>
             <Text style={styles.value}>
               {responseData['Speech_Intensity_&_Energy_Data'].dynamic_feedback}
             </Text>

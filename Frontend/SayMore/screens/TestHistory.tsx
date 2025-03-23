@@ -69,7 +69,7 @@ const TestHistory: React.FC = () => {
       ...historyData[key],
     }));
     // Sort descending: Latest test (highest timestamp) first.
-    historyArray.sort((a, b) => parseInt(b.id) - parseInt(a.id));
+    historyArray.sort((a, b) => parseInt(b.id, 10) - parseInt(a.id, 10)); // Added radix parameter
   }
 
   // Render each history item.
