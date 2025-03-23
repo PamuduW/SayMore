@@ -14,7 +14,9 @@ import { useNavigation } from '@react-navigation/native';
 type Category = 'PublicSpeaking' | 'Stuttering';
 
 const TestHistory: React.FC = () => {
-  const [selectedCategory, setSelectedCategory] = useState<null | Category>(null);
+  const [selectedCategory, setSelectedCategory] = useState<null | Category>(
+    null
+  );
   const [historyData, setHistoryData] = useState<any>(null);
   const [loading, setLoading] = useState(false);
 
@@ -37,8 +39,11 @@ const TestHistory: React.FC = () => {
 
       if (userDoc.exists) {
         const data = userDoc.data();
-        const categoryKey = category === 'PublicSpeaking' ? 'PS_Check' : 'Stuttering_Check';
-        const categoryHistory = data?.results ? data.results[categoryKey] : null;
+        const categoryKey =
+          category === 'PublicSpeaking' ? 'PS_Check' : 'Stuttering_Check';
+        const categoryHistory = data?.results
+          ? data.results[categoryKey]
+          : null;
         setHistoryData(categoryHistory);
       } else {
         console.log('No user document found.');
@@ -77,8 +82,7 @@ const TestHistory: React.FC = () => {
         } else {
           navigation.navigate('TestHistory_S', { testId: item.id });
         }
-      }}
-    >
+      }}>
       <Text style={styles.historyItemText}>Test ID: {item.id}</Text>
     </TouchableOpacity>
   );
@@ -89,21 +93,23 @@ const TestHistory: React.FC = () => {
         <View style={styles.categoryContainer}>
           <TouchableOpacity
             style={styles.categoryButton}
-            onPress={() => handleCategorySelect('PublicSpeaking')}
-          >
+            onPress={() => handleCategorySelect('PublicSpeaking')}>
             <Text style={styles.categoryText}>Public Speaking</Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.categoryButton}
-            onPress={() => handleCategorySelect('Stuttering')}
-          >
+            onPress={() => handleCategorySelect('Stuttering')}>
             <Text style={styles.categoryText}>Stuttering</Text>
           </TouchableOpacity>
         </View>
       )}
 
       {loading && (
-        <ActivityIndicator size="large" color="#577BC1" style={styles.loading} />
+        <ActivityIndicator
+          size="large"
+          color="#577BC1"
+          style={styles.loading}
+        />
       )}
 
       {selectedCategory && !loading && (
@@ -115,7 +121,7 @@ const TestHistory: React.FC = () => {
           ) : (
             <FlatList
               data={historyArray}
-              keyExtractor={(item) => item.id}
+              keyExtractor={item => item.id}
               renderItem={renderHistoryItem}
               contentContainerStyle={styles.listContainer}
             />
@@ -125,8 +131,7 @@ const TestHistory: React.FC = () => {
             onPress={() => {
               setSelectedCategory(null);
               setHistoryData(null);
-            }}
-          >
+            }}>
             <Text style={styles.backButtonText}>Back to Categories</Text>
           </TouchableOpacity>
         </>
