@@ -46,6 +46,8 @@ import ClarityAndPitchScreen from '../screens/ClarityAndPitchScreen';
 import SpeakingWithEnergyScreen from '../screens/SpeakingWithEnergyScreen';
 import TestHistory from '../screens/TestHistory';
 import TestHistory_PS from '../screens/TestHistory_PS';
+import QuizProgressScreen from '../screens/QuizProgressScreen';
+import ProgressCategoryScreen from '../screens/ProgressCategoryScreen';
 
 // Navigators
 const Tab = createBottomTabNavigator();
@@ -99,6 +101,7 @@ const MoreStack = () => (
     <Stack.Screen name="LessonsPointsScreen" component={LessonsPointsScreen} />
     <Stack.Screen name="History" component={HistoryScreen} />
     <Stack.Screen name="QuizzesNavScreen" component={QuizzesNavScreen} />
+    <Stack.Screen name="ProgressCategoryScreen" component={ProgressCategoryScreen} />
     <Stack.Screen
       name="PointsCategoryScreen"
       component={PointsCategoryScreen}
@@ -109,6 +112,7 @@ const MoreStack = () => (
       component={QuizPointHistoryScreen}
     />
     <Stack.Screen name="ProgressScreen" component={ProgressScreen} />
+    <Stack.Screen name="QuizProgressScreen" component={QuizProgressScreen} />
     <Stack.Screen name="Difficulty" component={Difficulty} />
     <Stack.Screen
       name="PublicSpeakQuestionScreen"

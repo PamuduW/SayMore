@@ -46,9 +46,10 @@ const MoreScreen: React.FC<MoreScreenProps> = ({ navigation }) => {
     } else if (title === 'Points') {
       navigation.navigate('PointsCategoryScreen');
     } else if (title === 'Progress') {
-      navigation.navigate('ProgressScreen');
+      navigation.navigate('ProgressCategoryScreen');
     } else if (title === 'Test History') {
       navigation.navigate('TestHistory');
+
     }
   };
 

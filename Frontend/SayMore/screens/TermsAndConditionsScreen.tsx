@@ -17,11 +17,10 @@ const TermsAndConditionsScreen = () => {
 
   return (
     <LinearGradient
-      colors={
-        theme === 'dark' ? ['#1C1C1C', '#3A3A3A'] : ['#2A2D57', '#577BC1']
-      }
-      style={styles.container}>
-      <StatusBar barStyle="light-content" />
+      colors={theme === 'dark' ? ['#1C1C1C', '#3A3A3A'] : ['#2A2D57', '#577BC1']}
+      style={styles.container}
+    >
+      <StatusBar barStyle={theme === 'dark' ? 'light-content' : 'light-content'} />
 
       <View style={styles.headerBar}>
         <Text style={styles.headerText}>Terms & Conditions</Text>
@@ -33,66 +32,51 @@ const TermsAndConditionsScreen = () => {
           <Text style={styles.date}>Last Updated: 16/02/2025</Text>
         </View>
 
-        <ScrollView
-          style={[
-            styles.scrollContainer,
-            theme === 'dark' && styles.darkScrollContainer,
-          ]}
-          contentContainerStyle={styles.scrollContent}>
-          <Text style={[styles.text, theme === 'dark' && styles.darkText]}>
-            By using SayMore, you agree to the following:
-            {'\n\n'}
-            1.{' '}
-            <Text
-              style={[
-                styles.boldText,
-                theme === 'dark' && styles.darkBoldText,
-              ]}>
-              Account Information:
-            </Text>{' '}
-            Provide accurate and truthful personal information during
-            registration and ensure your account remains secure.
-            {'\n\n'}
-            2.{' '}
-            <Text
-              style={[
-                styles.boldText,
-                theme === 'dark' && styles.darkBoldText,
-              ]}>
-              App Usage:
-            </Text>{' '}
-            Use the app solely for personal speech improvement and not as a
-            substitute for professional therapy, diagnosis, or advice.
-            {'\n\n'}
-            3.{' '}
-            <Text
-              style={[
-                styles.boldText,
-                theme === 'dark' && styles.darkBoldText,
-              ]}>
-              Data Usage:
-            </Text>{' '}
-            Allow secure processing of your data, such as audio recordings and
-            progress metrics, for personalized feedback and service improvement.
-            Your data will be handled in accordance with our Privacy Policy.
-            {'\n\n'}
-            4.{' '}
-            <Text
-              style={[
-                styles.boldText,
-                theme === 'dark' && styles.darkBoldText,
-              ]}>
-              Prohibited Actions:
-            </Text>{' '}
-            Refrain from misuse of the app, including sharing inappropriate,
-            offensive, or harmful content, attempting unauthorized access, or
-            using the app for commercial purposes.
-          </Text>
-        </ScrollView>
+        <LinearGradient
+          colors={theme === 'dark' ? ['#1a1a1a', '#1a1a1a'] : ['#F9FAFC', '#ECEFF9']}
+          style={styles.scrollContainer}
+        >
+          <ScrollView contentContainerStyle={styles.scrollContent}>
+            <Text style={[styles.text, theme === 'dark' && styles.darkText]}>
+              By using SayMore, you agree to the following:
+              {'\n\n'}
+              1.{' '}
+              <Text style={[styles.boldText, theme === 'dark' && styles.darkBoldText]}>
+                Account Information:
+              </Text>{' '}
+              Provide accurate and truthful personal information during
+              registration and ensure your account remains secure.
+              {'\n\n'}
+              2.{' '}
+              <Text style={[styles.boldText, theme === 'dark' && styles.darkBoldText]}>
+                App Usage:
+              </Text>{' '}
+              Use the app solely for personal speech improvement and not as a
+              substitute for professional therapy, diagnosis, or advice.
+              {'\n\n'}
+              3.{' '}
+              <Text style={[styles.boldText, theme === 'dark' && styles.darkBoldText]}>
+                Data Usage:
+              </Text>{' '}
+              Allow secure processing of your data, such as audio recordings and
+              progress metrics, for personalized feedback and service improvement.
+              Your data will be handled in accordance with our Privacy Policy.
+              {'\n\n'}
+              4.{' '}
+              <Text style={[styles.boldText, theme === 'dark' && styles.darkBoldText]}>
+                Prohibited Actions:
+              </Text>{' '}
+              Refrain from misuse of the app, including sharing inappropriate,
+              offensive, or harmful content, attempting unauthorized access, or
+              using the app for commercial purposes.
+            </Text>
+          </ScrollView>
+        </LinearGradient>
 
         <TouchableOpacity
-          style={[styles.backButton, theme === 'dark' && styles.darkBackButton]}
-          onPress={() => navigation.goBack()}>
+          style={[styles.backButton, theme === 'dark' ? styles.darkBackButton : styles.lightBackButton]}
+          onPress={() => navigation.goBack()}
+        >
           <Text style={styles.backButtonText}>Back</Text>
         </TouchableOpacity>
       </View>
@@ -108,19 +92,19 @@ const styles = StyleSheet.create({
 
   headerBar: {
     paddingHorizontal: 25,
-    marginBottom: 20,
+    marginBottom: 15,
     alignItems: 'center',
   },
 
   headerText: {
-    fontSize: 26,
+    fontSize: 24,
     fontWeight: 'bold',
     color: '#FFFFFF',
   },
 
   headerUnderline: {
     marginTop: 6,
-    width: 230,
+    width: 220,
     height: 3,
     backgroundColor: '#D0D3E6',
     borderRadius: 2,
@@ -129,11 +113,12 @@ const styles = StyleSheet.create({
   contentWrapper: {
     flex: 1,
     paddingHorizontal: 20,
+    alignItems: 'center',
   },
 
   dateContainer: {
     alignItems: 'center',
-    marginBottom: 15,
+    marginBottom: 12,
   },
 
   date: {
@@ -144,21 +129,12 @@ const styles = StyleSheet.create({
 
   scrollContainer: {
     borderRadius: 25,
+    width: '100%',
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.1,
-    shadowRadius: 8,
-    elevation: 8,
-  },
-  scrollContainerLight: {
-    backgroundColor: '#FFFFFF',
-  },
-  scrollContainerDark: {
-    backgroundColor: '#2B2B2B',
-  },
-
-  darkScrollContainer: {
-    backgroundColor: '#1a1a1a',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.08,
+    shadowRadius: 6,
+    elevation: 6,
   },
 
   scrollContent: {
@@ -166,14 +142,9 @@ const styles = StyleSheet.create({
   },
 
   text: {
-    fontSize: 16,
-    lineHeight: 26,
-  },
-  textLight: {
+    fontSize: 15,
+    lineHeight: 24,
     color: '#2A2D57',
-  },
-  textDark: {
-    color: '#FFFFFF',
   },
 
   darkText: {
@@ -184,33 +155,28 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     color: '#3B5998',
   },
-  boldTextDark: {
+
+  darkBoldText: {
     fontWeight: '700',
     color: '#FFFFFF',
   },
 
-  darkBoldText: {
-    color: '#FFFFFF',
-  },
-
   backButton: {
-    marginTop: 20,
+    marginTop: 22,
     marginBottom: 20,
     alignSelf: 'center',
     paddingVertical: 12,
     paddingHorizontal: 30,
     borderRadius: 25,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.2,
+    shadowOffset: { width: 0, height: 5 },
+    shadowOpacity: 0.18,
     shadowRadius: 6,
     elevation: 6,
   },
-  backButtonLight: {
+
+  lightBackButton: {
     backgroundColor: '#3B5998',
-  },
-  backButtonDark: {
-    backgroundColor: '#1C1C1C',
   },
 
   darkBackButton: {
