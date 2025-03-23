@@ -202,7 +202,7 @@ const PublicSpeakQuestionScreen: React.FC = ({ navigation, route }: any) => {
 
           <Text style={styles.headerTitle}>Public Speaking Quiz</Text>
 
-          <View style={{ width: 48 }} />
+          <View style={styles.spacer} />
         </View>
 
         <Text style={styles.categoryText}>{difficulty}</Text>
@@ -373,6 +373,9 @@ const styles = StyleSheet.create({
   },
   selectedOption: {
     backgroundColor: '#4c87c7',
+  },
+  spacer: {
+    width: 48,
   },
 });
 

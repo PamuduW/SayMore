@@ -57,13 +57,31 @@ const HomeStack = () => (
     <Stack.Screen name="AnalysisScreen" component={AnalysisScreen} />
     <Stack.Screen name="FeedbackScreen_PS" component={FeedbackScreen_PS} />
     <Stack.Screen name="FeedbackScreen_S" component={FeedbackScreen_S} />
-    <Stack.Screen name="AdditionalDetailsScreen" component={AdditionalDetailsScreen} />
+    <Stack.Screen
+      name="AdditionalDetailsScreen"
+      component={AdditionalDetailsScreen}
+    />
     {/* Moved UnderstandingAndOvercomingStuttering to HomeStack to match desired structure */}
-    <Stack.Screen name="UnderstandingAndOvercomingStutteringScreen" component={UnderstandingAndOvercomingStutteringScreen} />
-    <Stack.Screen name="LessonRedirectionStuttering" component={LessonRedirectionStuttering} />
-    <Stack.Screen name="ClarityAndPitchScreen" component={ClarityAndPitchScreen} />
-    <Stack.Screen name="CommunicationAndStageFrightScreen" component={CommunicationAndStageFrightScreen} />
-    <Stack.Screen name="SpeakingWithEnergyScreen" component={SpeakingWithEnergyScreen} />
+    <Stack.Screen
+      name="UnderstandingAndOvercomingStutteringScreen"
+      component={UnderstandingAndOvercomingStutteringScreen}
+    />
+    <Stack.Screen
+      name="LessonRedirectionStuttering"
+      component={LessonRedirectionStuttering}
+    />
+    <Stack.Screen
+      name="ClarityAndPitchScreen"
+      component={ClarityAndPitchScreen}
+    />
+    <Stack.Screen
+      name="CommunicationAndStageFrightScreen"
+      component={CommunicationAndStageFrightScreen}
+    />
+    <Stack.Screen
+      name="SpeakingWithEnergyScreen"
+      component={SpeakingWithEnergyScreen}
+    />
     <Stack.Screen name="LessonRedirectionPS" component={LessonRedirectionPS} />
   </Stack.Navigator>
 );
@@ -79,16 +97,31 @@ const MoreStack = () => (
     <Stack.Screen name="LessonsPointsScreen" component={LessonsPointsScreen} />
     <Stack.Screen name="History" component={HistoryScreen} />
     <Stack.Screen name="QuizzesNavScreen" component={QuizzesNavScreen} />
-    <Stack.Screen name="PointsCategoryScreen" component={PointsCategoryScreen} />
+    <Stack.Screen
+      name="PointsCategoryScreen"
+      component={PointsCategoryScreen}
+    />
     <Stack.Screen name="TotalPointsScreen" component={TotalPointsScreen} />
-    <Stack.Screen name="QuizPointHistoryScreen" component={QuizPointHistoryScreen} />
+    <Stack.Screen
+      name="QuizPointHistoryScreen"
+      component={QuizPointHistoryScreen}
+    />
     <Stack.Screen name="ProgressScreen" component={ProgressScreen} />
     <Stack.Screen name="Difficulty" component={Difficulty} />
-    <Stack.Screen name="PublicSpeakQuestionScreen" component={PublicSpeakQuestionScreen} />
-    <Stack.Screen name="StutteringQuestionScreen" component={StutteringQuestionScreen} />
+    <Stack.Screen
+      name="PublicSpeakQuestionScreen"
+      component={PublicSpeakQuestionScreen}
+    />
+    <Stack.Screen
+      name="StutteringQuestionScreen"
+      component={StutteringQuestionScreen}
+    />
     <Stack.Screen name="PointsScreen" component={PointsScreen} />
     <Stack.Screen name="SpeechTherapyScreen" component={SpeechTherapyScreen} />
-    <Stack.Screen name="LessonRedirectionStuttering" component={LessonRedirectionStuttering} />
+    <Stack.Screen
+      name="LessonRedirectionStuttering"
+      component={LessonRedirectionStuttering}
+    />
   </Stack.Navigator>
 );
 
@@ -99,16 +132,28 @@ const AccountStack = () => (
     <Stack.Screen name="SettingsScreen" component={SettingsScreen} />
     <Stack.Screen name="ActivityScreen" component={ActivityScreen} />
     <Stack.Screen name="EditProfileScreen" component={EditProfileScreen} />
-    <Stack.Screen name="ChangePasswordScreen" component={ChangePasswordScreen} />
-    <Stack.Screen name="TermsAndConditionsScreen" component={TermsAndConditionsScreen} />
-    <Stack.Screen name="PrivacyCookiesScreen" component={PrivacyCookiesScreen} />
+    <Stack.Screen
+      name="ChangePasswordScreen"
+      component={ChangePasswordScreen}
+    />
+    <Stack.Screen
+      name="TermsAndConditionsScreen"
+      component={TermsAndConditionsScreen}
+    />
+    <Stack.Screen
+      name="PrivacyCookiesScreen"
+      component={PrivacyCookiesScreen}
+    />
     <Stack.Screen name="AppInfoScreen" component={AppInfoScreen} />
     <Stack.Screen name="HomeScreen" component={HomeScreen} />
     <Stack.Screen name="Audio" component={AudioScreen} />
     <Stack.Screen name="AnalysisScreen" component={AnalysisScreen} />
     <Stack.Screen name="FeedbackScreen_PS" component={FeedbackScreen_PS} />
     <Stack.Screen name="FeedbackScreen_S" component={FeedbackScreen_S} />
-    <Stack.Screen name="AdditionalDetailsScreen" component={AdditionalDetailsScreen} />
+    <Stack.Screen
+      name="AdditionalDetailsScreen"
+      component={AdditionalDetailsScreen}
+    />
   </Stack.Navigator>
 );
 

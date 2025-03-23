@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef, useMemo } from 'react';
 import {
   View,
   Text,
@@ -54,27 +54,84 @@ const QuizPointHistoryScreen: React.FC = ({ navigation }: any) => {
       theme === 'dark' ? ['#444444', '#AAAAAA'] : ['#2D336B', '#7886C7'],
   });
 
-  // Define mappings for quiz difficulties and sets
-  const difficultyMap = {
-    Set: 'Easy',
-    Set_2: 'Intermediate',
-    Set_3: 'Hard',
-    Easy: 'Easy',
-    Intermediate: 'Intermediate',
-    Hard: 'Hard',
-  };
+  // Memoize constant maps so that they can be added to dependency arrays without triggering unnecessary rerenders.
+  const difficultyMap = useMemo(
+    () => ({
+      Set: 'Easy',
+      Set_2: 'Intermediate',
+      Set_3: 'Hard',
+      Easy: 'Easy',
+      Intermediate: 'Intermediate',
+      Hard: 'Hard',
+    }),
+    []
+  );
 
-  const setMappings = {
-    set1: 'Relaxation Techniques',
-    set2: 'Speech Techniques',
-    set3: 'Pronunciation',
-    'relaxation techniques': 'Relaxation Techniques',
-    'speech techniques': 'Speech Techniques',
-    pronunciation: 'Pronunciation',
-    'Relaxation Techniques': 'Relaxation Techniques',
-    'Speech Techniques': 'Speech Techniques',
-    Pronunciation: 'Pronunciation',
-  };
+  const setMappings = useMemo(
+    () => ({
+      set1: 'Relaxation Techniques',
+      set2: 'Speech Techniques',
+      set3: 'Pronunciation',
+      'relaxation techniques': 'Relaxation Techniques',
+      'speech techniques': 'Speech Techniques',
+      pronunciation: 'Pronunciation',
+      'Relaxation Techniques': 'Relaxation Techniques',
+      'Speech Techniques': 'Speech Techniques',
+      Pronunciation: 'Pronunciation',
+    }),
+    []
+  );
+
+  // Dynamic styles extracted from inline definitions
+  const dynamicStyles = useMemo(
+    () => ({
+      attemptCard: {
+        backgroundColor: theme === 'dark' ? '#1C1C1C' : '#FFFFFF',
+        borderColor: borderInterpolation,
+        borderWidth: 2,
+        opacity: fadeAnim,
+        transform: [
+          {
+            translateY: fadeAnim.interpolate({
+              inputRange: [0, 1],
+              outputRange: [50, 0],
+            }),
+          },
+        ],
+      },
+      attemptText: {
+        color: theme === 'dark' ? '#FFFFFF' : '#2A2D57',
+      },
+      tagText: {
+        color: theme === 'dark' ? '#FFFFFF' : '#2A2D57',
+      },
+      sectionTitleText: {
+        color: theme === 'dark' ? '#FFFFFF' : '#2A2D57',
+      },
+      dateText: {
+        color: theme === 'dark' ? '#888' : '#718096',
+      },
+      backButton: {
+        backgroundColor: theme === 'dark' ? '#333333' : '#E6F7FF',
+      },
+      backButtonText: {
+        color: theme === 'dark' ? '#FFFFFF' : '#2C3E50',
+      },
+      headerTitle: {
+        color: theme === 'dark' ? '#FFFFFF' : '#2A2D57',
+      },
+      headerSubtitle: {
+        color: theme === 'dark' ? '#AAAAAA' : '#718096',
+      },
+      iconContainerGradient:
+        theme === 'dark' ? ['#333333', '#444444'] : ['#3B5998', '#577BC1'],
+      listContent: {
+        backgroundColor: theme === 'dark' ? '#121212' : '#FFFFFF',
+        opacity: fadeAnim,
+      },
+    }),
+    [theme, fadeAnim, borderInterpolation]
+  );
 
   useEffect(() => {
     const fetchQuizAttempts = async () => {
@@ -147,6 +204,7 @@ const QuizPointHistoryScreen: React.FC = ({ navigation }: any) => {
           }
         }
       } catch (error) {
+        // eslint-disable-next-line no-console
         console.error('Error fetching quiz attempts:', error);
       } finally {
         setLoading(false);
@@ -158,8 +216,9 @@ const QuizPointHistoryScreen: React.FC = ({ navigation }: any) => {
       }
     };
 
+    // Include memoized dependencies in the dependency array.
     fetchQuizAttempts();
-  }, [fadeAnim]);
+  }, [fadeAnim, difficultyMap, setMappings]);
 
   const handleBackPress = () => {
     navigation.goBack();
@@ -183,34 +242,12 @@ const QuizPointHistoryScreen: React.FC = ({ navigation }: any) => {
     }
   };
 
-  const renderAttemptItem = ({
-    item,
-    index,
-  }: {
-    item: QuizAttempt;
-    index: number;
-  }) => {
+  // Removed unused index parameter.
+  const renderAttemptItem = ({ item }: { item: QuizAttempt }) => {
     const scoreColor = getScoreColor(item.score, item.totalPoints);
 
     return (
-      <Animated.View
-        style={[
-          styles.attemptCard,
-          {
-            backgroundColor: theme === 'dark' ? '#1C1C1C' : '#FFFFFF',
-            opacity: fadeAnim,
-            transform: [
-              {
-                translateY: fadeAnim.interpolate({
-                  inputRange: [0, 1],
-                  outputRange: [50, 0],
-                }),
-              },
-            ],
-            borderColor: borderInterpolation,
-            borderWidth: 2,
-          },
-        ]}>
+      <Animated.View style={[styles.attemptCard, dynamicStyles.attemptCard]}>
         <View style={styles.cardHeader}>
           <View style={styles.scoreContainer}>
             <LinearGradient
@@ -227,11 +264,7 @@ const QuizPointHistoryScreen: React.FC = ({ navigation }: any) => {
           </View>
 
           <View style={styles.detailsContainer}>
-            <Text
-              style={[
-                styles.attemptText,
-                { color: theme === 'dark' ? '#FFFFFF' : '#2A2D57' },
-              ]}>
+            <Text style={[styles.attemptText, dynamicStyles.attemptText]}>
               {item.quizType === 'Public Speaking'
                 ? 'Public Speaking Quiz'
                 : 'Stuttering Quiz'}
@@ -240,17 +273,9 @@ const QuizPointHistoryScreen: React.FC = ({ navigation }: any) => {
             <View style={styles.tagContainer}>
               {item.quizType === 'Public Speaking' && item.difficulty && (
                 <LinearGradient
-                  colors={
-                    theme === 'dark'
-                      ? ['#333333', '#444444']
-                      : ['#EAEEFF', '#D0D3E6']
-                  }
+                  colors={dynamicStyles.iconContainerGradient}
                   style={styles.tagBackground}>
-                  <Text
-                    style={[
-                      styles.tagText,
-                      { color: theme === 'dark' ? '#FFFFFF' : '#2A2D57' },
-                    ]}>
+                  <Text style={[styles.tagText, dynamicStyles.tagText]}>
                     {item.difficulty}
                   </Text>
                 </LinearGradient>
@@ -258,17 +283,9 @@ const QuizPointHistoryScreen: React.FC = ({ navigation }: any) => {
 
               {item.quizType === 'Stuttering' && item.set && (
                 <LinearGradient
-                  colors={
-                    theme === 'dark'
-                      ? ['#333333', '#444444']
-                      : ['#EAEEFF', '#D0D3E6']
-                  }
+                  colors={dynamicStyles.iconContainerGradient}
                   style={styles.tagBackground}>
-                  <Text
-                    style={[
-                      styles.tagText,
-                      { color: theme === 'dark' ? '#FFFFFF' : '#2A2D57' },
-                    ]}>
+                  <Text style={[styles.tagText, dynamicStyles.tagText]}>
                     {item.set}
                   </Text>
                 </LinearGradient>
@@ -280,13 +297,9 @@ const QuizPointHistoryScreen: React.FC = ({ navigation }: any) => {
         <View
           style={[
             styles.cardFooter,
-            { borderTopColor: theme === 'dark' ? '#333333' : '#EEEEEE' },
+            theme === 'dark' ? styles.cardFooterDark : styles.cardFooterLight,
           ]}>
-          <Text
-            style={[
-              styles.attemptDate,
-              { color: theme === 'dark' ? '#888' : '#718096' },
-            ]}>
+          <Text style={[styles.attemptDate, dynamicStyles.dateText]}>
             {moment(item.timestamp).format('MMM Do YYYY, h:mm A')}
           </Text>
 
@@ -311,17 +324,11 @@ const QuizPointHistoryScreen: React.FC = ({ navigation }: any) => {
   }) => (
     <View style={styles.sectionHeaderContainer}>
       <LinearGradient
-        colors={
-          theme === 'dark' ? ['#333333', '#444444'] : ['#3B5998', '#577BC1']
-        }
+        colors={dynamicStyles.iconContainerGradient}
         style={styles.iconContainer}>
         <Text style={styles.sectionIcon}>{getQuizIcon(title)}</Text>
       </LinearGradient>
-      <Text
-        style={[
-          styles.quizTypeTitle,
-          { color: theme === 'dark' ? '#FFFFFF' : '#2A2D57' },
-        ]}>
+      <Text style={[styles.quizTypeTitle, dynamicStyles.sectionTitleText]}>
         {title} Quizzes
       </Text>
     </View>
@@ -336,17 +343,13 @@ const QuizPointHistoryScreen: React.FC = ({ navigation }: any) => {
         ]}>
         <Text style={styles.emptyIcon}>📝</Text>
       </Animated.View>
-      <Text
-        style={[
-          styles.emptyText,
-          { color: theme === 'dark' ? '#FFFFFF' : '#2A2D57' },
-        ]}>
+      <Text style={[styles.emptyText, dynamicStyles.sectionTitleText]}>
         No quiz attempts yet
       </Text>
       <Text
         style={[
           styles.emptySubtext,
-          { color: theme === 'dark' ? '#AAAAAA' : '#718096' },
+          theme === 'dark' ? styles.emptySubtextDark : styles.emptySubtextLight,
         ]}>
         Complete quizzes to track your progress here.
       </Text>
@@ -355,18 +358,10 @@ const QuizPointHistoryScreen: React.FC = ({ navigation }: any) => {
 
   const headerComponent = () => (
     <View style={styles.listHeader}>
-      <Text
-        style={[
-          styles.headerTitle,
-          { color: theme === 'dark' ? '#FFFFFF' : '#2A2D57' },
-        ]}>
+      <Text style={[styles.headerTitle, dynamicStyles.headerTitle]}>
         Quiz Performance
       </Text>
-      <Text
-        style={[
-          styles.headerSubtitle,
-          { color: theme === 'dark' ? '#AAAAAA' : '#718096' },
-        ]}>
+      <Text style={[styles.headerSubtitle, dynamicStyles.headerSubtitle]}>
         {sectionData.reduce((total, section) => total + section.data.length, 0)}{' '}
         attempts total
       </Text>
@@ -378,9 +373,7 @@ const QuizPointHistoryScreen: React.FC = ({ navigation }: any) => {
       <Animated.View
         style={[styles.loadingCircle, { borderColor: borderInterpolation }]}>
         <LinearGradient
-          colors={
-            theme === 'dark' ? ['#333333', '#444444'] : ['#3B5998', '#577BC1']
-          }
+          colors={dynamicStyles.iconContainerGradient}
           style={styles.loadingInnerCircle}>
           <Text style={styles.loadingIcon}>📊</Text>
         </LinearGradient>
@@ -402,16 +395,9 @@ const QuizPointHistoryScreen: React.FC = ({ navigation }: any) => {
       <SafeAreaView style={styles.safeArea}>
         <View style={styles.header}>
           <TouchableOpacity
-            style={[
-              styles.backButton,
-              { backgroundColor: theme === 'dark' ? '#333333' : '#E6F7FF' },
-            ]}
+            style={[styles.backButton, dynamicStyles.backButton]}
             onPress={handleBackPress}>
-            <Text
-              style={[
-                styles.backButtonText,
-                { color: theme === 'dark' ? '#FFFFFF' : '#2C3E50' },
-              ]}>
+            <Text style={[styles.backButtonText, dynamicStyles.backButtonText]}>
               ←
             </Text>
           </TouchableOpacity>
@@ -423,13 +409,7 @@ const QuizPointHistoryScreen: React.FC = ({ navigation }: any) => {
           loadingComponent()
         ) : (
           <Animated.View
-            style={[
-              styles.contentContainer,
-              {
-                backgroundColor: theme === 'dark' ? '#121212' : '#FFFFFF',
-                opacity: fadeAnim,
-              },
-            ]}>
+            style={[styles.contentContainer, dynamicStyles.listContent]}>
             <SectionList
               sections={sectionData}
               keyExtractor={(item, index) => item.quizType + index}
@@ -439,10 +419,7 @@ const QuizPointHistoryScreen: React.FC = ({ navigation }: any) => {
               ListHeaderComponent={headerComponent}
               contentContainerStyle={[
                 styles.listContainer,
-                sectionData.length === 0 && {
-                  flex: 1,
-                  justifyContent: 'center',
-                },
+                sectionData.length === 0 && styles.centeredContent,
               ]}
               stickySectionHeadersEnabled={false}
               showsVerticalScrollIndicator={false}
@@ -695,6 +672,22 @@ const styles = StyleSheet.create({
     fontSize: 18,
     color: '#FFFFFF',
     textAlign: 'center',
+  },
+  cardFooterDark: {
+    borderTopColor: '#333333',
+  },
+  cardFooterLight: {
+    borderTopColor: '#EEEEEE',
+  },
+  emptySubtextDark: {
+    color: '#AAAAAA',
+  },
+  emptySubtextLight: {
+    color: '#718096',
+  },
+  centeredContent: {
+    flex: 1,
+    justifyContent: 'center',
   },
 });
 

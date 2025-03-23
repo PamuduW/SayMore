@@ -180,7 +180,7 @@ const HistoryScreen: React.FC<HistoryScreenProps> = () => {
         </View>
       </TouchableOpacity>
     ),
-    [handleVideoPress]
+    [handleVideoPress, theme]
   );
 
   const handleBackPress = () => {

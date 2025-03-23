@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef, useMemo } from 'react';
 import {
   View,
   Text,
@@ -41,6 +41,60 @@ interface GroupedVideoData {
   totalPoints: number;
 }
 
+interface HeaderProps {
+  theme: string;
+  groupedVideos: GroupedVideoData[];
+}
+
+const HeaderComponent: React.FC<HeaderProps> = ({ theme, groupedVideos }) => {
+  const headerDynamicStyles = useMemo(
+    () => ({
+      sectionTitle: { color: theme === 'dark' ? '#FFFFFF' : '#2A2D57' },
+      sectionSubtitle: { color: theme === 'dark' ? '#AAAAAA' : '#718096' },
+    }),
+    [theme]
+  );
+
+  return (
+    <View style={styles.headerComponent}>
+      <Text style={[styles.sectionTitle, headerDynamicStyles.sectionTitle]}>
+        Videos Watched
+      </Text>
+      <Text
+        style={[styles.sectionSubtitle, headerDynamicStyles.sectionSubtitle]}>
+        {groupedVideos.length} {groupedVideos.length === 1 ? 'video' : 'videos'}{' '}
+        completed
+      </Text>
+    </View>
+  );
+};
+
+interface EmptyProps {
+  theme: string;
+}
+
+const EmptyListComponent: React.FC<EmptyProps> = ({ theme }) => {
+  const emptyDynamicStyles = useMemo(
+    () => ({
+      emptyText: { color: theme === 'dark' ? '#FFFFFF' : '#2A2D57' },
+      emptySubtext: { color: theme === 'dark' ? '#AAAAAA' : '#718096' },
+    }),
+    [theme]
+  );
+
+  return (
+    <View style={styles.emptyContainer}>
+      <Text style={[styles.emptyText, emptyDynamicStyles.emptyText]}>
+        No videos watched yet
+      </Text>
+      <Text style={[styles.emptySubtext, emptyDynamicStyles.emptySubtext]}>
+        Start watching videos to earn points and enhance your speech &
+        confidence.
+      </Text>
+    </View>
+  );
+};
+
 const TotalPointsScreen: React.FC = () => {
   const [points, setPoints] = useState<number | null>(null);
   const [groupedVideos, setGroupedVideos] = useState<GroupedVideoData[]>([]);
@@ -49,7 +103,7 @@ const TotalPointsScreen: React.FC = () => {
   const theme = useTheme();
   const borderAnimation = useRef(new Animated.Value(0)).current;
 
-  // Animation
+  // Border animation
   useEffect(() => {
     Animated.loop(
       Animated.timing(borderAnimation, {
@@ -65,6 +119,42 @@ const TotalPointsScreen: React.FC = () => {
     outputRange:
       theme === 'dark' ? ['#444444', '#AAAAAA'] : ['#2D336B', '#7886C7'],
   });
+
+  // Dynamic styles to replace inline styles in this screen
+  const dynamicStyles = useMemo(
+    () => ({
+      cardContainer: {
+        borderColor: borderInterpolation,
+        borderWidth: 2,
+        backgroundColor: theme === 'dark' ? '#121212' : '#FFFFFF',
+      },
+      videoTitle: {
+        color: theme === 'dark' ? '#FFFFFF' : '#2A2D57',
+      },
+      progressLabel: {
+        color: theme === 'dark' ? '#BBBBBB' : '#718096',
+      },
+      progressBarBackground: {
+        backgroundColor: theme === 'dark' ? '#333333' : '#E2E8F0',
+      },
+      progressPercentage: {
+        color: theme === 'dark' ? '#FFFFFF' : '#2A2D57',
+      },
+      backButton: {
+        backgroundColor: theme === 'dark' ? '#333333' : '#E6F7FF',
+      },
+      headerTextColor: {
+        color: theme === 'dark' ? '#FFFFFF' : '#2C3E50',
+      },
+      pointsCircleBackground: {
+        backgroundColor: theme === 'dark' ? '#333333' : '#3B5998',
+      },
+      contentContainerBackground: {
+        backgroundColor: theme === 'dark' ? '#121212' : '#FFFFFF',
+      },
+    }),
+    [theme, borderInterpolation]
+  );
 
   useEffect(() => {
     const fetchData = async () => {
@@ -119,6 +209,7 @@ const TotalPointsScreen: React.FC = () => {
           }
         }
       } catch (error) {
+        // eslint-disable-next-line no-console
         console.error('Error fetching data:', error);
         setPoints(0);
         setGroupedVideos([]);
@@ -135,15 +226,7 @@ const TotalPointsScreen: React.FC = () => {
   };
 
   const renderVideoItem = ({ item }: { item: GroupedVideoData }) => (
-    <Animated.View
-      style={[
-        styles.cardContainer,
-        {
-          borderColor: borderInterpolation,
-          borderWidth: 2,
-          backgroundColor: theme === 'dark' ? '#121212' : '#FFFFFF',
-        },
-      ]}>
+    <Animated.View style={[styles.cardContainer, dynamicStyles.cardContainer]}>
       <View style={styles.thumbnailContainer}>
         <Image source={{ uri: item.thumbnail }} style={styles.thumbnail} />
         <LinearGradient
@@ -159,26 +242,19 @@ const TotalPointsScreen: React.FC = () => {
 
       <View style={styles.videoDetails}>
         <Text
-          style={[
-            styles.videoTitle,
-            { color: theme === 'dark' ? '#FFFFFF' : '#2A2D57' },
-          ]}
+          style={[styles.videoTitle, dynamicStyles.videoTitle]}
           numberOfLines={2}>
           {item.title}
         </Text>
 
         <View style={styles.progressContainer}>
-          <Text
-            style={[
-              styles.progressLabel,
-              { color: theme === 'dark' ? '#BBBBBB' : '#718096' },
-            ]}>
+          <Text style={[styles.progressLabel, dynamicStyles.progressLabel]}>
             Last watched:
           </Text>
           <View
             style={[
               styles.progressBarBackground,
-              { backgroundColor: theme === 'dark' ? '#333333' : '#E2E8F0' },
+              dynamicStyles.progressBarBackground,
             ]}>
             <LinearGradient
               colors={
@@ -195,7 +271,7 @@ const TotalPointsScreen: React.FC = () => {
           <Text
             style={[
               styles.progressPercentage,
-              { color: theme === 'dark' ? '#FFFFFF' : '#2A2D57' },
+              dynamicStyles.progressPercentage,
             ]}>
             {item.lastPercentage}%
           </Text>
@@ -207,50 +283,10 @@ const TotalPointsScreen: React.FC = () => {
           }
           style={styles.pointsContainer}>
           <Text style={styles.pointsValue}>{item.totalPoints}</Text>
-          <Text style={styles.pointsLabel}>points earned</Text>
+          <Text style={styles.pointsEarnedLabel}>points earned</Text>
         </LinearGradient>
       </View>
     </Animated.View>
-  );
-
-  const HeaderComponent = () => (
-    <View style={styles.headerComponent}>
-      <Text
-        style={[
-          styles.sectionTitle,
-          { color: theme === 'dark' ? '#FFFFFF' : '#2A2D57' },
-        ]}>
-        Videos Watched
-      </Text>
-      <Text
-        style={[
-          styles.sectionSubtitle,
-          { color: theme === 'dark' ? '#AAAAAA' : '#718096' },
-        ]}>
-        {groupedVideos.length} {groupedVideos.length === 1 ? 'video' : 'videos'}{' '}
-        completed
-      </Text>
-    </View>
-  );
-
-  const EmptyListComponent = () => (
-    <View style={styles.emptyContainer}>
-      <Text
-        style={[
-          styles.emptyText,
-          { color: theme === 'dark' ? '#FFFFFF' : '#2A2D57' },
-        ]}>
-        No videos watched yet
-      </Text>
-      <Text
-        style={[
-          styles.emptySubtext,
-          { color: theme === 'dark' ? '#AAAAAA' : '#718096' },
-        ]}>
-        Start watching videos to earn points and enhance your speech &
-        confidence.
-      </Text>
-    </View>
   );
 
   return (
@@ -266,16 +302,10 @@ const TotalPointsScreen: React.FC = () => {
       <SafeAreaView style={styles.safeArea}>
         <View style={styles.header}>
           <TouchableOpacity
-            style={[
-              styles.backButton,
-              { backgroundColor: theme === 'dark' ? '#333333' : '#E6F7FF' },
-            ]}
+            style={[styles.backButton, dynamicStyles.backButton]}
             onPress={handleBackPress}>
             <Text
-              style={[
-                styles.backButtonText,
-                { color: theme === 'dark' ? '#FFFFFF' : '#2C3E50' },
-              ]}>
+              style={[styles.backButtonText, dynamicStyles.headerTextColor]}>
               ←
             </Text>
           </TouchableOpacity>
@@ -299,9 +329,7 @@ const TotalPointsScreen: React.FC = () => {
                 <View
                   style={[
                     styles.pointsCircle,
-                    {
-                      backgroundColor: theme === 'dark' ? '#333333' : '#3B5998',
-                    },
+                    dynamicStyles.pointsCircleBackground,
                   ]}>
                   <Text style={styles.pointsNumber}>{points}</Text>
                   <Text style={styles.pointsLabel}>POINTS</Text>
@@ -312,7 +340,7 @@ const TotalPointsScreen: React.FC = () => {
             <View
               style={[
                 styles.contentContainer,
-                { backgroundColor: theme === 'dark' ? '#121212' : '#FFFFFF' },
+                dynamicStyles.contentContainerBackground,
               ]}>
               <FlatList
                 data={groupedVideos}
@@ -320,8 +348,13 @@ const TotalPointsScreen: React.FC = () => {
                 renderItem={renderVideoItem}
                 contentContainerStyle={styles.listContainer}
                 showsVerticalScrollIndicator={false}
-                ListHeaderComponent={HeaderComponent}
-                ListEmptyComponent={EmptyListComponent}
+                ListHeaderComponent={
+                  <HeaderComponent
+                    theme={theme}
+                    groupedVideos={groupedVideos}
+                  />
+                }
+                ListEmptyComponent={<EmptyListComponent theme={theme} />}
               />
             </View>
           </>
@@ -407,6 +440,12 @@ const styles = StyleSheet.create({
     color: '#D0D3E6',
     marginTop: 6,
   },
+  // For video cards
+  pointsEarnedLabel: {
+    fontSize: 14,
+    color: '#FFFFFF',
+    marginLeft: 6,
+  },
   contentContainer: {
     flex: 1,
     borderTopLeftRadius: 30,
@@ -448,8 +487,7 @@ const styles = StyleSheet.create({
     marginTop: 12,
     lineHeight: 24,
   },
-
-  // Card Design
+  // Card styles
   cardContainer: {
     flexDirection: 'row',
     borderRadius: 16,
@@ -530,11 +568,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
     color: '#FFFFFF',
-  },
-  pointsLabel: {
-    fontSize: 14,
-    color: '#FFFFFF',
-    marginLeft: 6,
   },
 });
 

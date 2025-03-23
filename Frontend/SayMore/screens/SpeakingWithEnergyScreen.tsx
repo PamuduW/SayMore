@@ -129,9 +129,9 @@ const SpeakingWithEnergyScreen: React.FC<
               style={styles.backButton}
               onPress={handleBackPress}>
               <Image
-                              source={require('../assets/back.png')} // Update this path to your back.png location
-                              style={styles.backButtonImage}
-                            />
+                source={require('../assets/back.png')} // Update this path to your back.png location
+                style={styles.backButtonImage}
+              />
             </TouchableOpacity>
             <View style={styles.headerTextContainer}>
               <Text style={styles.headerText}>Speaking with Energy</Text>
@@ -274,9 +274,9 @@ const styles = StyleSheet.create({
     marginLeft: 10,
   },
   backButtonImage: {
-      width: 24,
-      height: 24,
-    },
+    width: 24,
+    height: 24,
+  },
   headerText: {
     fontSize: 28,
     fontWeight: 'bold',

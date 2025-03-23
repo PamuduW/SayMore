@@ -14,23 +14,21 @@ import { useTheme } from '../components/ThemeContext';
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
 
-// Define the props for the HomeScreen component
 interface HomeScreenProps {
   navigation: NavigationProp<any>;
 }
 
 const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
-  useNotifications(); // Custom hook for handling notifications
-  const theme = useTheme(); // Get current theme (dark or light)
+  useNotifications();
+  const theme = useTheme();
 
-  const [userData, setUserData] = useState(null); // State to store user data
-  const borderAnimation = useRef(new Animated.Value(0)).current; // Animation for border color
+  const [userData, setUserData] = useState(null);
+  const borderAnimation = useRef(new Animated.Value(0)).current;
 
-  // Fetch user data (only first name) from Firestore
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const currentUser = auth().currentUser; // Get currently logged-in user
+        const currentUser = auth().currentUser;
         if (currentUser) {
           const userDoc = await firestore()
             .collection('User_Accounts')
@@ -38,18 +36,17 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
             .get();
 
           if (userDoc.exists) {
-            setUserData(userDoc.data()); // Set user data if document exists
+            setUserData(userDoc.data());
           }
         }
       } catch (error) {
-        console.log('Error fetching user data: ', error); // Log errors
+        Alert.alert('Error', 'Error fetching user data');
       }
     };
 
     fetchUserData();
   }, []);
 
-  // Border color animation loop
   useEffect(() => {
     Animated.loop(
       Animated.timing(borderAnimation, {
@@ -60,17 +57,15 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
     ).start();
   }, [borderAnimation]);
 
-  // Interpolate border color based on theme
   const borderInterpolation = borderAnimation.interpolate({
     inputRange: [0, 1],
     outputRange:
       theme === 'dark' ? ['#FFFFFF', '#AAAAAA'] : ['#2D336B', '#7886C7'],
   });
 
-  // Handle button press and navigate accordingly
   const handlePress = (option: string) => {
     const isPublicSpeaking = option === 'Public Speaking';
-    navigation.navigate('Audio', { isPublicSpeaking }); // Navigate to Audio screen
+    navigation.navigate('Audio', { isPublicSpeaking });
   };
 
   return (
@@ -79,8 +74,6 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
         theme === 'dark' ? ['#000000', '#222222'] : ['#577BC1', '#577BC1']
       }
       style={styles.container}>
-
-      {/* Header Section */}
       <View style={styles.header}>
         <Image style={styles.icon} source={require('../assets/iconTop.png')} />
 
@@ -91,22 +84,23 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
         <Text
           style={[
             styles.tagline,
-            { color: theme === 'dark' ? '#DDDDDD' : '#D0D3E6' },
+            theme === 'dark' ? styles.taglineDark : styles.taglineLight,
           ]}>
           Enhance your speech & confidence
         </Text>
       </View>
 
-      {/* Test Section */}
       <View
         style={[
           styles.testContainer,
-          { backgroundColor: theme === 'dark' ? '#333333' : '#FFFFFF' },
+          theme === 'dark'
+            ? styles.testContainerDark
+            : styles.testContainerLight,
         ]}>
         <Text
           style={[
             styles.testHeading,
-            { color: theme === 'dark' ? '#FFFFFF' : '#2A2D57' },
+            theme === 'dark' ? styles.testHeadingDark : styles.testHeadingLight,
           ]}>
           Start Your Test
         </Text>
@@ -115,7 +109,6 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
           source={require('../assets/public-speaking.png')}
         />
 
-        {/* Test Options */}
         <View style={styles.testOptions}>
           {['Public Speaking', 'Stuttering'].map((option, index) => (
             <TouchableOpacity key={index} onPress={() => handlePress(option)}>
@@ -142,7 +135,6 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
   );
 };
 
-// Styles for the components
 const styles = StyleSheet.create({
   container: { flex: 1, padding: 20, justifyContent: 'center' },
 
@@ -172,6 +164,12 @@ const styles = StyleSheet.create({
     marginTop: 2,
     marginBottom: 8,
   },
+  taglineDark: {
+    color: '#DDDDDD',
+  },
+  taglineLight: {
+    color: '#D0D3E6',
+  },
 
   testContainer: {
     alignItems: 'center',
@@ -183,11 +181,23 @@ const styles = StyleSheet.create({
     shadowRadius: 5,
     elevation: 6,
   },
+  testContainerDark: {
+    backgroundColor: '#333333',
+  },
+  testContainerLight: {
+    backgroundColor: '#FFFFFF',
+  },
 
   testHeading: {
     fontSize: 26,
     fontWeight: 'bold',
     marginBottom: 20,
+  },
+  testHeadingDark: {
+    color: '#FFFFFF',
+  },
+  testHeadingLight: {
+    color: '#2A2D57',
   },
   testImage: { width: 220, height: 220, marginBottom: 25 },
 

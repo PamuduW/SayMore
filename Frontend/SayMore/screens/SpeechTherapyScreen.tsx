@@ -1,5 +1,13 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, Linking, StyleSheet, ScrollView, Animated } from 'react-native';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  Linking,
+  StyleSheet,
+  ScrollView,
+  Animated,
+} from 'react-native';
 import { useTheme } from '../components/ThemeContext';
 import { useNavigation } from '@react-navigation/native';
 import LinearGradient from 'react-native-linear-gradient';
@@ -74,29 +82,36 @@ const SpeechTherapyScreen = () => {
     })
   ).start();
 
-  // Interpolates colors for the animated border effect
-  const borderInterpolation = borderAnimation.interpolate({
-    inputRange: [0, 1],
-    outputRange: ['#2D336B', '#7886C7'],
-  });
-
   return (
     <LinearGradient
-      colors={theme === 'dark' ? ['#1C1C1C', '#3A3A3A'] : ['#577BC1', '#577BC1']}
-      style={styles.container}
-    >
+      colors={
+        theme === 'dark' ? ['#1C1C1C', '#3A3A3A'] : ['#577BC1', '#577BC1']
+      }
+      style={styles.container}>
       {/* Header with back button and title */}
       <View style={styles.header}>
         <TouchableOpacity
           onPress={() => navigation.goBack()}
-          style={[styles.backButton, theme === 'dark' ? styles.backButtonDark : styles.backButtonLight]}
-        >
-          <Text style={[styles.backButtonText, theme === 'dark' && styles.backButtonTextDark]}>←</Text>
+          style={[
+            styles.backButton,
+            theme === 'dark' ? styles.backButtonDark : styles.backButtonLight,
+          ]}>
+          <Text
+            style={[
+              styles.backButtonText,
+              theme === 'dark' && styles.backButtonTextDark,
+            ]}>
+            ←
+          </Text>
         </TouchableOpacity>
-        <Text style={[styles.headerTitle, theme === 'dark' ? styles.headerTitleDark : styles.headerTitleLight]}>
+        <Text
+          style={[
+            styles.headerTitle,
+            theme === 'dark' ? styles.headerTitleDark : styles.headerTitleLight,
+          ]}>
           Speech Therapists
         </Text>
-        <View style={{ width: 48 }} />
+        <View style={styles.headerSpacer} />
       </View>
 
       {/* Scrollable list of therapists */}
@@ -104,19 +119,39 @@ const SpeechTherapyScreen = () => {
         {therapists.map(item => (
           <View
             key={item.id}
-            style={[styles.card, theme === 'dark' ? styles.cardDark : styles.cardLight]}
-          >
-            <Text style={[styles.name, theme === 'dark' ? styles.textWhite : styles.textDark]}>{item.name}</Text>
-            <Text style={[styles.details, theme === 'dark' ? styles.textGrey : styles.textDark]}>
+            style={[
+              styles.card,
+              theme === 'dark' ? styles.cardDark : styles.cardLight,
+            ]}>
+            <Text
+              style={[
+                styles.name,
+                theme === 'dark' ? styles.textWhite : styles.textDark,
+              ]}>
+              {item.name}
+            </Text>
+            <Text
+              style={[
+                styles.details,
+                theme === 'dark' ? styles.textGrey : styles.textDark,
+              ]}>
               📍 {item.location}
             </Text>
             <TouchableOpacity onPress={() => handleCall(item.contact)}>
-              <Text style={[styles.contact, theme === 'dark' ? styles.textWhite : styles.textDark]}>
+              <Text
+                style={[
+                  styles.contact,
+                  theme === 'dark' ? styles.textWhite : styles.textDark,
+                ]}>
                 📞 {item.contact}
               </Text>
             </TouchableOpacity>
             <TouchableOpacity onPress={() => handleEmail(item.email)}>
-              <Text style={[styles.contact, theme === 'dark' ? styles.textWhite : styles.textDark]}>
+              <Text
+                style={[
+                  styles.contact,
+                  theme === 'dark' ? styles.textWhite : styles.textDark,
+                ]}>
                 ✉ {item.email}
               </Text>
             </TouchableOpacity>
@@ -129,24 +164,47 @@ const SpeechTherapyScreen = () => {
 
 const styles = StyleSheet.create({
   container: { flex: 1, padding: 20 },
-  header: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 },
-  backButton: { width: 48, height: 48, borderRadius: 12, justifyContent: 'center', alignItems: 'center' },
+  header: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  backButton: {
+    width: 48,
+    height: 48,
+    borderRadius: 12,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   backButtonLight: { backgroundColor: '#E6F7FF' },
   backButtonDark: { backgroundColor: '#FFF' },
-  backButtonText: { fontSize: 28, fontWeight: 'bold', color: '#2C3E50', textAlign: 'center' },
+  backButtonText: {
+    fontSize: 28,
+    fontWeight: 'bold',
+    color: '#2C3E50',
+    textAlign: 'center',
+  },
   backButtonTextDark: { color: '#000' },
   headerTitle: { fontSize: 24, fontWeight: 'bold', letterSpacing: 0.5 },
   headerTitleLight: { color: '#003366' },
   headerTitleDark: { color: '#FFFFFF' },
-
+  headerSpacer: { width: 48 },
   scrollContainer: { paddingTop: 10 },
-  card: { padding: 20, borderRadius: 12, marginBottom: 20, shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.2, shadowRadius: 3 },
+  card: {
+    padding: 20,
+    borderRadius: 12,
+    marginBottom: 20,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 3,
+  },
   cardLight: { backgroundColor: '#E6F7FF' },
   cardDark: { backgroundColor: '#1C1C1C' },
   name: { fontSize: 18, fontWeight: 'bold', marginBottom: 5 },
   details: { fontSize: 14, marginBottom: 8 },
   contact: { fontSize: 14, marginTop: 8 },
-
   textWhite: { color: '#FFFFFF' },
   textDark: { color: '#003366' },
   textGrey: { color: '#AAAAAA' },

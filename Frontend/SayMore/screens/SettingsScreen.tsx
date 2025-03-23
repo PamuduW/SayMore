@@ -164,7 +164,7 @@ export default function SettingsScreen() {
 
         <Image
           source={SettingsIcon}
-          style={[styles.headerIconRight, { tintColor: '#FFFFFF' }]}
+          style={[styles.headerIconRight, styles.headerIconTint]}
         />
       </View>
 
@@ -351,5 +351,8 @@ const styles = StyleSheet.create({
   },
   backButtonTextDark: {
     color: '#000',
+  },
+  headerIconTint: {
+    tintColor: '#FFFFFF',
   },
 });

@@ -115,7 +115,7 @@ const VideoListScreen = () => {
         </Text>
       </TouchableOpacity>
     ),
-    [handleVideoPress]
+    [handleVideoPress, theme]
   );
 
   return (
