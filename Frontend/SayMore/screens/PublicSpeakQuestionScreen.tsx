@@ -5,10 +5,14 @@ import {
   TouchableOpacity,
   StyleSheet,
   ImageBackground,
+  StatusBar,
+  ScrollView,
+  SafeAreaView,
 } from 'react-native';
 import firestore from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
 import ProgressBar from 'react-native-progress/Bar';
+import { useTheme } from '../components/ThemeContext';
 
 interface AnswerOptions {
   A1: string;
@@ -24,6 +28,7 @@ interface Question {
 }
 
 const PublicSpeakQuestionScreen: React.FC = ({ navigation, route }: any) => {
+  const theme = useTheme();
   const { difficulty } = route.params;
   const [questions, setQuestions] = useState<Question[]>([]);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState<number>(0);
@@ -36,6 +41,7 @@ const PublicSpeakQuestionScreen: React.FC = ({ navigation, route }: any) => {
   const [score, setScore] = useState(0);
   const [loading, setLoading] = useState<boolean>(true);
   const [progress, setProgress] = useState<number>(0);
+  const [completedQuestions, setCompletedQuestions] = useState(0);
 
   useEffect(() => {
     const fetchQuestions = async () => {
@@ -122,6 +128,7 @@ const PublicSpeakQuestionScreen: React.FC = ({ navigation, route }: any) => {
       setIsConfirmButtonVisible(false);
       setIsNextButtonVisible(true);
       setProgress((currentQuestionIndex + 1) / questions.length);
+      setCompletedQuestions(prev => prev + 1);
     }
   };
 
@@ -171,15 +178,41 @@ const PublicSpeakQuestionScreen: React.FC = ({ navigation, route }: any) => {
     navigation.navigate('PointsScreen', { points: score, totalPoints });
   };
 
+  const getOptionTextColor = () => (theme === 'dark' ? '#FFFFFF' : '#1E3C72');
+
+  const handleBackPress = () => {
+    navigation.goBack();
+  };
+
+  const backgroundImage = require('../assets/qu.jpg');
+
   if (loading) {
-    return <Text style={styles.loadingText}>Loading questions...</Text>;
+    return (
+      <ImageBackground
+        source={backgroundImage}
+        style={styles.background}
+        resizeMode="cover">
+        <View style={styles.overlay} />
+        <View style={styles.container}>
+          <Text style={styles.loadingText}>Loading questions...</Text>
+        </View>
+      </ImageBackground>
+    );
   }
 
   if (questions.length === 0) {
     return (
-      <Text style={styles.loadingText}>
-        No questions available for {difficulty}.
-      </Text>
+      <ImageBackground
+        source={backgroundImage}
+        style={styles.background}
+        resizeMode="cover">
+        <View style={styles.overlay} />
+        <View style={styles.container}>
+          <Text style={styles.loadingText}>
+            No questions available for {difficulty}.
+          </Text>
+        </View>
+      </ImageBackground>
     );
   }
 
@@ -187,196 +220,318 @@ const PublicSpeakQuestionScreen: React.FC = ({ navigation, route }: any) => {
 
   return (
     <ImageBackground
-      source={require('../assets/qu.jpg')}
+      source={backgroundImage}
       style={styles.background}
       resizeMode="cover">
       <View style={styles.overlay} />
-      <View style={styles.container}>
-        {/* Header with Back Button */}
-        <View style={styles.headerBar}>
-          <TouchableOpacity
-            onPress={() => navigation.goBack()}
-            style={styles.backButton}>
-            <Text style={styles.backButtonText}>←</Text>
-          </TouchableOpacity>
+      <SafeAreaView style={styles.safeArea}>
+        <ScrollView
+          contentContainerStyle={styles.scrollContainer}
+          showsVerticalScrollIndicator={false}>
+          <StatusBar barStyle="light-content" />
+          {currentQuestionIndex === 0 && (
+            <TouchableOpacity
+              onPress={handleBackPress}
+              style={[
+                styles.backButton,
+                theme === 'dark' ? styles.backButtonDark : styles.backButtonLight,
+              ]}>
+              <Text
+                style={[
+                  styles.backButtonText,
+                  theme === 'dark' && styles.backButtonTextDark,
+                ]}>
+                ←
+              </Text>
+            </TouchableOpacity>
+          )}
 
-          <Text style={styles.headerTitle}>Public Speaking Quiz</Text>
+          <Text style={styles.header}>Public Speaking Quiz</Text>
+          <Text style={styles.difficultyText}>{difficulty}</Text>
+          <Text style={styles.progressText}>
+            Question {currentQuestionIndex + 1} of {questions.length}
+          </Text>
+          <ProgressBar
+            progress={completedQuestions / questions.length}
+            width={330}
+            height={12}
+            color="#289e1b"
+            style={styles.progressBar}
+          />
+          <Text style={styles.question}>{question.Question}</Text>
 
-          <View style={styles.spacer} />
-        </View>
+          {shuffledOptions.map((option, index) => (
+            <TouchableOpacity
+              key={index}
+              onPress={() => handleAnswer(index)}
+              disabled={isCorrect !== null}
+              style={[
+                theme === 'dark'
+                  ? styles.optionButtonDark
+                  : styles.optionButton,
+                selectedAnswer === index ? styles.selectedOption : {},
+                isCorrect !== null &&
+                  index === correctIndex &&
+                  styles.correctOption,
+                isCorrect !== null &&
+                  index === selectedAnswer &&
+                  !isCorrect &&
+                  styles.incorrectOption,
+              ]}>
+              <Text
+                style={[styles.optionText, { color: getOptionTextColor() }]}>
+                {option}
+              </Text>
+            </TouchableOpacity>
+          ))}
 
-        <Text style={styles.categoryText}>{difficulty}</Text>
-        <Text style={styles.progressText}>
-          Question {currentQuestionIndex + 1} of {questions.length}
-        </Text>
+          {isConfirmButtonVisible && (
+            <TouchableOpacity
+              onPress={handleConfirm}
+              style={styles.confirmButton}>
+              <Text style={styles.confirmButtonText}>Confirm Answer</Text>
+            </TouchableOpacity>
+          )}
 
-        <ProgressBar
-          progress={progress}
-          width={330}
-          height={12}
-          color="#289e1b"
-          style={styles.progressBar}
-        />
+          {isNextButtonVisible && !isLastQuestion && (
+            <TouchableOpacity onPress={handleNext} style={styles.nextButton}>
+              <Text style={styles.nextButtonText}>Next Question</Text>
+            </TouchableOpacity>
+          )}
 
-        <Text style={styles.question}>{question.Question}</Text>
+          {isNextButtonVisible && isLastQuestion && (
+            <TouchableOpacity onPress={handleFinish} style={styles.finishButton}>
+              <Text style={styles.finishButtonText}>Finish Quiz</Text>
+            </TouchableOpacity>
+          )}
 
-        {shuffledOptions.map((option, index) => (
-          <TouchableOpacity
-            key={index}
-            onPress={() => handleAnswer(index)}
-            disabled={isCorrect !== null}
-            style={[
-              styles.optionButton,
-              selectedAnswer === index ? styles.selectedOption : {},
-              isCorrect !== null &&
-                index === correctIndex &&
-                styles.correctOption,
-              isCorrect !== null &&
-                index === selectedAnswer &&
-                !isCorrect &&
-                styles.incorrectOption,
-            ]}>
-            <Text style={styles.optionText}>{option}</Text>
-          </TouchableOpacity>
-        ))}
-
-        {isConfirmButtonVisible && (
-          <TouchableOpacity
-            onPress={handleConfirm}
-            style={styles.confirmButton}>
-            <Text style={styles.confirmButtonText}>Confirm Answer</Text>
-          </TouchableOpacity>
-        )}
-
-        {isNextButtonVisible && !isLastQuestion && (
-          <TouchableOpacity onPress={handleNext} style={styles.nextButton}>
-            <Text style={styles.nextButtonText}>Next Question</Text>
-          </TouchableOpacity>
-        )}
-
-        {isNextButtonVisible && isLastQuestion && (
-          <TouchableOpacity onPress={handleFinish} style={styles.finishButton}>
-            <Text style={styles.finishButtonText}>Finish Quiz</Text>
-          </TouchableOpacity>
-        )}
-      </View>
+          {/* Add some bottom padding for scrolling */}
+          <View style={styles.bottomPadding} />
+        </ScrollView>
+      </SafeAreaView>
     </ImageBackground>
   );
 };
 
 const styles = StyleSheet.create({
-  background: { flex: 1 },
+  background: {
+    flex: 1,
+  },
   overlay: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: 'rgba(0, 0, 0, 0.8)',
+    backgroundColor: 'rgba(0, 0, 0, 0.75)',
+  },
+  safeArea: {
+    flex: 1,
+  },
+  scrollContainer: {
+    flexGrow: 1,
+    padding: 24,
+    alignItems: 'center',
+    paddingTop: 60, // Space for header and back button
   },
   container: {
     flex: 1,
-    padding: 20,
+    padding: 24,
     alignItems: 'center',
+    justifyContent: 'center',
   },
-  headerBar: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    width: '100%',
-    marginTop: 30,
-    marginBottom: 20,
+  header: {
+    fontSize: 32,
+    fontWeight: 'bold',
+    marginBottom: 10,
+    color: '#FFFFFF',
+    textAlign: 'center',
+    textShadowColor: 'rgba(0, 0, 0, 0.5)',
+    textShadowOffset: { width: 1, height: 1 },
+    textShadowRadius: 3,
+    marginTop: 60, // Add space for back button
+  },
+  difficultyText: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginBottom: 32,
+    color: '#FFFFFF',
+    textAlign: 'center',
+  },
+  progressText: {
+    fontSize: 16,
+    marginBottom: 12,
+    color: '#FFFFFF',
+    fontWeight: '500',
+    letterSpacing: 0.5,
+  },
+  question: {
+    fontSize: 24,
+    textAlign: 'center',
+    marginBottom: 30,
+    color: '#FFFFFF',
+    lineHeight: 32,
+    fontWeight: '600',
+    paddingHorizontal: 10,
+    textShadowColor: 'rgba(0, 0, 0, 0.3)',
+    textShadowOffset: { width: 1, height: 1 },
+    textShadowRadius: 2,
+  },
+  progressBar: {
+    marginBottom: 25,
+    borderRadius: 10,
+    backgroundColor: 'rgba(255, 255, 255, 0.15)',
+  },
+  optionButton: {
+    backgroundColor: 'rgba(214, 234, 248, 0.9)',
+    padding: 18,
+    borderRadius: 12,
+    width: '90%',
+    marginBottom: 14,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 3,
+    elevation: 3,
+  },
+  optionButtonDark: {
+    backgroundColor: 'rgba(58, 58, 58, 0.9)',
+    padding: 18,
+    borderRadius: 12,
+    width: '90%',
+    marginBottom: 14,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 3,
+    elevation: 3,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.1)',
+  },
+  optionText: {
+    textAlign: 'center',
+    fontSize: 18,
+    fontWeight: 'bold',
+    letterSpacing: 0.3,
+  },
+  correctOption: {
+    backgroundColor: 'rgba(39, 174, 96, 0.9)',
+    borderWidth: 2,
+    borderColor: '#1e8449',
+  },
+  incorrectOption: {
+    backgroundColor: 'rgba(231, 76, 60, 0.9)',
+    borderWidth: 2,
+    borderColor: '#b03a2e',
+  },
+  selectedOption: {
+    backgroundColor: 'rgba(76, 135, 199, 0.9)',
+    borderWidth: 2,
+    borderColor: '#2874a6',
+  },
+  confirmButton: {
+    backgroundColor: 'rgba(40, 158, 27, 0.9)',
+    padding: 15,
+    borderRadius: 12,
+    marginVertical: 18,
+    width: '90%',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+    borderWidth: 1,
+    borderColor: '#1e8814',
+  },
+  confirmButtonText: {
+    color: 'white',
+    fontSize: 20,
+    textAlign: 'center',
+    fontWeight: 'bold',
+    letterSpacing: 0.5,
+  },
+  nextButton: {
+    backgroundColor: 'rgba(52, 152, 219, 0.9)',
+    padding: 15,
+    borderRadius: 12,
+    marginTop: 24,
+    width: '90%',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+    borderWidth: 1,
+    borderColor: '#2980b9',
+  },
+  nextButtonText: {
+    color: 'white',
+    fontSize: 20,
+    textAlign: 'center',
+    fontWeight: 'bold',
+    letterSpacing: 0.5,
+  },
+  finishButton: {
+    backgroundColor: 'rgba(26, 188, 156, 0.9)',
+    padding: 15,
+    borderRadius: 12,
+    marginTop: 24,
+    width: '90%',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+    borderWidth: 1,
+    borderColor: '#16a085',
+  },
+  finishButtonText: {
+    color: 'white',
+    fontSize: 20,
+    textAlign: 'center',
+    fontWeight: 'bold',
+    letterSpacing: 0.5,
   },
   backButton: {
+    position: 'absolute',
+    top: 10,
+    left: 20,
     width: 48,
     height: 48,
-    borderRadius: 12,
-    backgroundColor: '#FFF',
+    borderRadius: 24,
     justifyContent: 'center',
     alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+    elevation: 5,
+    zIndex: 10,
+  },
+  backButtonLight: {
+    backgroundColor: 'rgba(230, 247, 255, 0.9)'
+  },
+  backButtonDark: {
+    backgroundColor: 'rgba(255, 255, 255, 0.9)'
   },
   backButtonText: {
     fontSize: 28,
     fontWeight: 'bold',
-    color: '#000',
-  },
-  headerTitle: {
-    fontSize: 24,
-    color: '#fff',
-    fontWeight: 'bold',
-  },
-  categoryText: {
-    fontSize: 22,
-    fontWeight: 'bold',
-    marginBottom: 12,
-    color: '#fff',
-  },
-  progressText: { fontSize: 16, marginBottom: 10, color: '#fff' },
-  progressBar: { marginBottom: 20, borderRadius: 10 },
-  question: {
-    fontSize: 21,
-    fontWeight: 'bold',
-    marginBottom: 30,
+    color: '#2C3E50',
     textAlign: 'center',
-    color: '#fff',
+    paddingBottom: 3,
+    lineHeight: 32,
   },
-  optionButton: {
-    padding: 18,
-    marginVertical: 10,
-    width: '90%',
-    borderRadius: 8,
-    backgroundColor: '#d6eaf8',
-  },
-  optionText: { textAlign: 'center', fontSize: 18, fontWeight: 'bold' },
-  correctOption: { backgroundColor: '#27ae60' },
-  incorrectOption: { backgroundColor: '#e74c3c' },
-  confirmButton: {
-    backgroundColor: '#289e1b',
-    padding: 13,
-    borderRadius: 10,
-    marginVertical: 15,
-    width: '90%',
-  },
-  confirmButtonText: {
-    color: 'white',
-    fontSize: 18,
-    textAlign: 'center',
-    fontWeight: 'bold',
-  },
-  nextButton: {
-    backgroundColor: '#3498db',
-    padding: 13,
-    borderRadius: 10,
-    marginTop: 20,
-    width: '90%',
-  },
-  nextButtonText: {
-    color: 'white',
-    fontSize: 18,
-    textAlign: 'center',
-    fontWeight: 'bold',
-  },
-  finishButton: {
-    backgroundColor: '#1abc9c',
-    padding: 13,
-    borderRadius: 10,
-    marginTop: 20,
-    width: '90%',
-  },
-  finishButtonText: {
-    color: 'white',
-    fontSize: 18,
-    textAlign: 'center',
-    fontWeight: 'bold',
-  },
+  backButtonTextDark: { color: '#000' },
   loadingText: {
-    fontSize: 20,
-    color: '#fff',
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#FFFFFF',
     textAlign: 'center',
-    marginTop: 20,
+    marginTop: 100,
+    textShadowColor: 'rgba(0, 0, 0, 0.5)',
+    textShadowOffset: { width: 1, height: 1 },
+    textShadowRadius: 3,
   },
-  selectedOption: {
-    backgroundColor: '#4c87c7',
-  },
-  spacer: {
-    width: 48,
-  },
+  bottomPadding: {
+    height: 40, // Add extra space at the bottom for scrolling
+  }
 });
 
 export default PublicSpeakQuestionScreen;

@@ -17,10 +17,9 @@ const AppInfoScreen = () => {
 
   return (
     <LinearGradient
-      colors={
-        theme === 'dark' ? ['#1C1C1C', '#3A3A3A'] : ['#2A2D57', '#577BC1']
-      }
-      style={styles.container}>
+      colors={theme === 'dark' ? ['#1C1C1C', '#3A3A3A'] : ['#2A2D57', '#577BC1']}
+      style={styles.container}
+    >
       <StatusBar barStyle="light-content" />
 
       {/* Header */}
@@ -30,65 +29,73 @@ const AppInfoScreen = () => {
       </View>
 
       <View style={styles.contentWrapper}>
-        <ScrollView
-          style={[
-            styles.scrollContainer,
-            theme === 'dark' && styles.darkScrollContainer,
-          ]}
-          contentContainerStyle={styles.scrollContent}>
-          <Text style={[styles.title, theme === 'dark' && styles.darkTitle]}>
-            SayMore App
-          </Text>
-          <Text
-            style={[styles.subText, theme === 'dark' && styles.darkSubText]}>
-            Version: 1.0.0
-          </Text>
+        <LinearGradient
+          colors={theme === 'dark' ? ['#1a1a1a', '#1a1a1a'] : ['#F9FAFC', '#ECEFF9']}
+          style={styles.scrollContainer}
+        >
+          <ScrollView contentContainerStyle={styles.scrollContent}>
+            <Text style={[styles.title, theme === 'dark' && styles.darkTitle]}>
+              SayMore App
+            </Text>
+            <Text style={[styles.subText, theme === 'dark' && styles.darkSubText]}>
+              Version: 1.0.0
+            </Text>
 
-          <Text
-            style={[
-              styles.sectionHeader,
-              theme === 'dark' && styles.darkSectionHeader,
-            ]}>
-            Overview
-          </Text>
-          <Text style={[styles.text, theme === 'dark' && styles.darkText]}>
-            SayMore is your personal companion for improving public speaking and
-            speech fluency. Whether you're looking to overcome stuttering,
-            refine your pronunciation, or build confidence in front of an
-            audience, SayMore offers personalized exercises, audio analysis, and
-            progress tracking features.
-          </Text>
+            <Text
+              style={[
+                styles.sectionHeader,
+                theme === 'dark' && styles.darkSectionHeader,
+              ]}
+            >
+              Overview
+            </Text>
+            <Text style={[styles.text, theme === 'dark' && styles.darkText]}>
+              SayMore is your personal companion for improving public speaking and
+              speech fluency. Whether you're looking to overcome stuttering,
+              refine your pronunciation, or build confidence in front of an
+              audience, SayMore offers personalized exercises, audio analysis, and
+              progress tracking features.
+            </Text>
 
-          <Text
-            style={[
-              styles.sectionHeader,
-              theme === 'dark' && styles.darkSectionHeader,
-            ]}>
-            Features
-          </Text>
-          <Text style={[styles.text, theme === 'dark' && styles.darkText]}>
-            - Public Speaking Practice{'\n'}- Stuttering Assistance Exercises
-            {'\n'}- Personalized Audio Feedback{'\n'}- Progress Analysis and
-            Metrics{'\n'}- Customizable User Profile
-          </Text>
+            <Text
+              style={[
+                styles.sectionHeader,
+                theme === 'dark' && styles.darkSectionHeader,
+              ]}
+            >
+              Features
+            </Text>
+            <Text style={[styles.text, theme === 'dark' && styles.darkText]}>
+              - Public Speaking Practice{'\n'}
+              - Stuttering Assistance Exercises{'\n'}
+              - Personalized Audio Feedback{'\n'}
+              - Progress Analysis and Metrics{'\n'}
+              - Customizable User Profile
+            </Text>
 
-          <Text
-            style={[
-              styles.sectionHeader,
-              theme === 'dark' && styles.darkSectionHeader,
-            ]}>
-            Developer
-          </Text>
-          <Text style={[styles.text, theme === 'dark' && styles.darkText]}>
-            Developed by SayMore Team{'\n'}
-            For support or inquiries:{'\n'}
-            Email: support@saymoreapp.com
-          </Text>
-        </ScrollView>
+            <Text
+              style={[
+                styles.sectionHeader,
+                theme === 'dark' && styles.darkSectionHeader,
+              ]}
+            >
+              Developer
+            </Text>
+            <Text style={[styles.text, theme === 'dark' && styles.darkText]}>
+              Developed by SayMore Team{'\n'}
+              For support or inquiries:{'\n'}
+              Email: support@saymoreapp.com
+            </Text>
+          </ScrollView>
+        </LinearGradient>
 
         <TouchableOpacity
-          style={[styles.backButton, theme === 'dark' && styles.darkBackButton]}
-          onPress={() => navigation.goBack()}>
+          style={[
+            styles.backButton,
+            theme === 'dark' ? styles.darkBackButton : styles.lightBackButton,
+          ]}
+          onPress={() => navigation.goBack()}
+        >
           <Text style={styles.backButtonText}>Back</Text>
         </TouchableOpacity>
       </View>
@@ -106,10 +113,9 @@ const styles = StyleSheet.create({
   },
 
   headerText: {
-    fontSize: 26,
+    fontSize: 24,
     fontWeight: 'bold',
     color: '#FFFFFF',
-    letterSpacing: 1,
   },
 
   headerUnderline: {
@@ -120,39 +126,29 @@ const styles = StyleSheet.create({
     borderRadius: 2,
   },
 
-  contentWrapper: { flex: 1, paddingHorizontal: 20 },
+  contentWrapper: {
+    flex: 1,
+    paddingHorizontal: 20,
+    alignItems: 'center',
+  },
 
   scrollContainer: {
-    borderRadius: 22,
+    borderRadius: 25,
+    width: '100%',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.12,
-    shadowRadius: 7,
-    elevation: 9,
-  },
-  scrollContainerLight: {
-    backgroundColor: '#FFFFFF',
-  },
-  scrollContainerDark: {
-    backgroundColor: '#2B2B2B',
-  },
-
-  darkScrollContainer: {
-    backgroundColor: '#1a1a1a',
+    shadowOpacity: 0.08,
+    shadowRadius: 6,
+    elevation: 6,
   },
 
   scrollContent: { padding: 25 },
 
   title: {
-    fontSize: 24,
+    fontSize: 22,
     fontWeight: 'bold',
-    marginBottom: 5,
-  },
-  titleLight: {
+    marginBottom: 6,
     color: '#2A2D57',
-  },
-  titleDark: {
-    color: '#FFFFFF',
   },
 
   darkTitle: {
@@ -162,16 +158,11 @@ const styles = StyleSheet.create({
   subText: {
     fontSize: 14,
     marginBottom: 20,
-  },
-  subTextLight: {
     color: '#3B5998',
-  },
-  subTextDark: {
-    color: '#CCCCCC',
   },
 
   darkSubText: {
-    color: '#FFFFFF',
+    color: '#CCCCCC',
   },
 
   sectionHeader: {
@@ -179,12 +170,7 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     marginTop: 15,
     marginBottom: 8,
-  },
-  sectionHeaderLight: {
     color: '#3B5998',
-  },
-  sectionHeaderDark: {
-    color: '#DDDDDD',
   },
 
   darkSectionHeader: {
@@ -192,14 +178,9 @@ const styles = StyleSheet.create({
   },
 
   text: {
-    fontSize: 15.5,
+    fontSize: 15,
     lineHeight: 24,
-  },
-  textLight: {
     color: '#2A2D57',
-  },
-  textDark: {
-    color: '#FFFFFF',
   },
 
   darkText: {
@@ -219,11 +200,9 @@ const styles = StyleSheet.create({
     shadowRadius: 7,
     elevation: 7,
   },
-  backButtonLight: {
+
+  lightBackButton: {
     backgroundColor: '#3B5998',
-  },
-  backButtonDark: {
-    backgroundColor: '#444444',
   },
 
   darkBackButton: {

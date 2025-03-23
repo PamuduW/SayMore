@@ -63,14 +63,14 @@ export default function SettingsScreen() {
   };
 
   const preferences = [
-    { label: 'Notifications', toggle: 'notifications' },
-    { label: 'Dark Mode', toggle: 'darkmode' },
+    { label: 'Notifications', toggle: 'notifications', icon: NotificationIcon },
+    { label: 'Dark Mode', toggle: 'darkmode', icon: DarkModeIcon },
   ];
 
   const info = [
-    { label: 'Privacy & Cookies' },
-    { label: 'Terms & Conditions' },
-    { label: 'App Info' },
+    { label: 'Privacy & Cookies', icon: CookiesIcon, screen: 'PrivacyCookiesScreen' },
+    { label: 'Terms & Conditions', icon: ConditionsIcon, screen: 'TermsAndConditionsScreen' },
+    { label: 'App Info', icon: AppInfoIcon, screen: 'AppInfoScreen' },
   ];
 
   const renderOption = (item, index) => (
@@ -81,32 +81,23 @@ export default function SettingsScreen() {
         theme === 'dark' ? styles.optionDark : styles.optionLight,
       ]}
       onPress={() => {
-        if (item.label === 'Terms & Conditions') {
-          navigation.navigate('TermsAndConditionsScreen');
-        } else if (item.label === 'Privacy & Cookies') {
-          navigation.navigate('PrivacyCookiesScreen');
-        } else if (item.label === 'App Info') {
-          navigation.navigate('AppInfoScreen');
+        if (item.screen) {
+          navigation.navigate(item.screen);
         }
       }}>
       <View style={styles.leftSection}>
-        <Image
-          source={
-            item.label === 'Notifications'
-              ? NotificationIcon
-              : item.label === 'Dark Mode'
-                ? DarkModeIcon
-                : item.label === 'Terms & Conditions'
-                  ? ConditionsIcon
-                  : item.label === 'Privacy & Cookies'
-                    ? CookiesIcon
-                    : AppInfoIcon
-          }
-          style={[
-            styles.optionIcon,
-            theme === 'dark' ? styles.iconDark : styles.iconLight,
-          ]}
-        />
+        <View style={[
+          styles.iconContainer,
+          theme === 'dark' ? styles.iconContainerDark : styles.iconContainerLight
+        ]}>
+          <Image
+            source={item.icon}
+            style={[
+              styles.optionIcon,
+              theme === 'dark' ? styles.iconDark : styles.iconLight,
+            ]}
+          />
+        </View>
         <Text
           style={[
             styles.optionText,
@@ -120,8 +111,10 @@ export default function SettingsScreen() {
         <Switch
           value={notificationsEnabled}
           onValueChange={toggleNotifications}
-          trackColor={{ false: '#777777', true: '#FFFFFF' }}
-          thumbColor={notificationsEnabled ? '#FFFFFF' : '#444444'}
+          trackColor={{ false: '#E1E1E1', true: theme === 'dark' ? '#3F51B5' : '#577BC1' }}
+          thumbColor={'#FFFFFF'}
+          ios_backgroundColor="#E1E1E1"
+          style={styles.switch}
         />
       )}
 
@@ -129,9 +122,17 @@ export default function SettingsScreen() {
         <Switch
           value={isDarkMode}
           onValueChange={setIsDarkMode}
-          trackColor={{ false: '#777777', true: '#FFFFFF' }}
-          thumbColor={isDarkMode ? '#FFFFFF' : '#444444'}
+          trackColor={{ false: '#E1E1E1', true: theme === 'dark' ? '#3F51B5' : '#577BC1' }}
+          thumbColor={'#FFFFFF'}
+          ios_backgroundColor="#E1E1E1"
+          style={styles.switch}
         />
+      )}
+
+      {!item.toggle && (
+        <View style={styles.arrowContainer}>
+          <Text style={[styles.arrow, theme === 'dark' ? styles.arrowDark : styles.arrowLight]}>→</Text>
+        </View>
       )}
     </TouchableOpacity>
   );
@@ -139,10 +140,12 @@ export default function SettingsScreen() {
   return (
     <LinearGradient
       colors={
-        theme === 'dark' ? ['#1C1C1C', '#3A3A3A'] : ['#577BC1', '#577BC1']
+        theme === 'dark'
+          ? ['#121212', '#252525']
+          : ['#577BC1', '#8EA7E9']
       }
       style={styles.container}>
-      <StatusBar barStyle="light-content" />
+      <StatusBar barStyle="light-content" backgroundColor={theme === 'dark' ? '#121212' : '#577BC1'} />
 
       <View style={styles.headerBar}>
         <TouchableOpacity
@@ -151,24 +154,22 @@ export default function SettingsScreen() {
             styles.backButton,
             theme === 'dark' ? styles.backButtonDark : styles.backButtonLight,
           ]}>
-          <Text
-            style={[
-              styles.backButtonText,
-              theme === 'dark' && styles.backButtonTextDark,
-            ]}>
-            ←
-          </Text>
+          <Text style={styles.backButtonText}>←</Text>
         </TouchableOpacity>
 
         <Text style={styles.header}>Settings</Text>
 
-        <Image
-          source={SettingsIcon}
-          style={[styles.headerIconRight, styles.headerIconTint]}
-        />
+        <View style={styles.headerIconContainer}>
+          <Image
+            source={SettingsIcon}
+            style={[styles.headerIconRight, styles.headerIconTint]}
+          />
+        </View>
       </View>
 
-      <ScrollView contentContainerStyle={styles.scrollArea}>
+      <ScrollView
+        contentContainerStyle={styles.scrollArea}
+        showsVerticalScrollIndicator={false}>
         <View
           style={[
             styles.sectionContainer,
@@ -208,7 +209,10 @@ export default function SettingsScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, paddingTop: 50 },
+  container: {
+    flex: 1,
+    paddingTop: Platform.OS === 'ios' ? 60 : 50
+  },
 
   headerBar: {
     flexDirection: 'row',
@@ -220,8 +224,16 @@ const styles = StyleSheet.create({
 
   header: {
     fontSize: 28,
-    fontWeight: 'bold',
+    fontWeight: '700',
     color: '#FFFFFF',
+    letterSpacing: 0.5,
+  },
+
+  headerIconContainer: {
+    width: 48,
+    height: 48,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 
   headerIconRight: {
@@ -235,27 +247,28 @@ const styles = StyleSheet.create({
   },
 
   sectionContainer: {
-    borderRadius: 25,
+    borderRadius: 28,
     padding: 22,
     marginBottom: 25,
-    elevation: 6,
+    elevation: 8,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.2,
-    shadowRadius: 5,
+    shadowOpacity: 0.15,
+    shadowRadius: 8,
   },
 
   sectionLight: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: 'rgba(255, 255, 255, 0.95)',
   },
   sectionDark: {
-    backgroundColor: '#1C1C1C',
+    backgroundColor: 'rgba(40, 40, 40, 0.95)',
   },
 
   sectionTitle: {
     fontSize: 22,
     marginBottom: 18,
-    fontWeight: 'bold',
+    fontWeight: '700',
+    letterSpacing: 0.5,
   },
   sectionTitleLight: {
     color: '#2A2D57',
@@ -269,7 +282,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     paddingVertical: 16,
-    paddingHorizontal: 14,
+    paddingHorizontal: 18,
     borderRadius: 20,
     marginBottom: 14,
   },
@@ -277,33 +290,50 @@ const styles = StyleSheet.create({
   optionLight: {
     backgroundColor: '#FFFFFF',
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.2,
-    shadowRadius: 5,
-    elevation: 6,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.08,
+    shadowRadius: 4,
+    elevation: 3,
   },
   optionDark: {
-    backgroundColor: '#2B2B2B',
+    backgroundColor: '#333333',
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
+    shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.2,
-    shadowRadius: 5,
-    elevation: 6,
+    shadowRadius: 4,
+    elevation: 3,
   },
 
   leftSection: {
     flexDirection: 'row',
     alignItems: 'center',
+    flex: 1,
+  },
+
+  iconContainer: {
+    width: 40,
+    height: 40,
+    borderRadius: 12,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 15,
+  },
+
+  iconContainerLight: {
+    backgroundColor: 'rgba(87, 123, 193, 0.1)',
+  },
+
+  iconContainerDark: {
+    backgroundColor: 'rgba(255, 255, 255, 0.1)',
   },
 
   optionIcon: {
     width: 22,
     height: 22,
-    marginRight: 12,
   },
 
   iconLight: {
-    tintColor: '#3B5998',
+    tintColor: '#577BC1',
   },
   iconDark: {
     tintColor: '#FFFFFF',
@@ -324,35 +354,55 @@ const styles = StyleSheet.create({
   backButton: {
     width: 48,
     height: 48,
-    borderRadius: 12,
+    borderRadius: 16,
     justifyContent: 'center',
     alignItems: 'center',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 3,
+    shadowOpacity: 0.15,
+    shadowRadius: 5,
     elevation: 4,
-    marginRight: 10,
   },
   backButtonLight: {
-    backgroundColor: '#E6F7FF',
+    backgroundColor: 'rgba(255, 255, 255, 0.3)',
   },
   backButtonDark: {
-    backgroundColor: '#FFF',
+    backgroundColor: 'rgba(255, 255, 255, 0.1)',
   },
   backButtonText: {
-    fontSize: 28,
+    fontSize: 22,
     fontWeight: 'bold',
-    color: '#2C3E50',
+    color: '#FFFFFF',
     textAlign: 'center',
-    includeFontPadding: false,
-    paddingBottom: 2,
     lineHeight: 32,
   },
-  backButtonTextDark: {
-    color: '#000',
-  },
+
   headerIconTint: {
     tintColor: '#FFFFFF',
+  },
+
+  switch: {
+    transform: [{ scaleX: 1.1 }, { scaleY: 1.1 }],
+  },
+
+  arrowContainer: {
+    width: 30,
+    height: 30,
+    borderRadius: 15,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+
+  arrow: {
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+
+  arrowLight: {
+    color: '#577BC1',
+  },
+
+  arrowDark: {
+    color: '#AAAAAA',
   },
 });
