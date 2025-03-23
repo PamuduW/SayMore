@@ -406,9 +406,7 @@ const Analysis_PS: React.FC<Analysis_PSProps> = ({
           </Text>
 
           <Text style={styles.scoreText}>Transcription</Text>
-          <Text>
-            {responseData.result.transcription[0].transcript}
-          </Text>
+          <Text>{responseData.result.transcription[0].transcript}</Text>
 
           <Button title="Next" onPress={handleNext} />
           <Button title="Additional Details" onPress={handleDetails} />

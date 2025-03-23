@@ -44,6 +44,7 @@ import LessonRedirectionPS from '../screens/LessonRedirectionPS';
 import CommunicationAndStageFrightScreen from '../screens/CommunicationAndStageFrightScreen';
 import ClarityAndPitchScreen from '../screens/ClarityAndPitchScreen';
 import SpeakingWithEnergyScreen from '../screens/SpeakingWithEnergyScreen';
+import TestHistory from '../screens/TestHistory';
 
 // Navigators
 const Tab = createBottomTabNavigator();
@@ -122,6 +123,7 @@ const MoreStack = () => (
       name="LessonRedirectionStuttering"
       component={LessonRedirectionStuttering}
     />
+    <Stack.Screen name="TestHistory" component={TestHistory} />
   </Stack.Navigator>
 );
 
