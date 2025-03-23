@@ -45,7 +45,6 @@ export default function ChangePasswordScreen({ navigation }) {
         theme === 'dark' ? ['#1C1C1C', '#3A3A3A'] : ['#2A2D57', '#577BC1']
       }
       style={styles.container}>
-
       {/* Header Row with Back Button and Title */}
       <View style={styles.headerBar}>
         <TouchableOpacity
@@ -87,9 +86,7 @@ export default function ChangePasswordScreen({ navigation }) {
           secureTextEntry
         />
 
-        <Text style={[styles.label, { color: '#FFFFFF' }]}>
-          New Password
-        </Text>
+        <Text style={[styles.label, { color: '#FFFFFF' }]}>New Password</Text>
         <TextInput
           style={[
             styles.input,

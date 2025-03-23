@@ -129,17 +129,22 @@ const StutteringQuestionScreen: React.FC = ({ navigation }: any) => {
       const user = auth().currentUser;
       if (user) {
         const attemptData = {
-          quizType: "Stuttering",
+          quizType: 'Stuttering',
           set: selectedSet,
           score: score,
           totalPoints: questions.length * 10,
           timestamp: new Date().toISOString(),
         };
 
-        const userDocRef = firestore().collection('User_Accounts').doc(user.uid);
-        await userDocRef.set({
-          quizAttempts: firestore.FieldValue.arrayUnion(attemptData),
-        }, { merge: true });
+        const userDocRef = firestore()
+          .collection('User_Accounts')
+          .doc(user.uid);
+        await userDocRef.set(
+          {
+            quizAttempts: firestore.FieldValue.arrayUnion(attemptData),
+          },
+          { merge: true }
+        );
 
         console.log('✅ Stuttering quiz attempt saved:', attemptData);
       }
@@ -334,9 +339,23 @@ const StutteringQuestionScreen: React.FC = ({ navigation }: any) => {
 
 const styles = StyleSheet.create({
   background: { flex: 1 },
-  overlay: { ...StyleSheet.absoluteFillObject, backgroundColor: 'rgba(0, 0, 0, 0.8)' },
-  container: { flex: 1, padding: 20, alignItems: 'center', justifyContent: 'center' },
-  header: { fontSize: 28, fontWeight: 'bold', marginBottom: 30, color: '#FFFFFF', textAlign: 'center' },
+  overlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: 'rgba(0, 0, 0, 0.8)',
+  },
+  container: {
+    flex: 1,
+    padding: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  header: {
+    fontSize: 28,
+    fontWeight: 'bold',
+    marginBottom: 30,
+    color: '#FFFFFF',
+    textAlign: 'center',
+  },
   progressText: { fontSize: 16, marginBottom: 10, color: '#FFFFFF' },
   question: {
     fontSize: 22,
@@ -345,27 +364,57 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
   },
   progressBar: { marginBottom: 20, borderRadius: 10 },
-  optionButton: { backgroundColor: '#d6eaf8', padding: 15, borderRadius: 10, width: '90%', marginBottom: 12 },
-  optionButtonDark: { backgroundColor: '#3A3A3A', padding: 15, borderRadius: 10, width: '90%', marginBottom: 12 },
+  optionButton: {
+    backgroundColor: '#d6eaf8',
+    padding: 15,
+    borderRadius: 10,
+    width: '90%',
+    marginBottom: 12,
+  },
+  optionButtonDark: {
+    backgroundColor: '#3A3A3A',
+    padding: 15,
+    borderRadius: 10,
+    width: '90%',
+    marginBottom: 12,
+  },
   optionText: { textAlign: 'center', fontSize: 18, fontWeight: 'bold' },
   correctOption: { backgroundColor: '#27ae60' },
   incorrectOption: { backgroundColor: '#e74c3c' },
   selectedOption: { backgroundColor: '#4c87c7' },
-  confirmButton: { backgroundColor: '#289e1b', padding: 13, borderRadius: 10, marginVertical: 15, width: '90%' },
+  confirmButton: {
+    backgroundColor: '#289e1b',
+    padding: 13,
+    borderRadius: 10,
+    marginVertical: 15,
+    width: '90%',
+  },
   confirmButtonText: {
     color: 'white',
     fontSize: 18,
     textAlign: 'center',
     fontWeight: 'bold',
   },
-  nextButton: { backgroundColor: '#3498db', padding: 13, borderRadius: 10, marginTop: 20, width: '90%' },
+  nextButton: {
+    backgroundColor: '#3498db',
+    padding: 13,
+    borderRadius: 10,
+    marginTop: 20,
+    width: '90%',
+  },
   nextButtonText: {
     color: 'white',
     fontSize: 18,
     textAlign: 'center',
     fontWeight: 'bold',
   },
-  finishButton: { backgroundColor: '#1abc9c', padding: 13, borderRadius: 10, marginTop: 20, width: '90%' },
+  finishButton: {
+    backgroundColor: '#1abc9c',
+    padding: 13,
+    borderRadius: 10,
+    marginTop: 20,
+    width: '90%',
+  },
   finishButtonText: {
     color: 'white',
     fontSize: 18,
@@ -373,10 +422,31 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   buttonContainer: { alignItems: 'center' },
-  backButton: { position: 'absolute', top: 50, left: 20, width: 48, height: 48, borderRadius: 12, justifyContent: 'center', alignItems: 'center', shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.2, shadowRadius: 3, elevation: 4 },
+  backButton: {
+    position: 'absolute',
+    top: 50,
+    left: 20,
+    width: 48,
+    height: 48,
+    borderRadius: 12,
+    justifyContent: 'center',
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 3,
+    elevation: 4,
+  },
   backButtonLight: { backgroundColor: '#E6F7FF' },
   backButtonDark: { backgroundColor: '#FFF' },
-  backButtonText: { fontSize: 28, fontWeight: 'bold', color: '#2C3E50', textAlign: 'center', paddingBottom: 2, lineHeight: 32 },
+  backButtonText: {
+    fontSize: 28,
+    fontWeight: 'bold',
+    color: '#2C3E50',
+    textAlign: 'center',
+    paddingBottom: 2,
+    lineHeight: 32,
+  },
   backButtonTextDark: { color: '#000' },
 });
 

@@ -18,7 +18,7 @@ import moment from 'moment';
 interface QuizAttempt {
   quizType: string;
   difficulty?: string; // For Public Speaking
-  set?: string;        // For Stuttering
+  set?: string; // For Stuttering
   score: number;
   totalPoints: number;
   timestamp: string;
@@ -58,9 +58,9 @@ const QuizPointHistoryScreen: React.FC = ({ navigation }: any) => {
     Set: 'Easy',
     Set_2: 'Intermediate',
     Set_3: 'Hard',
-    'Easy': 'Easy',
-    'Intermediate': 'Intermediate',
-    'Hard': 'Hard'
+    Easy: 'Easy',
+    Intermediate: 'Intermediate',
+    Hard: 'Hard',
   };
 
   const setMappings = {
@@ -69,10 +69,10 @@ const QuizPointHistoryScreen: React.FC = ({ navigation }: any) => {
     set3: 'Pronunciation',
     'relaxation techniques': 'Relaxation Techniques',
     'speech techniques': 'Speech Techniques',
-    'pronunciation': 'Pronunciation',
+    pronunciation: 'Pronunciation',
     'Relaxation Techniques': 'Relaxation Techniques',
     'Speech Techniques': 'Speech Techniques',
-    'Pronunciation': 'Pronunciation'
+    Pronunciation: 'Pronunciation',
   };
 
   useEffect(() => {
@@ -94,39 +94,53 @@ const QuizPointHistoryScreen: React.FC = ({ navigation }: any) => {
               const processedAttempt = { ...attempt };
 
               // Process Public Speaking difficulty names
-              if (attempt.quizType === 'Public Speaking' && attempt.difficulty) {
-                processedAttempt.difficulty = difficultyMap[attempt.difficulty as keyof typeof difficultyMap] || attempt.difficulty;
+              if (
+                attempt.quizType === 'Public Speaking' &&
+                attempt.difficulty
+              ) {
+                processedAttempt.difficulty =
+                  difficultyMap[
+                    attempt.difficulty as keyof typeof difficultyMap
+                  ] || attempt.difficulty;
               }
 
               // Process Stuttering set names
               if (attempt.quizType === 'Stuttering' && attempt.set) {
-                processedAttempt.set = setMappings[attempt.set.toLowerCase() as keyof typeof setMappings] ||
-                  attempt.set.replace(/\b\w/g, c => c.toUpperCase());
+                processedAttempt.set =
+                  setMappings[
+                    attempt.set.toLowerCase() as keyof typeof setMappings
+                  ] || attempt.set.replace(/\b\w/g, c => c.toUpperCase());
               }
 
               return processedAttempt;
             });
 
             // Sort attempts by timestamp (newest first)
-            const sortedAttempts = [...processedAttempts].sort((a, b) =>
-              moment(b.timestamp).valueOf() - moment(a.timestamp).valueOf()
+            const sortedAttempts = [...processedAttempts].sort(
+              (a, b) =>
+                moment(b.timestamp).valueOf() - moment(a.timestamp).valueOf()
             );
 
             // Grouping attempts by quizType
-            const grouped = sortedAttempts.reduce((acc: { [key: string]: QuizAttempt[] }, attempt) => {
-              const { quizType } = attempt;
-              if (!acc[quizType]) {
-                acc[quizType] = [];
-              }
-              acc[quizType].push(attempt);
-              return acc;
-            }, {});
+            const grouped = sortedAttempts.reduce(
+              (acc: { [key: string]: QuizAttempt[] }, attempt) => {
+                const { quizType } = attempt;
+                if (!acc[quizType]) {
+                  acc[quizType] = [];
+                }
+                acc[quizType].push(attempt);
+                return acc;
+              },
+              {}
+            );
 
             // Formatting data for SectionList
-            const formattedData: SectionData[] = Object.keys(grouped).map(quizType => ({
-              title: quizType,
-              data: grouped[quizType],
-            }));
+            const formattedData: SectionData[] = Object.keys(grouped).map(
+              quizType => ({
+                title: quizType,
+                data: grouped[quizType],
+              })
+            );
 
             setSectionData(formattedData);
           }
@@ -168,7 +182,13 @@ const QuizPointHistoryScreen: React.FC = ({ navigation }: any) => {
     }
   };
 
-  const renderAttemptItem = ({ item, index }: { item: QuizAttempt, index: number }) => {
+  const renderAttemptItem = ({
+    item,
+    index,
+  }: {
+    item: QuizAttempt;
+    index: number;
+  }) => {
     const scoreColor = getScoreColor(item.score, item.totalPoints);
 
     return (
@@ -187,16 +207,16 @@ const QuizPointHistoryScreen: React.FC = ({ navigation }: any) => {
             borderColor: borderInterpolation,
             borderWidth: 2,
           },
-        ]}
-      >
+        ]}>
         <View style={styles.cardHeader}>
           <View style={styles.scoreContainer}>
             <LinearGradient
-              colors={theme === 'dark'
-                ? [scoreColor, scoreColor + '99']
-                : [scoreColor, scoreColor + 'CC']}
-              style={styles.scoreCircle}
-            >
+              colors={
+                theme === 'dark'
+                  ? [scoreColor, scoreColor + '99']
+                  : [scoreColor, scoreColor + 'CC']
+              }
+              style={styles.scoreCircle}>
               <Text style={styles.scoreText}>
                 {item.score}/{item.totalPoints}
               </Text>
@@ -204,8 +224,14 @@ const QuizPointHistoryScreen: React.FC = ({ navigation }: any) => {
           </View>
 
           <View style={styles.detailsContainer}>
-            <Text style={[styles.attemptText, { color: theme === 'dark' ? '#FFFFFF' : '#2A2D57' }]}>
-              {item.quizType === 'Public Speaking' ? 'Public Speaking Quiz' : 'Stuttering Quiz'}
+            <Text
+              style={[
+                styles.attemptText,
+                { color: theme === 'dark' ? '#FFFFFF' : '#2A2D57' },
+              ]}>
+              {item.quizType === 'Public Speaking'
+                ? 'Public Speaking Quiz'
+                : 'Stuttering Quiz'}
             </Text>
 
             <View style={styles.tagContainer}>
@@ -243,11 +269,10 @@ const QuizPointHistoryScreen: React.FC = ({ navigation }: any) => {
           </Text>
 
           <LinearGradient
-            colors={theme === 'dark'
-              ? ['#333333', '#444444']
-              : ['#3B5998', '#577BC1']}
-            style={styles.percentContainer}
-          >
+            colors={
+              theme === 'dark' ? ['#333333', '#444444'] : ['#3B5998', '#577BC1']
+            }
+            style={styles.percentContainer}>
             <Text style={styles.percentText}>
               {Math.round((item.score / item.totalPoints) * 100)}%
             </Text>
@@ -257,7 +282,11 @@ const QuizPointHistoryScreen: React.FC = ({ navigation }: any) => {
     );
   };
 
-  const renderSectionHeader = ({ section: { title } }: { section: { title: string } }) => (
+  const renderSectionHeader = ({
+    section: { title },
+  }: {
+    section: { title: string };
+  }) => (
     <View style={styles.sectionHeaderContainer}>
       <LinearGradient
         colors={theme === 'dark' ? ['#333333', '#444444'] : ['#3B5998', '#577BC1']}
@@ -284,7 +313,11 @@ const QuizPointHistoryScreen: React.FC = ({ navigation }: any) => {
       <Text style={[styles.emptyText, { color: theme === 'dark' ? '#FFFFFF' : '#2A2D57' }]}>
         No quiz attempts yet
       </Text>
-      <Text style={[styles.emptySubtext, { color: theme === 'dark' ? '#AAAAAA' : '#718096' }]}>
+      <Text
+        style={[
+          styles.emptySubtext,
+          { color: theme === 'dark' ? '#AAAAAA' : '#718096' },
+        ]}>
         Complete quizzes to track your progress here.
       </Text>
     </View>
@@ -292,11 +325,20 @@ const QuizPointHistoryScreen: React.FC = ({ navigation }: any) => {
 
   const headerComponent = () => (
     <View style={styles.listHeader}>
-      <Text style={[styles.headerTitle, { color: theme === 'dark' ? '#FFFFFF' : '#2A2D57' }]}>
+      <Text
+        style={[
+          styles.headerTitle,
+          { color: theme === 'dark' ? '#FFFFFF' : '#2A2D57' },
+        ]}>
         Quiz Performance
       </Text>
-      <Text style={[styles.headerSubtitle, { color: theme === 'dark' ? '#AAAAAA' : '#718096' }]}>
-        {sectionData.reduce((total, section) => total + section.data.length, 0)} attempts total
+      <Text
+        style={[
+          styles.headerSubtitle,
+          { color: theme === 'dark' ? '#AAAAAA' : '#718096' },
+        ]}>
+        {sectionData.reduce((total, section) => total + section.data.length, 0)}{' '}
+        attempts total
       </Text>
     </View>
   );
@@ -322,9 +364,10 @@ const QuizPointHistoryScreen: React.FC = ({ navigation }: any) => {
 
   return (
     <LinearGradient
-      colors={theme === 'dark' ? ['#000000', '#121212'] : ['#577BC1', '#577BC1']}
-      style={styles.container}
-    >
+      colors={
+        theme === 'dark' ? ['#000000', '#121212'] : ['#577BC1', '#577BC1']
+      }
+      style={styles.container}>
       <StatusBar
         barStyle="light-content"
         backgroundColor={theme === 'dark' ? '#000000' : '#577BC1'}
@@ -336,9 +379,14 @@ const QuizPointHistoryScreen: React.FC = ({ navigation }: any) => {
               styles.backButton,
               { backgroundColor: theme === 'dark' ? '#333333' : '#E6F7FF' },
             ]}
-            onPress={handleBackPress}
-          >
-            <Text style={[styles.backButtonText, { color: theme === 'dark' ? '#FFFFFF' : '#2C3E50' }]}>←</Text>
+            onPress={handleBackPress}>
+            <Text
+              style={[
+                styles.backButtonText,
+                { color: theme === 'dark' ? '#FFFFFF' : '#2C3E50' },
+              ]}>
+              ←
+            </Text>
           </TouchableOpacity>
           <Text style={styles.headerText}>Quiz History</Text>
           <View style={styles.spacer} />
@@ -383,10 +431,10 @@ const QuizPointHistoryScreen: React.FC = ({ navigation }: any) => {
 
 const styles = StyleSheet.create({
   safeArea: {
-    flex: 1
+    flex: 1,
   },
   container: {
-    flex: 1
+    flex: 1,
   },
   header: {
     flexDirection: 'row',

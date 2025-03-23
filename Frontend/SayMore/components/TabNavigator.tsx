@@ -40,7 +40,10 @@ import QuizPointHistoryScreen from '../screens/QuizPointHistoryScreen';
 import LessonRedirectionStuttering from '../screens/LessonRedirectionStuttering';
 import UnderstandingAndOvercomingStutteringScreen from '../screens/UnderstandingAndOvercomingStutteringScreen';
 import ProgressScreen from '../screens/ProgressScreen';
-
+import LessonRedirectionPS from '../screens/LessonRedirectionPS';
+import CommunicationAndStageFrightScreen from '../screens/CommunicationAndStageFrightScreen';
+import ClarityAndPitchScreen from '../screens/ClarityAndPitchScreen';
+import SpeakingWithEnergyScreen from '../screens/SpeakingWithEnergyScreen';
 
 // Navigators
 const Tab = createBottomTabNavigator();
@@ -67,6 +70,19 @@ const HomeStack = () => (
       name="LessonRedirectionStuttering"
       component={LessonRedirectionStuttering}
     />
+    <Stack.Screen
+      name="ClarityAndPitchScreen"
+      component={ClarityAndPitchScreen}
+    />
+    <Stack.Screen
+      name="CommunicationAndStageFrightScreen"
+      component={CommunicationAndStageFrightScreen}
+    />
+    <Stack.Screen
+      name="SpeakingWithEnergyScreen"
+      component={SpeakingWithEnergyScreen}
+    />
+    <Stack.Screen name="LessonRedirectionPS" component={LessonRedirectionPS} />
   </Stack.Navigator>
 );
 
@@ -81,7 +97,10 @@ const MoreStack = () => (
     <Stack.Screen name="LessonsPointsScreen" component={LessonsPointsScreen} />
     <Stack.Screen name="History" component={HistoryScreen} />
     <Stack.Screen name="QuizzesNavScreen" component={QuizzesNavScreen} />
-    <Stack.Screen name="PointsCategoryScreen" component={PointsCategoryScreen} />
+    <Stack.Screen
+      name="PointsCategoryScreen"
+      component={PointsCategoryScreen}
+    />
     <Stack.Screen name="TotalPointsScreen" component={TotalPointsScreen} />
     <Stack.Screen name="QuizPointHistoryScreen" component={QuizPointHistoryScreen} />
     <Stack.Screen name="ProgressScreen" component={ProgressScreen} />
@@ -100,7 +119,7 @@ const MoreStack = () => (
       name="LessonRedirectionStuttering"
       component={LessonRedirectionStuttering}
     />
-      </Stack.Navigator>
+  </Stack.Navigator>
 );
 
 // Account Stack
