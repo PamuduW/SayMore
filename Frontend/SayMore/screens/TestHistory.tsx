@@ -20,7 +20,7 @@ const TestHistory: React.FC = () => {
 
   const navigation = useNavigation();
 
-  // Fetch test history from Firestore for the selected category
+  // Fetch test history from Firestore for the selected category.
   const fetchHistory = async (category: Category) => {
     setLoading(true);
     try {
@@ -50,33 +50,36 @@ const TestHistory: React.FC = () => {
     }
   };
 
-  // Called when the user selects a category button.
+  // Called when the user selects a category.
   const handleCategorySelect = (category: Category) => {
     setSelectedCategory(category);
     fetchHistory(category);
   };
 
-  // Convert the history map into an array for displaying in FlatList.
-  const historyArray = historyData
-    ? Object.keys(historyData).map(key => ({
-        id: key,
-        ...historyData[key],
-      }))
-    : [];
+  // Convert the history map into an array for display.
+  let historyArray: any[] = [];
+  if (historyData) {
+    historyArray = Object.keys(historyData).map(key => ({
+      id: key,
+      ...historyData[key],
+    }));
+    // Sort descending: Latest test (highest timestamp) first.
+    historyArray.sort((a, b) => parseInt(b.id) - parseInt(a.id));
+  }
 
   // Render each history item.
   const renderHistoryItem = ({ item }: { item: any }) => (
     <TouchableOpacity
       style={styles.historyItem}
       onPress={() => {
-        // Handle navigation or details for the selected test.
-        console.log('Selected test:', item);
+        if (selectedCategory === 'PublicSpeaking') {
+          navigation.navigate('TestHistory_PS', { testId: item.id });
+        } else {
+          navigation.navigate('TestHistory_S', { testId: item.id });
+        }
       }}
     >
-      <Text style={styles.historyItemText}>
-        Test ID: {item.id || item.testId}
-      </Text>
-      {/* Optionally, show more details from the test item */}
+      <Text style={styles.historyItemText}>Test ID: {item.id}</Text>
     </TouchableOpacity>
   );
 
@@ -120,7 +123,6 @@ const TestHistory: React.FC = () => {
           <TouchableOpacity
             style={styles.backButton}
             onPress={() => {
-              // Reset selection to allow the user to choose a different category.
               setSelectedCategory(null);
               setHistoryData(null);
             }}
