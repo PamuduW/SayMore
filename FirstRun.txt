@@ -3,22 +3,13 @@ In CMD run >>> (for powerShell. not needed for cmd)
     .venv\Scripts\activate
     python.exe -m pip install --upgrade pip
     pip install -r requirements.txt
+now edit run config file and give the main.py location.
+(If the ide dont recognize or gives an error with interpreter just restart the ide)
+
+make format - for formatting the code
+make lint - for linting the code
+
+
 
 Go to File > Settings > Project: <Your Project Name> > Python Interpreter.
 Select the interpreter located at D:\OneDrive\Pamudu-other\Github\SayMore\.venv\Scripts\python.exe.
-
-now edit run config file and give the main.py location.
-
-
-make format
-make lint
-
-
-
-
-torchvision
-torchaudio
-webrtcvad
-pyworld
-safetensors
-requests
