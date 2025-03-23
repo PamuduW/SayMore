@@ -26,8 +26,9 @@ const QuizzesNavScreen = () => {
   };
 
   const handleBackPress = () => {
-    navigation.goBack();
+    navigation.navigate('MoreScreen');
   };
+
 
   return (
     <LinearGradient

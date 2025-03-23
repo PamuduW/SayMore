@@ -6,6 +6,8 @@ import {
   StyleSheet,
   StatusBar,
   ImageBackground,
+  ScrollView,
+  SafeAreaView,
 } from 'react-native';
 import firestore from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
@@ -196,45 +198,49 @@ const StutteringQuestionScreen: React.FC = ({ navigation }: any) => {
         style={styles.background}
         resizeMode="cover">
         <View style={styles.overlay} />
-        <View style={styles.container}>
-          <StatusBar barStyle="light-content" />
-          <TouchableOpacity
-            onPress={handleBackPress}
-            style={[
-              styles.backButton,
-              theme === 'dark' ? styles.backButtonDark : styles.backButtonLight,
-            ]}>
-            <Text
+        <SafeAreaView style={styles.safeArea}>
+          <ScrollView
+            contentContainerStyle={styles.scrollContainer}
+            showsVerticalScrollIndicator={false}>
+            <StatusBar barStyle="light-content" />
+            <TouchableOpacity
+              onPress={handleBackPress}
               style={[
-                styles.backButtonText,
-                theme === 'dark' && styles.backButtonTextDark,
+                styles.backButton,
+                theme === 'dark' ? styles.backButtonDark : styles.backButtonLight,
               ]}>
-              ←
-            </Text>
-          </TouchableOpacity>
-          <Text style={styles.header}>Select a Quiz Topic</Text>
-          <View style={styles.buttonContainer}>
-            {[
-              'relaxation techniques',
-              'speech techniques',
-              'pronunciation',
-            ].map((topic, idx) => (
-              <TouchableOpacity
-                key={idx}
-                style={
-                  theme === 'dark'
-                    ? styles.optionButtonDark
-                    : styles.optionButton
-                }
-                onPress={() => fetchQuestions(topic)}>
-                <Text
-                  style={[styles.optionText, { color: getOptionTextColor() }]}>
-                  {topic.replace(/\b\w/g, c => c.toUpperCase())}
-                </Text>
-              </TouchableOpacity>
-            ))}
-          </View>
-        </View>
+              <Text
+                style={[
+                  styles.backButtonText,
+                  theme === 'dark' && styles.backButtonTextDark,
+                ]}>
+                ←
+              </Text>
+            </TouchableOpacity>
+            <Text style={styles.header}>Select a Quiz Topic</Text>
+            <View style={styles.buttonContainer}>
+              {[
+                'relaxation techniques',
+                'speech techniques',
+                'pronunciation',
+              ].map((topic, idx) => (
+                <TouchableOpacity
+                  key={idx}
+                  style={
+                    theme === 'dark'
+                      ? styles.optionButtonDark
+                      : styles.optionButton
+                  }
+                  onPress={() => fetchQuestions(topic)}>
+                  <Text
+                    style={[styles.optionText, { color: getOptionTextColor() }]}>
+                    {topic.replace(/\b\w/g, c => c.toUpperCase())}
+                  </Text>
+                </TouchableOpacity>
+              ))}
+            </View>
+          </ScrollView>
+        </SafeAreaView>
       </ImageBackground>
     );
   }
@@ -245,209 +251,312 @@ const StutteringQuestionScreen: React.FC = ({ navigation }: any) => {
       style={styles.background}
       resizeMode="cover">
       <View style={styles.overlay} />
-      <View style={styles.container}>
-        <StatusBar barStyle="light-content" />
-        {currentQuestionIndex === 0 && (
-          <TouchableOpacity
-            onPress={handleBackPress}
-            style={[
-              styles.backButton,
-              theme === 'dark' ? styles.backButtonDark : styles.backButtonLight,
-            ]}>
-            <Text
+      <SafeAreaView style={styles.safeArea}>
+        <ScrollView
+          contentContainerStyle={styles.scrollContainer}
+          showsVerticalScrollIndicator={false}>
+          <StatusBar barStyle="light-content" />
+          {currentQuestionIndex === 0 && (
+            <TouchableOpacity
+              onPress={handleBackPress}
               style={[
-                styles.backButtonText,
-                theme === 'dark' && styles.backButtonTextDark,
+                styles.backButton,
+                theme === 'dark' ? styles.backButtonDark : styles.backButtonLight,
               ]}>
-              ←
-            </Text>
-          </TouchableOpacity>
-        )}
-
-        <Text style={styles.header}>{selectedSet} Quiz</Text>
-        <Text style={styles.progressText}>
-          Question {currentQuestionIndex + 1} of {questions.length}
-        </Text>
-        <ProgressBar
-          progress={completedQuestions / questions.length}
-          width={330}
-          height={12}
-          color="#289e1b"
-          style={styles.progressBar}
-        />
-        <Text style={styles.question}>
-          {questions[currentQuestionIndex].Question}
-        </Text>
-
-        {Object.values(questions[currentQuestionIndex].Answers).map(
-          (option, index) => {
-            const correctAnswer = getCorrectAnswer(
-              questions[currentQuestionIndex]
-            );
-            const isSelected = selectedAnswer === option;
-            return (
-              <TouchableOpacity
-                key={index}
-                onPress={() => handleAnswerSelection(option)}
-                disabled={isCorrect !== null}
+              <Text
                 style={[
-                  theme === 'dark'
-                    ? styles.optionButtonDark
-                    : styles.optionButton,
-                  isSelected ? styles.selectedOption : {},
-                  isCorrect !== null &&
-                    option === correctAnswer &&
-                    styles.correctOption,
-                  isCorrect !== null &&
-                    option === selectedAnswer &&
-                    !isCorrect &&
-                    styles.incorrectOption,
+                  styles.backButtonText,
+                  theme === 'dark' && styles.backButtonTextDark,
                 ]}>
-                <Text
-                  style={[styles.optionText, { color: getOptionTextColor() }]}>
-                  {option}
-                </Text>
-              </TouchableOpacity>
-            );
-          }
-        )}
+                ←
+              </Text>
+            </TouchableOpacity>
+          )}
 
-        {showConfirm && (
-          <TouchableOpacity
-            onPress={handleConfirmAnswer}
-            style={styles.confirmButton}>
-            <Text style={styles.confirmButtonText}>Confirm Answer</Text>
-          </TouchableOpacity>
-        )}
+          <Text style={styles.header}>{selectedSet} Quiz</Text>
+          <Text style={styles.progressText}>
+            Question {currentQuestionIndex + 1} of {questions.length}
+          </Text>
+          <ProgressBar
+            progress={completedQuestions / questions.length}
+            width={330}
+            height={12}
+            color="#289e1b"
+            style={styles.progressBar}
+          />
+          <Text style={styles.question}>
+            {questions[currentQuestionIndex].Question}
+          </Text>
 
-        {isCorrect !== null && (
-          <TouchableOpacity
-            onPress={handleNextQuestion}
-            style={isLastQuestion ? styles.finishButton : styles.nextButton}>
-            <Text
-              style={
-                isLastQuestion ? styles.finishButtonText : styles.nextButtonText
-              }>
-              {isLastQuestion ? 'Finish Quiz' : 'Next Question'}
-            </Text>
-          </TouchableOpacity>
-        )}
-      </View>
+          {Object.values(questions[currentQuestionIndex].Answers).map(
+            (option, index) => {
+              const correctAnswer = getCorrectAnswer(
+                questions[currentQuestionIndex]
+              );
+              const isSelected = selectedAnswer === option;
+              return (
+                <TouchableOpacity
+                  key={index}
+                  onPress={() => handleAnswerSelection(option)}
+                  disabled={isCorrect !== null}
+                  style={[
+                    theme === 'dark'
+                      ? styles.optionButtonDark
+                      : styles.optionButton,
+                    isSelected ? styles.selectedOption : {},
+                    isCorrect !== null &&
+                      option === correctAnswer &&
+                      styles.correctOption,
+                    isCorrect !== null &&
+                      option === selectedAnswer &&
+                      !isCorrect &&
+                      styles.incorrectOption,
+                  ]}>
+                  <Text
+                    style={[styles.optionText, { color: getOptionTextColor() }]}>
+                    {option}
+                  </Text>
+                </TouchableOpacity>
+              );
+            }
+          )}
+
+          {showConfirm && (
+            <TouchableOpacity
+              onPress={handleConfirmAnswer}
+              style={styles.confirmButton}>
+              <Text style={styles.confirmButtonText}>Confirm Answer</Text>
+            </TouchableOpacity>
+          )}
+
+          {isCorrect !== null && (
+            <TouchableOpacity
+              onPress={handleNextQuestion}
+              style={isLastQuestion ? styles.finishButton : styles.nextButton}>
+              <Text
+                style={
+                  isLastQuestion ? styles.finishButtonText : styles.nextButtonText
+                }>
+                {isLastQuestion ? 'Finish Quiz' : 'Next Question'}
+              </Text>
+            </TouchableOpacity>
+          )}
+
+          {/* Add some bottom padding for scrolling */}
+          <View style={styles.bottomPadding} />
+        </ScrollView>
+      </SafeAreaView>
     </ImageBackground>
   );
 };
 
 const styles = StyleSheet.create({
-  background: { flex: 1 },
+  background: {
+    flex: 1,
+  },
   overlay: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: 'rgba(0, 0, 0, 0.8)',
+    backgroundColor: 'rgba(0, 0, 0, 0.75)',
+  },
+  safeArea: {
+    flex: 1,
+  },
+  scrollContainer: {
+    flexGrow: 1,
+    padding: 24,
+    alignItems: 'center',
+    paddingTop: 60, // Space for header and back button
   },
   container: {
     flex: 1,
-    padding: 20,
+    padding: 24,
     alignItems: 'center',
     justifyContent: 'center',
   },
   header: {
-    fontSize: 28,
+    fontSize: 32,
     fontWeight: 'bold',
+    marginBottom: 32,
+    color: '#FFFFFF',
+    textAlign: 'center',
+    textShadowColor: 'rgba(0, 0, 0, 0.5)',
+    textShadowOffset: { width: 1, height: 1 },
+    textShadowRadius: 3,
+    marginTop: 60, // Add space for back button
+  },
+  progressText: {
+    fontSize: 16,
+    marginBottom: 12,
+    color: '#FFFFFF',
+    fontWeight: '500',
+    letterSpacing: 0.5,
+  },
+  question: {
+    fontSize: 24,
+    textAlign: 'center',
     marginBottom: 30,
     color: '#FFFFFF',
-    textAlign: 'center',
+    lineHeight: 32,
+    fontWeight: '600',
+    paddingHorizontal: 10,
+    textShadowColor: 'rgba(0, 0, 0, 0.3)',
+    textShadowOffset: { width: 1, height: 1 },
+    textShadowRadius: 2,
   },
-  progressText: { fontSize: 16, marginBottom: 10, color: '#FFFFFF' },
-  question: {
-    fontSize: 22,
-    textAlign: 'center',
-    marginBottom: 20,
-    color: '#FFFFFF',
+  progressBar: {
+    marginBottom: 25,
+    borderRadius: 10,
+    backgroundColor: 'rgba(255, 255, 255, 0.15)',
   },
-  progressBar: { marginBottom: 20, borderRadius: 10 },
   optionButton: {
-    backgroundColor: '#d6eaf8',
-    padding: 15,
-    borderRadius: 10,
-    width: '90%',
-    marginBottom: 12,
-  },
-  optionButtonDark: {
-    backgroundColor: '#3A3A3A',
-    padding: 15,
-    borderRadius: 10,
-    width: '90%',
-    marginBottom: 12,
-  },
-  optionText: { textAlign: 'center', fontSize: 18, fontWeight: 'bold' },
-  correctOption: { backgroundColor: '#27ae60' },
-  incorrectOption: { backgroundColor: '#e74c3c' },
-  selectedOption: { backgroundColor: '#4c87c7' },
-  confirmButton: {
-    backgroundColor: '#289e1b',
-    padding: 13,
-    borderRadius: 10,
-    marginVertical: 15,
-    width: '90%',
-  },
-  confirmButtonText: {
-    color: 'white',
-    fontSize: 18,
-    textAlign: 'center',
-    fontWeight: 'bold',
-  },
-  nextButton: {
-    backgroundColor: '#3498db',
-    padding: 13,
-    borderRadius: 10,
-    marginTop: 20,
-    width: '90%',
-  },
-  nextButtonText: {
-    color: 'white',
-    fontSize: 18,
-    textAlign: 'center',
-    fontWeight: 'bold',
-  },
-  finishButton: {
-    backgroundColor: '#1abc9c',
-    padding: 13,
-    borderRadius: 10,
-    marginTop: 20,
-    width: '90%',
-  },
-  finishButtonText: {
-    color: 'white',
-    fontSize: 18,
-    textAlign: 'center',
-    fontWeight: 'bold',
-  },
-  buttonContainer: { alignItems: 'center' },
-  backButton: {
-    position: 'absolute',
-    top: 50,
-    left: 20,
-    width: 48,
-    height: 48,
+    backgroundColor: 'rgba(214, 234, 248, 0.9)',
+    padding: 18,
     borderRadius: 12,
-    justifyContent: 'center',
-    alignItems: 'center',
+    width: '90%',
+    marginBottom: 14,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.2,
     shadowRadius: 3,
-    elevation: 4,
+    elevation: 3,
   },
-  backButtonLight: { backgroundColor: '#E6F7FF' },
-  backButtonDark: { backgroundColor: '#FFF' },
+  optionButtonDark: {
+    backgroundColor: 'rgba(58, 58, 58, 0.9)',
+    padding: 18,
+    borderRadius: 12,
+    width: '90%',
+    marginBottom: 14,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 3,
+    elevation: 3,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.1)',
+  },
+  optionText: {
+    textAlign: 'center',
+    fontSize: 18,
+    fontWeight: 'bold',
+    letterSpacing: 0.3,
+  },
+  correctOption: {
+    backgroundColor: 'rgba(39, 174, 96, 0.9)',
+    borderWidth: 2,
+    borderColor: '#1e8449',
+  },
+  incorrectOption: {
+    backgroundColor: 'rgba(231, 76, 60, 0.9)',
+    borderWidth: 2,
+    borderColor: '#b03a2e',
+  },
+  selectedOption: {
+    backgroundColor: 'rgba(76, 135, 199, 0.9)',
+    borderWidth: 2,
+    borderColor: '#2874a6',
+  },
+  confirmButton: {
+    backgroundColor: 'rgba(40, 158, 27, 0.9)',
+    padding: 15,
+    borderRadius: 12,
+    marginVertical: 18,
+    width: '90%',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+    borderWidth: 1,
+    borderColor: '#1e8814',
+  },
+  confirmButtonText: {
+    color: 'white',
+    fontSize: 20,
+    textAlign: 'center',
+    fontWeight: 'bold',
+    letterSpacing: 0.5,
+  },
+  nextButton: {
+    backgroundColor: 'rgba(52, 152, 219, 0.9)',
+    padding: 15,
+    borderRadius: 12,
+    marginTop: 24,
+    width: '90%',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+    borderWidth: 1,
+    borderColor: '#2980b9',
+  },
+  nextButtonText: {
+    color: 'white',
+    fontSize: 20,
+    textAlign: 'center',
+    fontWeight: 'bold',
+    letterSpacing: 0.5,
+  },
+  finishButton: {
+    backgroundColor: 'rgba(26, 188, 156, 0.9)',
+    padding: 15,
+    borderRadius: 12,
+    marginTop: 24,
+    width: '90%',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+    borderWidth: 1,
+    borderColor: '#16a085',
+  },
+  finishButtonText: {
+    color: 'white',
+    fontSize: 20,
+    textAlign: 'center',
+    fontWeight: 'bold',
+    letterSpacing: 0.5,
+  },
+  buttonContainer: {
+    alignItems: 'center',
+    width: '100%',
+    marginTop: 20,
+  },
+  backButton: {
+    position: 'absolute',
+    top: 10,
+    left: 20,
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    justifyContent: 'center',
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+    elevation: 5,
+    zIndex: 10,
+  },
+  backButtonLight: {
+    backgroundColor: 'rgba(230, 247, 255, 0.9)'
+  },
+  backButtonDark: {
+    backgroundColor: 'rgba(255, 255, 255, 0.9)'
+  },
   backButtonText: {
     fontSize: 28,
     fontWeight: 'bold',
     color: '#2C3E50',
     textAlign: 'center',
-    paddingBottom: 2,
+    paddingBottom: 3,
     lineHeight: 32,
   },
   backButtonTextDark: { color: '#000' },
+  bottomPadding: {
+    height: 40, // Add extra space at the bottom for scrolling
+  }
 });
 
 export default StutteringQuestionScreen;
