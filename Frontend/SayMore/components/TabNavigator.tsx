@@ -44,6 +44,8 @@ import LessonRedirectionPS from '../screens/LessonRedirectionPS';
 import CommunicationAndStageFrightScreen from '../screens/CommunicationAndStageFrightScreen';
 import ClarityAndPitchScreen from '../screens/ClarityAndPitchScreen';
 import SpeakingWithEnergyScreen from '../screens/SpeakingWithEnergyScreen';
+import TestHistory from '../screens/TestHistory';
+import TestHistory_PS from '../screens/TestHistory_PS';
 import QuizProgressScreen from '../screens/QuizProgressScreen';
 import ProgressCategoryScreen from '../screens/ProgressCategoryScreen';
 
@@ -126,6 +128,8 @@ const MoreStack = () => (
       name="LessonRedirectionStuttering"
       component={LessonRedirectionStuttering}
     />
+    <Stack.Screen name="TestHistory" component={TestHistory} />
+    <Stack.Screen name="TestHistory_PS" component={TestHistory_PS} />
   </Stack.Navigator>
 );
 

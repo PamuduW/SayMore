@@ -3,7 +3,7 @@ import {
   Text,
   StyleSheet,
   ScrollView,
-  Button,
+  TouchableOpacity,
   View,
   Dimensions,
   Alert,
@@ -11,8 +11,11 @@ import {
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { ProgressChart } from 'react-native-chart-kit';
+import LinearGradient from 'react-native-linear-gradient';
+import { useTheme } from '../components/ThemeContext';
 
 const screenWidth = Dimensions.get('window').width;
+const parentViewWidth = screenWidth - 70;
 
 interface Analysis_PSProps {
   filename: string;
@@ -64,11 +67,7 @@ const Analysis_PS: React.FC<Analysis_PSProps> = ({
   const [loading, setLoading] = useState(true);
   const navigation = useNavigation();
   const [data, setData] = useState({
-    labels: [
-      'final_energy_score',
-      'final_voice_score',
-      'final_public_speaking_score',
-    ],
+    labels: ['Energy', 'Voice', 'Final'],
     data: [0, 0, 0],
   });
   const chartConfig = {
@@ -81,6 +80,7 @@ const Analysis_PS: React.FC<Analysis_PSProps> = ({
     barPercentage: 0.5,
     useShadowColorFromDataset: false,
   };
+  const theme = useTheme();
 
   useEffect(() => {
     const sendPostRequest = async () => {
@@ -119,11 +119,7 @@ const Analysis_PS: React.FC<Analysis_PSProps> = ({
 
         setResponseData(responseInfo);
         setData({
-          labels: [
-            'final_energy_score',
-            'final_voice_score',
-            'final_public_speaking_score',
-          ],
+          labels: ['Energy', 'Voice', 'Final'],
           data: [
             responseInfo.result['Speech_Intensity_&_Energy_Data']
               .final_energy_score / 100,
@@ -302,143 +298,209 @@ const Analysis_PS: React.FC<Analysis_PSProps> = ({
   }
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
-      <Text style={styles.progressChartText}>Analysis Screen</Text>
-      <ProgressChart
-        data={data}
-        width={screenWidth}
-        height={220}
-        strokeWidth={16}
-        radius={32}
-        chartConfig={chartConfig}
-        hideLegend={false}
-      />
-      {responseData && (
-        <View>
-          <Text style={styles.scoreText}>
-            Final Public Speaking Score:{' '}
-            {responseData.result.final_public_speaking_score}
-          </Text>
-          <Text style={styles.scoreText}>
-            Overall Confidence Score: {responseData.result.overall_confidence}
-          </Text>
-
-          <Text style={styles.scoreText}>Voice Quality & Stability Data</Text>
-          <Text>
-            Final Voice Score:{' '}
-            {
-              responseData.result['Voice_Quality_&_Stability_Data']
-                .final_voice_score
-            }
-          </Text>
-          <Text>
-            variation_score:{' '}
-            {
-              responseData.result['Voice_Quality_&_Stability_Data']
-                .variation_score
-            }
-          </Text>
-          <Text>
-            stability_score:{' '}
-            {
-              responseData.result['Voice_Quality_&_Stability_Data']
-                .stability_score
-            }
-          </Text>
-          <Text>
-            speaking_speed:{' '}
-            {
-              responseData.result['Voice_Quality_&_Stability_Data']
-                .speaking_speed
-            }
-          </Text>
-          <Text>
-            clarity:{' '}
-            {responseData.result['Voice_Quality_&_Stability_Data'].clarity}
-          </Text>
-          <Text>
-            overall_jitter_score:{' '}
-            {
-              responseData.result['Voice_Quality_&_Stability_Data']
-                .overall_jitter_score
-            }
-          </Text>
-          <Text>
-            overall_shimmer_score:{' '}
-            {
-              responseData.result['Voice_Quality_&_Stability_Data']
-                .overall_shimmer_score
-            }
-          </Text>
-          <Text>
-            overall_hnr_score:{' '}
-            {
-              responseData.result['Voice_Quality_&_Stability_Data']
-                .overall_hnr_score
-            }
-          </Text>
-
-          <Text style={styles.scoreText}>Speech Intensity & Energy Data</Text>
-          <Text>
-            final_energy_score:{' '}
-            {
-              responseData.result['Speech_Intensity_&_Energy_Data']
-                .final_energy_score
-            }
-          </Text>
-          <Text>
-            intensity_score:{' '}
-            {
-              responseData.result['Speech_Intensity_&_Energy_Data']
-                .intensity_score
-            }
-          </Text>
-          <Text>
-            energy_score:{' '}
-            {responseData.result['Speech_Intensity_&_Energy_Data'].energy_score}
-          </Text>
-          <Text>
-            variation_score:{' '}
-            {
-              responseData.result['Speech_Intensity_&_Energy_Data']
-                .variation_score
-            }
-          </Text>
-
-          <Text style={styles.scoreText}>Transcription</Text>
-          <Text>
-            {responseData.result.transcription[0].transcript}
-          </Text>
-
-          <Button title="Next" onPress={handleNext} />
-          <Button title="Additional Details" onPress={handleDetails} />
+    <LinearGradient
+      colors={
+        theme === 'dark' ? ['#1C1C1C', '#3A3A3A'] : ['#577BC1', '#577BC1']
+      }
+      style={styles.container}>
+      <ScrollView contentContainerStyle={styles.content}>
+        <Text style={styles.title}>Your Speech Analysis</Text>
+        <View style={styles.feedbackBlock}>
+          <ProgressChart
+            data={data}
+            width={parentViewWidth}
+            height={220}
+            strokeWidth={16}
+            radius={32}
+            chartConfig={chartConfig}
+            hideLegend={false}
+          />
         </View>
-      )}
-    </ScrollView>
+
+        {responseData && (
+          <View>
+            <View style={styles.feedbackBlock}>
+              <Text style={styles.label}>Final Public Speaking Score</Text>
+              <Text style={styles.valueHighlight}>
+                {responseData.result.final_public_speaking_score}
+              </Text>
+            </View>
+
+            <View style={styles.feedbackBlock}>
+              <Text style={styles.label}>Overall Confidence Score</Text>
+              <Text style={styles.valueHighlight}>
+                {responseData.result.overall_confidence}
+              </Text>
+            </View>
+
+            <View style={styles.feedbackBlock}>
+              <Text style={styles.label}>Voice Quality & Stability Data</Text>
+              <Text style={styles.value}>
+                Final Voice Score:{' '}
+                {
+                  responseData.result['Voice_Quality_&_Stability_Data']
+                    .final_voice_score
+                }
+              </Text>
+              <Text style={styles.value}>
+                variation_score:{' '}
+                {
+                  responseData.result['Voice_Quality_&_Stability_Data']
+                    .variation_score
+                }
+              </Text>
+              <Text style={styles.value}>
+                stability_score:{' '}
+                {
+                  responseData.result['Voice_Quality_&_Stability_Data']
+                    .stability_score
+                }
+              </Text>
+              <Text style={styles.value}>
+                speaking_speed:{' '}
+                {
+                  responseData.result['Voice_Quality_&_Stability_Data']
+                    .speaking_speed
+                }
+              </Text>
+              <Text style={styles.value}>
+                clarity:{' '}
+                {responseData.result['Voice_Quality_&_Stability_Data'].clarity}
+              </Text>
+              <Text style={styles.value}>
+                overall_jitter_score:{' '}
+                {
+                  responseData.result['Voice_Quality_&_Stability_Data']
+                    .overall_jitter_score
+                }
+              </Text>
+              <Text style={styles.value}>
+                overall_shimmer_score:{' '}
+                {
+                  responseData.result['Voice_Quality_&_Stability_Data']
+                    .overall_shimmer_score
+                }
+              </Text>
+              <Text style={styles.value}>
+                overall_hnr_score:{' '}
+                {
+                  responseData.result['Voice_Quality_&_Stability_Data']
+                    .overall_hnr_score
+                }
+              </Text>
+            </View>
+
+            <View style={styles.feedbackBlock}>
+              <Text style={styles.label}>Speech Intensity & Energy Data</Text>
+              <Text style={styles.value}>
+                final_energy_score:{' '}
+                {
+                  responseData.result['Speech_Intensity_&_Energy_Data']
+                    .final_energy_score
+                }
+              </Text>
+              <Text style={styles.value}>
+                intensity_score:{' '}
+                {
+                  responseData.result['Speech_Intensity_&_Energy_Data']
+                    .intensity_score
+                }
+              </Text>
+              <Text style={styles.value}>
+                energy_score:{' '}
+                {
+                  responseData.result['Speech_Intensity_&_Energy_Data']
+                    .energy_score
+                }
+              </Text>
+              <Text style={styles.value}>
+                variation_score:{' '}
+                {
+                  responseData.result['Speech_Intensity_&_Energy_Data']
+                    .variation_score
+                }
+              </Text>
+            </View>
+
+            <View style={styles.feedbackBlock}>
+              <Text style={styles.label}>Transcription</Text>
+              <Text style={styles.value}>
+                {responseData.result.transcription[0].transcript}
+              </Text>
+            </View>
+
+            <TouchableOpacity onPress={handleNext} style={styles.button}>
+              <Text style={styles.buttonText}>Feedback</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={handleDetails} style={styles.button}>
+              <Text style={styles.buttonText}>Additional Details</Text>
+            </TouchableOpacity>
+          </View>
+        )}
+      </ScrollView>
+    </LinearGradient>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    flexGrow: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    flex: 1,
     padding: 16,
+  },
+  content: {
+    paddingBottom: 40,
+    paddingTop: 50,
   },
   loadingContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
   },
-  scoreText: {
-    fontSize: 18,
+  title: {
+    fontSize: 28,
     fontWeight: 'bold',
-    marginVertical: 10,
+    color: '#FFFFFF',
+    textAlign: 'center',
+    marginBottom: 30,
   },
-  progressChartText: {
+  feedbackBlock: {
+    marginBottom: 20,
+    backgroundColor: '#3e5a8f',
+    padding: 16,
+    borderRadius: 15,
+  },
+  label: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: 'blue',
+    color: '#FFFFFF',
+    marginBottom: 8,
+    textAlign: 'center',
+  },
+  value: {
+    fontSize: 16,
+    color: '#D0D3E6',
+  },
+  valueHighlight: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#FFD700',
+    textAlign: 'center',
+  },
+  button: {
+    paddingVertical: 14,
+    paddingHorizontal: 20,
+    borderRadius: 25,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#214283',
+    overflow: 'hidden',
+    elevation: 2,
+    marginBottom: 20,
+  },
+  buttonText: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#FFFFFF',
   },
 });
 

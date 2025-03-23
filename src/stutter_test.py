@@ -27,13 +27,14 @@ system_prompt = """
     "Give a dynamic feedback of few sentences to the user based on the analysis."
 
     "Return JSON with:"
-    "'language': Detected language.
-    "'stutter_count': Total detected stutters.
-    "'stuttered_words': List of stuttered words and their types.
-    "'cluttering_detected': Boolean for cluttering detection.
-    "'fluency_score': Fluency score (0-100).
-    "'dynamic_feedback': dynamic feedback (few sentences).
-    "'confidence_score': Confidence level (0-1)."
+    "'language': Detected language."
+    "'stutter_count': Total detected stutters."
+    "'stuttered_words': List of stuttered words and their types."
+    "'cluttering_detected': Boolean for cluttering detection."
+    "'fluency_score': Fluency score (0-100)."
+    "'stuttering_score': Stutter score (0-100)."
+    "'dynamic_feedback': dynamic feedback (few sentences)."
+    "'confidence_score': Confidence score (0-100)."
 """
 
 

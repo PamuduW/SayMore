@@ -3,7 +3,6 @@ import {
   Text,
   StyleSheet,
   ScrollView,
-  Button,
   Dimensions,
   Image,
   TouchableOpacity,
@@ -313,9 +312,10 @@ const AdditionalDetailsScreen = ({ route }) => {
         />
       </View>
 
-      {/* Next Button */}
       <View style={styles.buttonContainer}>
-        <Button title="Next" onPress={handleNext} color="#4CAF50" />
+        <TouchableOpacity onPress={handleNext} style={styles.button}>
+          <Text style={styles.buttonText}>Feedback</Text>
+        </TouchableOpacity>
       </View>
     </ScrollView>
   );
@@ -354,6 +354,22 @@ const styles = StyleSheet.create({
     marginTop: 30,
     width: '80%',
     borderRadius: 10,
+  },
+  button: {
+    paddingVertical: 14,
+    paddingHorizontal: 20,
+    borderRadius: 25,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#214283',
+    overflow: 'hidden',
+    elevation: 2,
+    marginBottom: 20,
+  },
+  buttonText: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#FFFFFF',
   },
 });
 

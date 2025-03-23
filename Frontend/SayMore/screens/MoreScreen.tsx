@@ -20,6 +20,7 @@ const NewScreens = [
   { title: 'Points', icon: require('../assets/points.png') },
   { title: 'Speech Therapy', icon: require('../assets/speech.png') },
   { title: 'Watched Lessons', icon: require('../assets/lesson.png') },
+  { title: 'Test History', icon: require('../assets/lesson.png') },
 ];
 
 interface MoreScreenProps {
@@ -45,7 +46,10 @@ const MoreScreen: React.FC<MoreScreenProps> = ({ navigation }) => {
     } else if (title === 'Points') {
       navigation.navigate('PointsCategoryScreen');
     } else if (title === 'Progress') {
-        navigation.navigate('ProgressCategoryScreen');
+      navigation.navigate('ProgressCategoryScreen');
+    } else if (title === 'Test History') {
+      navigation.navigate('TestHistory');
+
     }
   };
 
