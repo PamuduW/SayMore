@@ -46,48 +46,54 @@ interface HeaderProps {
   groupedVideos: GroupedVideoData[];
 }
 
-const HeaderComponent: React.FC<HeaderProps> = ({ theme, groupedVideos }) => (
-  <View style={styles.headerComponent}>
-    <Text
-      style={[
-        styles.sectionTitle,
-        { color: theme === 'dark' ? '#FFFFFF' : '#2A2D57' },
-      ]}>
-      Videos Watched
-    </Text>
-    <Text
-      style={[
-        styles.sectionSubtitle,
-        { color: theme === 'dark' ? '#AAAAAA' : '#718096' },
-      ]}>
-      {groupedVideos.length} {groupedVideos.length === 1 ? 'video' : 'videos'}{' '}
-      completed
-    </Text>
-  </View>
-);
+const HeaderComponent: React.FC<HeaderProps> = ({ theme, groupedVideos }) => {
+  const headerDynamicStyles = useMemo(
+    () => ({
+      sectionTitle: { color: theme === 'dark' ? '#FFFFFF' : '#2A2D57' },
+      sectionSubtitle: { color: theme === 'dark' ? '#AAAAAA' : '#718096' },
+    }),
+    [theme]
+  );
+
+  return (
+    <View style={styles.headerComponent}>
+      <Text style={[styles.sectionTitle, headerDynamicStyles.sectionTitle]}>
+        Videos Watched
+      </Text>
+      <Text
+        style={[styles.sectionSubtitle, headerDynamicStyles.sectionSubtitle]}>
+        {groupedVideos.length} {groupedVideos.length === 1 ? 'video' : 'videos'}{' '}
+        completed
+      </Text>
+    </View>
+  );
+};
 
 interface EmptyProps {
   theme: string;
 }
 
-const EmptyListComponent: React.FC<EmptyProps> = ({ theme }) => (
-  <View style={styles.emptyContainer}>
-    <Text
-      style={[
-        styles.emptyText,
-        { color: theme === 'dark' ? '#FFFFFF' : '#2A2D57' },
-      ]}>
-      No videos watched yet
-    </Text>
-    <Text
-      style={[
-        styles.emptySubtext,
-        { color: theme === 'dark' ? '#AAAAAA' : '#718096' },
-      ]}>
-      Start watching videos to earn points and enhance your speech & confidence.
-    </Text>
-  </View>
-);
+const EmptyListComponent: React.FC<EmptyProps> = ({ theme }) => {
+  const emptyDynamicStyles = useMemo(
+    () => ({
+      emptyText: { color: theme === 'dark' ? '#FFFFFF' : '#2A2D57' },
+      emptySubtext: { color: theme === 'dark' ? '#AAAAAA' : '#718096' },
+    }),
+    [theme]
+  );
+
+  return (
+    <View style={styles.emptyContainer}>
+      <Text style={[styles.emptyText, emptyDynamicStyles.emptyText]}>
+        No videos watched yet
+      </Text>
+      <Text style={[styles.emptySubtext, emptyDynamicStyles.emptySubtext]}>
+        Start watching videos to earn points and enhance your speech &
+        confidence.
+      </Text>
+    </View>
+  );
+};
 
 const TotalPointsScreen: React.FC = () => {
   const [points, setPoints] = useState<number | null>(null);
@@ -114,7 +120,7 @@ const TotalPointsScreen: React.FC = () => {
       theme === 'dark' ? ['#444444', '#AAAAAA'] : ['#2D336B', '#7886C7'],
   });
 
-  // Dynamic styles to replace inline styles
+  // Dynamic styles to replace inline styles in this screen
   const dynamicStyles = useMemo(
     () => ({
       cardContainer: {
@@ -139,6 +145,12 @@ const TotalPointsScreen: React.FC = () => {
       },
       headerTextColor: {
         color: theme === 'dark' ? '#FFFFFF' : '#2C3E50',
+      },
+      pointsCircleBackground: {
+        backgroundColor: theme === 'dark' ? '#333333' : '#3B5998',
+      },
+      contentContainerBackground: {
+        backgroundColor: theme === 'dark' ? '#121212' : '#FFFFFF',
       },
     }),
     [theme, borderInterpolation]
@@ -317,9 +329,7 @@ const TotalPointsScreen: React.FC = () => {
                 <View
                   style={[
                     styles.pointsCircle,
-                    {
-                      backgroundColor: theme === 'dark' ? '#333333' : '#3B5998',
-                    },
+                    dynamicStyles.pointsCircleBackground,
                   ]}>
                   <Text style={styles.pointsNumber}>{points}</Text>
                   <Text style={styles.pointsLabel}>POINTS</Text>
@@ -330,7 +340,7 @@ const TotalPointsScreen: React.FC = () => {
             <View
               style={[
                 styles.contentContainer,
-                { backgroundColor: theme === 'dark' ? '#121212' : '#FFFFFF' },
+                dynamicStyles.contentContainerBackground,
               ]}>
               <FlatList
                 data={groupedVideos}
@@ -430,7 +440,7 @@ const styles = StyleSheet.create({
     color: '#D0D3E6',
     marginTop: 6,
   },
-  // Renamed duplicate key from pointsLabel to pointsEarnedLabel for the points container in video cards.
+  // For video cards
   pointsEarnedLabel: {
     fontSize: 14,
     color: '#FFFFFF',
