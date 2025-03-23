@@ -39,7 +39,10 @@ import PointsCategoryScreen from '../screens/PointsCategoryScreen';
 import QuizPointHistoryScreen from '../screens/QuizPointHistoryScreen';
 import LessonRedirectionStuttering from '../screens/LessonRedirectionStuttering';
 import UnderstandingAndOvercomingStutteringScreen from '../screens/UnderstandingAndOvercomingStutteringScreen';
-/
+import LessonRedirectionPS from '../screens/LessonRedirectionPS';
+import CommunicationAndStageFrightScreen from '../screens/CommunicationAndStageFrightScreen';
+import ClarityAndPitchScreen from '../screens/ClarityAndPitchScreen';
+import SpeakingWithEnergyScreen from '../screens/SpeakingWithEnergyScreen';
 
 
 // Navigators
@@ -66,6 +69,22 @@ const HomeStack = () => (
     <Stack.Screen
       name="LessonRedirectionStuttering"
       component={LessonRedirectionStuttering}
+    />
+    <Stack.Screen
+          name="ClarityAndPitchScreen"
+          component={ClarityAndPitchScreen}
+        />
+    <Stack.Screen
+          name="CommunicationAndStageFrightScreen"
+          component={CommunicationAndStageFrightScreen}
+    />
+    <Stack.Screen
+          name="SpeakingWithEnergyScreen"
+          component={SpeakingWithEnergyScreen}
+    />
+    <Stack.Screen
+          name="LessonRedirectionPS"
+          component={LessonRedirectionPS}
     />
   </Stack.Navigator>
 );

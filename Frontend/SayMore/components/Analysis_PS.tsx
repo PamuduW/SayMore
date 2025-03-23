@@ -13,8 +13,53 @@ import { ProgressChart } from 'react-native-chart-kit';
 
 const screenWidth = Dimensions.get('window').width;
 
-const Analysis_PS = ({ filename, acc_id, type, language }) => {
-  const [responseData, setResponseData] = useState(null);
+interface Analysis_PSProps {
+  filename: string;
+  acc_id: string;
+  type: string;
+  language: string;
+}
+
+interface AnalysisResult {
+  final_public_speaking_score: number;
+  overall_confidence: number;
+  'Voice_Quality_&_Stability_Data': {
+    final_voice_score: number;
+    variation_score: number;
+    stability_score: number;
+    speaking_speed: number;
+    clarity: number;
+    overall_jitter_score: number;
+    overall_shimmer_score: number;
+    overall_hnr_score: number;
+    base_feedback: string;
+    dynamic_feedback: string;
+    pitch_data: any;
+    hnr_data: any;
+    shimmer_data: any;
+    jitter_data: any;
+  };
+  'Speech_Intensity_&_Energy_Data': {
+    final_energy_score: number;
+    intensity_score: number;
+    energy_score: number;
+    variation_score: number;
+    base_feedback: string;
+    dynamic_feedback: string;
+    intensity_analysis: any;
+    energy_analysis: any;
+  };
+  final_public_speaking_feedback: string;
+  transcription: any;
+}
+
+const Analysis_PS: React.FC<Analysis_PSProps> = ({
+  filename,
+  acc_id,
+  type,
+  language,
+}) => {
+  const [responseData, setResponseData] = useState<any>(null);
   const navigation = useNavigation();
   const [data, setData] = useState({
     labels: [
@@ -95,7 +140,88 @@ const Analysis_PS = ({ filename, acc_id, type, language }) => {
 
   const handleNext = () => {
     if (responseData) {
-      const { result } = responseData;
+      const { result } = responseData as AnalysisResult;
+
+      // Extract scores and their names
+      const scores = [
+        {
+          name: 'Final Public Speaking Score',
+          value: result.final_public_speaking_score,
+          navigationTarget: null, // No specific screen for this
+        },
+        {
+          name: 'Overall Confidence Score',
+          value: result.overall_confidence,
+          navigationTarget: null, // No specific screen for this
+        },
+        {
+          name: 'Final Voice Score',
+          value: result['Voice_Quality_&_Stability_Data'].final_voice_score,
+          navigationTarget: 'LessonRedirectionScreen',
+        },
+        {
+          name: 'variation_score (Voice)',
+          value: result['Voice_Quality_&_Stability_Data'].variation_score,
+          navigationTarget: 'ClarityAndPitchScreen',
+        },
+        {
+          name: 'stability_score (Voice)',
+          value: result['Voice_Quality_&_Stability_Data'].stability_score,
+          navigationTarget: 'ClarityAndPitchScreen',
+        },
+        {
+          name: 'speaking_speed',
+          value: result['Voice_Quality_&_Stability_Data'].speaking_speed,
+          navigationTarget: 'SpeakingWithEnergyScreen',
+        },
+        {
+          name: 'clarity',
+          value: result['Voice_Quality_&_Stability_Data'].clarity,
+          navigationTarget: 'ClarityAndPitchScreen',
+        },
+        {
+          name: 'overall_jitter_score',
+          value: result['Voice_Quality_&_Stability_Data'].overall_jitter_score,
+          navigationTarget: 'CommunicationAndStageFrightScreen',
+        },
+        {
+          name: 'overall_shimmer_score',
+          value: result['Voice_Quality_&_Stability_Data'].overall_shimmer_score,
+          navigationTarget: 'SpeakingWithEnergyScreen',
+        },
+        {
+          name: 'overall_hnr_score',
+          value: result['Voice_Quality_&_Stability_Data'].overall_hnr_score,
+          navigationTarget: 'CommunicationAndStageFrightScreen',
+        },
+        {
+          name: 'final_energy_score',
+          value: result['Speech_Intensity_&_Energy_Data'].final_energy_score,
+          navigationTarget: 'SpeakingWithEnergyScreen',
+        },
+        {
+          name: 'intensity_score',
+          value: result['Speech_Intensity_&_Energy_Data'].intensity_score,
+          navigationTarget: 'SpeakingWithEnergyScreen',
+        },
+        {
+          name: 'energy_score',
+          value: result['Speech_Intensity_&_Energy_Data'].energy_score,
+          navigationTarget: 'SpeakingWithEnergyScreen',
+        },
+        {
+          name: 'variation_score (Energy)',
+          value: result['Speech_Intensity_&_Energy_Data'].variation_score,
+          navigationTarget: 'CommunicationAndStageFrightScreen',
+        },
+      ];
+
+      // Sort scores in ascending order
+      const sortedScores = scores.sort((a, b) => a.value - b.value);
+
+      // Get the three smallest scores
+      const threeSmallestScores = sortedScores.slice(0, 3);
+
       const {
         final_public_speaking_score,
         final_public_speaking_feedback,
@@ -116,13 +242,14 @@ const Analysis_PS = ({ filename, acc_id, type, language }) => {
         voiceDynamicFeedback,
         speechBaseFeedback,
         speechDynamicFeedback,
+        threeSmallestScores, // Pass the three smallest scores
       });
     }
   };
 
   const handleDetails = () => {
     if (responseData) {
-      const { result } = responseData;
+      const { result } = responseData as AnalysisResult;
       const {
         final_public_speaking_score,
         final_public_speaking_feedback,
