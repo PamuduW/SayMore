@@ -1,5 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { Text, StyleSheet, ScrollView, Button, Dimensions } from 'react-native';
+import {
+  Text,
+  StyleSheet,
+  ScrollView,
+  Button,
+  Dimensions,
+  Image,
+  TouchableOpacity,
+} from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { LineChart } from 'react-native-chart-kit';
 
@@ -220,8 +228,21 @@ const AdditionalDetailsScreen = ({ route }) => {
     });
   };
 
+  // Handle back navigation
+  const handleBack = () => {
+    navigation.goBack();
+  };
+
   return (
     <ScrollView contentContainerStyle={styles.container}>
+      {/* Back Button */}
+      <TouchableOpacity onPress={handleBack}>
+        <Image
+          source={require('../assets/back.png')}
+          style={styles.backButton}
+        />
+      </TouchableOpacity>
+
       <Text style={styles.title}>Additional Details</Text>
       <LineChart
         data={pitch_graph_data}
@@ -295,6 +316,11 @@ const styles = StyleSheet.create({
   },
   value: {
     fontSize: 16,
+    marginBottom: 10,
+  },
+  backButton: {
+    width: 30,
+    height: 30,
     marginBottom: 10,
   },
 });
