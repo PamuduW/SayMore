@@ -37,6 +37,9 @@ import LessonsPointsScreen from '../screens/LessonsPointsScreen';
 import TotalPointsScreen from '../screens/TotalPointsScreen';
 import PointsCategoryScreen from '../screens/PointsCategoryScreen';
 import QuizPointHistoryScreen from '../screens/QuizPointHistoryScreen';
+import LessonRedirectionStuttering from '../screens/LessonRedirectionStuttering';
+import UnderstandingAndOvercomingStutteringScreen from '../screens/UnderstandingAndOvercomingStutteringScreen';
+/
 
 
 // Navigators
@@ -54,6 +57,15 @@ const HomeStack = () => (
     <Stack.Screen
       name="AdditionalDetailsScreen"
       component={AdditionalDetailsScreen}
+    />
+    {/* Moved UnderstandingAndOvercomingStuttering to HomeStack to match desired structure */}
+    <Stack.Screen
+      name="UnderstandingAndOvercomingStutteringScreen"
+      component={UnderstandingAndOvercomingStutteringScreen}
+    />
+    <Stack.Screen
+      name="LessonRedirectionStuttering"
+      component={LessonRedirectionStuttering}
     />
   </Stack.Navigator>
 );
@@ -83,7 +95,11 @@ const MoreStack = () => (
     />
     <Stack.Screen name="PointsScreen" component={PointsScreen} />
     <Stack.Screen name="SpeechTherapyScreen" component={SpeechTherapyScreen} />
-  </Stack.Navigator>
+    <Stack.Screen
+      name="LessonRedirectionStuttering"
+      component={LessonRedirectionStuttering}
+    />
+      </Stack.Navigator>
 );
 
 // Account Stack

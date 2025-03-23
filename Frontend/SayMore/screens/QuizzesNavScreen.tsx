@@ -1,5 +1,12 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, Image, StyleSheet, ScrollView } from 'react-native';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  Image,
+  StyleSheet,
+  ScrollView,
+} from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import LinearGradient from 'react-native-linear-gradient';
 import { useTheme } from '../components/ThemeContext';
@@ -24,7 +31,9 @@ const QuizzesNavScreen = () => {
 
   return (
     <LinearGradient
-      colors={theme === 'dark' ? ['#1C1C1C', '#3A3A3A'] : ['#577BC1', '#8AAEE0']}
+      colors={
+        theme === 'dark' ? ['#1C1C1C', '#3A3A3A'] : ['#577BC1', '#8AAEE0']
+      }
       start={{ x: 0, y: 0 }}
       end={{ x: 1, y: 1 }}
       style={styles.container}>
@@ -48,17 +57,38 @@ const QuizzesNavScreen = () => {
         <Text style={styles.headerTitle}>Quizzes and Challenges</Text>
       </View>
 
-      <ScrollView contentContainerStyle={styles.cardsWrapper} showsVerticalScrollIndicator={false}>
-
+      <ScrollView
+        contentContainerStyle={styles.cardsWrapper}
+        showsVerticalScrollIndicator={false}>
         {/* Public Speaking Card */}
         <View style={[styles.card, theme === 'dark' && styles.cardDark]}>
-          <View style={[styles.imageWrapper, theme === 'dark' && styles.imageWrapperDark]}>
-            <Image source={require('../assets/quiznav.jpg')} style={styles.image} />
+          <View
+            style={[
+              styles.imageWrapper,
+              theme === 'dark' && styles.imageWrapperDark,
+            ]}>
+            <Image
+              source={require('../assets/quiznav.jpg')}
+              style={styles.image}
+            />
           </View>
-          <Text style={[styles.cardTitle, theme === 'dark' && styles.cardTitleDark]}>Public Speaking</Text>
-          <TouchableOpacity activeOpacity={0.85} style={styles.button} onPress={navigateToPublicSpeaking}>
+          <Text
+            style={[
+              styles.cardTitle,
+              theme === 'dark' && styles.cardTitleDark,
+            ]}>
+            Public Speaking
+          </Text>
+          <TouchableOpacity
+            activeOpacity={0.85}
+            style={styles.button}
+            onPress={navigateToPublicSpeaking}>
             <LinearGradient
-              colors={theme === 'dark' ? ['#4A4A4A', '#6B6B6B'] : ['#3B5998', '#577BC1']}
+              colors={
+                theme === 'dark'
+                  ? ['#4A4A4A', '#6B6B6B']
+                  : ['#3B5998', '#577BC1']
+              }
               start={{ x: 0, y: 0 }}
               end={{ x: 1, y: 1 }}
               style={styles.buttonGradient}>
@@ -69,13 +99,33 @@ const QuizzesNavScreen = () => {
 
         {/* Stuttering Card */}
         <View style={[styles.card, theme === 'dark' && styles.cardDark]}>
-          <View style={[styles.imageWrapper, theme === 'dark' && styles.imageWrapperDark]}>
-            <Image source={require('../assets/stutterquiz.png')} style={styles.image} />
+          <View
+            style={[
+              styles.imageWrapper,
+              theme === 'dark' && styles.imageWrapperDark,
+            ]}>
+            <Image
+              source={require('../assets/stutterquiz.png')}
+              style={styles.image}
+            />
           </View>
-          <Text style={[styles.cardTitle, theme === 'dark' && styles.cardTitleDark]}>Stuttering</Text>
-          <TouchableOpacity activeOpacity={0.85} style={styles.button} onPress={navigateToStuttering}>
+          <Text
+            style={[
+              styles.cardTitle,
+              theme === 'dark' && styles.cardTitleDark,
+            ]}>
+            Stuttering
+          </Text>
+          <TouchableOpacity
+            activeOpacity={0.85}
+            style={styles.button}
+            onPress={navigateToStuttering}>
             <LinearGradient
-              colors={theme === 'dark' ? ['#4A4A4A', '#6B6B6B'] : ['#3B5998', '#577BC1']}
+              colors={
+                theme === 'dark'
+                  ? ['#4A4A4A', '#6B6B6B']
+                  : ['#3B5998', '#577BC1']
+              }
               start={{ x: 0, y: 0 }}
               end={{ x: 1, y: 1 }}
               style={styles.buttonGradient}>
@@ -83,9 +133,7 @@ const QuizzesNavScreen = () => {
             </LinearGradient>
           </TouchableOpacity>
         </View>
-
       </ScrollView>
-
     </LinearGradient>
   );
 };

@@ -29,7 +29,7 @@ const LessonsPointsScreen: React.FC = () => {
   const { points, videoTitle, milestones, maxPossiblePoints } = route.params;
 
   useEffect(() => {
-    console.log('LessonsPointsScreen params:', {
+    console.log('PointsScreen params:', {
       points,
       videoTitle,
       milestones,
@@ -59,9 +59,7 @@ const LessonsPointsScreen: React.FC = () => {
     }
 
     let basePoints = milestones.length - (milestones.includes(100) ? 1 : 0);
-    let completionBonus = milestones.includes(100)
-      ? maxPossiblePoints - basePoints
-      : 0;
+    // Removed unused variable 'completionBonus'
 
     return milestones.includes(100)
       ? `${basePoints} points from milestones + completion bonus!`
@@ -102,41 +100,17 @@ const LessonsPointsScreen: React.FC = () => {
         <View style={styles.progressContainer}>
           <Text style={styles.progressText}>You earned {points} points</Text>
           <View style={styles.progressBar}>
-            <View
-              style={[
-                styles.progressFill,
-                { width: '100%', backgroundColor: 'white' },
-              ]}>
-              <View
-                style={[
-                  styles.progressSection,
-                  { width: '25%', backgroundColor: '#E91E63' },
-                ]}
-              />
-              <View
-                style={[
-                  styles.progressSection,
-                  { width: '25%', backgroundColor: '#9C27B0' },
-                ]}
-              />
-              <View
-                style={[
-                  styles.progressSection,
-                  { width: '25%', backgroundColor: '#3F51B5' },
-                ]}
-              />
-              <View
-                style={[
-                  styles.progressSection,
-                  { width: '25%', backgroundColor: '#2196F3' },
-                ]}
-              />
+            <View style={styles.progressFill}>
+              <View style={styles.progressSection1} />
+              <View style={styles.progressSection2} />
+              <View style={styles.progressSection3} />
+              <View style={styles.progressSection4} />
             </View>
           </View>
 
           {/* Display milestone markers */}
           <View style={styles.milestoneMarkersContainer}>
-            <View style={[styles.milestoneTick, { left: '10%' }]}>
+            <View style={styles.milestoneTick1}>
               <Text
                 style={[
                   styles.milestoneTickText,
@@ -145,7 +119,7 @@ const LessonsPointsScreen: React.FC = () => {
                 10%
               </Text>
             </View>
-            <View style={[styles.milestoneTick, { left: '25%' }]}>
+            <View style={styles.milestoneTick2}>
               <Text
                 style={[
                   styles.milestoneTickText,
@@ -154,7 +128,7 @@ const LessonsPointsScreen: React.FC = () => {
                 25%
               </Text>
             </View>
-            <View style={[styles.milestoneTick, { left: '50%' }]}>
+            <View style={styles.milestoneTick3}>
               <Text
                 style={[
                   styles.milestoneTickText,
@@ -163,7 +137,7 @@ const LessonsPointsScreen: React.FC = () => {
                 50%
               </Text>
             </View>
-            <View style={[styles.milestoneTick, { left: '75%' }]}>
+            <View style={styles.milestoneTick4}>
               <Text
                 style={[
                   styles.milestoneTickText,
@@ -172,7 +146,7 @@ const LessonsPointsScreen: React.FC = () => {
                 75%
               </Text>
             </View>
-            <View style={[styles.milestoneTick, { right: '0%' }]}>
+            <View style={styles.milestoneTick5}>
               <Text
                 style={[
                   styles.milestoneTickText,
@@ -294,16 +268,50 @@ const styles = StyleSheet.create({
     height: '100%',
     flexDirection: 'row',
   },
-  progressSection: {
-    height: '100%',
+  progressSection1: {
+    width: '25%',
+    backgroundColor: '#E91E63',
+  },
+  progressSection2: {
+    width: '25%',
+    backgroundColor: '#9C27B0',
+  },
+  progressSection3: {
+    width: '25%',
+    backgroundColor: '#3F51B5',
+  },
+  progressSection4: {
+    width: '25%',
+    backgroundColor: '#2196F3',
   },
   milestoneMarkersContainer: {
     position: 'relative',
     width: '100%',
     height: 20,
   },
-  milestoneTick: {
+  milestoneTick1: {
     position: 'absolute',
+    left: '10%',
+    alignItems: 'center',
+  },
+  milestoneTick2: {
+    position: 'absolute',
+    left: '25%',
+    alignItems: 'center',
+  },
+  milestoneTick3: {
+    position: 'absolute',
+    left: '50%',
+    alignItems: 'center',
+  },
+  milestoneTick4: {
+    position: 'absolute',
+    left: '75%',
+    alignItems: 'center',
+  },
+  milestoneTick5: {
+    position: 'absolute',
+    right: '0%',
     alignItems: 'center',
   },
   milestoneTickText: {
