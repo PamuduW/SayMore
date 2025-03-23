@@ -61,7 +61,8 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
 
   const borderInterpolation = borderAnimation.interpolate({
     inputRange: [0, 1],
-    outputRange: theme === 'dark' ? ['#FFFFFF', '#AAAAAA'] : ['#2D336B', '#7886C7'],
+    outputRange:
+      theme === 'dark' ? ['#FFFFFF', '#AAAAAA'] : ['#2D336B', '#7886C7'],
   });
 
   const handlePress = (option: string) => {
@@ -82,20 +83,27 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
           Hello {userData?.fname ? userData.fname : ''},
         </Text>
         <Text style={styles.welcomeMessage}>Welcome to SayMore!</Text>
-        <Text style={[
-          styles.tagline,
-          { color: theme === 'dark' ? '#DDDDDD' : '#D0D3E6' }
-        ]}>Enhance your speech & confidence</Text>
+        <Text
+          style={[
+            styles.tagline,
+            { color: theme === 'dark' ? '#DDDDDD' : '#D0D3E6' },
+          ]}>
+          Enhance your speech & confidence
+        </Text>
       </View>
 
-      <View style={[
-        styles.testContainer,
-        { backgroundColor: theme === 'dark' ? '#333333' : '#FFFFFF' }
-      ]}>
-        <Text style={[
-          styles.testHeading,
-          { color: theme === 'dark' ? '#FFFFFF' : '#2A2D57' }
-        ]}>Start Your Test</Text>
+      <View
+        style={[
+          styles.testContainer,
+          { backgroundColor: theme === 'dark' ? '#333333' : '#FFFFFF' },
+        ]}>
+        <Text
+          style={[
+            styles.testHeading,
+            { color: theme === 'dark' ? '#FFFFFF' : '#2A2D57' },
+          ]}>
+          Start Your Test
+        </Text>
         <Image
           style={styles.testImage}
           source={require('../assets/public-speaking.png')}

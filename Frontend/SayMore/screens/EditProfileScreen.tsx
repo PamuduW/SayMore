@@ -149,7 +149,9 @@ export default function EditProfileScreen({ navigation }) {
             placeholderTextColor="#aaa"
           />
 
-          <Text style={[styles.label, { color: '#FFFFFF' }]}>Date of Birth</Text>
+          <Text style={[styles.label, { color: '#FFFFFF' }]}>
+            Date of Birth
+          </Text>
           <TextInput
             style={[
               styles.input,
@@ -185,7 +187,7 @@ export default function EditProfileScreen({ navigation }) {
               styles.input,
               {
                 backgroundColor: theme === 'dark' ? '#1E1E1E' : '#D0D3E6',
-                color: theme === 'dark' ? '#999999' : '#2A2D57'
+                color: theme === 'dark' ? '#999999' : '#2A2D57',
               },
             ]}
             value={email}

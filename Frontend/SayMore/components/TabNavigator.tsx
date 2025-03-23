@@ -102,7 +102,10 @@ const MoreStack = () => (
       component={PointsCategoryScreen}
     />
     <Stack.Screen name="TotalPointsScreen" component={TotalPointsScreen} />
-    <Stack.Screen name="QuizPointHistoryScreen" component={QuizPointHistoryScreen} />
+    <Stack.Screen
+      name="QuizPointHistoryScreen"
+      component={QuizPointHistoryScreen}
+    />
     <Stack.Screen name="ProgressScreen" component={ProgressScreen} />
     <Stack.Screen name="Difficulty" component={Difficulty} />
     <Stack.Screen
