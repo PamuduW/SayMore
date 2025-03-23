@@ -62,7 +62,8 @@ const TotalPointsScreen: React.FC = () => {
 
   const borderInterpolation = borderAnimation.interpolate({
     inputRange: [0, 1],
-    outputRange: theme === 'dark' ? ['#444444', '#AAAAAA'] : ['#2D336B', '#7886C7'],
+    outputRange:
+      theme === 'dark' ? ['#444444', '#AAAAAA'] : ['#2D336B', '#7886C7'],
   });
 
   useEffect(() => {
@@ -80,7 +81,8 @@ const TotalPointsScreen: React.FC = () => {
             setPoints(data?.points || 0);
 
             const watchedVideos: WatchedVideo[] = data?.watchedVideos || [];
-            const pointsHistory: PointsHistoryEntry[] = data?.pointsHistory || [];
+            const pointsHistory: PointsHistoryEntry[] =
+              data?.pointsHistory || [];
 
             const videoMap: { [key: string]: GroupedVideoData } = {};
 
@@ -97,7 +99,8 @@ const TotalPointsScreen: React.FC = () => {
                 };
               } else {
                 videoMap[video.videoId].timesWatched += 1;
-                videoMap[video.videoId].lastPercentage = video.percentageWatched;
+                videoMap[video.videoId].lastPercentage =
+                  video.percentageWatched;
               }
             });
 
@@ -139,41 +142,70 @@ const TotalPointsScreen: React.FC = () => {
           borderColor: borderInterpolation,
           borderWidth: 2,
           backgroundColor: theme === 'dark' ? '#121212' : '#FFFFFF',
-        }
-      ]}
-    >
+        },
+      ]}>
       <View style={styles.thumbnailContainer}>
         <Image source={{ uri: item.thumbnail }} style={styles.thumbnail} />
         <LinearGradient
-          colors={theme === 'dark' ? ['rgba(30, 30, 30, 0.8)', 'rgba(60, 60, 60, 0.8)'] : ['rgba(59, 89, 152, 0.8)', 'rgba(87, 123, 193, 0.8)']}
-          style={styles.watchCountBadge}
-        >
+          colors={
+            theme === 'dark'
+              ? ['rgba(30, 30, 30, 0.8)', 'rgba(60, 60, 60, 0.8)']
+              : ['rgba(59, 89, 152, 0.8)', 'rgba(87, 123, 193, 0.8)']
+          }
+          style={styles.watchCountBadge}>
           <Text style={styles.watchCountText}>{item.timesWatched}x</Text>
         </LinearGradient>
       </View>
 
       <View style={styles.videoDetails}>
-        <Text style={[styles.videoTitle, { color: theme === 'dark' ? '#FFFFFF' : '#2A2D57' }]} numberOfLines={2}>
+        <Text
+          style={[
+            styles.videoTitle,
+            { color: theme === 'dark' ? '#FFFFFF' : '#2A2D57' },
+          ]}
+          numberOfLines={2}>
           {item.title}
         </Text>
 
         <View style={styles.progressContainer}>
-          <Text style={[styles.progressLabel, { color: theme === 'dark' ? '#BBBBBB' : '#718096' }]}>Last watched:</Text>
-          <View style={[styles.progressBarBackground, { backgroundColor: theme === 'dark' ? '#333333' : '#E2E8F0' }]}>
+          <Text
+            style={[
+              styles.progressLabel,
+              { color: theme === 'dark' ? '#BBBBBB' : '#718096' },
+            ]}>
+            Last watched:
+          </Text>
+          <View
+            style={[
+              styles.progressBarBackground,
+              { backgroundColor: theme === 'dark' ? '#333333' : '#E2E8F0' },
+            ]}>
             <LinearGradient
-              colors={theme === 'dark' ? ['#555555', '#777777'] : ['#3B5998', '#577BC1']}
-              style={[styles.progressBarFill, { width: `${item.lastPercentage}%` }]}
+              colors={
+                theme === 'dark'
+                  ? ['#555555', '#777777']
+                  : ['#3B5998', '#577BC1']
+              }
+              style={[
+                styles.progressBarFill,
+                { width: `${item.lastPercentage}%` },
+              ]}
             />
           </View>
-          <Text style={[styles.progressPercentage, { color: theme === 'dark' ? '#FFFFFF' : '#2A2D57' }]}>
+          <Text
+            style={[
+              styles.progressPercentage,
+              { color: theme === 'dark' ? '#FFFFFF' : '#2A2D57' },
+            ]}>
             {item.lastPercentage}%
           </Text>
         </View>
 
         <LinearGradient
-          colors={theme === 'dark' ? ['#333333', '#444444'] : ['#3B5998', '#577BC1']}
-          style={styles.pointsContainer}
-        >
+          colors={
+            theme === 'dark' ? ['#333333', '#444444'] : ['#3B5998', '#577BC1']
+          }
+          style={styles.pointsContainer}>
           <Text style={styles.pointsValue}>{item.totalPoints}</Text>
           <Text style={styles.pointsLabel}>points earned</Text>
         </LinearGradient>
@@ -183,31 +215,50 @@ const TotalPointsScreen: React.FC = () => {
 
   const HeaderComponent = () => (
     <View style={styles.headerComponent}>
-      <Text style={[styles.sectionTitle, { color: theme === 'dark' ? '#FFFFFF' : '#2A2D57' }]}>
+      <Text
+        style={[
+          styles.sectionTitle,
+          { color: theme === 'dark' ? '#FFFFFF' : '#2A2D57' },
+        ]}>
         Videos Watched
       </Text>
-      <Text style={[styles.sectionSubtitle, { color: theme === 'dark' ? '#AAAAAA' : '#718096' }]}>
-        {groupedVideos.length} {groupedVideos.length === 1 ? 'video' : 'videos'} completed
+      <Text
+        style={[
+          styles.sectionSubtitle,
+          { color: theme === 'dark' ? '#AAAAAA' : '#718096' },
+        ]}>
+        {groupedVideos.length} {groupedVideos.length === 1 ? 'video' : 'videos'}{' '}
+        completed
       </Text>
     </View>
   );
 
   const EmptyListComponent = () => (
     <View style={styles.emptyContainer}>
-      <Text style={[styles.emptyText, { color: theme === 'dark' ? '#FFFFFF' : '#2A2D57' }]}>
+      <Text
+        style={[
+          styles.emptyText,
+          { color: theme === 'dark' ? '#FFFFFF' : '#2A2D57' },
+        ]}>
         No videos watched yet
       </Text>
-      <Text style={[styles.emptySubtext, { color: theme === 'dark' ? '#AAAAAA' : '#718096' }]}>
-        Start watching videos to earn points and enhance your speech & confidence.
+      <Text
+        style={[
+          styles.emptySubtext,
+          { color: theme === 'dark' ? '#AAAAAA' : '#718096' },
+        ]}>
+        Start watching videos to earn points and enhance your speech &
+        confidence.
       </Text>
     </View>
   );
 
   return (
     <LinearGradient
-      colors={theme === 'dark' ? ['#000000', '#121212'] : ['#577BC1', '#577BC1']}
-      style={styles.container}
-    >
+      colors={
+        theme === 'dark' ? ['#000000', '#121212'] : ['#577BC1', '#577BC1']
+      }
+      style={styles.container}>
       <StatusBar
         barStyle="light-content"
         backgroundColor={theme === 'dark' ? '#000000' : '#577BC1'}
@@ -215,10 +266,18 @@ const TotalPointsScreen: React.FC = () => {
       <SafeAreaView style={styles.safeArea}>
         <View style={styles.header}>
           <TouchableOpacity
-            style={[styles.backButton, { backgroundColor: theme === 'dark' ? '#333333' : '#E6F7FF' }]}
-            onPress={handleBackPress}
-          >
-            <Text style={[styles.backButtonText, { color: theme === 'dark' ? '#FFFFFF' : '#2C3E50' }]}>←</Text>
+            style={[
+              styles.backButton,
+              { backgroundColor: theme === 'dark' ? '#333333' : '#E6F7FF' },
+            ]}
+            onPress={handleBackPress}>
+            <Text
+              style={[
+                styles.backButtonText,
+                { color: theme === 'dark' ? '#FFFFFF' : '#2C3E50' },
+              ]}>
+              ←
+            </Text>
           </TouchableOpacity>
           <Text style={styles.headerText}>Your Total Points</Text>
           <View style={styles.spacer} />
@@ -232,15 +291,29 @@ const TotalPointsScreen: React.FC = () => {
         ) : (
           <>
             <View style={styles.pointsCircleContainer}>
-              <Animated.View style={[styles.pointsCircleWrapper, { borderColor: borderInterpolation }]}>
-                <View style={[styles.pointsCircle, { backgroundColor: theme === 'dark' ? '#333333' : '#3B5998' }]}>
+              <Animated.View
+                style={[
+                  styles.pointsCircleWrapper,
+                  { borderColor: borderInterpolation },
+                ]}>
+                <View
+                  style={[
+                    styles.pointsCircle,
+                    {
+                      backgroundColor: theme === 'dark' ? '#333333' : '#3B5998',
+                    },
+                  ]}>
                   <Text style={styles.pointsNumber}>{points}</Text>
                   <Text style={styles.pointsLabel}>POINTS</Text>
                 </View>
               </Animated.View>
             </View>
 
-            <View style={[styles.contentContainer, { backgroundColor: theme === 'dark' ? '#121212' : '#FFFFFF' }]}>
+            <View
+              style={[
+                styles.contentContainer,
+                { backgroundColor: theme === 'dark' ? '#121212' : '#FFFFFF' },
+              ]}>
               <FlatList
                 data={groupedVideos}
                 keyExtractor={item => item.videoId}

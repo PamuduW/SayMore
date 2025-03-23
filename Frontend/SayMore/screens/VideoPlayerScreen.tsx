@@ -28,20 +28,20 @@ type RootStackParamList = {
   VideoPlayer: {
     video: {
       videoId: string;
-    title: string;
-    summary?: string;
-    thumbnail: string;
-    summaryImage?: string;
+      title: string;
+      summary?: string;
+      thumbnail: string;
+      summaryImage?: string;
+    };
+    lessonTitle: string;
   };
-  lessonTitle: string;
-};
-LessonsPointsScreen: {
-  points: number;
-  videoTitle: string;
-  milestones: number[];
-  maxPossiblePoints: number;
-};
-Home: undefined;
+  LessonsPointsScreen: {
+    points: number;
+    videoTitle: string;
+    milestones: number[];
+    maxPossiblePoints: number;
+  };
+  Home: undefined;
 };
 
 type VideoPlayerRouteProp = RouteProp<RootStackParamList, 'VideoPlayer'>;
@@ -84,7 +84,7 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = ({
 
   const positionPollingRef = useRef<NodeJS.Timeout | null>(null);
 
-  const [currentTime, setCurrentTime] = useState(0);
+  const [_, _setCurrentTime] = useState(0);
   const previousTimeRef = useRef(0);
   const [largestMilestone, setLargestMilestone] = useState(0);
 
@@ -188,16 +188,16 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = ({
     }
 
     try {
-      const currentTime = await videoPlayerRef.current.getCurrentTime();
+      const currentPlaybackTime = await videoPlayerRef.current.getCurrentTime();
 
       if (playing && lastWatchTimeRef.current > 0) {
-        const timeIncrement = currentTime - lastWatchTimeRef.current;
+        const timeIncrement = currentPlaybackTime - lastWatchTimeRef.current;
         // More generous upper limit for time increments
         if (timeIncrement > 0 && timeIncrement < 30) {
           watchedDurationRef.current += timeIncrement;
         }
       }
-      lastWatchTimeRef.current = currentTime;
+      lastWatchTimeRef.current = currentPlaybackTime;
 
       const percentageWatched = Math.min(
         100,
@@ -224,7 +224,7 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = ({
         setLargestMilestone(percentageWatched);
       }
     } catch (error) {
-      console.error('Error checking watching progress:', error);
+      //console.error('Error checking watching progress:', error);
     }
   }, [
     playing,
@@ -721,83 +721,77 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = ({
   }, [video.videoId]);
 
   const onStateChange = useCallback(
-      async (state: string) => {
-        //console.log('YouTube player state changed:', state);
+    async (state: string) => {
+      //console.log('YouTube player state changed:', state);
 
-        if (state === 'playing') {
-          setPlaying(true);
-          setShowSkipButton(false);
+      if (state === 'playing') {
+        setPlaying(true);
+        setShowSkipButton(false);
 
-          if (playStartTimeRef.current === null) {
-            playStartTimeRef.current = Date.now();
-            //console.log('Video playback started, starting timer');
-          }
-        } else if (
-          state === 'paused' ||
-          state === 'ended' ||
-          state === 'stopped'
-        ) {
-          setPlaying(false);
-
-          checkPlayDuration();
-          await checkWatchingProgress();
-
-          if (hasPlayedEnoughRef.current && !videoSavedRef.current) {
-            await saveWatchedVideo();
-          }
-
-          if (state === 'ended') {
-            watchedDurationRef.current = videoDuration;
-            setCurrentPercentage(100);
-            //console.log('Total points earned:', totalPointsEarnedRef.current);
-
-            reachedMilestonesRef.current.add(100);
-            const milestoneCompletionPoints = calculateCompletionPoints();
-
-            totalPointsEarnedRef.current += milestoneCompletionPoints;
-
-            const finalPoints = totalPointsEarnedRef.current;
-
-            await awardPoints(milestoneCompletionPoints, 100);
-
-            try {
-              navigation.navigate('LessonsPointsScreen', {
-                points: finalPoints,
-                videoTitle: video.title,
-                milestones: Array.from(reachedMilestonesRef.current),
-                maxPossiblePoints: calculateMaxPoints(videoDuration),
-              });
-              console.log('Navigation to LessonsPointsScreen attempted with:', {
-                points: finalPoints,
-                videoTitle: video.title,
-                milestones: Array.from(reachedMilestonesRef.current),
-                maxPossiblePoints: calculateMaxPoints(videoDuration),
-              });
-            } catch (error) {
-              //console.error('Error navigating to LessonsPointsScreen:', error);
-              showNotification(
-                'Error showing points screen. Please try again later.'
-              );
-            }
-
-            resetWatchingState();
-            setIsRewatching(false);
-          }
+        if (playStartTimeRef.current === null) {
+          playStartTimeRef.current = Date.now();
+          //console.log('Video playback started, starting timer');
         }
-      },
-      [
-        checkPlayDuration,
-        saveWatchedVideo,
-        checkWatchingProgress,
-        videoDuration,
-        navigation,
-        video.title,
-        awardPoints,
-        calculateCompletionPoints,
-        resetWatchingState,
-        showNotification,
-      ]
-    );
+      } else if (
+        state === 'paused' ||
+        state === 'ended' ||
+        state === 'stopped'
+      ) {
+        setPlaying(false);
+
+        checkPlayDuration();
+        await checkWatchingProgress();
+
+        if (hasPlayedEnoughRef.current && !videoSavedRef.current) {
+          await saveWatchedVideo();
+        }
+
+        if (state === 'ended') {
+          watchedDurationRef.current = videoDuration;
+          setCurrentPercentage(100);
+          //console.log('Total points earned:', totalPointsEarnedRef.current);
+
+          reachedMilestonesRef.current.add(100);
+          const milestoneCompletionPoints = calculateCompletionPoints();
+
+          totalPointsEarnedRef.current += milestoneCompletionPoints;
+
+          const finalPoints = totalPointsEarnedRef.current;
+
+          await awardPoints(milestoneCompletionPoints, 100);
+
+          try {
+            navigation.navigate('LessonsPointsScreen', {
+              points: finalPoints,
+              videoTitle: video.title,
+              milestones: Array.from(reachedMilestonesRef.current),
+              maxPossiblePoints: calculateMaxPoints(videoDuration),
+            });
+          } catch (error) {
+            //console.error('Error navigating to LessonsPointsScreen:', error);
+            showNotification(
+              'Error showing points screen. Please try again later.'
+            );
+          }
+
+          resetWatchingState();
+          setIsRewatching(false);
+        }
+      }
+    },
+    [
+      checkPlayDuration,
+      saveWatchedVideo,
+      checkWatchingProgress,
+      videoDuration,
+      navigation,
+      video.title,
+      awardPoints,
+      calculateCompletionPoints,
+      resetWatchingState,
+      showNotification,
+    ]
+  );
 
   // Set up regular interval to check watching progress for points
   useEffect(() => {
@@ -1307,20 +1301,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#2b2b2b',
     marginBottom: -45,
-  },
-  skipButton: {
-    backgroundColor: '#003366',
-    paddingVertical: 10,
-    paddingHorizontal: 16,
-    borderRadius: 8,
-    marginHorizontal: 16,
-    marginTop: 16,
-    alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 3,
-    elevation: 4,
   },
   darkSkipButton: {
     backgroundColor: '#4c4c4c',

@@ -12,7 +12,7 @@ import {
 import { useNavigation } from '@react-navigation/native';
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
-import { Lesson, VideoItem, WatchedVideo } from '../types/types';
+import { VideoItem, WatchedVideo } from '../types/types';
 
 interface LessonRedirectionPSProps {}
 
@@ -39,7 +39,6 @@ const LessonRedirectionPS: React.FC<LessonRedirectionPSProps> = () => {
     try {
       const user = auth().currentUser;
       if (!user) {
-        //console.log('No user logged in');
         setLastWatchedVideo(null);
         return;
       }
@@ -64,21 +63,21 @@ const LessonRedirectionPS: React.FC<LessonRedirectionPSProps> = () => {
 
           setLastWatchedVideo(sortedVideos[0] || null);
         } else {
-          //console.log('No watched videos found.');
           setLastWatchedVideo(null);
         }
       } else {
-        //console.log('User document does not exist.');
         setLastWatchedVideo(null);
       }
     } catch (error) {
-      //console.error('Error fetching last watched video:', error);
       setLastWatchedVideo(null);
     }
   }, []);
 
   const fetchVideoDetails = useCallback(
-    async (videoId: string, lessonTitle: string): Promise<VideoItem | null> => {
+    async (
+      videoId: string,
+      _lessonTitle: string
+    ): Promise<VideoItem | null> => {
       try {
         const lessonsSnapshot = await firestore()
           .collection('lesson_videos')
@@ -98,7 +97,6 @@ const LessonRedirectionPS: React.FC<LessonRedirectionPSProps> = () => {
 
         return null;
       } catch (error) {
-        //console.error('Error fetching video details:', error);
         return null;
       }
     },
@@ -138,7 +136,6 @@ const LessonRedirectionPS: React.FC<LessonRedirectionPSProps> = () => {
 
         setRecommendedLessons(lessonsWithVideos);
       } catch (error) {
-        //console.error('Error fetching recommended lessons:', error);
       } finally {
         setLoading(false);
       }
@@ -160,7 +157,7 @@ const LessonRedirectionPS: React.FC<LessonRedirectionPSProps> = () => {
   const handleVideoPress = (
     video: VideoItem,
     lessonTitle: string,
-    documentId: string
+    _documentId: string
   ) => {
     navigation.navigate('VideoPlayer', {
       video,
@@ -172,7 +169,6 @@ const LessonRedirectionPS: React.FC<LessonRedirectionPSProps> = () => {
     try {
       const date = new Date(dateString);
       if (isNaN(date.getTime())) {
-        //console.log('Invalid Date', dateString);
         return dateString;
       }
       return date.toLocaleDateString('en-US', {
@@ -184,7 +180,6 @@ const LessonRedirectionPS: React.FC<LessonRedirectionPSProps> = () => {
         hour12: true,
       });
     } catch (e) {
-      console.log('error in date string', dateString);
       return dateString;
     }
   };
@@ -214,7 +209,6 @@ const LessonRedirectionPS: React.FC<LessonRedirectionPSProps> = () => {
           });
         }
       } catch (error) {
-        //console.error('Error navigating to last watched video:', error);
         navigation.navigate('VideoPlayer', {
           video: {
             videoId: lastWatchedVideo.videoId,
@@ -305,7 +299,7 @@ const LessonRedirectionPS: React.FC<LessonRedirectionPSProps> = () => {
                                   marginRight: videoBoxMargin,
                                 },
                                 videoIndex % 3 === 2
-                                  ? { marginRight: 0 }
+                                  ? styles.noMarginRight
                                   : null,
                               ]}
                               onPress={() =>
@@ -527,6 +521,9 @@ const styles = StyleSheet.create({
     color: '#7F8C8D',
     textAlign: 'center',
     marginTop: 20,
+  },
+  noMarginRight: {
+    marginRight: 0,
   },
 });
 

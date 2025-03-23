@@ -10,7 +10,6 @@ import {
   Dimensions,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
 import { VideoItem } from '../types/types';
 
@@ -46,11 +45,9 @@ const SpeakingWithEnergyScreen: React.FC<
         const data = energySnapshot.data();
         setEnergyVideos((data?.videos as VideoItem[]) || []);
       } else {
-        console.log('Energy document does not exist.');
         setEnergyVideos([]);
       }
     } catch (error) {
-      console.error('Error fetching energy videos:', error);
       setEnergyVideos([]);
     }
   }, []);
@@ -93,7 +90,7 @@ const SpeakingWithEnergyScreen: React.FC<
 
         setRecommendedLessons(filteredLessons);
       } catch (error) {
-        console.error('Error fetching recommended lessons:', error);
+        // Handle error
       } finally {
         setLoading(false);
       }
@@ -115,7 +112,7 @@ const SpeakingWithEnergyScreen: React.FC<
   const handleVideoPress = (
     video: VideoItem,
     lessonTitle: string,
-    documentId: string
+    _documentId: string
   ) => {
     navigation.navigate('VideoPlayer', {
       video,
@@ -160,7 +157,7 @@ const SpeakingWithEnergyScreen: React.FC<
                               width: videoBoxWidth,
                               marginRight: videoBoxMargin,
                             },
-                            videoIndex % 3 === 2 ? { marginRight: 0 } : null,
+                            videoIndex % 3 === 2 ? styles.noMarginRight : null,
                           ]}
                           onPress={() =>
                             handleVideoPress(
@@ -213,7 +210,7 @@ const SpeakingWithEnergyScreen: React.FC<
                                   marginRight: videoBoxMargin,
                                 },
                                 videoIndex % 3 === 2
-                                  ? { marginRight: 0 }
+                                  ? styles.noMarginRight
                                   : null,
                               ]}
                               onPress={() =>
@@ -301,9 +298,7 @@ const styles = StyleSheet.create({
     paddingBottom: 2,
     lineHeight: 32,
   },
-
   sectionContainer: {
-    //Remove background container
     marginBottom: 24,
   },
   sectionTitle: {
@@ -371,6 +366,9 @@ const styles = StyleSheet.create({
     color: '#7F8C8D',
     textAlign: 'center',
     marginTop: 20,
+  },
+  noMarginRight: {
+    marginRight: 0,
   },
 });
 

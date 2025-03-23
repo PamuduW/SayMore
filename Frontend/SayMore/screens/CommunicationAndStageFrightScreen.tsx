@@ -10,7 +10,6 @@ import {
   Dimensions,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
 import { VideoItem } from '../types/types';
 
@@ -54,7 +53,6 @@ const CommunicationAndStageFrightScreen: React.FC<
         const data = communicationSnapshot.data();
         setCommunicationVideos((data?.videos as VideoItem[]) || []);
       } else {
-        //console.log('Communication Tips document does not exist.');
         setCommunicationVideos([]);
       }
 
@@ -62,11 +60,9 @@ const CommunicationAndStageFrightScreen: React.FC<
         const data = stageFrightSnapshot.data();
         setStageFrightVideos((data?.videos as VideoItem[]) || []);
       } else {
-        //console.log('Managing Stage Fright document does not exist.');
         setStageFrightVideos([]);
       }
     } catch (error) {
-      //console.error('Error fetching improvement videos:', error);
       setCommunicationVideos([]);
       setStageFrightVideos([]);
     }
@@ -103,7 +99,6 @@ const CommunicationAndStageFrightScreen: React.FC<
           }
         }
 
-        // Filter out Communication Tips and Managing Stage Fright lessons
         const filteredLessons = lessonsWithVideos.filter(
           lesson =>
             lesson.category !== 'Communication Tips' &&
@@ -112,7 +107,6 @@ const CommunicationAndStageFrightScreen: React.FC<
 
         setRecommendedLessons(filteredLessons);
       } catch (error) {
-        //console.error('Error fetching recommended lessons:', error);
       } finally {
         setLoading(false);
       }
@@ -134,7 +128,7 @@ const CommunicationAndStageFrightScreen: React.FC<
   const handleVideoPress = (
     video: VideoItem,
     lessonTitle: string,
-    documentId: string
+    _documentId: string
   ) => {
     navigation.navigate('VideoPlayer', {
       video,
@@ -185,7 +179,7 @@ const CommunicationAndStageFrightScreen: React.FC<
                                   marginRight: videoBoxMargin,
                                 },
                                 videoIndex % 3 === 2
-                                  ? { marginRight: 0 }
+                                  ? styles.noMarginRight
                                   : null,
                               ]}
                               onPress={() =>
@@ -225,7 +219,7 @@ const CommunicationAndStageFrightScreen: React.FC<
                                   marginRight: videoBoxMargin,
                                 },
                                 videoIndex % 3 === 2
-                                  ? { marginRight: 0 }
+                                  ? styles.noMarginRight
                                   : null,
                               ]}
                               onPress={() =>
@@ -281,7 +275,7 @@ const CommunicationAndStageFrightScreen: React.FC<
                                   marginRight: videoBoxMargin,
                                 },
                                 videoIndex % 3 === 2
-                                  ? { marginRight: 0 }
+                                  ? styles.noMarginRight
                                   : null,
                               ]}
                               onPress={() =>
@@ -369,9 +363,7 @@ const styles = StyleSheet.create({
     paddingBottom: 2,
     lineHeight: 32,
   },
-
   sectionContainer: {
-    //Remove background container
     marginBottom: 24,
   },
   sectionTitle: {
@@ -439,6 +431,9 @@ const styles = StyleSheet.create({
     color: '#7F8C8D',
     textAlign: 'center',
     marginTop: 20,
+  },
+  noMarginRight: {
+    marginRight: 0,
   },
 });
 

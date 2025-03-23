@@ -10,7 +10,6 @@ import {
   Dimensions,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
 import { VideoItem } from '../types/types';
 
@@ -50,18 +49,15 @@ const ClarityAndPitchScreen: React.FC<ClarityAndPitchScreenProps> = () => {
         const data = claritySnapshot.data();
         setClarityVideos((data?.videos as VideoItem[]) || []);
       } else {
-        //console.log('Clarity document does not exist.');
         setClarityVideos([]);
       }
       if (pitchSnapshot.exists) {
         const data = pitchSnapshot.data();
         setPitchVideos((data?.videos as VideoItem[]) || []);
       } else {
-        //console.log('Perfecting Your Pitch document does not exist.');
         setPitchVideos([]);
       }
     } catch (error) {
-      //console.error('Error fetching clarity and pitch videos:', error);
       setClarityVideos([]);
       setPitchVideos([]);
     }
@@ -98,7 +94,6 @@ const ClarityAndPitchScreen: React.FC<ClarityAndPitchScreenProps> = () => {
 
         setRecommendedLessons(lessonsWithVideos);
       } catch (error) {
-        //console.error('Error fetching recommended lessons:', error);
       } finally {
         setLoading(false);
       }
@@ -120,7 +115,7 @@ const ClarityAndPitchScreen: React.FC<ClarityAndPitchScreenProps> = () => {
   const handleVideoPress = (
     video: VideoItem,
     lessonTitle: string,
-    documentId: string
+    _documentId: string
   ) => {
     navigation.navigate('VideoPlayer', {
       video,
@@ -168,7 +163,7 @@ const ClarityAndPitchScreen: React.FC<ClarityAndPitchScreenProps> = () => {
                                   marginRight: videoBoxMargin,
                                 },
                                 videoIndex % 3 === 2
-                                  ? { marginRight: 0 }
+                                  ? styles.noMarginRight
                                   : null,
                               ]}
                               onPress={() =>
@@ -207,7 +202,7 @@ const ClarityAndPitchScreen: React.FC<ClarityAndPitchScreenProps> = () => {
                                   marginRight: videoBoxMargin,
                                 },
                                 videoIndex % 3 === 2
-                                  ? { marginRight: 0 }
+                                  ? styles.noMarginRight
                                   : null,
                               ]}
                               onPress={() =>
@@ -263,7 +258,7 @@ const ClarityAndPitchScreen: React.FC<ClarityAndPitchScreenProps> = () => {
                                   marginRight: videoBoxMargin,
                                 },
                                 videoIndex % 3 === 2
-                                  ? { marginRight: 0 }
+                                  ? styles.noMarginRight
                                   : null,
                               ]}
                               onPress={() =>
@@ -351,9 +346,7 @@ const styles = StyleSheet.create({
     paddingBottom: 2,
     lineHeight: 32,
   },
-
   sectionContainer: {
-    //Remove background container
     marginBottom: 24,
   },
   sectionTitle: {
@@ -421,6 +414,9 @@ const styles = StyleSheet.create({
     color: '#7F8C8D',
     textAlign: 'center',
     marginTop: 20,
+  },
+  noMarginRight: {
+    marginRight: 0,
   },
 });
 
