@@ -13,6 +13,7 @@ import { useNavigation } from '@react-navigation/native';
 import { ProgressChart } from 'react-native-chart-kit';
 
 const screenWidth = Dimensions.get('window').width;
+const parentViewWidth = screenWidth - 70;
 
 interface Analysis_PSProps {
   filename: string;
@@ -294,117 +295,126 @@ const Analysis_PS: React.FC<Analysis_PSProps> = ({
   }
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
-      <Text style={styles.progressChartText}>Analysis Screen</Text>
-      <ProgressChart
-        data={data}
-        width={screenWidth}
-        height={220}
-        strokeWidth={16}
-        radius={32}
-        chartConfig={chartConfig}
-        hideLegend={false}
-      />
-      {responseData && (
-        <View>
-          <Text style={styles.scoreText}>
-            Final Public Speaking Score:{' '}
-            {responseData.result.final_public_speaking_score}
-          </Text>
-          <Text style={styles.scoreText}>
-            Overall Confidence Score: {responseData.result.overall_confidence}
-          </Text>
+    <LinearGradient
+      colors={
+        theme === 'dark' ? ['#1C1C1C', '#3A3A3A'] : ['#577BC1', '#577BC1']
+      }
+      style={styles.container}>
+      <ScrollView contentContainerStyle={styles.content}>
+        <Text style={styles.title}>Your Speech Analysis</Text>
+        <ProgressChart
+          data={data}
+          width={screenWidth}
+          height={220}
+          strokeWidth={16}
+          radius={32}
+          chartConfig={chartConfig}
+          hideLegend={false}
+        />
+        {responseData && (
+          <View>
+            <Text style={styles.scoreText}>
+              Final Public Speaking Score:{' '}
+              {responseData.result.final_public_speaking_score}
+            </Text>
+            <Text style={styles.scoreText}>
+              Overall Confidence Score: {responseData.result.overall_confidence}
+            </Text>
 
-          <Text style={styles.scoreText}>Voice Quality & Stability Data</Text>
-          <Text>
-            Final Voice Score:{' '}
-            {
-              responseData.result['Voice_Quality_&_Stability_Data']
-                .final_voice_score
-            }
-          </Text>
-          <Text>
-            variation_score:{' '}
-            {
-              responseData.result['Voice_Quality_&_Stability_Data']
-                .variation_score
-            }
-          </Text>
-          <Text>
-            stability_score:{' '}
-            {
-              responseData.result['Voice_Quality_&_Stability_Data']
-                .stability_score
-            }
-          </Text>
-          <Text>
-            speaking_speed:{' '}
-            {
-              responseData.result['Voice_Quality_&_Stability_Data']
-                .speaking_speed
-            }
-          </Text>
-          <Text>
-            clarity:{' '}
-            {responseData.result['Voice_Quality_&_Stability_Data'].clarity}
-          </Text>
-          <Text>
-            overall_jitter_score:{' '}
-            {
-              responseData.result['Voice_Quality_&_Stability_Data']
-                .overall_jitter_score
-            }
-          </Text>
-          <Text>
-            overall_shimmer_score:{' '}
-            {
-              responseData.result['Voice_Quality_&_Stability_Data']
-                .overall_shimmer_score
-            }
-          </Text>
-          <Text>
-            overall_hnr_score:{' '}
-            {
-              responseData.result['Voice_Quality_&_Stability_Data']
-                .overall_hnr_score
-            }
-          </Text>
+            <Text style={styles.scoreText}>Voice Quality & Stability Data</Text>
+            <Text>
+              Final Voice Score:{' '}
+              {
+                responseData.result['Voice_Quality_&_Stability_Data']
+                  .final_voice_score
+              }
+            </Text>
+            <Text>
+              variation_score:{' '}
+              {
+                responseData.result['Voice_Quality_&_Stability_Data']
+                  .variation_score
+              }
+            </Text>
+            <Text>
+              stability_score:{' '}
+              {
+                responseData.result['Voice_Quality_&_Stability_Data']
+                  .stability_score
+              }
+            </Text>
+            <Text>
+              speaking_speed:{' '}
+              {
+                responseData.result['Voice_Quality_&_Stability_Data']
+                  .speaking_speed
+              }
+            </Text>
+            <Text>
+              clarity:{' '}
+              {responseData.result['Voice_Quality_&_Stability_Data'].clarity}
+            </Text>
+            <Text>
+              overall_jitter_score:{' '}
+              {
+                responseData.result['Voice_Quality_&_Stability_Data']
+                  .overall_jitter_score
+              }
+            </Text>
+            <Text>
+              overall_shimmer_score:{' '}
+              {
+                responseData.result['Voice_Quality_&_Stability_Data']
+                  .overall_shimmer_score
+              }
+            </Text>
+            <Text>
+              overall_hnr_score:{' '}
+              {
+                responseData.result['Voice_Quality_&_Stability_Data']
+                  .overall_hnr_score
+              }
+            </Text>
 
-          <Text style={styles.scoreText}>Speech Intensity & Energy Data</Text>
-          <Text>
-            final_energy_score:{' '}
-            {
-              responseData.result['Speech_Intensity_&_Energy_Data']
-                .final_energy_score
-            }
-          </Text>
-          <Text>
-            intensity_score:{' '}
-            {
-              responseData.result['Speech_Intensity_&_Energy_Data']
-                .intensity_score
-            }
-          </Text>
-          <Text>
-            energy_score:{' '}
-            {responseData.result['Speech_Intensity_&_Energy_Data'].energy_score}
-          </Text>
-          <Text>
-            variation_score:{' '}
-            {
-              responseData.result['Speech_Intensity_&_Energy_Data']
-                .variation_score
-            }
-          </Text>
+            <Text style={styles.scoreText}>Speech Intensity & Energy Data</Text>
+            <Text>
+              final_energy_score:{' '}
+              {
+                responseData.result['Speech_Intensity_&_Energy_Data']
+                  .final_energy_score
+              }
+            </Text>
+            <Text>
+              intensity_score:{' '}
+              {
+                responseData.result['Speech_Intensity_&_Energy_Data']
+                  .intensity_score
+              }
+            </Text>
+            <Text>
+              energy_score:{' '}
+              {
+                responseData.result['Speech_Intensity_&_Energy_Data']
+                  .energy_score
+              }
+            </Text>
+            <Text>
+              variation_score:{' '}
+              {
+                responseData.result['Speech_Intensity_&_Energy_Data']
+                  .variation_score
+              }
+            </Text>
 
-          <Text style={styles.scoreText}>Transcription</Text>
-          <Text>{responseData.result.transcription[0].transcript}</Text>
+            <Text style={styles.scoreText}>Transcription</Text>
+            <Text>{responseData.result.transcription[0].transcript}</Text>
 
-          <Button title="Next" onPress={handleNext} />
-          <Button title="Additional Details" onPress={handleDetails} />
-        </View>
-      )}
-    </ScrollView>
+            <Button title="Next" onPress={handleNext} />
+            <Button title="Additional Details" onPress={handleDetails} />
+          </View>
+        )}
+      </ScrollView>
+    </LinearGradient>
   );
 };
 

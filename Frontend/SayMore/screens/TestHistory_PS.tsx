@@ -15,7 +15,7 @@ import { useTheme } from '../components/ThemeContext';
 import { useRoute } from '@react-navigation/native';
 
 const screenWidth = Dimensions.get('window').width;
-const parentViewWidth = screenWidth - 70; // Assuming 16 padding on each side
+const parentViewWidth = screenWidth - 70;
 
 const TestHistory_PS: React.FC = () => {
   const route = useRoute<any>();
