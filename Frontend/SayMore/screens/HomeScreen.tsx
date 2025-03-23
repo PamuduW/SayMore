@@ -61,7 +61,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
 
   const borderInterpolation = borderAnimation.interpolate({
     inputRange: [0, 1],
-    outputRange: ['#2D336B', '#7886C7'],
+    outputRange: theme === 'dark' ? ['#FFFFFF', '#AAAAAA'] : ['#2D336B', '#7886C7'],
   });
 
   const handlePress = (option: string) => {
@@ -72,7 +72,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
   return (
     <LinearGradient
       colors={
-        theme === 'dark' ? ['#1C1C1C', '#3A3A3A'] : ['#577BC1', '#577BC1']
+        theme === 'dark' ? ['#000000', '#222222'] : ['#577BC1', '#577BC1']
       }
       style={styles.container}>
       <View style={styles.header}>
@@ -82,11 +82,20 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
           Hello {userData?.fname ? userData.fname : ''},
         </Text>
         <Text style={styles.welcomeMessage}>Welcome to SayMore!</Text>
-        <Text style={styles.tagline}>Enhance your speech & confidence</Text>
+        <Text style={[
+          styles.tagline,
+          { color: theme === 'dark' ? '#DDDDDD' : '#D0D3E6' }
+        ]}>Enhance your speech & confidence</Text>
       </View>
 
-      <View style={styles.testContainer}>
-        <Text style={styles.testHeading}>Start Your Test</Text>
+      <View style={[
+        styles.testContainer,
+        { backgroundColor: theme === 'dark' ? '#333333' : '#FFFFFF' }
+      ]}>
+        <Text style={[
+          styles.testHeading,
+          { color: theme === 'dark' ? '#FFFFFF' : '#2A2D57' }
+        ]}>Start Your Test</Text>
         <Image
           style={styles.testImage}
           source={require('../assets/public-speaking.png')}
@@ -103,7 +112,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
                 <LinearGradient
                   colors={
                     theme === 'dark'
-                      ? ['#1C1C1C', '#3A3A3A']
+                      ? ['#000000', '#222222']
                       : ['#3B5998', '#577BC1']
                   }
                   style={styles.optionButton}>
@@ -143,7 +152,6 @@ const styles = StyleSheet.create({
   },
   tagline: {
     fontSize: 18,
-    color: '#D0D3E6',
     textAlign: 'center',
     marginTop: 2,
     marginBottom: 8,
@@ -151,7 +159,6 @@ const styles = StyleSheet.create({
 
   testContainer: {
     alignItems: 'center',
-    backgroundColor: '#FFFFFF',
     borderRadius: 25,
     padding: 35,
     shadowColor: '#000',
@@ -165,7 +172,6 @@ const styles = StyleSheet.create({
     fontSize: 26,
     fontWeight: 'bold',
     marginBottom: 20,
-    color: '#2A2D57',
   },
   testImage: { width: 220, height: 220, marginBottom: 25 },
 

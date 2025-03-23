@@ -12,7 +12,6 @@ import {
   Platform,
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
-import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useTheme } from '../components/ThemeContext';
 import { useNavigation } from '@react-navigation/native';
 import messaging from '@react-native-firebase/messaging';
@@ -77,7 +76,10 @@ export default function SettingsScreen() {
   const renderOption = (item, index) => (
     <TouchableOpacity
       key={index}
-      style={[styles.option, theme === 'dark' && styles.darkOption]}
+      style={[
+        styles.option,
+        theme === 'dark' ? styles.optionDark : styles.optionLight,
+      ]}
       onPress={() => {
         if (item.label === 'Terms & Conditions') {
           navigation.navigate('TermsAndConditionsScreen');
@@ -88,25 +90,27 @@ export default function SettingsScreen() {
         }
       }}>
       <View style={styles.leftSection}>
-        {item.label === 'Notifications' && (
-          <Image source={NotificationIcon} style={styles.optionIcon} />
-        )}
-        {item.label === 'Dark Mode' && (
-          <Image source={DarkModeIcon} style={styles.optionIcon} />
-        )}
-        {item.label === 'Terms & Conditions' && (
-          <Image source={ConditionsIcon} style={styles.optionIcon} />
-        )}
-        {item.label === 'Privacy & Cookies' && (
-          <Image source={CookiesIcon} style={styles.optionIcon} />
-        )}
-        {item.label === 'App Info' && (
-          <Image source={AppInfoIcon} style={styles.optionIcon} />
-        )}
+        <Image
+          source={
+            item.label === 'Notifications'
+              ? NotificationIcon
+              : item.label === 'Dark Mode'
+              ? DarkModeIcon
+              : item.label === 'Terms & Conditions'
+              ? ConditionsIcon
+              : item.label === 'Privacy & Cookies'
+              ? CookiesIcon
+              : AppInfoIcon
+          }
+          style={[
+            styles.optionIcon,
+            theme === 'dark' ? styles.iconDark : styles.iconLight,
+          ]}
+        />
         <Text
           style={[
             styles.optionText,
-            theme === 'dark' && styles.darkOptionText,
+            theme === 'dark' ? styles.optionTextDark : styles.optionTextLight,
           ]}>
           {item.label}
         </Text>
@@ -168,12 +172,12 @@ export default function SettingsScreen() {
         <View
           style={[
             styles.sectionContainer,
-            theme === 'dark' && styles.darkSectionContainer,
+            theme === 'dark' ? styles.sectionDark : styles.sectionLight,
           ]}>
           <Text
             style={[
               styles.sectionTitle,
-              theme === 'dark' && styles.darkSectionTitle,
+              theme === 'dark' ? styles.sectionTitleDark : styles.sectionTitleLight,
             ]}>
             Preferences
           </Text>
@@ -183,12 +187,12 @@ export default function SettingsScreen() {
         <View
           style={[
             styles.sectionContainer,
-            theme === 'dark' && styles.darkSectionContainer,
+            theme === 'dark' ? styles.sectionDark : styles.sectionLight,
           ]}>
           <Text
             style={[
               styles.sectionTitle,
-              theme === 'dark' && styles.darkSectionTitle,
+              theme === 'dark' ? styles.sectionTitleDark : styles.sectionTitleLight,
             ]}>
             Information
           </Text>
@@ -244,10 +248,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#1C1C1C',
   },
 
-  darkSectionContainer: {
-    backgroundColor: '#1a1a1a',
-  },
-
   sectionTitle: {
     fontSize: 22,
     marginBottom: 18,
@@ -257,10 +257,6 @@ const styles = StyleSheet.create({
     color: '#2A2D57',
   },
   sectionTitleDark: {
-    color: '#FFFFFF',
-  },
-
-  darkSectionTitle: {
     color: '#FFFFFF',
   },
 
@@ -291,10 +287,6 @@ const styles = StyleSheet.create({
     elevation: 6,
   },
 
-  darkOption: {
-    backgroundColor: '#1a1a1a',
-  },
-
   leftSection: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -321,8 +313,7 @@ const styles = StyleSheet.create({
   optionTextLight: {
     color: '#2A2D57',
   },
-
-  darkOptionText: {
+  optionTextDark: {
     color: '#FFFFFF',
   },
 

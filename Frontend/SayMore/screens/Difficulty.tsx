@@ -19,29 +19,37 @@ const Difficulty: React.FC = ({ navigation }: any) => {
         style={styles.image}
         resizeMode="cover">
         <View style={styles.overlay} />
+
+        {/* Back Button at Top Left */}
+        <TouchableOpacity
+          onPress={() => navigation.goBack()}
+          style={styles.backButton}>
+          <Text style={styles.backButtonText}>←</Text>
+        </TouchableOpacity>
+
+        {/* Main Content */}
+        <View style={styles.container}>
+          <Text style={styles.header}>Select Difficulty</Text>
+
+          <TouchableOpacity
+            style={[styles.optionButton, styles.easy]}
+            onPress={() => handleSelection('Easy')}>
+            <Text style={styles.optionText}>Easy</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={[styles.optionButton, styles.intermediate]}
+            onPress={() => handleSelection('Intermediate')}>
+            <Text style={styles.optionText}>Intermediate</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={[styles.optionButton, styles.hard]}
+            onPress={() => handleSelection('Hard')}>
+            <Text style={styles.optionText}>Hard</Text>
+          </TouchableOpacity>
+        </View>
       </ImageBackground>
-
-      <View style={styles.container}>
-        <Text style={styles.header}>Select Difficulty</Text>
-
-        <TouchableOpacity
-          style={[styles.optionButton, styles.easy]}
-          onPress={() => handleSelection('Easy')}>
-          <Text style={styles.optionText}>Easy</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          style={[styles.optionButton, styles.intermediate]}
-          onPress={() => handleSelection('Intermediate')}>
-          <Text style={styles.optionText}>Intermediate</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          style={[styles.optionButton, styles.hard]}
-          onPress={() => handleSelection('Hard')}>
-          <Text style={styles.optionText}>Hard</Text>
-        </TouchableOpacity>
-      </View>
     </View>
   );
 };
@@ -53,16 +61,35 @@ const styles = StyleSheet.create({
     ...StyleSheet.absoluteFillObject,
     backgroundColor: 'rgba(0, 0, 0, 0.7)',
   },
-  container: {
+
+  // Back Button Positioned Top Left
+  backButton: {
     position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
+    top: 50,
+    left: 20,
+    width: 48,
+    height: 48,
+    borderRadius: 12,
+    backgroundColor: '#FFF',
     justifyContent: 'center',
     alignItems: 'center',
+    zIndex: 1,
   },
-  header: { fontSize: 32, fontWeight: 'bold', marginBottom: 20, color: '#fff' },
+  backButtonText: {
+    fontSize: 28,
+    fontWeight: 'bold',
+    color: '#000',
+  },
+
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: 20,
+  },
+
+  header: { fontSize: 28, fontWeight: 'bold', color: '#fff', marginBottom: 30 },
+
   optionButton: {
     padding: 15,
     marginVertical: 10,

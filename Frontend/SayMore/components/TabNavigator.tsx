@@ -39,6 +39,7 @@ import PointsCategoryScreen from '../screens/PointsCategoryScreen';
 import QuizPointHistoryScreen from '../screens/QuizPointHistoryScreen';
 import LessonRedirectionStuttering from '../screens/LessonRedirectionStuttering';
 import UnderstandingAndOvercomingStutteringScreen from '../screens/UnderstandingAndOvercomingStutteringScreen';
+import ProgressScreen from '../screens/ProgressScreen';
 import LessonRedirectionPS from '../screens/LessonRedirectionPS';
 import CommunicationAndStageFrightScreen from '../screens/CommunicationAndStageFrightScreen';
 import ClarityAndPitchScreen from '../screens/ClarityAndPitchScreen';
@@ -101,10 +102,8 @@ const MoreStack = () => (
       component={PointsCategoryScreen}
     />
     <Stack.Screen name="TotalPointsScreen" component={TotalPointsScreen} />
-    <Stack.Screen
-      name="QuizPointHistoryScreen"
-      component={QuizPointHistoryScreen}
-    />
+    <Stack.Screen name="QuizPointHistoryScreen" component={QuizPointHistoryScreen} />
+    <Stack.Screen name="ProgressScreen" component={ProgressScreen} />
     <Stack.Screen name="Difficulty" component={Difficulty} />
     <Stack.Screen
       name="PublicSpeakQuestionScreen"

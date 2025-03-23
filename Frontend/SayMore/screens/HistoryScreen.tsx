@@ -210,7 +210,7 @@ const HistoryScreen: React.FC<HistoryScreenProps> = () => {
 
       {loading ? (
         <View style={styles.loadingContainer}>
-          <ActivityIndicator size="large" color="#003366" />
+          <ActivityIndicator size="large" color={theme === 'dark' ? '#FFFFFF' : '#003366'} />
           <Text
             style={
               theme === 'dark' ? styles.darkLoadingText : styles.loadingText
@@ -251,7 +251,7 @@ const styles = StyleSheet.create({
   darkContainer: {
     flex: 1,
     padding: 20,
-    backgroundColor: '#2B2B2B',
+    backgroundColor: '#000000',
   },
   headerContainer: {
     flexDirection: 'row',
@@ -268,7 +268,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: 'bold',
     marginLeft: 10,
-    color: '#FFF',
+    color: '#FFFFFF',
   },
   historyItem: {
     flexDirection: 'row',
@@ -285,9 +285,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     padding: 10,
     borderBottomWidth: 1,
-    borderBottomColor: '#1a1a1a',
+    borderBottomColor: '#111111',
     alignItems: 'center',
-    backgroundColor: '#1a1a1a',
+    backgroundColor: '#111111',
     borderRadius: 8,
     marginBottom: 8,
     elevation: 2,
@@ -310,7 +310,7 @@ const styles = StyleSheet.create({
   darkHistoryTitle: {
     fontSize: 16,
     fontWeight: 'bold',
-    color: '#fff',
+    color: '#FFFFFF',
   },
   historyTimestamp: {
     fontSize: 12,
@@ -318,7 +318,7 @@ const styles = StyleSheet.create({
   },
   darkHistoryTimeStamp: {
     fontSize: 12,
-    color: '#fff',
+    color: '#999999',
   },
   historyLesson: {
     fontSize: 14,
@@ -326,7 +326,7 @@ const styles = StyleSheet.create({
   },
   darkHistoryLesson: {
     fontSize: 14,
-    color: '#fff',
+    color: '#FFFFFF',
   },
   lightBackButton: {
     width: 48,
@@ -344,7 +344,7 @@ const styles = StyleSheet.create({
   darkBackButton: {
     width: 48,
     height: 48,
-    backgroundColor: '#FFF',
+    backgroundColor: '#222222',
     borderRadius: 12,
     justifyContent: 'center',
     alignItems: 'center',
@@ -368,7 +368,7 @@ const styles = StyleSheet.create({
   darkBackButtonText: {
     fontSize: 28,
     fontWeight: 'bold',
-    color: '#000',
+    color: '#FFFFFF',
     textAlign: 'center',
     textAlignVertical: 'center',
     includeFontPadding: false,
@@ -388,7 +388,7 @@ const styles = StyleSheet.create({
   },
   darkLoadingText: {
     fontSize: 16,
-    color: '#FFF',
+    color: '#FFFFFF',
     marginTop: 10,
   },
   emptyContainer: {
@@ -402,7 +402,7 @@ const styles = StyleSheet.create({
   },
   darkEmptyText: {
     fontSize: 16,
-    color: '#FFF',
+    color: '#FFFFFF',
   },
 });
 
