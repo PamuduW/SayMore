@@ -1,7 +1,7 @@
-from datetime import datetime
 import json
 import logging
 import os
+from datetime import datetime
 
 from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException
