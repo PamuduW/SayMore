@@ -190,7 +190,20 @@ const PublicSpeakQuestionScreen: React.FC = ({ navigation, route }: any) => {
       resizeMode="cover">
       <View style={styles.overlay} />
       <View style={styles.container}>
-        <Text style={styles.header}>Public Speaking Quiz</Text>
+
+        {/* Header with Back Button */}
+        <View style={styles.headerBar}>
+          <TouchableOpacity
+            onPress={() => navigation.goBack()}
+            style={styles.backButton}>
+            <Text style={styles.backButtonText}>←</Text>
+          </TouchableOpacity>
+
+          <Text style={styles.headerTitle}>Public Speaking Quiz</Text>
+
+          <View style={{ width: 48 }} />
+        </View>
+
         <Text style={styles.categoryText}>{difficulty}</Text>
         <Text style={styles.progressText}>
           Question {currentQuestionIndex + 1} of {questions.length}
@@ -255,11 +268,35 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 20,
     alignItems: 'center',
-    justifyContent: 'center',
   },
-  header: { fontSize: 30, fontWeight: 'bold', marginBottom: 10, color: '#fff' },
+  headerBar: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    width: '100%',
+    marginTop: 30,
+    marginBottom: 20,
+  },
+  backButton: {
+    width: 48,
+    height: 48,
+    borderRadius: 12,
+    backgroundColor: '#FFF',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  backButtonText: {
+    fontSize: 28,
+    fontWeight: 'bold',
+    color: '#000',
+  },
+  headerTitle: {
+    fontSize: 24,
+    color: '#fff',
+    fontWeight: 'bold',
+  },
   categoryText: {
-    fontSize: 25,
+    fontSize: 22,
     fontWeight: 'bold',
     marginBottom: 12,
     color: '#fff',
@@ -267,7 +304,7 @@ const styles = StyleSheet.create({
   progressText: { fontSize: 16, marginBottom: 10, color: '#fff' },
   progressBar: { marginBottom: 20, borderRadius: 10 },
   question: {
-    fontSize: 23,
+    fontSize: 21,
     fontWeight: 'bold',
     marginBottom: 30,
     textAlign: 'center',

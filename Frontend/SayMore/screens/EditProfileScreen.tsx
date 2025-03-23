@@ -91,7 +91,7 @@ export default function EditProfileScreen({ navigation }) {
   return (
     <LinearGradient
       colors={
-        theme === 'dark' ? ['#3A3A3A', '#3A3A3A'] : ['#577BC1', '#577BC1']
+        theme === 'dark' ? ['#1C1C1C', '#3A3A3A'] : ['#2A2D57', '#577BC1']
       }
       style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollArea}>
@@ -120,47 +120,74 @@ export default function EditProfileScreen({ navigation }) {
         </View>
 
         <View style={styles.inputContainer}>
-          <Text style={styles.label}>Name</Text>
+          <Text style={[styles.label, { color: '#FFFFFF' }]}>Name</Text>
           <TextInput
-            style={styles.input}
+            style={[
+              styles.input,
+              {
+                backgroundColor: theme === 'dark' ? '#2B2B2B' : '#FFFFFF',
+                color: theme === 'dark' ? '#FFFFFF' : '#2A2D57',
+              },
+            ]}
             value={fname}
             onChangeText={setFname}
             placeholder="Enter Name"
             placeholderTextColor="#aaa"
           />
 
-          <Text style={styles.label}>Surname</Text>
+          <Text style={[styles.label, { color: '#FFFFFF' }]}>Surname</Text>
           <TextInput
-            style={styles.input}
+            style={[
+              styles.input,
+              {
+                backgroundColor: theme === 'dark' ? '#2B2B2B' : '#FFFFFF',
+                color: theme === 'dark' ? '#FFFFFF' : '#2A2D57',
+              },
+            ]}
             value={sname}
             onChangeText={setSname}
             placeholder="Enter Surname"
             placeholderTextColor="#aaa"
           />
 
-          <Text style={styles.label}>Date of Birth</Text>
+          <Text style={[styles.label, { color: '#FFFFFF' }]}>Date of Birth</Text>
           <TextInput
-            style={styles.input}
+            style={[
+              styles.input,
+              {
+                backgroundColor: theme === 'dark' ? '#2B2B2B' : '#FFFFFF',
+                color: theme === 'dark' ? '#FFFFFF' : '#2A2D57',
+              },
+            ]}
             value={dob}
             onChangeText={setDob}
             placeholder="YYYY-MM-DD"
             placeholderTextColor="#aaa"
           />
 
-          <Text style={styles.label}>Username</Text>
+          <Text style={[styles.label, { color: '#FFFFFF' }]}>Username</Text>
           <TextInput
-            style={styles.input}
+            style={[
+              styles.input,
+              {
+                backgroundColor: theme === 'dark' ? '#2B2B2B' : '#FFFFFF',
+                color: theme === 'dark' ? '#FFFFFF' : '#2A2D57',
+              },
+            ]}
             value={username}
             onChangeText={setUsername}
             placeholder="Enter Username"
             placeholderTextColor="#aaa"
           />
 
-          <Text style={styles.label}>Email</Text>
+          <Text style={[styles.label, { color: '#FFFFFF' }]}>Email</Text>
           <TextInput
             style={[
               styles.input,
-              { backgroundColor: '#D0D3E6', color: '#2A2D57' },
+              {
+                backgroundColor: theme === 'dark' ? '#1E1E1E' : '#D0D3E6',
+                color: theme === 'dark' ? '#999999' : '#2A2D57'
+              },
             ]}
             value={email}
             editable={false}
@@ -171,8 +198,10 @@ export default function EditProfileScreen({ navigation }) {
         <TouchableOpacity onPress={handleSave} style={{ marginBottom: 15 }}>
           <LinearGradient
             colors={
-              theme === 'dark' ? ['#2B2B2B', '#3A3A3A'] : ['#577BC1', '#577BC1']
+              theme === 'dark' ? ['#3A3A3A', '#4A4A4A'] : ['#00C6FF', '#0072FF']
             }
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 1 }}
             style={styles.button}>
             <Text style={styles.buttonText}>Save Changes</Text>
           </LinearGradient>
@@ -182,7 +211,11 @@ export default function EditProfileScreen({ navigation }) {
         <TouchableOpacity
           onPress={() => navigation.goBack()}
           style={{ marginBottom: 15 }}>
-          <LinearGradient colors={['#e74c3c', '#ff6b6b']} style={styles.button}>
+          <LinearGradient
+            colors={['#e74c3c', '#ff6b6b']}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 1 }}
+            style={styles.button}>
             <Text style={styles.buttonText}>Cancel Changes</Text>
           </LinearGradient>
         </TouchableOpacity>
@@ -190,7 +223,11 @@ export default function EditProfileScreen({ navigation }) {
         {/* Change Password Button */}
         <TouchableOpacity
           onPress={() => navigation.navigate('ChangePasswordScreen')}>
-          <LinearGradient colors={['#FFA500', '#FFB347']} style={styles.button}>
+          <LinearGradient
+            colors={['#FFA500', '#FFB347']}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 1 }}
+            style={styles.button}>
             <Text style={styles.buttonText}>Change Password</Text>
           </LinearGradient>
         </TouchableOpacity>
@@ -222,23 +259,20 @@ const styles = StyleSheet.create({
   inputContainer: { marginBottom: 20 },
 
   label: {
-    color: '#FFFFFF',
     marginBottom: 8,
     fontSize: 15,
     fontWeight: '600',
   },
 
   input: {
-    backgroundColor: '#fff',
     borderRadius: 12,
     padding: 12,
     marginBottom: 20,
-    color: '#2A2D57',
   },
 
   button: {
     paddingVertical: 14,
-    borderRadius: 16,
+    borderRadius: 18,
     alignItems: 'center',
     elevation: 8,
   },
