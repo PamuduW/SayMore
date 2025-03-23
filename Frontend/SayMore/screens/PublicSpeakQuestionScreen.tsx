@@ -137,9 +137,7 @@ const PublicSpeakQuestionScreen: React.FC = ({ navigation, route }: any) => {
           timestamp: new Date().toISOString(),
         };
 
-        const userDocRef = firestore()
-          .collection('User_Accounts')
-          .doc(user.uid);
+        const userDocRef = firestore().collection('User_Accounts').doc(user.uid);
         await userDocRef.set(
           {
             quizAttempts: firestore.FieldValue.arrayUnion(attemptData),
@@ -192,19 +190,7 @@ const PublicSpeakQuestionScreen: React.FC = ({ navigation, route }: any) => {
       resizeMode="cover">
       <View style={styles.overlay} />
       <View style={styles.container}>
-        {/* Header with Back Button */}
-        <View style={styles.headerBar}>
-          <TouchableOpacity
-            onPress={() => navigation.goBack()}
-            style={styles.backButton}>
-            <Text style={styles.backButtonText}>←</Text>
-          </TouchableOpacity>
-
-          <Text style={styles.headerTitle}>Public Speaking Quiz</Text>
-
-          <View style={styles.spacer} />
-        </View>
-
+        <Text style={styles.header}>Public Speaking Quiz</Text>
         <Text style={styles.categoryText}>{difficulty}</Text>
         <Text style={styles.progressText}>
           Question {currentQuestionIndex + 1} of {questions.length}
@@ -228,13 +214,8 @@ const PublicSpeakQuestionScreen: React.FC = ({ navigation, route }: any) => {
             style={[
               styles.optionButton,
               selectedAnswer === index ? styles.selectedOption : {},
-              isCorrect !== null &&
-                index === correctIndex &&
-                styles.correctOption,
-              isCorrect !== null &&
-                index === selectedAnswer &&
-                !isCorrect &&
-                styles.incorrectOption,
+              isCorrect !== null && index === correctIndex && styles.correctOption,
+              isCorrect !== null && index === selectedAnswer && !isCorrect && styles.incorrectOption,
             ]}>
             <Text style={styles.optionText}>{option}</Text>
           </TouchableOpacity>
@@ -274,35 +255,11 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 20,
     alignItems: 'center',
-  },
-  headerBar: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    width: '100%',
-    marginTop: 30,
-    marginBottom: 20,
-  },
-  backButton: {
-    width: 48,
-    height: 48,
-    borderRadius: 12,
-    backgroundColor: '#FFF',
     justifyContent: 'center',
-    alignItems: 'center',
   },
-  backButtonText: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    color: '#000',
-  },
-  headerTitle: {
-    fontSize: 24,
-    color: '#fff',
-    fontWeight: 'bold',
-  },
+  header: { fontSize: 30, fontWeight: 'bold', marginBottom: 10, color: '#fff' },
   categoryText: {
-    fontSize: 22,
+    fontSize: 25,
     fontWeight: 'bold',
     marginBottom: 12,
     color: '#fff',
@@ -310,7 +267,7 @@ const styles = StyleSheet.create({
   progressText: { fontSize: 16, marginBottom: 10, color: '#fff' },
   progressBar: { marginBottom: 20, borderRadius: 10 },
   question: {
-    fontSize: 21,
+    fontSize: 23,
     fontWeight: 'bold',
     marginBottom: 30,
     textAlign: 'center',
@@ -373,9 +330,6 @@ const styles = StyleSheet.create({
   },
   selectedOption: {
     backgroundColor: '#4c87c7',
-  },
-  spacer: {
-    width: 48,
   },
 });
 

@@ -10,36 +10,69 @@ import {
   Image,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-
-interface UserRecord {
-  score: number;
-}
+import firestore from '@react-native-firebase/firestore';
+import auth from '@react-native-firebase/auth';
 
 interface Props {
-  userRecords: UserRecord[];
+  userRecords: { score: number }[]; // Modify based on your user records data structure
+  totalWatchedLessons: number; // Prop for watched lessons count
 }
 
-const ActivityScreen: React.FC<Props> = ({ userRecords }) => {
+const ActivityScreen: React.FC<Props> = ({ userRecords, totalWatchedLessons }) => {
   const [stats, setStats] = useState({
-    avgScore: 0,
-    highestScore: 0,
     totalQuizzes: 0,
+    stutteringQuizzes: 0,
+    publicSpeakingQuizzes: 0,
   });
   const navigation = useNavigation();
+  const theme = useTheme();
+
+  // Fetch user's quiz attempts from Firestore
+  useEffect(() => {
+    const fetchUserQuizAttempts = async () => {
+      try {
+        const user = auth().currentUser;
+        if (!user) return;
+
+        const userDoc = await firestore()
+          .collection('User_Accounts')
+          .doc(user.uid)
+          .get();
+
+        if (userDoc.exists) {
+          const userData = userDoc.data();
+          const quizAttempts = userData?.quizAttempts || [];
+
+          // Count Stuttering and Public Speaking quizzes
+          const stutteringCount = quizAttempts.filter(
+            (quiz: any) => quiz.quizType === 'Stuttering'
+          ).length;
+          const publicSpeakingCount = quizAttempts.filter(
+            (quiz: any) => quiz.quizType === 'Public Speaking'
+          ).length;
+
+          setStats(prevStats => ({
+            ...prevStats,
+            stutteringQuizzes: stutteringCount,
+            publicSpeakingQuizzes: publicSpeakingCount,
+            totalQuizzes: quizAttempts.length,  // Update total quizzes
+          }));
+        }
+      } catch (error) {
+        console.error('Error fetching user quiz attempts:', error);
+      }
+    };
+
+    fetchUserQuizAttempts();
+  }, []);
 
   // Update stats based on user records
   useEffect(() => {
     if (userRecords && userRecords.length > 0) {
-      const totalScore = userRecords.reduce(
-        (acc, record) => acc + record.score,
-        0
-      );
-      const highestScore = Math.max(...userRecords.map(record => record.score));
-      setStats({
-        avgScore: parseFloat((totalScore / userRecords.length).toFixed(2)),
-        highestScore: highestScore,
+      setStats(prevStats => ({
+        ...prevStats,
         totalQuizzes: userRecords.length,
-      });
+      }));
     }
   }, [userRecords]);
 
@@ -47,16 +80,20 @@ const ActivityScreen: React.FC<Props> = ({ userRecords }) => {
   const handleShare = async () => {
     try {
       await Share.share({
-        message: `I've been improving my quiz scores! My highest score is ${stats.highestScore} points! 🎯`,
+        message: `Check out my activity! I've taken ${stats.stutteringQuizzes} Stuttering quizzes and ${stats.publicSpeakingQuizzes} Public Speaking quizzes! 🎯 Keep up the great work! 🚀`,
       });
     } catch (error) {
       console.error(error);
     }
   };
 
-  const theme = useTheme();
   const handleBackPress = () => {
     navigation.goBack();
+  };
+
+  // Navigate to HistoryScreen
+  const handleNavigateToHistory = () => {
+    navigation.navigate('HistoryScreen');  // Assuming 'HistoryScreen' is the name of the screen
   };
 
   return (
@@ -64,16 +101,9 @@ const ActivityScreen: React.FC<Props> = ({ userRecords }) => {
       style={theme === 'dark' ? styles.darkContainer : styles.lightContainer}>
       <View style={styles.headerContainer}>
         <TouchableOpacity
-          style={
-            theme === 'dark' ? styles.darkBackButton : styles.lightBackButton
-          }
+          style={theme === 'dark' ? styles.darkBackButton : styles.lightBackButton}
           onPress={handleBackPress}>
-          <Text
-            style={
-              theme === 'dark'
-                ? styles.darkBackButtonText
-                : styles.lightBackButtonText
-            }>
+          <Text style={theme === 'dark' ? styles.darkBackButtonText : styles.lightBackButtonText}>
             ←
           </Text>
         </TouchableOpacity>
@@ -82,42 +112,45 @@ const ActivityScreen: React.FC<Props> = ({ userRecords }) => {
           Activity
         </Text>
       </View>
+
       {/* Progress Image */}
       <View style={styles.imageContainer}>
-        <Image
-          source={require('../assets/act.jpg')}
-          style={styles.progressImage}
-        />
+        <Image source={require('../assets/act.jpg')} style={styles.progressImage} />
+      </View>
+
+      {/* Touchable for navigating to HistoryScreen */}
+      <TouchableOpacity onPress={handleNavigateToHistory}>
+        <View style={theme === 'dark' ? styles.darkInfoBox : styles.lightInfoBox}>
+          <Text style={styles.infoText}>
+            Watched Lessons  {totalWatchedLessons}
+          </Text>
+        </View>
+      </TouchableOpacity>
+
+      <View style={theme === 'dark' ? styles.darkInfoBox : styles.lightInfoBox}>
+        <Text style={styles.infoText}>
+          Total Quizzes Taken: {stats.totalQuizzes}
+        </Text>
       </View>
 
       <View style={theme === 'dark' ? styles.darkInfoBox : styles.lightInfoBox}>
         <Text style={styles.infoText}>
-          Total Videos Watched: {stats.totalQuizzes}
-        </Text>
-      </View>
-      <View style={theme === 'dark' ? styles.darkInfoBox : styles.lightInfoBox}>
-        <Text style={styles.infoText}>
-          Total Public Speaking Quizzes Taken: {stats.totalQuizzes}
-        </Text>
-      </View>
-      <View style={theme === 'dark' ? styles.darkInfoBox : styles.lightInfoBox}>
-        <Text style={styles.infoText}>
-          Total Stuttering Quizzes Taken: {stats.totalQuizzes}
+          Stuttering Quizzes Taken: {stats.stutteringQuizzes}
         </Text>
       </View>
 
-      <Text
-        style={
-          theme === 'dark' ? styles.darkFooterText : styles.lightFooterText
-        }>
-        Your scores have been steadily improving! 🚀 Keep up the amazing work
-        and let’s aim even higher! 💪🔥 You’re doing fantastic! 🌟
+      <View style={theme === 'dark' ? styles.darkInfoBox : styles.lightInfoBox}>
+        <Text style={styles.infoText}>
+          Public Speaking Quizzes Taken: {stats.publicSpeakingQuizzes}
+        </Text>
+      </View>
+
+      <Text style={theme === 'dark' ? styles.darkFooterText : styles.lightFooterText}>
+        You're doing great! Keep up the effort and continue learning! 🌟
       </Text>
 
       <TouchableOpacity
-        style={
-          theme === 'dark' ? styles.darkShareButton : styles.lightShareButton
-        }
+        style={theme === 'dark' ? styles.darkShareButton : styles.lightShareButton}
         onPress={handleShare}>
         <Text style={styles.shareText}>➤ Share Your Activity</Text>
       </TouchableOpacity>
@@ -127,13 +160,8 @@ const ActivityScreen: React.FC<Props> = ({ userRecords }) => {
 
 const styles = StyleSheet.create({
   lightContainer: { flex: 1, padding: 20, backgroundColor: '#fff' },
-
   darkContainer: { flex: 1, padding: 20, backgroundColor: '#3A3A3A' },
-  headerContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-
+  headerContainer: { flexDirection: 'row', alignItems: 'center' },
   lightTitle: {
     fontSize: 28,
     flex: 1,
@@ -158,11 +186,10 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   progressImage: {
-    width: 300, // Adjust size as needed
+    width: 300,
     height: 200,
     resizeMode: 'contain',
   },
-
   lightInfoBox: {
     backgroundColor: '#007AFF',
     padding: 20,
@@ -178,43 +205,33 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   infoText: { color: 'white', fontSize: 18, fontWeight: 'bold' },
-
   lightFooterText: {
     textAlign: 'center',
-    marginTop: 20,
+    marginTop: 10,
     fontSize: 16,
-    marginBottom: 30,
+    marginBottom: 20,
     fontWeight: 'bold',
     color: '#000',
   },
   darkFooterText: {
     textAlign: 'center',
-    marginTop: 20,
+    marginTop: 10,
     fontSize: 16,
-    marginBottom: 30,
+    marginBottom: 20,
     fontWeight: 'bold',
     color: '#fff',
-  },
-  shareButton: {
-    backgroundColor: '#007AFF',
-    padding: 15,
-    borderRadius: 10,
-    alignItems: 'center',
-    marginTop: 5,
   },
   lightShareButton: {
     backgroundColor: '#007AFF',
     padding: 15,
     borderRadius: 10,
     alignItems: 'center',
-    marginTop: 5,
   },
   darkShareButton: {
     backgroundColor: '#2B2B2B',
     padding: 15,
     borderRadius: 10,
     alignItems: 'center',
-    marginTop: 5,
   },
   lightBackButton: {
     width: 48,
@@ -223,11 +240,6 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     justifyContent: 'center',
     alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 3,
-    elevation: 4,
   },
   darkBackButton: {
     width: 48,
@@ -236,35 +248,11 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     justifyContent: 'center',
     alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 3,
-    elevation: 4,
   },
-
-  lightBackButtonText: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    color: '#2C3E50',
-    textAlign: 'center',
-    textAlignVertical: 'center',
-    includeFontPadding: false,
-    paddingBottom: 2, // Fine-tune vertical centering
-    lineHeight: 32, // Control line height to center text
-  },
-  darkBackButtonText: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    color: '#000',
-    textAlign: 'center',
-    textAlignVertical: 'center',
-    includeFontPadding: false,
-    paddingBottom: 2,
-    lineHeight: 32,
-  },
-
+  lightBackButtonText: { fontSize: 28, fontWeight: 'bold', color: '#2C3E50' },
+  darkBackButtonText: { fontSize: 28, fontWeight: 'bold', color: '#000' },
   shareText: { color: 'white', fontSize: 16, fontWeight: 'bold' },
 });
 
 export default ActivityScreen;
+

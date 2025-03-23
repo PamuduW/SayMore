@@ -63,34 +63,31 @@ const StutteringQuestionScreen: React.FC = ({ navigation }: any) => {
       const data = doc.data();
       if (!data || !data[setMappings[setName]]) return;
 
-      let extractedQuestions = Object.keys(data[setMappings[setName]])
-        .filter(key => key.startsWith('Q'))
-        .map(key => {
-          const questionData = data[setMappings[setName]][key];
+      let extractedQuestions = Object.keys(data[setMappings[setName]]).filter(key => key.startsWith('Q')).map(key => {
+        const questionData = data[setMappings[setName]][key];
+        const answersArray = Object.entries(questionData.Answers).map(
+          ([ansKey, value]) => ({
+            key: ansKey,
+            value,
+          })
+        );
 
-          const answersArray = Object.entries(questionData.Answers).map(
-            ([ansKey, value]) => ({
-              key: ansKey,
-              value,
-            })
-          );
+        const shuffledAnswers = shuffleArray(answersArray);
 
-          const shuffledAnswers = shuffleArray(answersArray);
+        const originalCorrectKey = `A${questionData.Correct}`;
+        const newCorrectIndex =
+          shuffledAnswers.findIndex(a => a.key === originalCorrectKey) + 1;
 
-          const originalCorrectKey = `A${questionData.Correct}`;
-          const newCorrectIndex =
-            shuffledAnswers.findIndex(a => a.key === originalCorrectKey) + 1;
-
-          return {
-            id: key,
-            Question: questionData.Question,
-            Answers: shuffledAnswers.reduce((acc, curr, idx) => {
-              acc[`A${idx + 1}`] = curr.value;
-              return acc;
-            }, {} as AnswerOptions),
-            Correct: newCorrectIndex,
-          };
-        });
+        return {
+          id: key,
+          Question: questionData.Question,
+          Answers: shuffledAnswers.reduce((acc, curr, idx) => {
+            acc[`A${idx + 1}`] = curr.value;
+            return acc;
+          }, {} as AnswerOptions),
+          Correct: newCorrectIndex,
+        };
+      });
 
       extractedQuestions = shuffleArray(extractedQuestions).slice(0, 7);
 
@@ -128,17 +125,30 @@ const StutteringQuestionScreen: React.FC = ({ navigation }: any) => {
     try {
       const user = auth().currentUser;
       if (user) {
+        const userDocRef = firestore().collection('User_Accounts').doc(user.uid);
+        const userDoc = await userDocRef.get();
+        let attemptCount = 1;
+
+        if (userDoc.exists) {
+          const userData = userDoc.data();
+          if (userData?.quizAttempts) {
+            // Count previous attempts of Stuttering quiz
+            const stutteringAttempts = userData.quizAttempts.filter(
+              (attempt: any) => attempt.quizType === "Stuttering"
+            );
+            attemptCount = stutteringAttempts.length + 1; // Increment
+          }
+        }
+
         const attemptData = {
-          quizType: 'Stuttering',
+          quizType: "Stuttering",
           set: selectedSet,
           score: score,
           totalPoints: questions.length * 10,
           timestamp: new Date().toISOString(),
+          attemptCount: attemptCount, // Store attempt number
         };
 
-        const userDocRef = firestore()
-          .collection('User_Accounts')
-          .doc(user.uid);
         await userDocRef.set(
           {
             quizAttempts: firestore.FieldValue.arrayUnion(attemptData),
@@ -200,35 +210,20 @@ const StutteringQuestionScreen: React.FC = ({ navigation }: any) => {
           <StatusBar barStyle="light-content" />
           <TouchableOpacity
             onPress={handleBackPress}
-            style={[
-              styles.backButton,
-              theme === 'dark' ? styles.backButtonDark : styles.backButtonLight,
-            ]}>
+            style={[styles.backButton, theme === 'dark' ? styles.backButtonDark : styles.backButtonLight]}>
             <Text
-              style={[
-                styles.backButtonText,
-                theme === 'dark' && styles.backButtonTextDark,
-              ]}>
+              style={[styles.backButtonText, theme === 'dark' && styles.backButtonTextDark]}>
               ←
             </Text>
           </TouchableOpacity>
           <Text style={styles.header}>Select a Quiz Topic</Text>
           <View style={styles.buttonContainer}>
-            {[
-              'relaxation techniques',
-              'speech techniques',
-              'pronunciation',
-            ].map((topic, idx) => (
+            {['relaxation techniques', 'speech techniques', 'pronunciation'].map((topic, idx) => (
               <TouchableOpacity
                 key={idx}
-                style={
-                  theme === 'dark'
-                    ? styles.optionButtonDark
-                    : styles.optionButton
-                }
+                style={theme === 'dark' ? styles.optionButtonDark : styles.optionButton}
                 onPress={() => fetchQuestions(topic)}>
-                <Text
-                  style={[styles.optionText, { color: getOptionTextColor() }]}>
+                <Text style={[styles.optionText, { color: getOptionTextColor() }]}>
                   {topic.replace(/\b\w/g, c => c.toUpperCase())}
                 </Text>
               </TouchableOpacity>
@@ -250,17 +245,8 @@ const StutteringQuestionScreen: React.FC = ({ navigation }: any) => {
         {currentQuestionIndex === 0 && (
           <TouchableOpacity
             onPress={handleBackPress}
-            style={[
-              styles.backButton,
-              theme === 'dark' ? styles.backButtonDark : styles.backButtonLight,
-            ]}>
-            <Text
-              style={[
-                styles.backButtonText,
-                theme === 'dark' && styles.backButtonTextDark,
-              ]}>
-              ←
-            </Text>
+            style={[styles.backButton, theme === 'dark' ? styles.backButtonDark : styles.backButtonLight]}>
+            <Text style={[styles.backButtonText, theme === 'dark' && styles.backButtonTextDark]}>←</Text>
           </TouchableOpacity>
         )}
 
@@ -279,55 +265,41 @@ const StutteringQuestionScreen: React.FC = ({ navigation }: any) => {
           {questions[currentQuestionIndex].Question}
         </Text>
 
-        {Object.values(questions[currentQuestionIndex].Answers).map(
-          (option, index) => {
-            const correctAnswer = getCorrectAnswer(
-              questions[currentQuestionIndex]
-            );
-            const isSelected = selectedAnswer === option;
-            return (
-              <TouchableOpacity
-                key={index}
-                onPress={() => handleAnswerSelection(option)}
-                disabled={isCorrect !== null}
-                style={[
-                  theme === 'dark'
-                    ? styles.optionButtonDark
-                    : styles.optionButton,
-                  isSelected ? styles.selectedOption : {},
-                  isCorrect !== null &&
-                    option === correctAnswer &&
-                    styles.correctOption,
-                  isCorrect !== null &&
-                    option === selectedAnswer &&
-                    !isCorrect &&
-                    styles.incorrectOption,
-                ]}>
-                <Text
-                  style={[styles.optionText, { color: getOptionTextColor() }]}>
-                  {option}
-                </Text>
-              </TouchableOpacity>
-            );
-          }
-        )}
+        {Object.values(questions[currentQuestionIndex].Answers).map((option, index) => {
+          const correctAnswer = getCorrectAnswer(questions[currentQuestionIndex]);
+          const isSelected = selectedAnswer === option;
+          return (
+            <TouchableOpacity
+              key={index}
+              onPress={() => handleAnswerSelection(option)}
+              disabled={isCorrect !== null}
+              style={[
+                theme === 'dark' ? styles.optionButtonDark : styles.optionButton,
+                isSelected ? styles.selectedOption : {},
+                isCorrect !== null && option === correctAnswer && styles.correctOption,
+                isCorrect !== null && option !== correctAnswer && styles.incorrectOption,
+              ]}>
+              <Text
+                style={[styles.optionText, { color: getOptionTextColor() }]}>
+                {option}
+              </Text>
+            </TouchableOpacity>
+          );
+        })}
 
         {showConfirm && (
           <TouchableOpacity
             onPress={handleConfirmAnswer}
-            style={styles.confirmButton}>
-            <Text style={styles.confirmButtonText}>Confirm Answer</Text>
+            style={[styles.confirmButton, theme === 'dark' ? styles.confirmButtonDark : styles.confirmButtonLight]}>
+            <Text style={styles.confirmButtonText}>Confirm</Text>
           </TouchableOpacity>
         )}
 
         {isCorrect !== null && (
           <TouchableOpacity
             onPress={handleNextQuestion}
-            style={isLastQuestion ? styles.finishButton : styles.nextButton}>
-            <Text
-              style={
-                isLastQuestion ? styles.finishButtonText : styles.nextButtonText
-              }>
+            style={styles.nextButton}>
+            <Text style={styles.nextButtonText}>
               {isLastQuestion ? 'Finish Quiz' : 'Next Question'}
             </Text>
           </TouchableOpacity>
@@ -338,116 +310,113 @@ const StutteringQuestionScreen: React.FC = ({ navigation }: any) => {
 };
 
 const styles = StyleSheet.create({
-  background: { flex: 1 },
+  background: {
+    flex: 1,
+  },
   overlay: {
-    ...StyleSheet.absoluteFillObject,
-    backgroundColor: 'rgba(0, 0, 0, 0.8)',
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: 'rgba(0, 0, 0, 0.4)',
   },
   container: {
     flex: 1,
-    padding: 20,
-    alignItems: 'center',
     justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20,
   },
   header: {
-    fontSize: 28,
+    fontSize: 24,
     fontWeight: 'bold',
-    marginBottom: 30,
-    color: '#FFFFFF',
-    textAlign: 'center',
+    color: '#fff',
+    marginBottom: 10,
   },
-  progressText: { fontSize: 16, marginBottom: 10, color: '#FFFFFF' },
+  progressText: {
+    fontSize: 18,
+    color: '#fff',
+  },
+  progressBar: {
+    marginVertical: 20,
+  },
   question: {
-    fontSize: 22,
+    fontSize: 20,
+    color: '#fff',
     textAlign: 'center',
-    marginBottom: 20,
-    color: '#FFFFFF',
+    marginVertical: 20,
   },
-  progressBar: { marginBottom: 20, borderRadius: 10 },
   optionButton: {
-    backgroundColor: '#d6eaf8',
+    backgroundColor: '#f2f2f2',
     padding: 15,
-    borderRadius: 10,
-    width: '90%',
-    marginBottom: 12,
+    marginVertical: 8,
+    borderRadius: 5,
+    width: 300,
+    alignItems: 'center',
   },
   optionButtonDark: {
-    backgroundColor: '#3A3A3A',
+    backgroundColor: '#333',
     padding: 15,
-    borderRadius: 10,
-    width: '90%',
-    marginBottom: 12,
+    marginVertical: 8,
+    borderRadius: 5,
+    width: 300,
+    alignItems: 'center',
   },
-  optionText: { textAlign: 'center', fontSize: 18, fontWeight: 'bold' },
-  correctOption: { backgroundColor: '#27ae60' },
-  incorrectOption: { backgroundColor: '#e74c3c' },
-  selectedOption: { backgroundColor: '#4c87c7' },
-  confirmButton: {
+  optionText: {
+    fontSize: 18,
+    fontWeight: '500',
+  },
+  selectedOption: {
     backgroundColor: '#289e1b',
-    padding: 13,
-    borderRadius: 10,
-    marginVertical: 15,
-    width: '90%',
+  },
+  correctOption: {
+    backgroundColor: '#4CAF50',
+  },
+  incorrectOption: {
+    backgroundColor: '#F44336',
+  },
+  confirmButton: {
+    backgroundColor: '#008CBA',
+    padding: 15,
+    marginTop: 20,
+    borderRadius: 5,
+    width: 300,
+    alignItems: 'center',
   },
   confirmButtonText: {
-    color: 'white',
     fontSize: 18,
-    textAlign: 'center',
-    fontWeight: 'bold',
+    color: '#fff',
   },
   nextButton: {
-    backgroundColor: '#3498db',
-    padding: 13,
-    borderRadius: 10,
+    backgroundColor: '#289e1b',
+    padding: 15,
     marginTop: 20,
-    width: '90%',
+    borderRadius: 5,
+    width: 300,
+    alignItems: 'center',
   },
   nextButtonText: {
-    color: 'white',
     fontSize: 18,
-    textAlign: 'center',
-    fontWeight: 'bold',
+    color: '#fff',
   },
-  finishButton: {
-    backgroundColor: '#1abc9c',
-    padding: 13,
-    borderRadius: 10,
-    marginTop: 20,
-    width: '90%',
-  },
-  finishButtonText: {
-    color: 'white',
-    fontSize: 18,
-    textAlign: 'center',
-    fontWeight: 'bold',
-  },
-  buttonContainer: { alignItems: 'center' },
   backButton: {
     position: 'absolute',
-    top: 50,
-    left: 20,
-    width: 48,
-    height: 48,
-    borderRadius: 12,
-    justifyContent: 'center',
-    alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 3,
-    elevation: 4,
+    top: 10,
+    left: 10,
+    backgroundColor: 'rgba(0, 0, 0, 0.3)',
+    padding: 10,
+    borderRadius: 20,
   },
-  backButtonLight: { backgroundColor: '#E6F7FF' },
-  backButtonDark: { backgroundColor: '#FFF' },
+  backButtonDark: {
+    backgroundColor: '#333',
+  },
   backButtonText: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    color: '#2C3E50',
-    textAlign: 'center',
-    paddingBottom: 2,
-    lineHeight: 32,
+    color: '#fff',
+    fontSize: 20,
   },
-  backButtonTextDark: { color: '#000' },
+  backButtonTextDark: {
+    color: '#1E3C72',
+  },
 });
 
 export default StutteringQuestionScreen;
