@@ -21,7 +21,8 @@ interface FeedbackScreen_PSProps {
       voiceDynamicFeedback: string; // Dynamic voice feedback
       speechBaseFeedback: string; // Base speech energy feedback
       speechDynamicFeedback: string; // Dynamic speech energy feedback
-      threeSmallestScores: { // The three lowest scores with names and possible navigation targets
+      threeSmallestScores: {
+        // The three lowest scores with names and possible navigation targets
         name: string;
         value: number;
         navigationTarget: string | null;

@@ -79,7 +79,6 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
         theme === 'dark' ? ['#000000', '#222222'] : ['#577BC1', '#577BC1']
       }
       style={styles.container}>
-
       {/* Header Section */}
       <View style={styles.header}>
         <Image style={styles.icon} source={require('../assets/iconTop.png')} />
