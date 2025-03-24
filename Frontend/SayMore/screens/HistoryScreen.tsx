@@ -16,26 +16,32 @@ import { useTheme } from '../components/ThemeContext';
 
 interface HistoryScreenProps {}
 
+/**
+ * HistoryScreen component that displays a list of watched videos.
+ * @returns {JSX.Element} The rendered component.
+ */
 const HistoryScreen: React.FC<HistoryScreenProps> = () => {
   const [watchedVideos, setWatchedVideos] = useState<WatchedVideo[]>([]);
   const [loading, setLoading] = useState(true);
   const navigation = useNavigation();
   const theme = useTheme();
+
   useEffect(() => {
+    /**
+     * Fetches the list of watched videos from Firestore.
+     */
     const fetchWatchedVideos = async () => {
       try {
         setLoading(true);
         const user = auth().currentUser;
 
         if (!user) {
-          //console.log('No user signed in. Cannot fetch history.');
           setWatchedVideos([]);
           setLoading(false);
           return;
         }
 
         const userId = user.uid;
-        //console.log(`Fetching history for User ID: ${userId}`);
 
         const userDoc = await firestore()
           .collection('User_Accounts')
@@ -45,20 +51,15 @@ const HistoryScreen: React.FC<HistoryScreenProps> = () => {
         if (userDoc.exists) {
           const data = userDoc.data();
           if (data && data.watchedVideos) {
-            // Get all videos, already sorted with newest first
             const videos = data.watchedVideos.slice().reverse();
-            //console.log('Watched videos loaded:', videos.length);
             setWatchedVideos(videos);
           } else {
-            //console.log('No watched videos found in user data');
             setWatchedVideos([]);
           }
         } else {
-          //console.log('User document does not exist.');
           setWatchedVideos([]);
         }
       } catch (error) {
-        //console.error('Error fetching watched videos:', error);
         setWatchedVideos([]);
       } finally {
         setLoading(false);
@@ -68,10 +69,14 @@ const HistoryScreen: React.FC<HistoryScreenProps> = () => {
     fetchWatchedVideos();
   }, []);
 
+  /**
+   * Fetches the details of a specific video from Firestore.
+   * @param {string} videoId - The ID of the video to fetch details for.
+   * @returns {Promise<any>} The video details.
+   */
   const fetchVideoDetails = useCallback(
     async (videoId: string): Promise<any> => {
       try {
-        // First, we need to find which lesson contains this video
         const lessonsSnapshot = await firestore()
           .collection('lesson_videos')
           .get();
@@ -94,29 +99,28 @@ const HistoryScreen: React.FC<HistoryScreenProps> = () => {
           }
         }
 
-        // If we couldn't find the video with all details, return what we have
         return null;
       } catch (error) {
-        //console.error('Error fetching video details:', error);
         return null;
       }
     },
     []
   );
 
+  /**
+   * Handles the press event on a video item to navigate to the VideoPlayer screen.
+   * @param {WatchedVideo} video - The video item that was pressed.
+   */
   const handleVideoPress = useCallback(
     async (video: WatchedVideo) => {
-      // Show loading indicator
       setLoading(true);
 
       try {
-        // Fetch complete video details
         const videoDetails = await fetchVideoDetails(
           video.videoId,
           video.lessonTitle
         );
 
-        // If we found details, use those, otherwise use what we have
         const fullVideoData = videoDetails || {
           videoId: video.videoId,
           title: video.title,
@@ -128,8 +132,6 @@ const HistoryScreen: React.FC<HistoryScreenProps> = () => {
           lessonTitle: video.lessonTitle,
         });
       } catch (error) {
-        //console.error('Error navigating to video:', error);
-        // If there's an error, navigate with what we have
         navigation.navigate('VideoPlayer', {
           video: {
             videoId: video.videoId,
@@ -145,6 +147,11 @@ const HistoryScreen: React.FC<HistoryScreenProps> = () => {
     [navigation, fetchVideoDetails]
   );
 
+  /**
+   * Renders a single video item in the list.
+   * @param {Object} item - The video item to render.
+   * @returns {JSX.Element} The rendered video item.
+   */
   const renderItem = useCallback(
     ({ item }: { item: WatchedVideo }) => (
       <TouchableOpacity
@@ -183,9 +190,13 @@ const HistoryScreen: React.FC<HistoryScreenProps> = () => {
     [handleVideoPress, theme]
   );
 
+  /**
+   * Handles the back button press to navigate to the previous screen.
+   */
   const handleBackPress = () => {
     navigation.goBack();
   };
+
   return (
     <View style={theme === 'dark' ? styles.darkContainer : styles.container}>
       <View style={styles.headerContainer}>
@@ -232,7 +243,6 @@ const HistoryScreen: React.FC<HistoryScreenProps> = () => {
         <FlatList
           data={watchedVideos}
           keyExtractor={(item, index) => {
-            // Create a truly unique key by combining multiple fields and the index
             return item.id
               ? `${item.id}-${index}`
               : `${item.videoId}-${item.timestamp}-${index}`;
@@ -365,8 +375,8 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     textAlignVertical: 'center',
     includeFontPadding: false,
-    paddingBottom: 2, // Fine-tune vertical centering
-    lineHeight: 32, // Control line height to center text
+    paddingBottom: 2,
+    lineHeight: 32,
   },
   darkBackButtonText: {
     fontSize: 28,
