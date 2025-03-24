@@ -11,6 +11,10 @@ import { useNavigation } from '@react-navigation/native';
 import LinearGradient from 'react-native-linear-gradient';
 import { useTheme } from '../components/ThemeContext';
 
+/**
+ * PrivacyCookiesScreen component that displays the privacy and cookies policy.
+ * @returns {JSX.Element} The rendered component.
+ */
 const PrivacyCookiesScreen = () => {
   const navigation = useNavigation();
   const theme = useTheme();
