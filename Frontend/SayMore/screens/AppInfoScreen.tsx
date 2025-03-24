@@ -11,6 +11,10 @@ import { useNavigation } from '@react-navigation/native';
 import LinearGradient from 'react-native-linear-gradient';
 import { useTheme } from '../components/ThemeContext';
 
+/**
+ * AppInfoScreen component that displays information about the app.
+ * @returns {JSX.Element} The rendered component.
+ */
 const AppInfoScreen = () => {
   const navigation = useNavigation();
   const theme = useTheme();
@@ -23,7 +27,6 @@ const AppInfoScreen = () => {
       style={styles.container}>
       <StatusBar barStyle="light-content" />
 
-      {/* Header */}
       <View style={styles.headerBar}>
         <Text style={styles.headerText}>App Information</Text>
         <View style={styles.headerUnderline} />

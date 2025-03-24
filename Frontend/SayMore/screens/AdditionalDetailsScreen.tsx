@@ -24,6 +24,11 @@ const chartConfig = {
   useShadowColorFromDataset: false,
 };
 
+/**
+ * AdditionalDetailsScreen component that displays various analysis charts and feedback.
+ * @param {Object} route - The route object containing navigation parameters.
+ * @returns {JSX.Element} The rendered component.
+ */
 const AdditionalDetailsScreen = ({ route }) => {
   const {
     final_public_speaking_score = 0,
@@ -218,6 +223,9 @@ const AdditionalDetailsScreen = ({ route }) => {
 
   const navigation = useNavigation();
 
+  /**
+   * Navigates to the FeedbackScreen_PS with the provided parameters.
+   */
   const handleNext = () => {
     navigation.navigate('FeedbackScreen_PS', {
       final_public_speaking_score,
@@ -230,13 +238,15 @@ const AdditionalDetailsScreen = ({ route }) => {
     });
   };
 
+  /**
+   * Navigates back to the previous screen.
+   */
   const handleBack = () => {
     navigation.goBack();
   };
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      {/* Back Button */}
       <TouchableOpacity onPress={handleBack} style={styles.backButtonContainer}>
         <Image
           source={require('../assets/back.png')}

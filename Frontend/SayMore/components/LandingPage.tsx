@@ -12,6 +12,10 @@ import PersonalDetailsScreen from '../screens/PersonalDetailsScreen';
 
 const Stack = createNativeStackNavigator();
 
+/**
+ * LandingPage component that handles the initial navigation and user authentication state.
+ * @returns {JSX.Element} The navigation container with the appropriate stack navigator.
+ */
 const LandingPage = () => {
   const { user, initializing } = useAuth();
   const [showWelcome, setShowWelcome] = useState(true);

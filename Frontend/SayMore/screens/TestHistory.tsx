@@ -13,16 +13,21 @@ import { useNavigation } from '@react-navigation/native';
 
 type Category = 'PublicSpeaking' | 'Stuttering';
 
+/**
+ * TestHistory component that displays the test history for the selected category.
+ * @returns {JSX.Element} The rendered component.
+ */
 const TestHistory: React.FC = () => {
-  const [selectedCategory, setSelectedCategory] = useState<null | Category>(
-    null
-  );
+  const [selectedCategory, setSelectedCategory] = useState<null | Category>(null);
   const [historyData, setHistoryData] = useState<any>(null);
   const [loading, setLoading] = useState(false);
 
   const navigation = useNavigation();
 
-  // Fetch test history from Firestore for the selected category.
+  /**
+   * Fetches the test history for the given category from Firestore.
+   * @param {Category} category - The category of the test history to fetch.
+   */
   const fetchHistory = async (category: Category) => {
     setLoading(true);
     try {
@@ -39,11 +44,8 @@ const TestHistory: React.FC = () => {
 
       if (userDoc.exists) {
         const data = userDoc.data();
-        const categoryKey =
-          category === 'PublicSpeaking' ? 'PS_Check' : 'Stuttering_Check';
-        const categoryHistory = data?.results
-          ? data.results[categoryKey]
-          : null;
+        const categoryKey = category === 'PublicSpeaking' ? 'PS_Check' : 'Stuttering_Check';
+        const categoryHistory = data?.results ? data.results[categoryKey] : null;
         setHistoryData(categoryHistory);
       } else {
         console.log('No user document found.');
@@ -55,24 +57,29 @@ const TestHistory: React.FC = () => {
     }
   };
 
-  // Called when the user selects a category.
+  /**
+   * Handles the selection of a category and fetches the corresponding test history.
+   * @param {Category} category - The selected category.
+   */
   const handleCategorySelect = (category: Category) => {
     setSelectedCategory(category);
     fetchHistory(category);
   };
 
-  // Convert the history map into an array for display.
   let historyArray: any[] = [];
   if (historyData) {
     historyArray = Object.keys(historyData).map(key => ({
       id: key,
       ...historyData[key],
     }));
-    // Sort descending: Latest test (highest timestamp) first.
     historyArray.sort((a, b) => parseInt(b.id, 10) - parseInt(a.id, 10)); // Added radix parameter
   }
 
-  // Render each history item.
+  /**
+   * Renders a single history item.
+   * @param {Object} item - The history item to render.
+   * @returns {JSX.Element} The rendered history item.
+   */
   const renderHistoryItem = ({ item }: { item: any }) => (
     <TouchableOpacity
       style={styles.historyItem}

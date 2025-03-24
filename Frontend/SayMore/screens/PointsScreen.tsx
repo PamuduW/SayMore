@@ -10,6 +10,12 @@ import LinearGradient from 'react-native-linear-gradient';
 
 const { width } = Dimensions.get('window');
 
+/**
+ * PointsScreen component that displays the user's points and provides navigation to quizzes.
+ * @param {object} route - The route object containing navigation parameters.
+ * @param {object} navigation - The navigation object for navigating between screens.
+ * @returns {JSX.Element} The rendered component.
+ */
 const PointsScreen = ({ route, navigation }) => {
   const { points, totalPoints } = route.params;
   const fadeAnim = useMemo(() => new Animated.Value(0), []);
@@ -30,6 +36,9 @@ const PointsScreen = ({ route, navigation }) => {
     }).start();
   }, [fadeAnim, scaleAnim]);
 
+  /**
+   * Navigates to the QuizzesNavScreen.
+   */
   const handleGoQuiz = () => {
     navigation.navigate('QuizzesNavScreen', { screen: 'QuizzesNavScreen' });
   };

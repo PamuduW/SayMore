@@ -23,6 +23,13 @@ interface AudioRecorderProps {
   language: string;
 }
 
+/**
+ * AudioRecorder component for recording, playing, and uploading audio.
+ * @param {AudioRecorderProps} props - The properties for the component.
+ * @param {boolean} props.isPublicSpeaking - Indicates if the recording is for public speaking.
+ * @param {string} props.language - The language of the recording.
+ * @returns {JSX.Element} The rendered component.
+ */
 const AudioRecorder: React.FC<AudioRecorderProps> = ({
   isPublicSpeaking,
   language,
@@ -38,6 +45,9 @@ const AudioRecorder: React.FC<AudioRecorderProps> = ({
     initRecorder();
   }, []);
 
+  /**
+   * Requests necessary permissions for recording audio.
+   */
   const requestPermissions = async () => {
     if (Platform.OS === 'android') {
       await PermissionsAndroid.requestMultiple([
@@ -50,29 +60,37 @@ const AudioRecorder: React.FC<AudioRecorderProps> = ({
     }
   };
 
+  /**
+   * Initializes the audio recorder with the specified settings.
+   */
   const initRecorder = async () => {
     AudioRecord.init({
-      sampleRate: 16000, // 16kHz
-      channels: 1, // Mono
-      bitsPerSample: 16, // 16-bit PCM
-      audioSource: 6, // Default audio source
-      wavFile: 'recordedAudio.wav', // Output file
+      sampleRate: 16000,
+      channels: 1,
+      bitsPerSample: 16,
+      audioSource: 6,
+      wavFile: 'recordedAudio.wav',
     });
     await new Promise(resolve => setTimeout(resolve, 1000)); // Add a delay to ensure initialization
   };
 
+  /**
+   * Starts recording audio.
+   */
   const startRecording = async () => {
     setIsRecording(true);
     setUploadMessage(null);
-    await initRecorder(); // Ensure the recorder is initialized
+    await initRecorder();
     AudioRecord.start();
   };
 
+  /**
+   * Stops recording audio and saves the file.
+   */
   const stopRecording = async () => {
     setIsRecording(false);
     const rawAudioPath = await AudioRecord.stop();
 
-    // Ensure correct WAV format
     const wavFilePath = `${RNFS.DocumentDirectoryPath}/recordedAudio.wav`;
     try {
       await RNFS.moveFile(rawAudioPath, wavFilePath);
@@ -82,6 +100,9 @@ const AudioRecorder: React.FC<AudioRecorderProps> = ({
     }
   };
 
+  /**
+   * Plays the recorded audio.
+   */
   const playAudio = () => {
     if (!audioPath) {
       Alert.alert('No Audio', 'Please record audio before playing.');
@@ -100,10 +121,16 @@ const AudioRecorder: React.FC<AudioRecorderProps> = ({
     setSound(soundInstance);
   };
 
+  /**
+   * Stops the audio playback.
+   */
   const stopAudio = () => {
     sound?.stop(() => setSound(null));
   };
 
+  /**
+   * Uploads the recorded audio to Firebase storage.
+   */
   const uploadAudio = async () => {
     if (!audioPath) {
       Alert.alert('No Audio', 'Please record audio before uploading.');
@@ -141,7 +168,6 @@ const AudioRecorder: React.FC<AudioRecorderProps> = ({
       <View style={styles.container}>
         <Text style={styles.title}>Audio Recorder</Text>
 
-        {/* Recording button */}
         <TouchableOpacity
           onPress={isRecording ? stopRecording : startRecording}
           style={[

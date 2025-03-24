@@ -17,10 +17,8 @@ import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import firestore from '@react-native-firebase/firestore';
 
 /**
- * SignInScreen component.
- * Allows users to sign in using email/password or Google Sign-In.
- *
- * @returns {JSX.Element} The rendered SignInScreen component.
+ * SignInScreen component that allows users to sign in using email/password or Google Sign-In.
+ * @returns {JSX.Element} The rendered component.
  */
 export default function SignInScreen() {
   const [email, setEmail] = useState('');
@@ -36,7 +34,6 @@ export default function SignInScreen() {
 
   /**
    * Handles the sign-in process using email and password.
-   * Displays an alert if fields are empty or if there is an error during sign-in.
    */
   const handleSignIn = async () => {
     const trimmedEmail = email.trim();
@@ -80,8 +77,7 @@ export default function SignInScreen() {
   };
 
   /**
-   * Handles the Google Sign-In process.
-   * Displays an alert if there is an error during Google Sign-In.
+   * Handles the sign-in process using Google Sign-In.
    */
   const handleGoogleSignIn = async () => {
     try {

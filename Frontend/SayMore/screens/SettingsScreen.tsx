@@ -23,6 +23,10 @@ import ConditionsIcon from '../assets/conditionsset.png';
 import CookiesIcon from '../assets/cookieset.png';
 import AppInfoIcon from '../assets/appinfoset.png';
 
+/**
+ * SettingsScreen component that displays the settings options.
+ * @returns {JSX.Element} The rendered component.
+ */
 export default function SettingsScreen() {
   const navigation = useNavigation();
   const [isDarkMode, setIsDarkMode] = useState(false);
@@ -33,6 +37,9 @@ export default function SettingsScreen() {
     checkNotificationPermission();
   }, []);
 
+  /**
+   * Checks the notification permission status.
+   */
   const checkNotificationPermission = async () => {
     const authStatus = await messaging().hasPermission();
     setNotificationsEnabled(
@@ -40,6 +47,9 @@ export default function SettingsScreen() {
     );
   };
 
+  /**
+   * Toggles the notification settings.
+   */
   const toggleNotifications = async () => {
     if (notificationsEnabled) {
       await messaging().deleteToken();
@@ -58,6 +68,9 @@ export default function SettingsScreen() {
     }
   };
 
+  /**
+   * Handles the back button press to navigate to the previous screen.
+   */
   const handleBackPress = () => {
     navigation.goBack();
   };
@@ -81,6 +94,12 @@ export default function SettingsScreen() {
     { label: 'App Info', icon: AppInfoIcon, screen: 'AppInfoScreen' },
   ];
 
+  /**
+   * Renders an option item in the settings list.
+   * @param {object} item - The option item to render.
+   * @param {number} index - The index of the option item.
+   * @returns {JSX.Element} The rendered option item.
+   */
   const renderOption = (item, index) => (
     <TouchableOpacity
       key={index}
