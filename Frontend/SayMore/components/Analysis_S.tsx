@@ -5,6 +5,7 @@ import {
   ScrollView,
   View,
   Button,
+  Dimensions,
   Alert,
   ActivityIndicator,
 } from 'react-native';
@@ -80,10 +81,7 @@ const Analysis_S: React.FC<AnalysisSProps> = ({ filename, acc_id, type }) => {
 
         const responseInfo = await response.json();
 
-        if (
-          !responseInfo.result.transcription ||
-          !responseInfo.result.transcription[0]
-        ) {
+        if (!responseInfo.result.transcript) {
           Alert.alert(
             'Error',
             'The transcript is empty! make sure your mic is working'
@@ -125,14 +123,14 @@ const Analysis_S: React.FC<AnalysisSProps> = ({ filename, acc_id, type }) => {
     }
   };
 
-    if (loading) {
-      return (
-        <View style={styles.loadingContainer}>
-          <ActivityIndicator size="large" color="blue" />
-          <Text>Analyzing Speech...</Text>
-        </View>
-      );
-    }
+  if (loading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color="blue" />
+        <Text>Analyzing Speech...</Text>
+      </View>
+    );
+  }
 
   return (
     <LinearGradient
@@ -141,19 +139,75 @@ const Analysis_S: React.FC<AnalysisSProps> = ({ filename, acc_id, type }) => {
       }
       style={styles.container}>
       <ScrollView contentContainerStyle={styles.content}>
-      <Text>Analysis Screen</Text>
-      {responseData && (
-        <View>
-          <Text style={styles.jsonText}>
-            {JSON.stringify(responseData, null, 2)}
-          </Text>
-
-          <Text>Stutter score: {responseData.result.stutter_score / 100}</Text>
-          <Button title="Next" onPress={handleNext} style={styles.button} />
+        <Text style={styles.title}>Your Speech Analysis</Text>
+        <View style={styles.feedbackBlock}>
+          <ProgressChart
+            data={data}
+            width={parentViewWidth}
+            height={220}
+            strokeWidth={16}
+            radius={32}
+            chartConfig={chartConfig}
+            hideLegend={false}
+          />
         </View>
-      )}
-    </ScrollView>
-        </LinearGradient>
+
+        {responseData && (
+          <View>
+            <View style={styles.feedbackBlock}>
+              <Text style={styles.label}>Stuttering score</Text>
+              <Text style={styles.valueHighlight}>
+                {responseData.result.stuttering_score}
+              </Text>
+            </View>
+
+            <View style={styles.feedbackBlock}>
+              <Text style={styles.label}>Confidence score</Text>
+              <Text style={styles.valueHighlight}>
+                {responseData.result.confidence_score}
+              </Text>
+            </View>
+
+            <View style={styles.feedbackBlock}>
+              <Text style={styles.label}>Fluency score</Text>
+              <Text style={styles.valueHighlight}>
+                {responseData.result.fluency_score}
+              </Text>
+            </View>
+
+            <View style={styles.feedbackBlock}>
+              <Text style={styles.label}>Language</Text>
+              <Text style={styles.valueHighlight}>
+                {responseData.result.language}
+              </Text>
+            </View>
+
+            <View style={styles.feedbackBlock}>
+              <Text style={styles.label}>Stutter count</Text>
+              <Text style={styles.valueHighlight}>
+                {responseData.result.stutter_count}
+              </Text>
+            </View>
+
+            {responseData.result.stuttered_words.map((item, index) => (
+              <View key={index} style={styles.feedbackBlock}>
+                <Text style={styles.label}>Word</Text>
+                <Text style={styles.valueHighlight}>{item.word}</Text>
+                <Text style={styles.label}>Type</Text>
+                <Text style={styles.valueHighlight}>{item.type}</Text>
+              </View>
+            ))}
+
+            <View style={styles.feedbackBlock}>
+              <Text style={styles.label}>Transcript</Text>
+              <Text style={styles.value}>{responseData.result.transcript}</Text>
+            </View>
+
+            <Button title="Next" onPress={handleNext} style={styles.button} />
+          </View>
+        )}
+      </ScrollView>
+    </LinearGradient>
   );
 };
 
@@ -165,6 +219,57 @@ const styles = StyleSheet.create({
   content: {
     paddingBottom: 40,
     paddingTop: 50,
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  title: {
+    fontSize: 28,
+    fontWeight: 'bold',
+    color: '#FFFFFF',
+    textAlign: 'center',
+    marginBottom: 30,
+  },
+  feedbackBlock: {
+    marginBottom: 20,
+    backgroundColor: '#3e5a8f',
+    padding: 16,
+    borderRadius: 15,
+  },
+  label: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#FFFFFF',
+    marginBottom: 8,
+    textAlign: 'center',
+  },
+  value: {
+    fontSize: 16,
+    color: '#D0D3E6',
+  },
+  valueHighlight: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#FFD700',
+    textAlign: 'center',
+  },
+  button: {
+    paddingVertical: 14,
+    paddingHorizontal: 20,
+    borderRadius: 25,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#214283',
+    overflow: 'hidden',
+    elevation: 2,
+    marginBottom: 20,
+  },
+  buttonText: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#FFFFFF',
   },
 });
 
