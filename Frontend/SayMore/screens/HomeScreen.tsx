@@ -18,6 +18,11 @@ interface HomeScreenProps {
   navigation: NavigationProp<any>;
 }
 
+/**
+ * HomeScreen component that displays the home screen with user greeting and test options.
+ * @param {HomeScreenProps} props - The properties for the component.
+ * @returns {JSX.Element} The rendered component.
+ */
 const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
   useNotifications();
   const theme = useTheme();
@@ -26,6 +31,9 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
   const borderAnimation = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
+    /**
+     * Fetches user data from Firestore and sets the state.
+     */
     const fetchUserData = async () => {
       try {
         const currentUser = auth().currentUser;
@@ -48,6 +56,9 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
   }, []);
 
   useEffect(() => {
+    /**
+     * Starts an animated loop for the border color change.
+     */
     Animated.loop(
       Animated.timing(borderAnimation, {
         toValue: 1,
@@ -63,6 +74,10 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
       theme === 'dark' ? ['#FFFFFF', '#AAAAAA'] : ['#2D336B', '#7886C7'],
   });
 
+  /**
+   * Handles the press event on a test option.
+   * @param {string} option - The selected test option.
+   */
   const handlePress = (option: string) => {
     const isPublicSpeaking = option === 'Public Speaking';
     navigation.navigate('Audio', { isPublicSpeaking });

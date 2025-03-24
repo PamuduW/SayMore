@@ -16,6 +16,10 @@ import LinearGradient from 'react-native-linear-gradient';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { useTheme } from '../components/ThemeContext';
 
+/**
+ * AccountScreen component that displays user account information and provides options to edit profile and sign out.
+ * @returns {JSX.Element} The rendered component.
+ */
 export default function AccountScreen() {
   const navigation = useNavigation();
   const theme = useTheme();
@@ -23,7 +27,6 @@ export default function AccountScreen() {
   const [userData, setUserData] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // Animation
   const borderAnimation = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
@@ -36,6 +39,10 @@ export default function AccountScreen() {
     ).start();
   }, [borderAnimation]);
 
+  /**
+   * Fetches user data from Firestore and updates the state.
+   * @param {boolean} showLoader - Whether to show the loading indicator.
+   */
   const fetchUserData = async (showLoader = true) => {
     try {
       if (showLoader) setLoading(true);
@@ -67,6 +74,9 @@ export default function AccountScreen() {
     fetchUserData();
   }, []);
 
+  /**
+   * Handles user sign out.
+   */
   const handleSignOut = async () => {
     try {
       await GoogleSignin.signOut();
@@ -76,6 +86,9 @@ export default function AccountScreen() {
     }
   };
 
+  /**
+   * Confirms user sign out with an alert.
+   */
   const confirmSignOut = () => {
     Alert.alert(
       'Sign Out',

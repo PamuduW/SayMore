@@ -7,7 +7,17 @@ import {
   ImageBackground,
 } from 'react-native';
 
+/**
+ * Difficulty component that allows users to select a difficulty level for public speaking questions.
+ * @param {Object} props - The properties for the component.
+ * @param {Object} props.navigation - The navigation object for navigating between screens.
+ * @returns {JSX.Element} The rendered component.
+ */
 const Difficulty: React.FC = ({ navigation }: any) => {
+  /**
+   * Handles the selection of a difficulty level.
+   * @param {string} level - The selected difficulty level.
+   */
   const handleSelection = (level: string) => {
     navigation.navigate('PublicSpeakQuestionScreen', { difficulty: level });
   };
@@ -20,14 +30,12 @@ const Difficulty: React.FC = ({ navigation }: any) => {
         resizeMode="cover">
         <View style={styles.overlay} />
 
-        {/* Back Button at Top Left */}
         <TouchableOpacity
           onPress={() => navigation.goBack()}
           style={styles.backButton}>
           <Text style={styles.backButtonText}>←</Text>
         </TouchableOpacity>
 
-        {/* Main Content */}
         <View style={styles.container}>
           <Text style={styles.header}>Select Difficulty</Text>
 
@@ -62,7 +70,6 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0, 0, 0, 0.7)',
   },
 
-  // Back Button Positioned Top Left
   backButton: {
     position: 'absolute',
     top: 50,

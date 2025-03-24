@@ -1,3 +1,11 @@
+/**
+ * ESLint configuration file
+ * @type {Object}
+ * @property {boolean} root - Indicates if this is the root configuration.
+ * @property {Array<string>} extends - List of configurations to extend.
+ * @property {Array<string>} plugins - List of ESLint plugins.
+ * @property {Object} rules - Custom ESLint rules.
+ */
 module.exports = {
   root: true,
   extends: [
