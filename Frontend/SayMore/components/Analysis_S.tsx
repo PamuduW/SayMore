@@ -114,12 +114,12 @@ const Analysis_S: React.FC<AnalysisSProps> = ({ filename, acc_id, type }) => {
     if (responseData) {
       const { result } = responseData as AnalysisResult;
 
-      const { dynamic_feedback, stutter_count, stutter_score } = result;
+      const { dynamic_feedback, stutter_count, stuttering_score } = result;
 
       navigation.navigate('FeedbackScreen_S', {
         dynamic_feedback,
         stutter_count,
-        stutter_score,
+        stuttering_score,
       });
     }
   };
