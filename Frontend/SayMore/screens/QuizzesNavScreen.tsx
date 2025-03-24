@@ -11,20 +11,33 @@ import { useNavigation } from '@react-navigation/native';
 import LinearGradient from 'react-native-linear-gradient';
 import { useTheme } from '../components/ThemeContext';
 
+/**
+ * QuizzesNavScreen component that displays navigation options for different quizzes.
+ * @returns {JSX.Element} The rendered component.
+ */
 const QuizzesNavScreen = () => {
   const navigation = useNavigation();
   const theme = useTheme();
 
+  /**
+   * Navigates to the Public Speaking quiz screen.
+   */
   const navigateToPublicSpeaking = () => {
     navigation.navigate('Difficulty', { type: 'PublicSpeaking' });
   };
 
+  /**
+   * Navigates to the Stuttering quiz screen.
+   */
   const navigateToStuttering = () => {
     navigation.navigate('StutteringQuestionScreen', {
       set_name: 'relaxation techniques',
     });
   };
 
+  /**
+   * Handles the back button press to navigate to the More screen.
+   */
   const handleBackPress = () => {
     navigation.navigate('MoreScreen');
   };
@@ -37,7 +50,6 @@ const QuizzesNavScreen = () => {
       start={{ x: 0, y: 0 }}
       end={{ x: 1, y: 1 }}
       style={styles.container}>
-      {/* Back Button */}
       <View style={styles.headerBar}>
         <TouchableOpacity
           onPress={handleBackPress}
@@ -59,7 +71,6 @@ const QuizzesNavScreen = () => {
       <ScrollView
         contentContainerStyle={styles.cardsWrapper}
         showsVerticalScrollIndicator={false}>
-        {/* Public Speaking Card */}
         <View style={[styles.card, theme === 'dark' && styles.cardDark]}>
           <View
             style={[
@@ -96,7 +107,6 @@ const QuizzesNavScreen = () => {
           </TouchableOpacity>
         </View>
 
-        {/* Stuttering Card */}
         <View style={[styles.card, theme === 'dark' && styles.cardDark]}>
           <View
             style={[
