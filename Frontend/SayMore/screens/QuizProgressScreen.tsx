@@ -18,13 +18,16 @@ import { LineChart } from 'react-native-chart-kit';
 import LinearGradient from 'react-native-linear-gradient';
 import { useNavigation } from '@react-navigation/native';
 
+/**
+ * QuizProgressScreen component that displays the user's quiz progress.
+ * @returns {JSX.Element} The rendered component.
+ */
 const QuizProgressScreen = () => {
   const [quizAttempts, setQuizAttempts] = useState([]);
   const theme = useTheme();
   const navigation = useNavigation();
   const borderAnimation = useRef(new Animated.Value(0)).current;
 
-  // Animation for border color
   useEffect(() => {
     Animated.loop(
       Animated.timing(borderAnimation, {
@@ -41,7 +44,6 @@ const QuizProgressScreen = () => {
       theme === 'dark' ? ['#444444', '#AAAAAA'] : ['#2D336B', '#7886C7'],
   });
 
-  // Fetch quiz attempts from Firestore
   useEffect(() => {
     const fetchQuizData = async () => {
       try {
@@ -57,7 +59,6 @@ const QuizProgressScreen = () => {
           const data = userDoc.data();
           const attempts = data?.quizAttempts || [];
 
-          // Sort by timestamp (oldest first or newest first as needed)
           attempts.sort(
             (a, b) =>
               new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime()
@@ -72,11 +73,18 @@ const QuizProgressScreen = () => {
     fetchQuizData();
   }, []);
 
+  /**
+   * Handles the back button press to navigate to the previous screen.
+   */
   const handleBackPress = () => {
     navigation.goBack();
   };
 
-  // Render a single quiz attempt card
+  /**
+   * Renders a quiz item in the list of quiz attempts.
+   * @param {object} item - The quiz item to render.
+   * @returns {JSX.Element} The rendered quiz item.
+   */
   const renderQuizItem = ({ item }) => (
     <Animated.View
       style={[
@@ -111,7 +119,6 @@ const QuizProgressScreen = () => {
     </Animated.View>
   );
 
-  // Prepare chart data using quiz percentage scores
   const chartData = {
     labels: quizAttempts.map(() => ''), // Hide X-axis labels
     datasets: [
@@ -265,6 +272,11 @@ const QuizProgressScreen = () => {
   );
 };
 
+/**
+ * EmptyListComponent component that displays a message when there are no quiz attempts.
+ * @param {object} theme - The current theme (dark or light).
+ * @returns {JSX.Element} The rendered component.
+ */
 const EmptyListComponent = ({ theme }) => (
   <View style={styles.emptyContainer}>
     <Text
