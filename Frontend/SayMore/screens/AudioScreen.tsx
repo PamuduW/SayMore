@@ -8,10 +8,21 @@ interface AudioScreenProps {
   route: RouteProp<{ params: { isPublicSpeaking: boolean } }, 'params'>;
 }
 
+/**
+ * AudioScreen component that allows users to select a language and record audio for public speaking or stuttering exercises.
+ * @param {AudioScreenProps} props - The properties for the component.
+ * @param {RouteProp} props.route - The route object containing navigation parameters.
+ * @param {boolean} props.route.params.isPublicSpeaking - Indicates if the screen is for public speaking.
+ * @returns {JSX.Element} The rendered component.
+ */
 const AudioScreen: React.FC<AudioScreenProps> = ({ route }) => {
   const { isPublicSpeaking } = route.params;
   const [language, setLanguage] = useState<string | null>(null);
 
+  /**
+   * Sets the selected language.
+   * @param {string} lang - The selected language.
+   */
   const selectLanguage = (lang: string) => {
     setLanguage(lang);
   };
@@ -20,7 +31,6 @@ const AudioScreen: React.FC<AudioScreenProps> = ({ route }) => {
   if (!language && isPublicSpeaking) {
     return (
       <View style={theme === 'dark' ? styles.darkContainer : styles.container}>
-        {/* White Panel for Language Selection */}
         <View style={styles.whitePanel}>
           <Text
             style={
@@ -52,7 +62,6 @@ const AudioScreen: React.FC<AudioScreenProps> = ({ route }) => {
 
   return (
     <View style={theme === 'dark' ? styles.darkContainer : styles.container}>
-      {/* No White Panel here for Audio */}
       <Text
         style={theme === 'dark' ? styles.darkHeaderText : styles.headerText}>
         {isPublicSpeaking ? '🎤 Public Speaking' : '🗣️ Stuttering'}
@@ -156,7 +165,6 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     color: '#577BC1',
   },
-
   subText: {
     fontSize: 18,
     color: '#fff',
