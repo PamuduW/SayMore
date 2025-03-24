@@ -11,10 +11,18 @@ import LinearGradient from 'react-native-linear-gradient';
 import { useTheme } from '../components/ThemeContext';
 import { useNavigation } from '@react-navigation/native';
 
+/**
+ * ProgressCategoryScreen component that displays different categories of progress.
+ * @returns {JSX.Element} The rendered component.
+ */
 const ProgressCategoryScreen: React.FC = () => {
   const theme = useTheme();
   const navigation = useNavigation();
 
+  /**
+   * Handles the press event on a category to navigate to the corresponding screen.
+   * @param {string} title - The title of the category.
+   */
   const handlePress = (title: string) => {
     if (title === 'Video Progress') {
       navigation.navigate('ProgressScreen');
@@ -34,7 +42,6 @@ const ProgressCategoryScreen: React.FC = () => {
         backgroundColor={theme === 'dark' ? '#000' : '#577BC1'}
       />
       <SafeAreaView style={styles.safeArea}>
-        {/* Header */}
         <View style={styles.headerBar}>
           <TouchableOpacity
             onPress={() => navigation.goBack()}
@@ -58,10 +65,8 @@ const ProgressCategoryScreen: React.FC = () => {
           <View style={styles.headerSpacer} />
         </View>
 
-        {/* Spacer */}
         <View style={styles.spacer} />
 
-        {/* Title */}
         <View style={styles.titleContainer}>
           <Text style={styles.titleText}>Choose a Progress Type</Text>
           <Text style={styles.subtitleText}>
@@ -69,7 +74,6 @@ const ProgressCategoryScreen: React.FC = () => {
           </Text>
         </View>
 
-        {/* Options */}
         <View style={styles.contentWrapper}>
           <TouchableOpacity
             style={[
@@ -188,7 +192,6 @@ const ProgressCategoryScreen: React.FC = () => {
           </TouchableOpacity>
         </View>
 
-        {/* Footer */}
         <View style={styles.footer}>
           <Text
             style={[
