@@ -39,6 +39,14 @@ interface AnalysisResult {
   transcript: string;
 }
 
+/**
+ * Analysis_S component that displays the analysis results of a speech test.
+ * @param {AnalysisSProps} props - The properties for the component.
+ * @param {string} props.filename - The filename of the audio file.
+ * @param {string} props.acc_id - The account ID of the user.
+ * @param {string} props.type - The type of the test.
+ * @returns {JSX.Element} The rendered component.
+ */
 const Analysis_S: React.FC<AnalysisSProps> = ({ filename, acc_id, type }) => {
   const [responseData, setResponseData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
@@ -101,7 +109,6 @@ const Analysis_S: React.FC<AnalysisSProps> = ({ filename, acc_id, type }) => {
           ],
         });
       } catch (error) {
-        //console.error('Error sending POST request:', error);
       } finally {
         setLoading(false);
       }
@@ -110,6 +117,9 @@ const Analysis_S: React.FC<AnalysisSProps> = ({ filename, acc_id, type }) => {
     sendPostRequest();
   }, [filename, acc_id, type, navigation]);
 
+  /**
+   * Handles the navigation to the feedback screen.
+   */
   const handleNext = () => {
     if (responseData) {
       const { result } = responseData as AnalysisResult;
