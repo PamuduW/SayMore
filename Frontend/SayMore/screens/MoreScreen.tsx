@@ -27,11 +27,20 @@ interface MoreScreenProps {
   navigation: NavigationProp<any>;
 }
 
+/**
+ * MoreScreen component that displays a grid of options for the user to navigate to different screens.
+ * @param {MoreScreenProps} props - The properties for the component.
+ * @returns {JSX.Element} The rendered component.
+ */
 const MoreScreen: React.FC<MoreScreenProps> = ({ navigation }) => {
   const theme = useTheme();
   const screenWidth = Dimensions.get('window').width;
   const cardWidth = (screenWidth - 60) / 2;
 
+  /**
+   * Handles the press event on a card to navigate to the corresponding screen.
+   * @param {string} title - The title of the screen to navigate to.
+   */
   const handlePress = (title: string) => {
     if (title === 'Activity') {
       navigation.navigate('ActivityScreen');
