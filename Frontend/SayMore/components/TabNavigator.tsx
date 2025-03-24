@@ -4,7 +4,6 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { Image, StyleSheet } from 'react-native';
 import { useTheme } from '../components/ThemeContext';
 
-// Import Screens
 import HomeScreen from '../screens/HomeScreen';
 import MoreScreen from '../screens/MoreScreen';
 import LessonsScreen from '../screens/LessonsScreen';
@@ -50,11 +49,13 @@ import TestHistory_S from '../screens/TestHistory_S';
 import QuizProgressScreen from '../screens/QuizProgressScreen';
 import ProgressCategoryScreen from '../screens/ProgressCategoryScreen';
 
-// Navigators
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
 
-// Home Stack - The stack navigator for the "Home" section, includes all the screens related to Home.
+/**
+ * HomeStack component that defines the stack navigator for the Home tab.
+ * @returns {JSX.Element} The stack navigator for the Home tab.
+ */
 const HomeStack = () => (
   <Stack.Navigator screenOptions={{ headerShown: false }}>
     <Stack.Screen name="HomeScreen" component={HomeScreen} />
@@ -66,7 +67,6 @@ const HomeStack = () => (
       name="AdditionalDetailsScreen"
       component={AdditionalDetailsScreen}
     />
-    {/* Moved UnderstandingAndOvercomingStuttering to HomeStack to match desired structure */}
     <Stack.Screen
       name="UnderstandingAndOvercomingStutteringScreen"
       component={UnderstandingAndOvercomingStutteringScreen}
@@ -91,7 +91,10 @@ const HomeStack = () => (
   </Stack.Navigator>
 );
 
-// More Stack - The stack navigator for the "More" section, includes all the screens related to lessons, quizzes, and history.
+/**
+ * MoreStack component that defines the stack navigator for the More tab.
+ * @returns {JSX.Element} The stack navigator for the More tab.
+ */
 const MoreStack = () => (
   <Stack.Navigator screenOptions={{ headerShown: false }}>
     <Stack.Screen name="MoreScreen" component={MoreScreen} />
@@ -138,7 +141,10 @@ const MoreStack = () => (
   </Stack.Navigator>
 );
 
-// Account Stack - The stack navigator for the "Account" section, includes screens related to user settings, profile, and security.
+/**
+ * AccountStack component that defines the stack navigator for the Account tab.
+ * @returns {JSX.Element} The stack navigator for the Account tab.
+ */
 const AccountStack = () => (
   <Stack.Navigator screenOptions={{ headerShown: false }}>
     <Stack.Screen name="AccountScreen" component={AccountScreen} />
@@ -160,7 +166,12 @@ const AccountStack = () => (
   </Stack.Navigator>
 );
 
-// Tab Options - Function to set the appearance and behavior of the tab bar based on the theme.
+/**
+ * Function to define screen options for the tab navigator.
+ * @param {Object} route - The route object.
+ * @param {string} theme - The current theme ('light' or 'dark').
+ * @returns {Object} The screen options for the tab navigator.
+ */
 const screenOptions = (route, theme) => {
   const icons = {
     Home: HomeIcon,
@@ -182,20 +193,23 @@ const screenOptions = (route, theme) => {
         ]}
       />
     ),
-    tabBarActiveTintColor: theme === 'dark' ? '#FFFFFF' : '#003366', // Adjusting the active tab icon color based on the theme.
-    tabBarInactiveTintColor: 'gray', // Default color for inactive tabs.
+    tabBarActiveTintColor: theme === 'dark' ? '#FFFFFF' : '#003366',
+    tabBarInactiveTintColor: 'gray',
     tabBarStyle: {
-      backgroundColor: theme === 'dark' ? '#333333' : '#F0F8FF', // Tab bar color based on the theme.
+      backgroundColor: theme === 'dark' ? '#333333' : '#F0F8FF',
       borderTopWidth: 0,
       elevation: 0,
     },
-    headerShown: false, // Hiding the header in the bottom tab bar screens.
+    headerShown: false,
   };
 };
 
-// Main Tab Navigator - The main bottom tab navigation structure combining all the screens.
+/**
+ * TabNavigator component that defines the bottom tab navigator.
+ * @returns {JSX.Element} The bottom tab navigator.
+ */
 const TabNavigator = () => {
-  const theme = useTheme(); // Fetch current theme (light/dark)
+  const theme = useTheme();
 
   return (
     <Tab.Navigator screenOptions={({ route }) => screenOptions(route, theme)}>
@@ -206,23 +220,25 @@ const TabNavigator = () => {
   );
 };
 
-// Styles - Styling for the icons and tab bar.
+/**
+ * Styles for the TabNavigator component.
+ */
 const styles = StyleSheet.create({
   icon: {
     width: 25,
     height: 25,
   },
   activeIcon: {
-    tintColor: '#003366', // Active icon color (default theme).
+    tintColor: '#003366',
   },
   lightActiveIcon: {
-    tintColor: '#003366', // Active icon color for light theme.
+    tintColor: '#003366',
   },
   darkActiveIcon: {
-    tintColor: '#FFFFFF', // Active icon color for dark theme.
+    tintColor: '#FFFFFF',
   },
   inactiveIcon: {
-    tintColor: 'gray', // Inactive icon color.
+    tintColor: 'gray',
   },
 });
 

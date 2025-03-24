@@ -57,6 +57,15 @@ interface AnalysisResult {
   transcription: any;
 }
 
+/**
+ * Analysis_PS component that displays the analysis results of a public speaking test.
+ * @param {Analysis_PSProps} props - The properties for the component.
+ * @param {string} props.filename - The filename of the audio file.
+ * @param {string} props.acc_id - The account ID of the user.
+ * @param {string} props.type - The type of the test.
+ * @param {string} props.language - The language of the test.
+ * @returns {JSX.Element} The rendered component.
+ */
 const Analysis_PS: React.FC<Analysis_PSProps> = ({
   filename,
   acc_id,
@@ -129,7 +138,6 @@ const Analysis_PS: React.FC<Analysis_PSProps> = ({
           ],
         });
       } catch (error) {
-        // Optionally handle error here
       } finally {
         setLoading(false);
       }
@@ -138,6 +146,11 @@ const Analysis_PS: React.FC<Analysis_PSProps> = ({
     sendPostRequest();
   }, [filename, acc_id, type, language, navigation]);
 
+  /**
+   * Calculates the three smallest scores from the analysis result.
+   * @param {AnalysisResult} result - The analysis result.
+   * @returns {Array} The three smallest scores.
+   */
   const calculateThreeSmallestScores = (result: AnalysisResult) => {
     const scores = [
       {
@@ -216,6 +229,9 @@ const Analysis_PS: React.FC<Analysis_PSProps> = ({
     return sortedScores.slice(0, 3);
   };
 
+  /**
+   * Handles the navigation to the feedback screen.
+   */
   const handleNext = () => {
     if (responseData) {
       const { result } = responseData as AnalysisResult;
@@ -246,6 +262,9 @@ const Analysis_PS: React.FC<Analysis_PSProps> = ({
     }
   };
 
+  /**
+   * Handles the navigation to the additional details screen.
+   */
   const handleDetails = () => {
     if (responseData) {
       const { result } = responseData as AnalysisResult;

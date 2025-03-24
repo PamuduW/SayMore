@@ -15,14 +15,12 @@ import { VideoItem } from '../types/types';
 
 interface SpeakingWithEnergyScreenProps {}
 
-const { width } = Dimensions.get('window');
-const videoBoxWidth = (width - 75) / 3;
-const videoBoxMargin = 15;
-const containerPadding = 20;
-
-const SpeakingWithEnergyScreen: React.FC<
-  SpeakingWithEnergyScreenProps
-> = () => {
+/**
+ * SpeakingWithEnergyScreen component that displays videos and recommended lessons
+ * related to speaking with energy.
+ * @returns {JSX.Element} The rendered component.
+ */
+const SpeakingWithEnergyScreen: React.FC<SpeakingWithEnergyScreenProps> = () => {
   const navigation = useNavigation();
   const [energyVideos, setEnergyVideos] = useState<VideoItem[]>([]);
   const [recommendedLessons, setRecommendedLessons] = useState<
@@ -34,6 +32,9 @@ const SpeakingWithEnergyScreen: React.FC<
   >([]);
   const [loading, setLoading] = useState(true);
 
+  /**
+   * Fetches videos related to speaking with energy from Firestore.
+   */
   const fetchEnergyVideos = useCallback(async () => {
     try {
       const energySnapshot = await firestore()
@@ -53,6 +54,9 @@ const SpeakingWithEnergyScreen: React.FC<
   }, []);
 
   useEffect(() => {
+    /**
+     * Fetches recommended lessons from Firestore.
+     */
     const fetchRecommendedLessons = async () => {
       try {
         const publicSpeakingLessons = [
@@ -83,18 +87,20 @@ const SpeakingWithEnergyScreen: React.FC<
           }
         }
 
-        // Filter out Speaking with Energy lessons
         const filteredLessons = lessonsWithVideos.filter(
           lesson => lesson.category !== 'Speaking with Energy'
         );
 
         setRecommendedLessons(filteredLessons);
       } catch (error) {
-        // Handle error
       } finally {
         setLoading(false);
       }
     };
+
+    /**
+     * Loads data by fetching energy videos and recommended lessons.
+     */
     const loadData = async () => {
       setLoading(true);
       await fetchEnergyVideos();
@@ -105,10 +111,19 @@ const SpeakingWithEnergyScreen: React.FC<
     loadData();
   }, [fetchEnergyVideos]);
 
+  /**
+   * Handles the back button press to navigate to the previous screen.
+   */
   const handleBackPress = () => {
     navigation.goBack();
   };
 
+  /**
+   * Handles the video press to navigate to the VideoPlayer screen.
+   * @param {VideoItem} video - The video item to play.
+   * @param {string} lessonTitle - The title of the lesson.
+   * @param {string} _documentId - The document ID of the lesson.
+   */
   const handleVideoPress = (
     video: VideoItem,
     lessonTitle: string,

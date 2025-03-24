@@ -11,10 +11,18 @@ import LinearGradient from 'react-native-linear-gradient';
 import { useTheme } from '../components/ThemeContext';
 import { useNavigation } from '@react-navigation/native';
 
+/**
+ * PointsCategoryScreen component that displays different categories of points.
+ * @returns {JSX.Element} The rendered component.
+ */
 const PointsCategoryScreen: React.FC = () => {
   const theme = useTheme();
   const navigation = useNavigation();
 
+  /**
+   * Handles the press event on a category to navigate to the corresponding screen.
+   * @param {string} title - The title of the category.
+   */
   const handlePress = (title: string) => {
     if (title === 'Lessons Points') {
       navigation.navigate('TotalPointsScreen');
@@ -34,7 +42,6 @@ const PointsCategoryScreen: React.FC = () => {
         backgroundColor={theme === 'dark' ? '#000' : '#577BC1'}
       />
       <SafeAreaView style={styles.safeArea}>
-        {/* Header Row with Back Button */}
         <View style={styles.headerBar}>
           <TouchableOpacity
             onPress={() => navigation.goBack()}
@@ -58,10 +65,8 @@ const PointsCategoryScreen: React.FC = () => {
           <View style={styles.headerSpacer} />
         </View>
 
-        {/* Spacer to push title down */}
         <View style={styles.spacer} />
 
-        {/* Title container moved down */}
         <View style={styles.titleContainer}>
           <Text style={styles.titleText}>Choose a Category</Text>
           <Text style={styles.subtitleText}>
@@ -69,7 +74,6 @@ const PointsCategoryScreen: React.FC = () => {
           </Text>
         </View>
 
-        {/* Middle Content */}
         <View style={styles.contentWrapper}>
           <TouchableOpacity
             style={[
@@ -236,7 +240,6 @@ const styles = StyleSheet.create({
     width: 48,
   },
 
-  // Add spacer to push title down
   spacer: {
     height: 30,
   },
