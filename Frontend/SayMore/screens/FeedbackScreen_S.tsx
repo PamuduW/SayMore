@@ -1,6 +1,8 @@
 import React from 'react';
 import { Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import LinearGradient from 'react-native-linear-gradient';
+import { useTheme } from '../components/ThemeContext';
 
 interface FeedbackScreenSProps {
   route: {
@@ -15,6 +17,7 @@ interface FeedbackScreenSProps {
 const FeedbackScreen_S: React.FC<FeedbackScreenSProps> = ({ route }) => {
   const { stutter_feedback, stutter_count, stutter_score } = route.params;
   const navigation = useNavigation();
+  const theme = useTheme();
 
   const handleImprovePress = () => {
     if (stutter_count > 3) {
@@ -24,25 +27,47 @@ const FeedbackScreen_S: React.FC<FeedbackScreenSProps> = ({ route }) => {
     }
   };
 
-  const displayStutterScore = isNaN(stutter_score)
-    ? 20 // Dummy value if stutter_score is NaN
-    : stutter_score;
-
   return (
-    <ScrollView contentContainerStyle={styles.container}>
-      <Text style={styles.title}>Feedback</Text>
-      <Text style={styles.stutterScore}>
-        Stutter Score: {displayStutterScore}
-      </Text>
-      <Text style={styles.label}>Stutter feedback:</Text>
-      <Text style={styles.value}>{stutter_feedback}</Text>
+    <LinearGradient
+      colors={
+        theme === 'dark' ? ['#1C1C1C', '#3A3A3A'] : ['#577BC1', '#577BC1']
+      }
+      style={styles.container}>
+            <TouchableOpacity
+              onPress={handleBackPress}
+              style={styles.backButtonWrapper}>
+              <Image
+                source={require('../assets/back.png')}
+                style={styles.backButton}
+              />
+            </TouchableOpacity>
 
-      <TouchableOpacity
-        style={styles.improveButton}
-        onPress={handleImprovePress}>
-        <Text style={styles.improveButtonText}>Improve</Text>
-      </TouchableOpacity>
-    </ScrollView>
+      <ScrollView contentContainerStyle={styles.container}>
+        <Text style={styles.title}>Your Speech Feedback</Text>
+
+                <View style={styles.feedbackBlock}>
+                  <Text style={styles.label}>Final Stutter Score</Text>
+                  <Text style={styles.valueHighlight}>{stutter_score}</Text>
+                </View>
+
+                        <View style={styles.feedbackBlock}>
+                          <Text style={styles.label}>Dynamic Feedback</Text>
+                          <Text style={styles.value}>{final_public_speaking_feedback}</Text>
+                        </View>
+
+        <Text style={styles.stutterScore}>
+          Stutter Score: {displayStutterScore}
+        </Text>
+        <Text style={styles.label}>Stutter feedback:</Text>
+        <Text style={styles.value}>{stutter_feedback}</Text>
+
+        <TouchableOpacity
+          style={styles.improveButton}
+          onPress={handleImprovePress}>
+          <Text style={styles.improveButtonText}>Improve</Text>
+        </TouchableOpacity>
+      </ScrollView>
+    </LinearGradient>
   );
 };
 
