@@ -16,6 +16,10 @@ import { useNavigation } from '@react-navigation/native';
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import firestore from '@react-native-firebase/firestore';
 
+/**
+ * SignUpScreen component that allows users to sign up using email/password or Google Sign-In.
+ * @returns {JSX.Element} The rendered component.
+ */
 export default function SignUpScreen() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -23,6 +27,9 @@ export default function SignUpScreen() {
   const [loading, setLoading] = useState(false);
   const navigation = useNavigation();
 
+  /**
+   * Handles the sign-up process using email and password.
+   */
   const handleSignUp = async () => {
     const trimmedEmail = email.trim();
     const trimmedPassword = password.trim();
@@ -76,6 +83,9 @@ export default function SignUpScreen() {
     }
   };
 
+  /**
+   * Handles the sign-in process using Google Sign-In.
+   */
   const handleGoogleSignIn = async () => {
     try {
       await GoogleSignin.hasPlayServices({
@@ -98,7 +108,7 @@ export default function SignUpScreen() {
         await firestore().collection('User_Accounts').doc(user.uid).set({
           email: user.email,
           createdAt: firestore.FieldValue.serverTimestamp(),
-          profileComplete: false, // Ensure profileComplete is set to false initially
+          profileComplete: false,
         });
       }
     } catch (error) {
