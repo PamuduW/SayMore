@@ -94,8 +94,12 @@ const ActivityScreen: React.FC<Props> = ({
   };
 
   const handleNavigateToHistory = () => {
-    (navigation as any).navigate('HistoryScreen');
+    (navigation as any).navigate('History');
   };
+
+    const handleNavigateToLessons = () => {
+      (navigation as any).navigate('Lessons');
+    };
 
   return (
     <ScrollView
@@ -160,7 +164,7 @@ const ActivityScreen: React.FC<Props> = ({
               theme === 'dark' ? styles.darkStatCard : styles.lightStatCard,
               styles.statCard,
             ]}
-            onPress={handleNavigateToHistory}>
+            onPress={handleNavigateToLessons}>
             <View style={styles.iconPlaceholder}>
               <Text style={styles.iconText}>📚</Text>
             </View>
