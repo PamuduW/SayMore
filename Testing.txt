@@ -1,0 +1,3 @@
+pip install pytest pytest-asyncio
+
+pip install httpx
