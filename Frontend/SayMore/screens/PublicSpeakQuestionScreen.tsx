@@ -40,7 +40,6 @@ const PublicSpeakQuestionScreen: React.FC = ({ navigation, route }: any) => {
   const [isNextButtonVisible, setIsNextButtonVisible] = useState(false);
   const [score, setScore] = useState(0);
   const [loading, setLoading] = useState<boolean>(true);
-  const [progress, setProgress] = useState<number>(0);
   const [completedQuestions, setCompletedQuestions] = useState(0);
 
   useEffect(() => {
@@ -111,7 +110,6 @@ const PublicSpeakQuestionScreen: React.FC = ({ navigation, route }: any) => {
 
       setShuffledOptions(shuffledAnswers);
       setCorrectIndex(correctAnswerIndex);
-      setProgress(currentQuestionIndex / questions.length);
     }
   }, [currentQuestionIndex, questions]);
 
@@ -127,7 +125,6 @@ const PublicSpeakQuestionScreen: React.FC = ({ navigation, route }: any) => {
       if (correct) setScore(score + 10);
       setIsConfirmButtonVisible(false);
       setIsNextButtonVisible(true);
-      setProgress((currentQuestionIndex + 1) / questions.length);
       setCompletedQuestions(prev => prev + 1);
     }
   };
@@ -234,7 +231,9 @@ const PublicSpeakQuestionScreen: React.FC = ({ navigation, route }: any) => {
               onPress={handleBackPress}
               style={[
                 styles.backButton,
-                theme === 'dark' ? styles.backButtonDark : styles.backButtonLight,
+                theme === 'dark'
+                  ? styles.backButtonDark
+                  : styles.backButtonLight,
               ]}>
               <Text
                 style={[
@@ -300,7 +299,9 @@ const PublicSpeakQuestionScreen: React.FC = ({ navigation, route }: any) => {
           )}
 
           {isNextButtonVisible && isLastQuestion && (
-            <TouchableOpacity onPress={handleFinish} style={styles.finishButton}>
+            <TouchableOpacity
+              onPress={handleFinish}
+              style={styles.finishButton}>
               <Text style={styles.finishButtonText}>Finish Quiz</Text>
             </TouchableOpacity>
           )}
@@ -505,10 +506,10 @@ const styles = StyleSheet.create({
     zIndex: 10,
   },
   backButtonLight: {
-    backgroundColor: 'rgba(230, 247, 255, 0.9)'
+    backgroundColor: 'rgba(230, 247, 255, 0.9)',
   },
   backButtonDark: {
-    backgroundColor: 'rgba(255, 255, 255, 0.9)'
+    backgroundColor: 'rgba(255, 255, 255, 0.9)',
   },
   backButtonText: {
     fontSize: 28,
@@ -531,7 +532,7 @@ const styles = StyleSheet.create({
   },
   bottomPadding: {
     height: 40, // Add extra space at the bottom for scrolling
-  }
+  },
 });
 
 export default PublicSpeakQuestionScreen;

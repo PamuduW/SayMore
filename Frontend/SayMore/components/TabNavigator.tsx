@@ -46,6 +46,7 @@ import ClarityAndPitchScreen from '../screens/ClarityAndPitchScreen';
 import SpeakingWithEnergyScreen from '../screens/SpeakingWithEnergyScreen';
 import TestHistory from '../screens/TestHistory';
 import TestHistory_PS from '../screens/TestHistory_PS';
+import TestHistory_S from '../screens/TestHistory_S';
 import QuizProgressScreen from '../screens/QuizProgressScreen';
 import ProgressCategoryScreen from '../screens/ProgressCategoryScreen';
 
@@ -101,7 +102,10 @@ const MoreStack = () => (
     <Stack.Screen name="LessonsPointsScreen" component={LessonsPointsScreen} />
     <Stack.Screen name="History" component={HistoryScreen} />
     <Stack.Screen name="QuizzesNavScreen" component={QuizzesNavScreen} />
-    <Stack.Screen name="ProgressCategoryScreen" component={ProgressCategoryScreen} />
+    <Stack.Screen
+      name="ProgressCategoryScreen"
+      component={ProgressCategoryScreen}
+    />
     <Stack.Screen
       name="PointsCategoryScreen"
       component={PointsCategoryScreen}
@@ -130,6 +134,7 @@ const MoreStack = () => (
     />
     <Stack.Screen name="TestHistory" component={TestHistory} />
     <Stack.Screen name="TestHistory_PS" component={TestHistory_PS} />
+    <Stack.Screen name="TestHistory_S" component={TestHistory_S} />
   </Stack.Navigator>
 );
 

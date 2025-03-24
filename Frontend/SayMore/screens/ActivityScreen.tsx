@@ -13,6 +13,7 @@ import {
 import { useNavigation } from '@react-navigation/native';
 import firestore from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
+import LinearGradient from 'react-native-linear-gradient';
 
 interface Props {
   userRecords: { score: number }[];
@@ -20,7 +21,11 @@ interface Props {
   totalWatchedVideos: number;
 }
 
-const ActivityScreen: React.FC<Props> = ({ userRecords, totalWatchedLessons, totalWatchedVideos }) => {
+const ActivityScreen: React.FC<Props> = ({
+  userRecords,
+  totalWatchedLessons,
+  totalWatchedVideos,
+}) => {
   const [stats, setStats] = useState({
     totalQuizzes: 0,
     stutteringQuizzes: 0,
@@ -89,8 +94,12 @@ const ActivityScreen: React.FC<Props> = ({ userRecords, totalWatchedLessons, tot
   };
 
   const handleNavigateToHistory = () => {
-    (navigation as any).navigate('HistoryScreen');
+    (navigation as any).navigate('History');
   };
+
+    const handleNavigateToLessons = () => {
+      (navigation as any).navigate('Lessons');
+    };
 
   return (
     <ScrollView
@@ -98,9 +107,16 @@ const ActivityScreen: React.FC<Props> = ({ userRecords, totalWatchedLessons, tot
       style={theme === 'dark' ? styles.darkContainer : styles.lightContainer}>
       <View style={styles.headerContainer}>
         <TouchableOpacity
-          style={theme === 'dark' ? styles.darkBackButton : styles.lightBackButton}
+          style={
+            theme === 'dark' ? styles.darkBackButton : styles.lightBackButton
+          }
           onPress={handleBackPress}>
-          <Text style={theme === 'dark' ? styles.darkBackButtonText : styles.lightBackButtonText}>
+          <Text
+            style={
+              theme === 'dark'
+                ? styles.darkBackButtonText
+                : styles.lightBackButtonText
+            }>
             ←
           </Text>
         </TouchableOpacity>
@@ -111,7 +127,10 @@ const ActivityScreen: React.FC<Props> = ({ userRecords, totalWatchedLessons, tot
       </View>
 
       <View style={styles.imageContainer}>
-        <Image source={require('../assets/act.jpg')} style={styles.progressImage} />
+        <Image
+          source={require('../assets/act.jpg')}
+          style={styles.progressImage}
+        />
       </View>
 
       <View style={styles.statsContainer}>
@@ -120,16 +139,22 @@ const ActivityScreen: React.FC<Props> = ({ userRecords, totalWatchedLessons, tot
           <TouchableOpacity
             style={[
               theme === 'dark' ? styles.darkStatCard : styles.lightStatCard,
-              styles.statCard
+              styles.statCard,
             ]}
             onPress={handleNavigateToHistory}>
             <View style={styles.iconPlaceholder}>
               <Text style={styles.iconText}>🎬</Text>
             </View>
-            <Text style={theme === 'dark' ? styles.darkStatTitle : styles.statTitle}>
+            <Text
+              style={
+                theme === 'dark' ? styles.darkStatTitle : styles.statTitle
+              }>
               Videos
             </Text>
-            <Text style={theme === 'dark' ? styles.darkStatValue : styles.statValue}>
+            <Text
+              style={
+                theme === 'dark' ? styles.darkStatValue : styles.statValue
+              }>
               {totalWatchedVideos}
             </Text>
           </TouchableOpacity>
@@ -137,16 +162,22 @@ const ActivityScreen: React.FC<Props> = ({ userRecords, totalWatchedLessons, tot
           <TouchableOpacity
             style={[
               theme === 'dark' ? styles.darkStatCard : styles.lightStatCard,
-              styles.statCard
+              styles.statCard,
             ]}
-            onPress={handleNavigateToHistory}>
+            onPress={handleNavigateToLessons}>
             <View style={styles.iconPlaceholder}>
               <Text style={styles.iconText}>📚</Text>
             </View>
-            <Text style={theme === 'dark' ? styles.darkStatTitle : styles.statTitle}>
+            <Text
+              style={
+                theme === 'dark' ? styles.darkStatTitle : styles.statTitle
+              }>
               Lessons
             </Text>
-            <Text style={theme === 'dark' ? styles.darkStatValue : styles.statValue}>
+            <Text
+              style={
+                theme === 'dark' ? styles.darkStatValue : styles.statValue
+              }>
               {totalWatchedLessons}
             </Text>
           </TouchableOpacity>
@@ -154,52 +185,82 @@ const ActivityScreen: React.FC<Props> = ({ userRecords, totalWatchedLessons, tot
 
         {/* Quiz Stats */}
         <View style={styles.quizStatsContainer}>
-          <Text style={theme === 'dark' ? styles.darkSectionTitle : styles.sectionTitle}>
+          <Text
+            style={
+              theme === 'dark' ? styles.darkSectionTitle : styles.sectionTitle
+            }>
             Quiz Performance
           </Text>
 
-          <View style={theme === 'dark' ? styles.darkQuizCard : styles.lightQuizCard}>
+          <View
+            style={
+              theme === 'dark' ? styles.darkQuizCard : styles.lightQuizCard
+            }>
             <View style={styles.quizRow}>
               <View style={styles.quizIconContainer}>
                 <Text style={styles.quizIcon}>📊</Text>
               </View>
               <View style={styles.quizTextContainer}>
-                <Text style={theme === 'dark' ? styles.darkQuizTitle : styles.quizTitle}>
+                <Text
+                  style={
+                    theme === 'dark' ? styles.darkQuizTitle : styles.quizTitle
+                  }>
                   Total Quizzes
                 </Text>
-                <Text style={theme === 'dark' ? styles.darkQuizValue : styles.quizValue}>
+                <Text
+                  style={
+                    theme === 'dark' ? styles.darkQuizValue : styles.quizValue
+                  }>
                   {stats.totalQuizzes}
                 </Text>
               </View>
             </View>
           </View>
 
-          <View style={theme === 'dark' ? styles.darkQuizCard : styles.lightQuizCard}>
+          <View
+            style={
+              theme === 'dark' ? styles.darkQuizCard : styles.lightQuizCard
+            }>
             <View style={styles.quizRow}>
               <View style={styles.quizIconContainer}>
                 <Text style={styles.quizIcon}>🗣</Text>
               </View>
               <View style={styles.quizTextContainer}>
-                <Text style={theme === 'dark' ? styles.darkQuizTitle : styles.quizTitle}>
+                <Text
+                  style={
+                    theme === 'dark' ? styles.darkQuizTitle : styles.quizTitle
+                  }>
                   Stuttering Quizzes
                 </Text>
-                <Text style={theme === 'dark' ? styles.darkQuizValue : styles.quizValue}>
+                <Text
+                  style={
+                    theme === 'dark' ? styles.darkQuizValue : styles.quizValue
+                  }>
                   {stats.stutteringQuizzes}
                 </Text>
               </View>
             </View>
           </View>
 
-          <View style={theme === 'dark' ? styles.darkQuizCard : styles.lightQuizCard}>
+          <View
+            style={
+              theme === 'dark' ? styles.darkQuizCard : styles.lightQuizCard
+            }>
             <View style={styles.quizRow}>
               <View style={styles.quizIconContainer}>
                 <Text style={styles.quizIcon}>🎤</Text>
               </View>
               <View style={styles.quizTextContainer}>
-                <Text style={theme === 'dark' ? styles.darkQuizTitle : styles.quizTitle}>
+                <Text
+                  style={
+                    theme === 'dark' ? styles.darkQuizTitle : styles.quizTitle
+                  }>
                   Public Speaking Quizzes
                 </Text>
-                <Text style={theme === 'dark' ? styles.darkQuizValue : styles.quizValue}>
+                <Text
+                  style={
+                    theme === 'dark' ? styles.darkQuizValue : styles.quizValue
+                  }>
                   {stats.publicSpeakingQuizzes}
                 </Text>
               </View>
@@ -208,14 +269,23 @@ const ActivityScreen: React.FC<Props> = ({ userRecords, totalWatchedLessons, tot
         </View>
       </View>
 
-      <Text style={theme === 'dark' ? styles.darkFooterText : styles.lightFooterText}>
+      <Text
+        style={
+          theme === 'dark' ? styles.darkFooterText : styles.lightFooterText
+        }>
         You're doing great! Keep up the effort and continue learning! 🌟
       </Text>
 
-      <TouchableOpacity
-        style={theme === 'dark' ? styles.darkShareButton : styles.lightShareButton}
-        onPress={handleShare}>
-        <Text style={styles.shareText}>➤ Share Your Activity</Text>
+      <TouchableOpacity activeOpacity={0.85} onPress={handleShare}>
+        <LinearGradient
+          colors={
+            theme === 'dark' ? ['#4A4A4A', '#6B6B6B'] : ['#3B5998', '#577BC1']
+          }
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 1 }}
+          style={styles.buttonGradient}>
+          <Text style={styles.shareText}>➤ Share Your Activity</Text>
+        </LinearGradient>
       </TouchableOpacity>
     </ScrollView>
   );
@@ -231,7 +301,7 @@ const styles = StyleSheet.create({
   lightContainer: {
     flex: 1,
     padding: 20,
-    backgroundColor: '#F5F7FA',
+    backgroundColor: '#577BC1',
   },
   darkContainer: {
     flex: 1,
@@ -432,6 +502,14 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#EEE',
     lineHeight: 22,
+  },
+  buttonGradient: {
+    paddingVertical: 14,
+    borderRadius: 25,
+    alignItems: 'center',
+    justifyContent: 'center',
+    elevation: 12,
+    marginBottom: 20,
   },
   lightShareButton: {
     backgroundColor: '#0070E0',

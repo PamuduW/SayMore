@@ -1,20 +1,30 @@
 import React from 'react';
-import { Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
+import {
+  Text,
+  StyleSheet,
+  ScrollView,
+  TouchableOpacity,
+  Image,
+  View,
+} from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import LinearGradient from 'react-native-linear-gradient';
+import { useTheme } from '../components/ThemeContext';
 
 interface FeedbackScreenSProps {
   route: {
     params: {
-      stutter_feedback: string;
+      dynamic_feedback: string;
       stutter_count: number;
-      stutter_score: number;
+      stuttering_score: number;
     };
   };
 }
 
 const FeedbackScreen_S: React.FC<FeedbackScreenSProps> = ({ route }) => {
-  const { stutter_feedback, stutter_count, stutter_score } = route.params;
+  const { dynamic_feedback, stutter_count, stuttering_score } = route.params;
   const navigation = useNavigation();
+  const theme = useTheme();
 
   const handleImprovePress = () => {
     if (stutter_count > 3) {
@@ -24,66 +34,113 @@ const FeedbackScreen_S: React.FC<FeedbackScreenSProps> = ({ route }) => {
     }
   };
 
-  const displayStutterScore = isNaN(stutter_score)
-    ? 20 // Dummy value if stutter_score is NaN
-    : stutter_score;
+  const handleBackPress = () => {
+    navigation.goBack();
+  };
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
-      <Text style={styles.title}>Feedback</Text>
-      <Text style={styles.stutterScore}>
-        Stutter Score: {displayStutterScore}
-      </Text>
-      <Text style={styles.label}>Stutter feedback:</Text>
-      <Text style={styles.value}>{stutter_feedback}</Text>
-
+    <LinearGradient
+      colors={
+        theme === 'dark' ? ['#1C1C1C', '#3A3A3A'] : ['#577BC1', '#577BC1']
+      }
+      style={styles.container}>
       <TouchableOpacity
-        style={styles.improveButton}
-        onPress={handleImprovePress}>
-        <Text style={styles.improveButtonText}>Improve</Text>
+        onPress={handleBackPress}
+        style={styles.backButtonWrapper}>
+        <Image
+          source={require('../assets/back.png')}
+          style={styles.backButton}
+        />
       </TouchableOpacity>
-    </ScrollView>
+
+      <ScrollView contentContainerStyle={styles.container}>
+        <Text style={styles.title}>Your Speech Feedback</Text>
+
+        <View style={styles.feedbackBlock}>
+          <Text style={styles.label}>Final Stutter Score</Text>
+          <Text style={styles.valueHighlight}>{stuttering_score}</Text>
+        </View>
+
+        <View style={styles.feedbackBlock}>
+          <Text style={styles.label}>Dynamic Feedback</Text>
+          <Text style={styles.value}>{dynamic_feedback}</Text>
+        </View>
+
+        <TouchableOpacity onPress={handleImprovePress}>
+          <LinearGradient
+            colors={
+              theme === 'dark' ? ['#1C1C1C', '#3A3A3A'] : ['#3B5998', '#577BC1']
+            }
+            style={styles.improveButton}>
+            <Text style={styles.improveText}>Improve</Text>
+          </LinearGradient>
+        </TouchableOpacity>
+      </ScrollView>
+    </LinearGradient>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flexGrow: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
     padding: 16,
   },
+  content: {
+    paddingBottom: 40,
+    paddingTop: 50,
+  },
   title: {
-    fontSize: 24,
+    fontSize: 28,
     fontWeight: 'bold',
-    marginBottom: 20,
+    color: '#FFFFFF',
+    textAlign: 'center',
+    marginBottom: 30,
   },
   label: {
     fontSize: 18,
     fontWeight: 'bold',
-    marginTop: 10,
+    color: '#FFFFFF',
+    marginBottom: 8,
+    textAlign: 'center',
   },
   value: {
     fontSize: 16,
-    marginBottom: 10,
+    color: '#D0D3E6',
   },
-  improveButton: {
-    backgroundColor: 'blue',
-    paddingVertical: 12,
-    paddingHorizontal: 24,
-    borderRadius: 8,
-    marginTop: 20,
-  },
-  improveButtonText: {
-    color: 'white',
-    fontSize: 18,
+  valueHighlight: {
+    fontSize: 24,
     fontWeight: 'bold',
+    color: '#FFD700',
     textAlign: 'center',
   },
-  stutterScore: {
-    fontSize: 18,
+
+  backButtonWrapper: {
+    position: 'absolute',
+    top: 10,
+    left: 10,
+    zIndex: 10,
+  },
+  backButton: {
+    width: 30,
+    height: 30,
+  },
+  feedbackBlock: {
+    marginBottom: 20,
+    backgroundColor: '#034694',
+    padding: 16,
+    borderRadius: 15,
+  },
+  improveButton: {
+    paddingVertical: 10,
+    paddingHorizontal: 18,
+    borderRadius: 12,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  improveText: {
+    color: '#FFFFFF',
     fontWeight: 'bold',
-    marginBottom: 10,
+    fontSize: 14,
   },
 });
 

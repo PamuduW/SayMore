@@ -59,7 +59,8 @@ const QuizProgressScreen = () => {
 
           // Sort by timestamp (oldest first or newest first as needed)
           attempts.sort(
-            (a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime()
+            (a, b) =>
+              new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime()
           );
           setQuizAttempts(attempts);
         }
@@ -82,32 +83,28 @@ const QuizProgressScreen = () => {
         styles.quizCard,
         { borderColor: borderInterpolation },
         theme === 'dark' ? styles.quizCardDark : styles.quizCardLight,
-      ]}
-    >
+      ]}>
       <View style={styles.quizDetails}>
         <Text
           style={[
             styles.quizTitle,
             theme === 'dark' ? styles.quizTitleDark : styles.quizTitleLight,
           ]}
-          numberOfLines={2}
-        >
+          numberOfLines={2}>
           {item.quizType} Quiz
         </Text>
         <Text
           style={[
             styles.scoreText,
             theme === 'dark' ? styles.scoreTextDark : styles.scoreTextLight,
-          ]}
-        >
+          ]}>
           Score: {item.score} / {item.totalPoints}
         </Text>
         <Text
           style={[
             styles.timestamp,
             theme === 'dark' ? styles.timestampDark : styles.timestampLight,
-          ]}
-        >
+          ]}>
           {item.timestamp || 'N/A'}
         </Text>
       </View>
@@ -119,7 +116,7 @@ const QuizProgressScreen = () => {
     labels: quizAttempts.map(() => ''), // Hide X-axis labels
     datasets: [
       {
-        data: quizAttempts.map((attempt) =>
+        data: quizAttempts.map(attempt =>
           attempt.totalPoints ? (attempt.score / attempt.totalPoints) * 100 : 0
         ),
         color: () => (theme === 'dark' ? '#777777' : '#577BC1'),
@@ -129,9 +126,10 @@ const QuizProgressScreen = () => {
 
   return (
     <LinearGradient
-      colors={theme === 'dark' ? ['#000000', '#121212'] : ['#577BC1', '#577BC1']}
-      style={styles.container}
-    >
+      colors={
+        theme === 'dark' ? ['#000000', '#121212'] : ['#577BC1', '#577BC1']
+      }
+      style={styles.container}>
       <StatusBar
         barStyle="light-content"
         backgroundColor={theme === 'dark' ? '#000000' : '#577BC1'}
@@ -143,14 +141,14 @@ const QuizProgressScreen = () => {
               styles.backButton,
               theme === 'dark' ? styles.backButtonDark : styles.backButtonLight,
             ]}
-            onPress={handleBackPress}
-          >
+            onPress={handleBackPress}>
             <Text
               style={[
                 styles.backButtonText,
-                theme === 'dark' ? styles.backButtonTextDark : styles.backButtonTextLight,
-              ]}
-            >
+                theme === 'dark'
+                  ? styles.backButtonTextDark
+                  : styles.backButtonTextLight,
+              ]}>
               ←
             </Text>
           </TouchableOpacity>
@@ -163,23 +161,27 @@ const QuizProgressScreen = () => {
             <Text
               style={[
                 styles.sectionTitle,
-                theme === 'dark' ? styles.sectionTitleDark : styles.sectionTitleLight,
-              ]}
-            >
+                theme === 'dark'
+                  ? styles.sectionTitleDark
+                  : styles.sectionTitleLight,
+              ]}>
               Quiz Performance Over Time
             </Text>
             <Text
               style={[
                 styles.sectionSubtitle,
-                theme === 'dark' ? styles.sectionSubtitleDark : styles.sectionSubtitleLight,
-              ]}
-            >
+                theme === 'dark'
+                  ? styles.sectionSubtitleDark
+                  : styles.sectionSubtitleLight,
+              ]}>
               {quizAttempts.length}{' '}
               {quizAttempts.length === 1 ? 'attempt' : 'attempts'} recorded
             </Text>
             <Animated.View
-              style={[styles.chartContainer, { borderColor: borderInterpolation }]}
-            >
+              style={[
+                styles.chartContainer,
+                { borderColor: borderInterpolation },
+              ]}>
               {quizAttempts.length > 0 ? (
                 <LineChart
                   data={chartData}
@@ -188,11 +190,14 @@ const QuizProgressScreen = () => {
                   yAxisSuffix="%"
                   chartConfig={{
                     backgroundColor: theme === 'dark' ? '#333333' : '#3B5998',
-                    backgroundGradientFrom: theme === 'dark' ? '#333333' : '#3B5998',
-                    backgroundGradientTo: theme === 'dark' ? '#555555' : '#577BC1',
+                    backgroundGradientFrom:
+                      theme === 'dark' ? '#333333' : '#3B5998',
+                    backgroundGradientTo:
+                      theme === 'dark' ? '#555555' : '#577BC1',
                     decimalPlaces: 0,
                     color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-                    labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+                    labelColor: (opacity = 1) =>
+                      `rgba(255, 255, 255, ${opacity})`,
                     style: { borderRadius: 16 },
                     propsForDots: {
                       r: '6',
@@ -210,17 +215,19 @@ const QuizProgressScreen = () => {
                   <Text
                     style={[
                       styles.noDataText,
-                      theme === 'dark' ? styles.noDataTextDark : styles.noDataTextLight,
-                    ]}
-                  >
+                      theme === 'dark'
+                        ? styles.noDataTextDark
+                        : styles.noDataTextLight,
+                    ]}>
                     No quiz data available
                   </Text>
                   <Text
                     style={[
                       styles.noDataSubtext,
-                      theme === 'dark' ? styles.noDataSubtextDark : styles.noDataSubtextLight,
-                    ]}
-                  >
+                      theme === 'dark'
+                        ? styles.noDataSubtextDark
+                        : styles.noDataSubtextLight,
+                    ]}>
                     Complete quizzes to track your performance over time.
                   </Text>
                 </View>
@@ -232,9 +239,10 @@ const QuizProgressScreen = () => {
             <Text
               style={[
                 styles.sectionTitle,
-                theme === 'dark' ? styles.sectionTitleDark : styles.sectionTitleLight,
-              ]}
-            >
+                theme === 'dark'
+                  ? styles.sectionTitleDark
+                  : styles.sectionTitleLight,
+              ]}>
               Recent Quiz Attempts
             </Text>
             {quizAttempts.length > 0 ? (
@@ -263,16 +271,14 @@ const EmptyListComponent = ({ theme }) => (
       style={[
         styles.emptyText,
         theme === 'dark' ? styles.emptyTextDark : styles.emptyTextLight,
-      ]}
-    >
+      ]}>
       No quizzes attempted yet
     </Text>
     <Text
       style={[
         styles.emptySubtext,
         theme === 'dark' ? styles.emptySubtextDark : styles.emptySubtextLight,
-      ]}
-    >
+      ]}>
       Take some quizzes to see your performance history.
     </Text>
   </View>
@@ -288,13 +294,24 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingVertical: 16,
   },
-  backButton: { width: 48, height: 48, borderRadius: 12, justifyContent: 'center', alignItems: 'center' },
+  backButton: {
+    width: 48,
+    height: 48,
+    borderRadius: 12,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   backButtonDark: { backgroundColor: '#333333' },
   backButtonLight: { backgroundColor: '#E6F7FF' },
   backButtonText: { fontSize: 28, fontWeight: 'bold' },
   backButtonTextDark: { color: '#FFFFFF' },
   backButtonTextLight: { color: '#2C3E50' },
-  headerText: { fontSize: 24, fontWeight: 'bold', color: '#FFFFFF', textAlign: 'center' },
+  headerText: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#FFFFFF',
+    textAlign: 'center',
+  },
   spacer: { width: 48 },
   chartSection: { paddingHorizontal: 20, marginBottom: 24 },
   sectionTitle: { fontSize: 24, fontWeight: 'bold', marginBottom: 4 },
@@ -303,9 +320,20 @@ const styles = StyleSheet.create({
   sectionSubtitle: { fontSize: 16, marginBottom: 16 },
   sectionSubtitleDark: { color: '#AAAAAA' },
   sectionSubtitleLight: { color: '#718096' },
-  chartContainer: { borderRadius: 20, overflow: 'hidden', padding: 8, backgroundColor: 'transparent', borderWidth: 2 },
+  chartContainer: {
+    borderRadius: 20,
+    overflow: 'hidden',
+    padding: 8,
+    backgroundColor: 'transparent',
+    borderWidth: 2,
+  },
   chartStyle: { marginVertical: 8, borderRadius: 16 },
-  noDataContainer: { height: 220, justifyContent: 'center', alignItems: 'center', padding: 20 },
+  noDataContainer: {
+    height: 220,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20,
+  },
   noDataText: { fontSize: 16, textAlign: 'center' },
   noDataTextDark: { color: '#FFFFFF' },
   noDataTextLight: { color: '#2A2D57' },
@@ -337,11 +365,26 @@ const styles = StyleSheet.create({
   timestamp: { fontSize: 12, alignSelf: 'flex-end' },
   timestampDark: { color: '#BBBBBB' },
   timestampLight: { color: '#718096' },
-  emptyContainer: { alignItems: 'center', justifyContent: 'center', paddingVertical: 40, paddingHorizontal: 24 },
-  emptyText: { fontSize: 22, fontWeight: 'bold', marginTop: 16, textAlign: 'center' },
+  emptyContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 40,
+    paddingHorizontal: 24,
+  },
+  emptyText: {
+    fontSize: 22,
+    fontWeight: 'bold',
+    marginTop: 16,
+    textAlign: 'center',
+  },
   emptyTextDark: { color: '#FFFFFF' },
   emptyTextLight: { color: '#2A2D57' },
-  emptySubtext: { fontSize: 16, textAlign: 'center', marginTop: 12, lineHeight: 24 },
+  emptySubtext: {
+    fontSize: 16,
+    textAlign: 'center',
+    marginTop: 12,
+    lineHeight: 24,
+  },
   emptySubtextDark: { color: '#AAAAAA' },
   emptySubtextLight: { color: '#718096' },
 });

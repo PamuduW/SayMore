@@ -68,8 +68,16 @@ export default function SettingsScreen() {
   ];
 
   const info = [
-    { label: 'Privacy & Cookies', icon: CookiesIcon, screen: 'PrivacyCookiesScreen' },
-    { label: 'Terms & Conditions', icon: ConditionsIcon, screen: 'TermsAndConditionsScreen' },
+    {
+      label: 'Privacy & Cookies',
+      icon: CookiesIcon,
+      screen: 'PrivacyCookiesScreen',
+    },
+    {
+      label: 'Terms & Conditions',
+      icon: ConditionsIcon,
+      screen: 'TermsAndConditionsScreen',
+    },
     { label: 'App Info', icon: AppInfoIcon, screen: 'AppInfoScreen' },
   ];
 
@@ -86,10 +94,13 @@ export default function SettingsScreen() {
         }
       }}>
       <View style={styles.leftSection}>
-        <View style={[
-          styles.iconContainer,
-          theme === 'dark' ? styles.iconContainerDark : styles.iconContainerLight
-        ]}>
+        <View
+          style={[
+            styles.iconContainer,
+            theme === 'dark'
+              ? styles.iconContainerDark
+              : styles.iconContainerLight,
+          ]}>
           <Image
             source={item.icon}
             style={[
@@ -111,7 +122,10 @@ export default function SettingsScreen() {
         <Switch
           value={notificationsEnabled}
           onValueChange={toggleNotifications}
-          trackColor={{ false: '#E1E1E1', true: theme === 'dark' ? '#3F51B5' : '#577BC1' }}
+          trackColor={{
+            false: '#E1E1E1',
+            true: theme === 'dark' ? '#3F51B5' : '#577BC1',
+          }}
           thumbColor={'#FFFFFF'}
           ios_backgroundColor="#E1E1E1"
           style={styles.switch}
@@ -122,7 +136,10 @@ export default function SettingsScreen() {
         <Switch
           value={isDarkMode}
           onValueChange={setIsDarkMode}
-          trackColor={{ false: '#E1E1E1', true: theme === 'dark' ? '#3F51B5' : '#577BC1' }}
+          trackColor={{
+            false: '#E1E1E1',
+            true: theme === 'dark' ? '#3F51B5' : '#577BC1',
+          }}
           thumbColor={'#FFFFFF'}
           ios_backgroundColor="#E1E1E1"
           style={styles.switch}
@@ -131,7 +148,13 @@ export default function SettingsScreen() {
 
       {!item.toggle && (
         <View style={styles.arrowContainer}>
-          <Text style={[styles.arrow, theme === 'dark' ? styles.arrowDark : styles.arrowLight]}>→</Text>
+          <Text
+            style={[
+              styles.arrow,
+              theme === 'dark' ? styles.arrowDark : styles.arrowLight,
+            ]}>
+            →
+          </Text>
         </View>
       )}
     </TouchableOpacity>
@@ -140,12 +163,13 @@ export default function SettingsScreen() {
   return (
     <LinearGradient
       colors={
-        theme === 'dark'
-          ? ['#121212', '#252525']
-          : ['#577BC1', '#8EA7E9']
+        theme === 'dark' ? ['#121212', '#252525'] : ['#577BC1', '#8EA7E9']
       }
       style={styles.container}>
-      <StatusBar barStyle="light-content" backgroundColor={theme === 'dark' ? '#121212' : '#577BC1'} />
+      <StatusBar
+        barStyle="light-content"
+        backgroundColor={theme === 'dark' ? '#121212' : '#577BC1'}
+      />
 
       <View style={styles.headerBar}>
         <TouchableOpacity
@@ -211,7 +235,7 @@ export default function SettingsScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingTop: Platform.OS === 'ios' ? 60 : 50
+    paddingTop: Platform.OS === 'ios' ? 60 : 50,
   },
 
   headerBar: {

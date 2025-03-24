@@ -144,7 +144,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 16,
-    backgroundColor: '#fff',
+    backgroundColor: '#577BC1',
   },
   categoryContainer: {
     flex: 1,
@@ -152,7 +152,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   categoryButton: {
-    backgroundColor: '#577BC1',
+    backgroundColor: '#214283',
     padding: 16,
     marginVertical: 10,
     borderRadius: 8,
@@ -187,7 +187,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   backButtonText: {
-    color: '#577BC1',
+    color: '#214283',
     fontSize: 16,
   },
 });
