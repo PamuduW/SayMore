@@ -148,14 +148,14 @@ const styles = StyleSheet.create({
     color: '#000',
     textAlign: 'center',
   },
-    headerText1: {
-      fontSize: 28,
-      fontWeight: 'bold',
-      marginBottom: 20,
-      marginTop: 20,
-      textAlign: 'center',
-      color: '#577BC1',
-    },
+  headerText1: {
+    fontSize: 28,
+    fontWeight: 'bold',
+    marginBottom: 20,
+    marginTop: 20,
+    textAlign: 'center',
+    color: '#577BC1',
+  },
 
   subText: {
     fontSize: 18,

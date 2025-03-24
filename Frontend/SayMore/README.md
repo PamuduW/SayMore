@@ -78,75 +78,72 @@ To learn more about React Native, take a look at the following resources:
 - [Blog](https://reactnative.dev/blog) - read the latest official React Native **Blog** posts.
 - [`@facebook/react-native`](https://github.com/facebook/react-native) - the Open Source; GitHub **repository** for React Native.
 
-
-
-
 SayMore/
 │── .bundle/
-│── __tests__/
-│   │── App.test.tsx
+│── **tests**/
+│ │── App.test.tsx
 │── android/
 │── ios/
 │── assets/
 │── components/
-│   │── Analysis_PS.tsx
-│   │── Analysis_S.tsx
-│   │── AudioRecorder.tsx
-│   │── Authentication.tsx
-│   │── Charts.tsx
-│   │── LandingPage.tsx
-│   │── Notifications.tsx
-│   │── TabNavigator.tsx
-│   │── ThemeContext.tsx
+│ │── Analysis_PS.tsx
+│ │── Analysis_S.tsx
+│ │── AudioRecorder.tsx
+│ │── Authentication.tsx
+│ │── Charts.tsx
+│ │── LandingPage.tsx
+│ │── Notifications.tsx
+│ │── TabNavigator.tsx
+│ │── ThemeContext.tsx
 │── screens/
-│   │── AccountScreen.tsx
-│   │── ActivityScreen.tsx
-│   │── AdditionalDetailsScreen.tsx
-│   │── AnalysisScreen.tsx
-│   │── AppInfoScreen.tsx
-│   │── AudioScreen.tsx
-│   │── ChangePasswordScreen.tsx
-│   │── ClarityAndPitchScreen.tsx
-│   │── CommunicationAndStageFrightScreen.tsx
-│   │── Difficulty.tsx
-│   │── EditProfileScreen.tsx
-│   │── FeedbackScreen_PS.tsx
-│   │── FeedbackScreen_S.tsx
-│   │── HistoryScreen.tsx
-│   │── HomeScreen.tsx
-│   │── LessonRedirectionPS.tsx
-│   │── LessonRedirectionStuttering.tsx
-│   │── LessonsPointsScreen.tsx
-│   │── LessonsScreen.tsx
-│   │── MoreScreen.tsx
-│   │── PersonalDetailsScreen.tsx
-│   │── PointsCategoryScreen.tsx
-│   │── PointsScreen.tsx
-│   │── PrivacyCookiesScreen.tsx
-│   │── ProgressCategoryScreen.tsx
-│   │── ProgressScreen.tsx
-│   │── PublicSpeakQuestionScreen.tsx
-│   │── QuizPointHistoryScreen.tsx
-│   │── QuizProgressScreen.tsx
-│   │── QuizzesNavScreen.tsx
-│   │── SettingsScreen.tsx
-│   │── SignInScreen.tsx
-│   │── SignUpScreen.tsx
-│   │── SpeakingWithEnergyScreen.tsx
-│   │── SpeechTherapyScreen.tsx
-│   │── StutteringQuestionScreen.tsx
-│   │── StutterQuizType.tsx
-│   │── TermsAndConditionsScreen.tsx
-│   │── TestHistory.tsx
-│   │── TestHistory_PS.tsx
-│   │── TestHistory_S.tsx
-│   │── TotalPointsScreen.tsx
-│   │── UnderstandingAndOvercomingStutteringScreen.tsx
-│   │── VideoListScreen.tsx
-│   │── VideoPlayerScreen.tsx
-│   │── WelcomeScreen.tsx
+│ │── AccountScreen.tsx
+│ │── ActivityScreen.tsx
+│ │── AdditionalDetailsScreen.tsx
+│ │── AnalysisScreen.tsx
+│ │── AppInfoScreen.tsx
+│ │── AudioScreen.tsx
+│ │── ChangePasswordScreen.tsx
+│ │── ClarityAndPitchScreen.tsx
+│ │── CommunicationAndStageFrightScreen.tsx
+│ │── Difficulty.tsx
+│ │── EditProfileScreen.tsx
+│ │── FeedbackScreen_PS.tsx
+│ │── FeedbackScreen_S.tsx
+│ │── HistoryScreen.tsx
+│ │── HomeScreen.tsx
+│ │── LessonRedirectionPS.tsx
+│ │── LessonRedirectionStuttering.tsx
+│ │── LessonsPointsScreen.tsx
+│ │── LessonsScreen.tsx
+│ │── MoreScreen.tsx
+│ │── PersonalDetailsScreen.tsx
+│ │── PointsCategoryScreen.tsx
+│ │── PointsScreen.tsx
+│ │── PrivacyCookiesScreen.tsx
+│ │── ProgressCategoryScreen.tsx
+│ │── ProgressScreen.tsx
+│ │── PublicSpeakQuestionScreen.tsx
+│ │── QuizPointHistoryScreen.tsx
+│ │── QuizProgressScreen.tsx
+│ │── QuizzesNavScreen.tsx
+│ │── SettingsScreen.tsx
+│ │── SignInScreen.tsx
+│ │── SignUpScreen.tsx
+│ │── SpeakingWithEnergyScreen.tsx
+│ │── SpeechTherapyScreen.tsx
+│ │── StutteringQuestionScreen.tsx
+│ │── StutterQuizType.tsx
+│ │── TermsAndConditionsScreen.tsx
+│ │── TestHistory.tsx
+│ │── TestHistory_PS.tsx
+│ │── TestHistory_S.tsx
+│ │── TotalPointsScreen.tsx
+│ │── UnderstandingAndOvercomingStutteringScreen.tsx
+│ │── VideoListScreen.tsx
+│ │── VideoPlayerScreen.tsx
+│ │── WelcomeScreen.tsx
 │── types/
-│   │── types.ts
+│ │── types.ts
 │── .eslintrc.js
 │── .eslintignore
 │── .prettierrc.js

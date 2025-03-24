@@ -36,6 +36,19 @@ const Analysis_S: React.FC<AnalysisSProps> = ({ filename, acc_id, type }) => {
         }
 
         const responseInfo = await response.json();
+
+        if (
+          !responseInfo.result.transcription ||
+          !responseInfo.result.transcription[0]
+        ) {
+          Alert.alert(
+            'Error',
+            'The transcript is empty! make sure your mic is working'
+          );
+          navigation.navigate('HomeScreen');
+          return;
+        }
+
         setResponseData(responseInfo);
       } catch (error) {
         //console.error('Error sending POST request:', error);
