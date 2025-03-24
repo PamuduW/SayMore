@@ -15,11 +15,10 @@ import { VideoItem } from '../types/types';
 
 interface ClarityAndPitchScreenProps {}
 
-const { width } = Dimensions.get('window');
-const videoBoxWidth = (width - 75) / 3;
-const videoBoxMargin = 15;
-const containerPadding = 20;
-
+/**
+ * ClarityAndPitchScreen component that displays videos for improving clarity and pitch in speech.
+ * @returns {JSX.Element} The rendered component.
+ */
 const ClarityAndPitchScreen: React.FC<ClarityAndPitchScreenProps> = () => {
   const navigation = useNavigation();
   const [clarityVideos, setClarityVideos] = useState<VideoItem[]>([]);
@@ -33,6 +32,9 @@ const ClarityAndPitchScreen: React.FC<ClarityAndPitchScreenProps> = () => {
   >([]);
   const [loading, setLoading] = useState(true);
 
+  /**
+   * Fetches clarity and pitch videos from Firestore.
+   */
   const fetchClarityAndPitchVideos = useCallback(async () => {
     try {
       const claritySnapshot = await firestore()
@@ -64,6 +66,9 @@ const ClarityAndPitchScreen: React.FC<ClarityAndPitchScreenProps> = () => {
   }, []);
 
   useEffect(() => {
+    /**
+     * Fetches recommended lessons from Firestore.
+     */
     const fetchRecommendedLessons = async () => {
       try {
         const publicSpeakingLessons = [
@@ -98,6 +103,10 @@ const ClarityAndPitchScreen: React.FC<ClarityAndPitchScreenProps> = () => {
         setLoading(false);
       }
     };
+
+    /**
+     * Loads data by fetching clarity and pitch videos and recommended lessons.
+     */
     const loadData = async () => {
       setLoading(true);
       await fetchClarityAndPitchVideos();
@@ -108,10 +117,19 @@ const ClarityAndPitchScreen: React.FC<ClarityAndPitchScreenProps> = () => {
     loadData();
   }, [fetchClarityAndPitchVideos]);
 
+  /**
+   * Handles the back button press to navigate to the previous screen.
+   */
   const handleBackPress = () => {
     navigation.goBack();
   };
 
+  /**
+   * Handles the video press to navigate to the VideoPlayer screen.
+   * @param {VideoItem} video - The video item to be played.
+   * @param {string} lessonTitle - The title of the lesson.
+   * @param {string} _documentId - The document ID of the lesson.
+   */
   const handleVideoPress = (
     video: VideoItem,
     lessonTitle: string,
@@ -132,7 +150,7 @@ const ClarityAndPitchScreen: React.FC<ClarityAndPitchScreenProps> = () => {
               style={styles.backButton}
               onPress={handleBackPress}>
               <Image
-                source={require('../assets/back.png')} // Update this path to your back.png location
+                source={require('../assets/back.png')}
                 style={styles.backButtonImage}
               />
             </TouchableOpacity>

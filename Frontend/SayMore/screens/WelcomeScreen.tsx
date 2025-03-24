@@ -2,17 +2,16 @@ import React, { useEffect, useState } from 'react';
 import { View, StyleSheet, Animated } from 'react-native';
 
 /**
- * WelcomeScreen component.
- * Displays a welcome screen with a fading logo animation.
- *
- * @param {object} props - The component props.
- * @param {object} props.navigation - The navigation object.
- * @returns {JSX.Element} The rendered WelcomeScreen component.
+ * WelcomeScreen component that displays a fading logo animation.
+ * @param {Object} props - The component props.
+ * @param {Object} props.navigation - The navigation object for navigating between screens.
+ * @returns {JSX.Element} The rendered component.
  */
 const WelcomeScreen = ({ navigation }) => {
   const [fadeAnim] = useState(new Animated.Value(0));
 
   useEffect(() => {
+    // Starts the fade-in animation when the component mounts
     Animated.timing(fadeAnim, {
       toValue: 1,
       duration: 1500,
