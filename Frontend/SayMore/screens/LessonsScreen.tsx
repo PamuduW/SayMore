@@ -17,15 +17,24 @@ import { useTheme } from '../components/ThemeContext';
 
 interface LessonsScreenProps {}
 
+// Get the width of the window
 const { width } = Dimensions.get('window');
+// Calculate the width of each item
 const itemWidth = (width - 60) / 2;
 
+/**
+ * LessonsScreen component that displays a list of lessons.
+ * @returns {JSX.Element} The rendered component.
+ */
 const LessonsScreen: React.FC<LessonsScreenProps> = () => {
   const navigation = useNavigation();
   const [firstName, setFirstName] = useState<string | null>(null);
 
   const theme = useTheme();
   useEffect(() => {
+    /**
+     * Fetches the first name of the current user from Firestore.
+     */
     const fetchFirstName = async () => {
       const user = auth().currentUser;
       if (user) {
@@ -46,7 +55,6 @@ const LessonsScreen: React.FC<LessonsScreenProps> = () => {
             setFirstName('there');
           }
         } catch (error) {
-          //console.error('Error fetching first name:', error);
           setFirstName('there');
         }
       } else {
@@ -57,6 +65,7 @@ const LessonsScreen: React.FC<LessonsScreenProps> = () => {
     fetchFirstName();
   }, []);
 
+  // List of lessons
   const lessons: Lesson[] = [
     {
       title: 'Speech Exercises',
@@ -110,10 +119,17 @@ const LessonsScreen: React.FC<LessonsScreenProps> = () => {
     },
   ];
 
+  /**
+   * Handles the press event on a lesson item to navigate to the VideoList screen.
+   * @param {Lesson} lesson - The lesson item that was pressed.
+   */
   const handleLessonPress = (lesson: Lesson) => {
     navigation.navigate('VideoList', { lesson });
   };
 
+  /**
+   * Handles the back button press to navigate to the previous screen.
+   */
   const handleBackPress = () => {
     navigation.goBack();
   };
@@ -266,8 +282,8 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     textAlignVertical: 'center',
     includeFontPadding: false,
-    paddingBottom: 2, // Fine-tune vertical centering
-    lineHeight: 32, // Control line height to center text
+    paddingBottom: 2,
+    lineHeight: 32,
   },
   darkBackButtonText: {
     fontSize: 28,
