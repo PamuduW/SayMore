@@ -14,6 +14,12 @@ import firestore from '@react-native-firebase/firestore';
 import LinearGradient from 'react-native-linear-gradient';
 import { useTheme } from '../components/ThemeContext';
 
+/**
+ * EditProfileScreen component that allows users to edit their profile information.
+ * @param {Object} props - The properties for the component.
+ * @param {Object} props.navigation - The navigation object for navigating between screens.
+ * @returns {JSX.Element} The rendered component.
+ */
 export default function EditProfileScreen({ navigation }) {
   const [fname, setFname] = useState('');
   const [sname, setSname] = useState('');
@@ -24,6 +30,9 @@ export default function EditProfileScreen({ navigation }) {
   const theme = useTheme();
 
   useEffect(() => {
+    /**
+     * Fetches user data from Firestore and sets the state.
+     */
     const fetchUserData = async () => {
       try {
         const currentUser = auth().currentUser;
@@ -57,6 +66,9 @@ export default function EditProfileScreen({ navigation }) {
     fetchUserData();
   }, []);
 
+  /**
+   * Handles the save button press to update user profile information in Firestore.
+   */
   const handleSave = async () => {
     try {
       const currentUser = auth().currentUser;
@@ -94,7 +106,6 @@ export default function EditProfileScreen({ navigation }) {
       }
       style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollArea}>
-        {/* Header with Back Button & Title */}
         <View style={styles.headerBar}>
           <TouchableOpacity
             onPress={() => navigation.goBack()}
@@ -113,7 +124,6 @@ export default function EditProfileScreen({ navigation }) {
 
           <Text style={styles.headerTitle}>Edit Profile</Text>
 
-          {/* Empty placeholder View for spacing */}
           <View style={styles.placeholder} />
         </View>
 
@@ -177,7 +187,6 @@ export default function EditProfileScreen({ navigation }) {
           />
         </View>
 
-        {/* Save Changes Button */}
         <TouchableOpacity onPress={handleSave} style={styles.buttonMargin}>
           <LinearGradient
             colors={
@@ -190,7 +199,6 @@ export default function EditProfileScreen({ navigation }) {
           </LinearGradient>
         </TouchableOpacity>
 
-        {/* Cancel Changes Button */}
         <TouchableOpacity
           onPress={() => navigation.goBack()}
           style={styles.buttonMargin}>
@@ -203,7 +211,6 @@ export default function EditProfileScreen({ navigation }) {
           </LinearGradient>
         </TouchableOpacity>
 
-        {/* Change Password Button */}
         <TouchableOpacity
           onPress={() => navigation.navigate('ChangePasswordScreen')}>
           <LinearGradient
@@ -236,7 +243,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
 
-  placeholder: { width: 48 }, // For spacing on right side
+  placeholder: { width: 48 },
 
   inputContainer: { marginBottom: 20 },
 
