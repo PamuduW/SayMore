@@ -15,11 +15,20 @@ import { VideoItem } from '../types/types';
 
 interface UnderstandingAndOvercomingStutteringScreenProps {}
 
+// Get the width of the device's window
 const { width } = Dimensions.get('window');
+// Calculate the width of each video box
 const videoBoxWidth = (width - 75) / 3;
+// Set the margin for each video box
 const videoBoxMargin = 15;
+// Set the padding for the container
 const containerPadding = 20;
 
+/**
+ * UnderstandingAndOvercomingStutteringScreen component that displays videos
+ * related to understanding and overcoming stuttering.
+ * @returns {JSX.Element} The rendered component.
+ */
 const UnderstandingAndOvercomingStutteringScreen: React.FC<
   UnderstandingAndOvercomingStutteringScreenProps
 > = () => {
@@ -37,6 +46,9 @@ const UnderstandingAndOvercomingStutteringScreen: React.FC<
   >([]);
   const [loading, setLoading] = useState(true);
 
+  /**
+   * Fetches videos related to understanding and overcoming stuttering from Firestore.
+   */
   const fetchImprovementVideos = useCallback(async () => {
     try {
       const understandingSnapshot = await firestore()
@@ -69,6 +81,9 @@ const UnderstandingAndOvercomingStutteringScreen: React.FC<
   }, []);
 
   useEffect(() => {
+    /**
+     * Fetches recommended lessons from Firestore.
+     */
     const fetchRecommendedLessons = async () => {
       try {
         const stutteringLessons = [
@@ -112,10 +127,19 @@ const UnderstandingAndOvercomingStutteringScreen: React.FC<
     loadData();
   }, [fetchImprovementVideos]);
 
+  /**
+   * Handles the back button press to navigate to the previous screen.
+   */
   const handleBackPress = () => {
     navigation.goBack();
   };
 
+  /**
+   * Handles the video press to navigate to the VideoPlayer screen.
+   * @param {VideoItem} video - The video item to play.
+   * @param {string} lessonTitle - The title of the lesson.
+   * @param {string} _documentId - The document ID of the lesson.
+   */
   const handleVideoPress = (
     video: VideoItem,
     lessonTitle: string,
