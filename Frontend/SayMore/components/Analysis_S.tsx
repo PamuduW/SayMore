@@ -4,6 +4,7 @@ import {
   StyleSheet,
   ScrollView,
   View,
+  TouchableOpacity,
   Button,
   Dimensions,
   Alert,
@@ -116,7 +117,7 @@ const Analysis_S: React.FC<AnalysisSProps> = ({ filename, acc_id, type }) => {
       const { dynamic_feedback, stutter_count, stutter_score } = result;
 
       navigation.navigate('FeedbackScreen_S', {
-        stutter_feedback,
+        dynamic_feedback,
         stutter_count,
         stutter_score,
       });
@@ -189,21 +190,25 @@ const Analysis_S: React.FC<AnalysisSProps> = ({ filename, acc_id, type }) => {
               </Text>
             </View>
 
-            {responseData.result.stuttered_words.map((item, index) => (
-              <View key={index} style={styles.feedbackBlock}>
-                <Text style={styles.label}>Word</Text>
-                <Text style={styles.valueHighlight}>{item.word}</Text>
-                <Text style={styles.label}>Type</Text>
-                <Text style={styles.valueHighlight}>{item.type}</Text>
-              </View>
-            ))}
+            <View style={styles.feedbackBlock}>
+              <Text style={styles.label}>Stuttered words</Text>
+              {responseData.result.stuttered_words.map((item, index) => (
+                <View key={index}>
+                  <Text style={styles.label}> </Text>
+                  <Text style={styles.value}>Word: {item.word}</Text>
+                  <Text style={styles.value}>Type: {item.type}</Text>
+                </View>
+              ))}
+            </View>
 
             <View style={styles.feedbackBlock}>
               <Text style={styles.label}>Transcript</Text>
               <Text style={styles.value}>{responseData.result.transcript}</Text>
             </View>
 
-            <Button title="Next" onPress={handleNext} style={styles.button} />
+            <TouchableOpacity onPress={handleNext} style={styles.button}>
+              <Text style={styles.buttonText}>Feedback</Text>
+            </TouchableOpacity>
           </View>
         )}
       </ScrollView>
