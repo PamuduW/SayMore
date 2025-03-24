@@ -1,9 +1,15 @@
+# Specify the source for Ruby gems
 source 'https://rubygems.org'
 
-# You may use http://rbenv.org/ or https://rvm.io/ to install and use this version
+# Specify the required Ruby version
 ruby ">= 2.6.10"
 
-# Exclude problematic versions of cocoapods and activesupport that causes build failures.
+# Define the gem dependencies with version constraints
+# CocoaPods is a dependency manager for Swift and Objective-C Cocoa projects
 gem 'cocoapods', '>= 1.13', '!= 1.15.0', '!= 1.15.1'
+
+# ActiveSupport is a collection of utility classes and standard library extensions
 gem 'activesupport', '>= 6.1.7.5', '!= 7.1.0'
+
+# Xcodeproj is a library to read, modify, and write Xcode project files
 gem 'xcodeproj', '< 1.26.0'

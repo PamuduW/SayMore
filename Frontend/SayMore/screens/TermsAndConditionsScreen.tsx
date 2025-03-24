@@ -11,6 +11,10 @@ import { useNavigation } from '@react-navigation/native';
 import LinearGradient from 'react-native-linear-gradient';
 import { useTheme } from '../components/ThemeContext';
 
+/**
+ * TermsAndConditionsScreen component that displays the terms and conditions of the app.
+ * @returns {JSX.Element} The rendered component.
+ */
 const TermsAndConditionsScreen = () => {
   const navigation = useNavigation();
   const theme = useTheme();
