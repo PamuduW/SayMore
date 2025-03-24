@@ -24,7 +24,7 @@ const AudioScreen: React.FC<AudioScreenProps> = ({ route }) => {
         <View style={styles.whitePanel}>
           <Text
             style={
-              theme === 'dark' ? styles.darkHeaderText : styles.headerText
+              theme === 'dark' ? styles.darkHeaderText : styles.headerText1
             }>
             Select a Language
           </Text>
@@ -70,7 +70,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#007AFF',
+    backgroundColor: '#577BC1',
   },
   darkContainer: {
     flex: 1,
@@ -104,7 +104,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     marginVertical: 8,
-    backgroundColor: '#007AFF',
+    backgroundColor: '#577BC1',
     width: '80%',
     elevation: 5,
     shadowColor: '#000',
@@ -138,7 +138,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     marginTop: 20,
     textAlign: 'center',
-    color: '#007AFF',
+    color: '#fff',
   },
   darkHeaderText: {
     fontSize: 28,
@@ -148,6 +148,15 @@ const styles = StyleSheet.create({
     color: '#000',
     textAlign: 'center',
   },
+    headerText1: {
+      fontSize: 28,
+      fontWeight: 'bold',
+      marginBottom: 20,
+      marginTop: 20,
+      textAlign: 'center',
+      color: '#577BC1',
+    },
+
   subText: {
     fontSize: 18,
     color: '#fff',
