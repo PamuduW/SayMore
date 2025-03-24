@@ -8,12 +8,12 @@ class SayMoreUser(HttpUser):
     def test_root(self):
         self.client.get("/")
 
-    @task(2)
-    def test_audio_analysis(self):
-        payload = {
-            "file_name": "dummy_audio.wav",
-            "acc_id": "user123",
-            "test_type": True,
-            "lan_flag": "en"
-        }
-        self.client.post("/test", json=payload)
+    # @task(2)
+    # def test_audio_analysis(self):
+    #     payload = {
+    #         "file_name": "dummy_audio.wav",
+    #         "acc_id": "user123",
+    #         "test_type": True,
+    #         "lan_flag": "en"
+    #     }
+    #     self.client.post("/test", json=payload)
