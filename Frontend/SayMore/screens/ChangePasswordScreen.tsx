@@ -11,6 +11,12 @@ import auth from '@react-native-firebase/auth';
 import LinearGradient from 'react-native-linear-gradient';
 import { useTheme } from '../components/ThemeContext';
 
+/**
+ * ChangePasswordScreen component that allows users to change their password.
+ * @param {Object} props - The properties for the component.
+ * @param {Object} props.navigation - The navigation object for navigating between screens.
+ * @returns {JSX.Element} The rendered component.
+ */
 export default function ChangePasswordScreen({ navigation }) {
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
@@ -18,12 +24,21 @@ export default function ChangePasswordScreen({ navigation }) {
 
   const theme = useTheme();
 
+  /**
+   * Reauthenticates the user with the provided password.
+   * @param {string} password - The current password of the user.
+   * @returns {Promise<void>} A promise that resolves when the user is reauthenticated.
+   */
   const reauthenticate = async password => {
     const user = auth().currentUser;
     const credential = auth.EmailAuthProvider.credential(user.email, password);
     return await user.reauthenticateWithCredential(credential);
   };
 
+  /**
+   * Handles the password change process.
+   * Validates the new password and updates it if valid.
+   */
   const handleChangePassword = async () => {
     if (newPassword !== confirmPassword) {
       Alert.alert('Error', 'New password and confirm password do not match!');
@@ -45,7 +60,6 @@ export default function ChangePasswordScreen({ navigation }) {
         theme === 'dark' ? ['#1C1C1C', '#3A3A3A'] : ['#2A2D57', '#577BC1']
       }
       style={styles.container}>
-      {/* Header Row with Back Button and Title */}
       <View style={styles.headerBar}>
         <TouchableOpacity
           onPress={() => navigation.goBack()}
