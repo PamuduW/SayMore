@@ -30,6 +30,11 @@ interface FeedbackScreen_PSProps {
   };
 }
 
+/**
+ * FeedbackScreen_PS component that displays feedback for public speaking performance.
+ * @param {FeedbackScreen_PSProps} props - The properties for the component.
+ * @returns {JSX.Element} The rendered component.
+ */
 const FeedbackScreen_PS: React.FC<FeedbackScreen_PSProps> = ({ route }) => {
   const {
     final_public_speaking_score,
@@ -44,6 +49,10 @@ const FeedbackScreen_PS: React.FC<FeedbackScreen_PSProps> = ({ route }) => {
   const navigation = useNavigation();
   const theme = useTheme();
 
+  /**
+   * Handles the navigation to the improvement screen based on the score.
+   * @param {string | null} navigationTarget - The target screen to navigate to.
+   */
   const handleImprove = (navigationTarget: string | null) => {
     if (navigationTarget) {
       navigation.navigate(navigationTarget);
@@ -55,6 +64,9 @@ const FeedbackScreen_PS: React.FC<FeedbackScreen_PSProps> = ({ route }) => {
     }
   };
 
+  /**
+   * Handles the back button press to navigate to the previous screen.
+   */
   const handleBackPress = () => {
     navigation.goBack();
   };

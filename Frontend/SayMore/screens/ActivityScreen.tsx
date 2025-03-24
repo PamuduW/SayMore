@@ -21,6 +21,14 @@ interface Props {
   totalWatchedVideos: number;
 }
 
+/**
+ * ActivityScreen component that displays the user's activity including watched videos, lessons, and quiz performance.
+ * @param {Props} props - The properties for the component.
+ * @param {Object[]} props.userRecords - Array of user records with scores.
+ * @param {number} props.totalWatchedLessons - Total number of watched lessons.
+ * @param {number} props.totalWatchedVideos - Total number of watched videos.
+ * @returns {JSX.Element} The rendered component.
+ */
 const ActivityScreen: React.FC<Props> = ({
   userRecords,
   totalWatchedLessons,
@@ -79,6 +87,9 @@ const ActivityScreen: React.FC<Props> = ({
     }
   }, [userRecords]);
 
+  /**
+   * Handles sharing the user's activity.
+   */
   const handleShare = async () => {
     try {
       await Share.share({
@@ -89,17 +100,26 @@ const ActivityScreen: React.FC<Props> = ({
     }
   };
 
+  /**
+   * Handles navigation back to the previous screen.
+   */
   const handleBackPress = () => {
     navigation.goBack();
   };
 
+  /**
+   * Handles navigation to the history screen.
+   */
   const handleNavigateToHistory = () => {
     (navigation as any).navigate('History');
   };
 
-    const handleNavigateToLessons = () => {
-      (navigation as any).navigate('Lessons');
-    };
+  /**
+   * Handles navigation to the lessons screen.
+   */
+  const handleNavigateToLessons = () => {
+    (navigation as any).navigate('Lessons');
+  };
 
   return (
     <ScrollView
@@ -134,7 +154,6 @@ const ActivityScreen: React.FC<Props> = ({
       </View>
 
       <View style={styles.statsContainer}>
-        {/* Video and Lesson Stats */}
         <View style={styles.statsRow}>
           <TouchableOpacity
             style={[
@@ -183,7 +202,6 @@ const ActivityScreen: React.FC<Props> = ({
           </TouchableOpacity>
         </View>
 
-        {/* Quiz Stats */}
         <View style={styles.quizStatsContainer}>
           <Text
             style={
