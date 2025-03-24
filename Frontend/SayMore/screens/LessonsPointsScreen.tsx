@@ -26,16 +26,22 @@ type LessonsPointsScreenRouteProp = RouteProp<
 
 const { width } = Dimensions.get('window');
 
+/**
+ * LessonsPointsScreen component that displays the points earned by the user for a lesson.
+ * @returns {JSX.Element} The rendered component.
+ */
 const LessonsPointsScreen: React.FC = () => {
   const navigation = useNavigation();
   const route = useRoute<LessonsPointsScreenRouteProp>();
   const { points, videoTitle, milestones, maxPossiblePoints } = route.params;
 
   useEffect(() => {
-    // Perform any necessary actions with the params
   }, [points, videoTitle, milestones, maxPossiblePoints]);
 
-  // Get messaging based on points earned
+  /**
+   * Returns a message based on the percentage of points earned.
+   * @returns {string} The message text.
+   */
   const getMessageText = () => {
     const percentage = (points / maxPossiblePoints) * 100;
 
@@ -50,24 +56,32 @@ const LessonsPointsScreen: React.FC = () => {
     }
   };
 
-  // Get milestone details text
+  /**
+   * Returns a message based on the milestones reached.
+   * @returns {string} The milestone text.
+   */
   const getMilestoneText = () => {
     if (milestones.length === 0) {
       return 'Watch more to reach milestones!';
     }
 
     let basePoints = milestones.length - (milestones.includes(100) ? 1 : 0);
-    // Removed unused variable 'completionBonus'
 
     return milestones.includes(100)
       ? `${basePoints} points from milestones + completion bonus!`
       : `${basePoints} points from reaching milestone${basePoints > 1 ? 's' : ''}: ${milestones.join('%, ')}%`;
   };
 
+  /**
+   * Navigates back to the previous screen.
+   */
   const continueToLesson = () => {
     navigation.goBack();
   };
 
+  /**
+   * Navigates to the Home screen.
+   */
   const goToHome = () => {
     navigation.navigate('Home' as never);
   };
