@@ -16,18 +16,22 @@ import { VideoItem, WatchedVideo } from '../types/types';
 
 interface LessonRedirectionStutteringProps {}
 
+// Get the width of the window
 const { width } = Dimensions.get('window');
+// Calculate the width of each video box
 const videoBoxWidth = (width - 75) / 3;
+// Set the margin for each video box
 const videoBoxMargin = 15;
+// Set the padding for the container
 const containerPadding = 20;
 
-const LessonRedirectionStuttering: React.FC<
-  LessonRedirectionStutteringProps
-> = () => {
+/**
+ * LessonRedirectionStuttering component that displays the last watched video and recommended lessons for stuttering.
+ * @returns {JSX.Element} The rendered component.
+ */
+const LessonRedirectionStuttering: React.FC<LessonRedirectionStutteringProps> = () => {
   const navigation = useNavigation();
-  const [lastWatchedVideo, setLastWatchedVideo] = useState<WatchedVideo | null>(
-    null
-  );
+  const [lastWatchedVideo, setLastWatchedVideo] = useState<WatchedVideo | null>(null);
   const [recommendedLessons, setRecommendedLessons] = useState<
     {
       category: string;
@@ -37,6 +41,9 @@ const LessonRedirectionStuttering: React.FC<
   >([]);
   const [loading, setLoading] = useState(true);
 
+  /**
+   * Fetches the last watched video from Firestore.
+   */
   const fetchLastWatchedVideo = useCallback(async () => {
     try {
       const user = auth().currentUser;
@@ -75,6 +82,12 @@ const LessonRedirectionStuttering: React.FC<
     }
   }, []);
 
+  /**
+   * Fetches the details of a specific video from Firestore.
+   * @param {string} videoId - The ID of the video to fetch details for.
+   * @param {string} _lessonTitle - The title of the lesson.
+   * @returns {Promise<VideoItem | null>} The video details.
+   */
   const fetchVideoDetails = useCallback(
     async (
       videoId: string,
@@ -106,6 +119,9 @@ const LessonRedirectionStuttering: React.FC<
   );
 
   useEffect(() => {
+    /**
+     * Fetches recommended lessons from Firestore.
+     */
     const fetchRecommendedLessons = async () => {
       try {
         const stutteringLessons = [
@@ -147,6 +163,9 @@ const LessonRedirectionStuttering: React.FC<
         setLoading(false);
       }
     };
+    /**
+     * Loads data including last watched video and recommended lessons.
+     */
     const loadData = async () => {
       setLoading(true);
       await fetchLastWatchedVideo();
@@ -157,10 +176,19 @@ const LessonRedirectionStuttering: React.FC<
     loadData();
   }, [fetchLastWatchedVideo]);
 
+  /**
+   * Handles the back button press to navigate to the previous screen.
+   */
   const handleBackPress = () => {
     navigation.goBack();
   };
 
+  /**
+   * Handles the press event on a video item to navigate to the VideoPlayer screen.
+   * @param {VideoItem} video - The video item that was pressed.
+   * @param {string} _lessonTitle - The title of the lesson.
+   * @param {string} _documentId - The document ID of the lesson.
+   */
   const handleVideoPress = (
     video: VideoItem,
     _lessonTitle: string,
@@ -172,6 +200,11 @@ const LessonRedirectionStuttering: React.FC<
     });
   };
 
+  /**
+   * Formats a date string to a readable format.
+   * @param {string} dateString - The date string to format.
+   * @returns {string} The formatted date string.
+   */
   const formatDate = (dateString: string) => {
     try {
       const date = new Date(dateString);
@@ -191,6 +224,9 @@ const LessonRedirectionStuttering: React.FC<
     }
   };
 
+  /**
+   * Handles the press event on the last watched video to navigate to the VideoPlayer screen.
+   */
   const handleLastWatchedPress = useCallback(async () => {
     if (lastWatchedVideo) {
       setLoading(true);

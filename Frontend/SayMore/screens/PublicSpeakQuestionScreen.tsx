@@ -27,6 +27,12 @@ interface Question {
   Correct: number;
 }
 
+/**
+ * PublicSpeakQuestionScreen component that displays a public speaking quiz.
+ * @param {object} navigation - The navigation object for navigating between screens.
+ * @param {object} route - The route object containing navigation parameters.
+ * @returns {JSX.Element} The rendered component.
+ */
 const PublicSpeakQuestionScreen: React.FC = ({ navigation, route }: any) => {
   const theme = useTheme();
   const { difficulty } = route.params;
@@ -42,6 +48,9 @@ const PublicSpeakQuestionScreen: React.FC = ({ navigation, route }: any) => {
   const [loading, setLoading] = useState<boolean>(true);
   const [completedQuestions, setCompletedQuestions] = useState(0);
 
+  /**
+   * Fetches questions from Firestore based on the selected difficulty.
+   */
   useEffect(() => {
     const fetchQuestions = async () => {
       try {
@@ -96,6 +105,9 @@ const PublicSpeakQuestionScreen: React.FC = ({ navigation, route }: any) => {
     fetchQuestions();
   }, [difficulty]);
 
+  /**
+   * Shuffles the answer options for the current question.
+   */
   useEffect(() => {
     if (questions.length > 0) {
       const currentQuestionData = questions[currentQuestionIndex];
@@ -113,11 +125,18 @@ const PublicSpeakQuestionScreen: React.FC = ({ navigation, route }: any) => {
     }
   }, [currentQuestionIndex, questions]);
 
+  /**
+   * Handles the selection of an answer.
+   * @param {number} index - The index of the selected answer.
+   */
   const handleAnswer = (index: number) => {
     setSelectedAnswer(index);
     setIsConfirmButtonVisible(true);
   };
 
+  /**
+   * Confirms the selected answer and updates the score.
+   */
   const handleConfirm = () => {
     if (selectedAnswer !== null) {
       const correct = selectedAnswer === correctIndex;
@@ -129,6 +148,9 @@ const PublicSpeakQuestionScreen: React.FC = ({ navigation, route }: any) => {
     }
   };
 
+  /**
+   * Saves the quiz attempt to Firestore.
+   */
   const saveQuizAttempt = async () => {
     try {
       const user = auth().currentUser;
@@ -158,6 +180,9 @@ const PublicSpeakQuestionScreen: React.FC = ({ navigation, route }: any) => {
     }
   };
 
+  /**
+   * Handles the navigation to the next question.
+   */
   const handleNext = () => {
     if (currentQuestionIndex < questions.length - 1) {
       setCurrentQuestionIndex(currentQuestionIndex + 1);
@@ -169,14 +194,24 @@ const PublicSpeakQuestionScreen: React.FC = ({ navigation, route }: any) => {
 
   const isLastQuestion = currentQuestionIndex === questions.length - 1;
 
+  /**
+   * Handles the completion of the quiz.
+   */
   const handleFinish = async () => {
     await saveQuizAttempt();
     const totalPoints = questions.length * 10;
     navigation.navigate('PointsScreen', { points: score, totalPoints });
   };
 
+  /**
+   * Returns the text color for the answer options based on the theme.
+   * @returns {string} The text color.
+   */
   const getOptionTextColor = () => (theme === 'dark' ? '#FFFFFF' : '#1E3C72');
 
+  /**
+   * Handles the back button press to navigate to the previous screen.
+   */
   const handleBackPress = () => {
     navigation.goBack();
   };
@@ -329,7 +364,7 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     padding: 24,
     alignItems: 'center',
-    paddingTop: 60, // Space for header and back button
+    paddingTop: 60,
   },
   container: {
     flex: 1,
@@ -346,7 +381,7 @@ const styles = StyleSheet.create({
     textShadowColor: 'rgba(0, 0, 0, 0.5)',
     textShadowOffset: { width: 1, height: 1 },
     textShadowRadius: 3,
-    marginTop: 60, // Add space for back button
+    marginTop: 60,
   },
   difficultyText: {
     fontSize: 24,
@@ -531,7 +566,7 @@ const styles = StyleSheet.create({
     textShadowRadius: 3,
   },
   bottomPadding: {
-    height: 40, // Add extra space at the bottom for scrolling
+    height: 40,
   },
 });
 

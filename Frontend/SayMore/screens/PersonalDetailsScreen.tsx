@@ -12,6 +12,10 @@ import firestore from '@react-native-firebase/firestore';
 import { useNavigation } from '@react-navigation/native';
 import { useAuth } from '../components/Authentication';
 
+/**
+ * PersonalDetailsScreen component that allows the user to complete their profile by entering personal details.
+ * @returns {JSX.Element} The rendered component.
+ */
 const PersonalDetailsScreen = () => {
   const { user } = useAuth();
   const navigation = useNavigation();
@@ -21,6 +25,9 @@ const PersonalDetailsScreen = () => {
   const [dob, setDob] = useState(null);
   const [showDatePicker, setShowDatePicker] = useState(false);
 
+  /**
+   * Handles the save button press to save the user's personal details to Firestore.
+   */
   const handleSave = async () => {
     if (!fname || !sname || !username || !dob) {
       Alert.alert('Error', 'Please fill in all fields.');

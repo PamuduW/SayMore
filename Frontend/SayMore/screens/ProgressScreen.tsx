@@ -20,13 +20,16 @@ import { LineChart } from 'react-native-chart-kit';
 import LinearGradient from 'react-native-linear-gradient';
 import { useNavigation } from '@react-navigation/native';
 
+/**
+ * ProgressScreen component that displays the user's progress in watching videos.
+ * @returns {JSX.Element} The rendered component.
+ */
 const ProgressScreen = () => {
   const [watchedVideos, setWatchedVideos] = useState<WatchedVideo[]>([]);
   const theme = useTheme();
   const navigation = useNavigation();
   const borderAnimation = useRef(new Animated.Value(0)).current;
 
-  // Animation
   useEffect(() => {
     Animated.loop(
       Animated.timing(borderAnimation, {
@@ -62,7 +65,6 @@ const ProgressScreen = () => {
             ...video,
           }));
 
-          // Sort by order in the array
           const recentVideos = videos.slice(-10);
           setWatchedVideos(recentVideos);
         }
@@ -74,10 +76,18 @@ const ProgressScreen = () => {
     fetchUserData();
   }, []);
 
+  /**
+   * Handles the back button press to navigate to the previous screen.
+   */
   const handleBackPress = () => {
     navigation.goBack();
   };
 
+  /**
+   * Renders a video item in the list of watched videos.
+   * @param {object} item - The video item to render.
+   * @returns {JSX.Element} The rendered video item.
+   */
   const renderVideoItem = ({ item }: { item: WatchedVideo }) => (
     <Animated.View
       style={[
@@ -159,7 +169,6 @@ const ProgressScreen = () => {
   );
 
   const chartData = {
-    // Using empty strings for labels to hide X-axis text
     labels: watchedVideos.map(() => ''),
     datasets: [
       {
@@ -324,6 +333,11 @@ const ProgressScreen = () => {
   );
 };
 
+/**
+ * EmptyListComponent component that displays a message when there are no watched videos.
+ * @param {object} theme - The current theme (dark or light).
+ * @returns {JSX.Element} The rendered component.
+ */
 const EmptyListComponent = ({ theme }) => (
   <View style={styles.emptyContainer}>
     <Text
