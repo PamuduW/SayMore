@@ -17,6 +17,10 @@ import { useRoute } from '@react-navigation/native';
 const screenWidth = Dimensions.get('window').width;
 const parentViewWidth = screenWidth - 70;
 
+/**
+ * TestHistory_S component that displays the stuttering test history for a specific test.
+ * @returns {JSX.Element} The rendered component.
+ */
 const TestHistory_S: React.FC = () => {
   const route = useRoute<any>();
   const { testId } = route.params;
@@ -39,6 +43,9 @@ const TestHistory_S: React.FC = () => {
   const theme = useTheme();
 
   useEffect(() => {
+    /**
+     * Fetches the test data for the given test ID from Firestore.
+     */
     const fetchTestData = async () => {
       setLoading(true);
       try {
@@ -118,56 +125,56 @@ const TestHistory_S: React.FC = () => {
             />
           </View>
 
-            <View style={styles.feedbackBlock}>
-              <Text style={styles.label}>Stuttering score</Text>
-              <Text style={styles.valueHighlight}>
-                {responseData.stuttering_score}
-              </Text>
-            </View>
+          <View style={styles.feedbackBlock}>
+            <Text style={styles.label}>Stuttering score</Text>
+            <Text style={styles.valueHighlight}>
+              {responseData.stuttering_score}
+            </Text>
+          </View>
 
-            <View style={styles.feedbackBlock}>
-              <Text style={styles.label}>Confidence score</Text>
-              <Text style={styles.valueHighlight}>
-                {responseData.confidence_score}
-              </Text>
-            </View>
+          <View style={styles.feedbackBlock}>
+            <Text style={styles.label}>Confidence score</Text>
+            <Text style={styles.valueHighlight}>
+              {responseData.confidence_score}
+            </Text>
+          </View>
 
-            <View style={styles.feedbackBlock}>
-              <Text style={styles.label}>Fluency score</Text>
-              <Text style={styles.valueHighlight}>
-                {responseData.fluency_score}
-              </Text>
-            </View>
+          <View style={styles.feedbackBlock}>
+            <Text style={styles.label}>Fluency score</Text>
+            <Text style={styles.valueHighlight}>
+              {responseData.fluency_score}
+            </Text>
+          </View>
 
-            <View style={styles.feedbackBlock}>
-              <Text style={styles.label}>Language</Text>
-              <Text style={styles.valueHighlight}>
-                {responseData.language}
-              </Text>
-            </View>
+          <View style={styles.feedbackBlock}>
+            <Text style={styles.label}>Language</Text>
+            <Text style={styles.valueHighlight}>
+              {responseData.language}
+            </Text>
+          </View>
 
-            <View style={styles.feedbackBlock}>
-              <Text style={styles.label}>Stutter count</Text>
-              <Text style={styles.valueHighlight}>
-                {responseData.stutter_count}
-              </Text>
-            </View>
+          <View style={styles.feedbackBlock}>
+            <Text style={styles.label}>Stutter count</Text>
+            <Text style={styles.valueHighlight}>
+              {responseData.stutter_count}
+            </Text>
+          </View>
 
-            <View style={styles.feedbackBlock}>
-              <Text style={styles.label}>Stuttered words</Text>
-              {responseData.stuttered_words.map((item, index) => (
-                <View key={index}>
-                  <Text style={styles.label}> </Text>
-                  <Text style={styles.value}>Word: {item.word}</Text>
-                  <Text style={styles.value}>Type: {item.type}</Text>
-                </View>
-              ))}
-            </View>
+          <View style={styles.feedbackBlock}>
+            <Text style={styles.label}>Stuttered words</Text>
+            {responseData.stuttered_words.map((item, index) => (
+              <View key={index}>
+                <Text style={styles.label}> </Text>
+                <Text style={styles.value}>Word: {item.word}</Text>
+                <Text style={styles.value}>Type: {item.type}</Text>
+              </View>
+            ))}
+          </View>
 
-            <View style={styles.feedbackBlock}>
-              <Text style={styles.label}>Transcript</Text>
-              <Text style={styles.value}>{responseData.transcript}</Text>
-            </View>
+          <View style={styles.feedbackBlock}>
+            <Text style={styles.label}>Transcript</Text>
+            <Text style={styles.value}>{responseData.transcript}</Text>
+          </View>
 
           <View style={styles.feedbackBlock}>
             <Text style={styles.label}>Dynamic Feedback</Text>
@@ -188,10 +195,10 @@ const styles = StyleSheet.create({
     paddingBottom: 40,
     paddingTop: 50,
   },
-    value: {
-      fontSize: 16,
-      color: '#D0D3E6',
-    },
+  value: {
+    fontSize: 16,
+    color: '#D0D3E6',
+  },
   loadingContainer: {
     flex: 1,
     justifyContent: 'center',

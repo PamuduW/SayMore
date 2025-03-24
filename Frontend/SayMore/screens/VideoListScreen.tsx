@@ -22,6 +22,10 @@ interface RouteParams {
   lesson: Lesson;
 }
 
+/**
+ * VideoListScreen component that displays a list of videos for a specific lesson.
+ * @returns {JSX.Element} The rendered component.
+ */
 const VideoListScreen = () => {
   const navigation = useNavigation();
   const route = useRoute<any>();
@@ -32,6 +36,9 @@ const VideoListScreen = () => {
   const [videos, setVideos] = useState<VideoItem[]>([]);
   const [loading, setLoading] = useState(true);
 
+  /**
+   * Fetches the videos for the given lesson from Firestore.
+   */
   const fetchVideos = useCallback(async () => {
     if (!isFocused) return;
 
@@ -49,11 +56,9 @@ const VideoListScreen = () => {
           setVideos([]);
         }
       } else {
-        //console.log('Document does not exist');
         setVideos([]);
       }
     } catch (error) {
-      //console.error('Error fetching videos:', error);
       setVideos([]);
     } finally {
       setLoading(false);
@@ -63,6 +68,9 @@ const VideoListScreen = () => {
   useEffect(() => {
     let isSubscribed = true;
 
+    /**
+     * Sets up the component by fetching the videos.
+     */
     const setup = async () => {
       if (isSubscribed) {
         setLoading(true);
@@ -78,6 +86,10 @@ const VideoListScreen = () => {
     };
   }, [fetchVideos]);
 
+  /**
+   * Handles the video press to navigate to the VideoPlayer screen.
+   * @param {VideoItem} video - The video item to play.
+   */
   const handleVideoPress = useCallback(
     (video: VideoItem) => {
       if (isFocused) {
@@ -90,6 +102,11 @@ const VideoListScreen = () => {
     [navigation, lesson.title, isFocused]
   );
 
+  /**
+   * Renders a single video item in the list.
+   * @param {Object} item - The video item to render.
+   * @returns {JSX.Element} The rendered video item.
+   */
   const renderItem = useCallback(
     ({ item }: { item: VideoItem }) => (
       <TouchableOpacity
@@ -224,8 +241,8 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     textAlignVertical: 'center',
     includeFontPadding: false,
-    paddingBottom: 2, // Fine-tune vertical centering
-    lineHeight: 32, // Control line height to center text
+    paddingBottom: 2,
+    lineHeight: 32,
   },
   darkBackButtonText: {
     fontSize: 28,

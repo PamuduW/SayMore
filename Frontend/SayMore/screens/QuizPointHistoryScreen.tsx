@@ -17,8 +17,8 @@ import moment from 'moment';
 
 interface QuizAttempt {
   quizType: string;
-  difficulty?: string; // For Public Speaking
-  set?: string; // For Stuttering
+  difficulty?: string;
+  set?: string;
   score: number;
   totalPoints: number;
   timestamp: string;
@@ -37,7 +37,6 @@ const QuizPointHistoryScreen: React.FC = ({ navigation }: any) => {
   const scrollAnim = useRef(new Animated.Value(0)).current;
   const borderAnimation = useRef(new Animated.Value(0)).current;
 
-  // Animation for border
   useEffect(() => {
     Animated.loop(
       Animated.timing(borderAnimation, {
@@ -54,7 +53,6 @@ const QuizPointHistoryScreen: React.FC = ({ navigation }: any) => {
       theme === 'dark' ? ['#444444', '#AAAAAA'] : ['#2D336B', '#7886C7'],
   });
 
-  // Memoize constant maps so that they can be added to dependency arrays without triggering unnecessary rerenders.
   const difficultyMap = useMemo(
     () => ({
       Set: 'Easy',
@@ -82,7 +80,6 @@ const QuizPointHistoryScreen: React.FC = ({ navigation }: any) => {
     []
   );
 
-  // Dynamic styles extracted from inline definitions
   const dynamicStyles = useMemo(
     () => ({
       attemptCard: {
@@ -147,11 +144,9 @@ const QuizPointHistoryScreen: React.FC = ({ navigation }: any) => {
             const data = userDoc.data();
             const attempts: QuizAttempt[] = data?.quizAttempts || [];
 
-            // Process the attempts to ensure proper naming
             const processedAttempts = attempts.map(attempt => {
               const processedAttempt = { ...attempt };
 
-              // Process Public Speaking difficulty names
               if (
                 attempt.quizType === 'Public Speaking' &&
                 attempt.difficulty
@@ -162,7 +157,6 @@ const QuizPointHistoryScreen: React.FC = ({ navigation }: any) => {
                   ] || attempt.difficulty;
               }
 
-              // Process Stuttering set names
               if (attempt.quizType === 'Stuttering' && attempt.set) {
                 processedAttempt.set =
                   setMappings[
@@ -173,13 +167,11 @@ const QuizPointHistoryScreen: React.FC = ({ navigation }: any) => {
               return processedAttempt;
             });
 
-            // Sort attempts by timestamp (newest first)
             const sortedAttempts = [...processedAttempts].sort(
               (a, b) =>
                 moment(b.timestamp).valueOf() - moment(a.timestamp).valueOf()
             );
 
-            // Grouping attempts by quizType
             const grouped = sortedAttempts.reduce(
               (acc: { [key: string]: QuizAttempt[] }, attempt) => {
                 const { quizType } = attempt;
@@ -192,7 +184,6 @@ const QuizPointHistoryScreen: React.FC = ({ navigation }: any) => {
               {}
             );
 
-            // Formatting data for SectionList
             const formattedData: SectionData[] = Object.keys(grouped).map(
               quizType => ({
                 title: quizType,
@@ -204,7 +195,6 @@ const QuizPointHistoryScreen: React.FC = ({ navigation }: any) => {
           }
         }
       } catch (error) {
-        // eslint-disable-next-line no-console
         console.error('Error fetching quiz attempts:', error);
       } finally {
         setLoading(false);
@@ -216,7 +206,6 @@ const QuizPointHistoryScreen: React.FC = ({ navigation }: any) => {
       }
     };
 
-    // Include memoized dependencies in the dependency array.
     fetchQuizAttempts();
   }, [fadeAnim, difficultyMap, setMappings]);
 
@@ -242,7 +231,6 @@ const QuizPointHistoryScreen: React.FC = ({ navigation }: any) => {
     }
   };
 
-  // Removed unused index parameter.
   const renderAttemptItem = ({ item }: { item: QuizAttempt }) => {
     const scoreColor = getScoreColor(item.score, item.totalPoints);
 

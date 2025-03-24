@@ -19,7 +19,7 @@ const parentViewWidth = screenWidth - 70;
 
 const TestHistory_PS: React.FC = () => {
   const route = useRoute<any>();
-  const { testId } = route.params; // received testId from TestHistory.tsx
+  const { testId } = route.params;
   const [loading, setLoading] = useState<boolean>(true);
   const [responseData, setResponseData] = useState<any>(null);
   const [data, setData] = useState({

@@ -354,7 +354,6 @@ const StutteringQuestionScreen: React.FC = ({ navigation }: any) => {
             </TouchableOpacity>
           )}
 
-          {/* Add some bottom padding for scrolling */}
           <View style={styles.bottomPadding} />
         </ScrollView>
       </SafeAreaView>
@@ -377,7 +376,7 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     padding: 24,
     alignItems: 'center',
-    paddingTop: 60, // Space for header and back button
+    paddingTop: 60,
   },
   container: {
     flex: 1,
@@ -394,7 +393,7 @@ const styles = StyleSheet.create({
     textShadowColor: 'rgba(0, 0, 0, 0.5)',
     textShadowOffset: { width: 1, height: 1 },
     textShadowRadius: 3,
-    marginTop: 60, // Add space for back button
+    marginTop: 60,
   },
   progressText: {
     fontSize: 16,
@@ -567,7 +566,7 @@ const styles = StyleSheet.create({
   },
   backButtonTextDark: { color: '#000' },
   bottomPadding: {
-    height: 40, // Add extra space at the bottom for scrolling
+    height: 40,
   },
 });
 

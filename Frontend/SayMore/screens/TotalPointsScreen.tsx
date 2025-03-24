@@ -46,6 +46,11 @@ interface HeaderProps {
   groupedVideos: GroupedVideoData[];
 }
 
+/**
+ * HeaderComponent displays the header section of the TotalPointsScreen.
+ * @param {HeaderProps} props - The properties for the header component.
+ * @returns {JSX.Element} The rendered header component.
+ */
 const HeaderComponent: React.FC<HeaderProps> = ({ theme, groupedVideos }) => {
   const headerDynamicStyles = useMemo(
     () => ({
@@ -73,6 +78,11 @@ interface EmptyProps {
   theme: string;
 }
 
+/**
+ * EmptyListComponent displays a message when there are no videos watched.
+ * @param {EmptyProps} props - The properties for the empty list component.
+ * @returns {JSX.Element} The rendered empty list component.
+ */
 const EmptyListComponent: React.FC<EmptyProps> = ({ theme }) => {
   const emptyDynamicStyles = useMemo(
     () => ({
@@ -95,6 +105,10 @@ const EmptyListComponent: React.FC<EmptyProps> = ({ theme }) => {
   );
 };
 
+/**
+ * TotalPointsScreen displays the total points earned by the user and the list of videos watched.
+ * @returns {JSX.Element} The rendered TotalPointsScreen component.
+ */
 const TotalPointsScreen: React.FC = () => {
   const [points, setPoints] = useState<number | null>(null);
   const [groupedVideos, setGroupedVideos] = useState<GroupedVideoData[]>([]);
@@ -103,7 +117,6 @@ const TotalPointsScreen: React.FC = () => {
   const theme = useTheme();
   const borderAnimation = useRef(new Animated.Value(0)).current;
 
-  // Border animation
   useEffect(() => {
     Animated.loop(
       Animated.timing(borderAnimation, {
@@ -120,7 +133,6 @@ const TotalPointsScreen: React.FC = () => {
       theme === 'dark' ? ['#444444', '#AAAAAA'] : ['#2D336B', '#7886C7'],
   });
 
-  // Dynamic styles to replace inline styles in this screen
   const dynamicStyles = useMemo(
     () => ({
       cardContainer: {
@@ -176,7 +188,6 @@ const TotalPointsScreen: React.FC = () => {
 
             const videoMap: { [key: string]: GroupedVideoData } = {};
 
-            // Group watched videos by videoId
             watchedVideos.forEach(video => {
               if (!videoMap[video.videoId]) {
                 videoMap[video.videoId] = {
@@ -194,7 +205,6 @@ const TotalPointsScreen: React.FC = () => {
               }
             });
 
-            // Sum points for each video from pointsHistory
             pointsHistory.forEach(entry => {
               const vidId = entry.videoId;
               if (videoMap[vidId]) {
@@ -209,7 +219,6 @@ const TotalPointsScreen: React.FC = () => {
           }
         }
       } catch (error) {
-        // eslint-disable-next-line no-console
         console.error('Error fetching data:', error);
         setPoints(0);
         setGroupedVideos([]);
@@ -221,10 +230,18 @@ const TotalPointsScreen: React.FC = () => {
     fetchData();
   }, []);
 
+  /**
+   * Handles the back button press to navigate to the previous screen.
+   */
   const handleBackPress = () => {
     navigation.goBack();
   };
 
+  /**
+   * Renders a single video item in the list.
+   * @param {Object} item - The video item to render.
+   * @returns {JSX.Element} The rendered video item.
+   */
   const renderVideoItem = ({ item }: { item: GroupedVideoData }) => (
     <Animated.View style={[styles.cardContainer, dynamicStyles.cardContainer]}>
       <View style={styles.thumbnailContainer}>
