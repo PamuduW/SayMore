@@ -21,11 +21,19 @@ interface FeedbackScreenSProps {
   };
 }
 
+/**
+ * FeedbackScreen_S component that displays feedback for stuttering performance.
+ * @param {FeedbackScreenSProps} props - The properties for the component.
+ * @returns {JSX.Element} The rendered component.
+ */
 const FeedbackScreen_S: React.FC<FeedbackScreenSProps> = ({ route }) => {
   const { dynamic_feedback, stutter_count, stuttering_score } = route.params;
   const navigation = useNavigation();
   const theme = useTheme();
 
+  /**
+   * Handles the press event to navigate to the appropriate improvement screen.
+   */
   const handleImprovePress = () => {
     if (stutter_count > 3) {
       navigation.navigate('UnderstandingAndOvercomingStutteringScreen');
@@ -34,6 +42,9 @@ const FeedbackScreen_S: React.FC<FeedbackScreenSProps> = ({ route }) => {
     }
   };
 
+  /**
+   * Handles the back button press to navigate to the previous screen.
+   */
   const handleBackPress = () => {
     navigation.goBack();
   };
