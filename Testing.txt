@@ -1,6 +1,5 @@
 For Unit Testing >
-    pip install pytest pytest-asyncio
-    pip install httpx
+    pip install pytest pytest-asyncio httpx pytest-html
     Then run - pytest
     To see the results - pytest -v
     To see the results in a file - pytest --junitxml=results.xml
@@ -9,13 +8,14 @@ For Unit Testing >
     To see the results in a file - pytest --csv=results.csv
 
 For Performance Testing >
-    pip install pytest-benchmark
+    pip install pytest-html pytest-benchmark
     Then run - pytest --benchmark-only
     To see the results - pytest --benchmark-compare
     To see the results in a file - pytest --benchmark-save=results.json
     To compare with a previous result - pytest --benchmark-compare=results.json
     To see the results in a file - pytest --benchmark-json=results.json
     To see the results in a file - pytest --benchmark-csv=results.csv
+    To see the results in a file - pytest --benchmark-only --html=results.html
 
     pip install locust
     locust -f locustfile.py
