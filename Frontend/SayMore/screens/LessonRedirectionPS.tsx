@@ -16,6 +16,7 @@ import { VideoItem, WatchedVideo } from '../types/types';
 
 interface LessonRedirectionPSProps {}
 
+
 /**
  * LessonRedirectionPS component that displays the last watched video and recommended lessons.
  * @returns {JSX.Element} The rendered component.
@@ -378,7 +379,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#F0F8FF',
-    padding: containerPadding,
+    padding: 20,
   },
   headerContainer: {
     flexDirection: 'row',

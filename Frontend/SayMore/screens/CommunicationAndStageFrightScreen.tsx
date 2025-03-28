@@ -20,7 +20,6 @@ const { width } = Dimensions.get('window');
 // Calculate the width and margin for video boxes
 const videoBoxWidth = (width - 75) / 3;
 const videoBoxMargin = 15;
-const containerPadding = 20;
 
 /**
  * CommunicationAndStageFrightScreen component that displays videos for improving communication and managing stage fright.
@@ -348,7 +347,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#F0F8FF',
-    padding: containerPadding,
+    padding: 20,
   },
   headerContainer: {
     flexDirection: 'row',

@@ -22,8 +22,6 @@ const { width } = Dimensions.get('window');
 const videoBoxWidth = (width - 75) / 3;
 // Set the margin for each video box
 const videoBoxMargin = 15;
-// Set the padding for the container
-const containerPadding = 20;
 
 /**
  * LessonRedirectionStuttering component that displays the last watched video and recommended lessons for stuttering.
@@ -391,7 +389,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#F0F8FF',
-    padding: containerPadding,
+    padding: 20,
   },
   headerContainer: {
     flexDirection: 'row',
