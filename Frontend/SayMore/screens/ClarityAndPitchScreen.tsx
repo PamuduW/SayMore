@@ -15,6 +15,11 @@ import { VideoItem } from '../types/types';
 
 interface ClarityAndPitchScreenProps {}
 
+// Get the width of the device's window
+const { width } = Dimensions.get('window');
+// Calculate the width of each video box
+const videoBoxWidth = (width - 75) / 3;
+
 /**
  * ClarityAndPitchScreen component that displays videos for improving clarity and pitch in speech.
  * @returns {JSX.Element} The rendered component.
