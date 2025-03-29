@@ -101,7 +101,6 @@ const MoreStack = () => (
     <Stack.Screen name="ActivityScreen" component={ActivityScreen} />
     <Stack.Screen name="Lessons" component={LessonsScreen} />
     <Stack.Screen name="VideoList" component={VideoListScreen} />
-    <Stack.Screen name="LessonsPointsScreen" component={LessonsPointsScreen} />
     <Stack.Screen name="History" component={HistoryScreen} />
     <Stack.Screen name="QuizzesNavScreen" component={QuizzesNavScreen} />
     <Stack.Screen
@@ -180,6 +179,7 @@ const TabNavigator = () => {
         )}
       </Stack.Screen>
       <Stack.Screen name="VideoPlayer" component={VideoPlayerScreen} />
+      <Stack.Screen name="LessonsPointsScreen" component={LessonsPointsScreen} />
     </Stack.Navigator>
   );
 };

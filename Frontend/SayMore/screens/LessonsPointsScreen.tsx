@@ -17,6 +17,7 @@ type RootStackParamList = {
     milestones: number[];
     maxPossiblePoints: number;
   };
+   TabNavigation : undefined
 };
 
 type LessonsPointsScreenRouteProp = RouteProp<
@@ -83,7 +84,7 @@ const LessonsPointsScreen: React.FC = () => {
    * Navigates to the Home screen.
    */
   const goToHome = () => {
-    navigation.navigate('Home' as never);
+    navigation.navigate('TabNavigation');
   };
 
   return (
