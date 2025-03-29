@@ -101,7 +101,6 @@ const MoreStack = () => (
     <Stack.Screen name="ActivityScreen" component={ActivityScreen} />
     <Stack.Screen name="Lessons" component={LessonsScreen} />
     <Stack.Screen name="VideoList" component={VideoListScreen} />
-    <Stack.Screen name="VideoPlayer" component={VideoPlayerScreen} />
     <Stack.Screen name="LessonsPointsScreen" component={LessonsPointsScreen} />
     <Stack.Screen name="History" component={HistoryScreen} />
     <Stack.Screen name="QuizzesNavScreen" component={QuizzesNavScreen} />
@@ -131,10 +130,6 @@ const MoreStack = () => (
     />
     <Stack.Screen name="PointsScreen" component={PointsScreen} />
     <Stack.Screen name="SpeechTherapyScreen" component={SpeechTherapyScreen} />
-    <Stack.Screen
-      name="LessonRedirectionStuttering"
-      component={LessonRedirectionStuttering}
-    />
     <Stack.Screen name="TestHistory" component={TestHistory} />
     <Stack.Screen name="TestHistory_PS" component={TestHistory_PS} />
     <Stack.Screen name="TestHistory_S" component={TestHistory_S} />
@@ -165,6 +160,29 @@ const AccountStack = () => (
     <Stack.Screen name="AppInfoScreen" component={AppInfoScreen} />
   </Stack.Navigator>
 );
+
+/**
+ * TabNavigator component that defines the bottom tab navigator.
+ * @returns {JSX.Element} The bottom tab navigator.
+ */
+const TabNavigator = () => {
+  const theme = useTheme();
+
+  return (
+    <Stack.Navigator screenOptions={{ headerShown: false }}>
+      <Stack.Screen name="TabNavigation" options={{ headerShown: false }} >
+        {() => (
+          <Tab.Navigator screenOptions={({ route }) => screenOptions(route, theme)}>
+            <Tab.Screen name="Home" component={HomeStack} />
+            <Tab.Screen name="More" component={MoreStack} />
+            <Tab.Screen name="Account" component={AccountStack} />
+          </Tab.Navigator>
+        )}
+      </Stack.Screen>
+      <Stack.Screen name="VideoPlayer" component={VideoPlayerScreen} />
+    </Stack.Navigator>
+  );
+};
 
 /**
  * Function to define screen options for the tab navigator.
@@ -202,22 +220,6 @@ const screenOptions = (route, theme) => {
     },
     headerShown: false,
   };
-};
-
-/**
- * TabNavigator component that defines the bottom tab navigator.
- * @returns {JSX.Element} The bottom tab navigator.
- */
-const TabNavigator = () => {
-  const theme = useTheme();
-
-  return (
-    <Tab.Navigator screenOptions={({ route }) => screenOptions(route, theme)}>
-      <Tab.Screen name="Home" component={HomeStack} />
-      <Tab.Screen name="More" component={MoreStack} />
-      <Tab.Screen name="Account" component={AccountStack} />
-    </Tab.Navigator>
-  );
 };
 
 /**
