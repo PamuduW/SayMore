@@ -21,6 +21,7 @@ const { width } = Dimensions.get('window');
 const videoBoxWidth = (width - 75) / 3;
 // Set the margin for each video box
 const videoBoxMargin = 15;
+const containerPadding = 20;
 
 /**
  * UnderstandingAndOvercomingStutteringScreen component that displays videos
@@ -336,7 +337,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#F0F8FF',
-    padding: 20,
+    padding: containerPadding,
   },
   headerContainer: {
     flexDirection: 'row',

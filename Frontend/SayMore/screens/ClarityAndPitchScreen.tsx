@@ -14,12 +14,12 @@ import firestore from '@react-native-firebase/firestore';
 import { VideoItem } from '../types/types';
 
 interface ClarityAndPitchScreenProps {}
-
 // Get the width of the device's window
 const { width } = Dimensions.get('window');
 // Calculate the width of each video box
 const videoBoxWidth = (width - 75) / 3;
-
+const videoBoxMargin = 15;
+const containerPadding = 20;
 /**
  * ClarityAndPitchScreen component that displays videos for improving clarity and pitch in speech.
  * @returns {JSX.Element} The rendered component.
@@ -36,7 +36,6 @@ const ClarityAndPitchScreen: React.FC<ClarityAndPitchScreenProps> = () => {
     }[]
   >([]);
   const [loading, setLoading] = useState(true);
-
   /**
    * Fetches clarity and pitch videos from Firestore.
    */
@@ -69,11 +68,10 @@ const ClarityAndPitchScreen: React.FC<ClarityAndPitchScreenProps> = () => {
       setPitchVideos([]);
     }
   }, []);
-
-  useEffect(() => {
     /**
      * Fetches recommended lessons from Firestore.
      */
+  useEffect(() => {
     const fetchRecommendedLessons = async () => {
       try {
         const publicSpeakingLessons = [
@@ -108,7 +106,6 @@ const ClarityAndPitchScreen: React.FC<ClarityAndPitchScreenProps> = () => {
         setLoading(false);
       }
     };
-
     /**
      * Loads data by fetching clarity and pitch videos and recommended lessons.
      */
@@ -121,14 +118,12 @@ const ClarityAndPitchScreen: React.FC<ClarityAndPitchScreenProps> = () => {
 
     loadData();
   }, [fetchClarityAndPitchVideos]);
-
   /**
    * Handles the back button press to navigate to the previous screen.
    */
   const handleBackPress = () => {
     navigation.goBack();
   };
-
   /**
    * Handles the video press to navigate to the VideoPlayer screen.
    * @param {VideoItem} video - The video item to be played.
@@ -154,10 +149,7 @@ const ClarityAndPitchScreen: React.FC<ClarityAndPitchScreenProps> = () => {
             <TouchableOpacity
               style={styles.backButton}
               onPress={handleBackPress}>
-              <Image
-                source={require('../assets/back.png')}
-                style={styles.backButtonImage}
-              />
+              <Text style={styles.backButtonText}>←</Text>
             </TouchableOpacity>
             <View style={styles.headerTextContainer}>
               <Text style={styles.headerText}>Clarity & Perfecting Pitch</Text>
@@ -332,8 +324,8 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    backgroundColor: '#B9D9EB',
-    padding: 20,
+    backgroundColor: '#F0F8FF',
+    padding: containerPadding,
   },
   headerContainer: {
     flexDirection: 'row',
@@ -362,9 +354,15 @@ const styles = StyleSheet.create({
     shadowRadius: 3,
     elevation: 4,
   },
-  backButtonImage: {
-    width: 24,
-    height: 24,
+  backButtonText: {
+    fontSize: 28,
+    fontWeight: 'bold',
+    color: '#2C3E50',
+    textAlign: 'center',
+    textAlignVertical: 'center',
+    includeFontPadding: false,
+    paddingBottom: 2,
+    lineHeight: 32,
   },
   sectionContainer: {
     marginBottom: 24,
