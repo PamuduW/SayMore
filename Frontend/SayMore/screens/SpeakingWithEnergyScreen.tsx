@@ -40,7 +40,7 @@ const SpeakingWithEnergyScreen: React.FC<
   >([]);
   const [loading, setLoading] = useState(true);
 
-   /**
+  /**
    * Fetches videos related to speaking with energy from Firestore.
    */
   const fetchEnergyVideos = useCallback(async () => {
@@ -60,9 +60,9 @@ const SpeakingWithEnergyScreen: React.FC<
       setEnergyVideos([]);
     }
   }, []);
-    /**
-     * Fetches recommended lessons from Firestore.
-     */
+  /**
+   * Fetches recommended lessons from Firestore.
+   */
   useEffect(() => {
     const fetchRecommendedLessons = async () => {
       try {

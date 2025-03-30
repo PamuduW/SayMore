@@ -9,7 +9,6 @@ import inAppMessaging from '@react-native-firebase/in-app-messaging';
  */
 export const useNotifications = () => {
   useEffect(() => {
-
     /**
      * Requests user permission for notifications on Android.
      */

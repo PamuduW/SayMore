@@ -17,7 +17,7 @@ type RootStackParamList = {
     milestones: number[];
     maxPossiblePoints: number;
   };
-   TabNavigation : undefined
+  TabNavigation: undefined;
 };
 
 type LessonsPointsScreenRouteProp = RouteProp<
@@ -36,8 +36,7 @@ const LessonsPointsScreen: React.FC = () => {
   const route = useRoute<LessonsPointsScreenRouteProp>();
   const { points, videoTitle, milestones, maxPossiblePoints } = route.params;
 
-  useEffect(() => {
-  }, [points, videoTitle, milestones, maxPossiblePoints]);
+  useEffect(() => {}, [points, videoTitle, milestones, maxPossiblePoints]);
 
   /**
    * Returns a message based on the percentage of points earned.

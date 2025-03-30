@@ -27,7 +27,7 @@ SayMore is a public speaking and stuttering analysis application that leverages 
    ```sh
    git clone https://github.com/your-repo/saymore-frontend.git
    cd saymore-frontend
-    ```
+   ```
 
 2. **Install dependencies:**
 
@@ -38,11 +38,13 @@ SayMore is a public speaking and stuttering analysis application that leverages 
 3. **Run the application:**
 
    For Android:
+
    ```sh
    npx react-native run-android
    ```
 
    For iOS:
+
    ```sh
    npx react-native run-ios
    ```
@@ -50,26 +52,25 @@ SayMore is a public speaking and stuttering analysis application that leverages 
 ## Usage
 
 After launching the app, you can modify it by editing App.tsx or other components. To see your changes in real-time:
+
 - Android: Press <kbd>R</kbd> twice or open the Developer Menu using <kbd>Ctrl</kbd> + <kbd>M</kbd> (Windows/Linux) or <kbd>Cmd ⌘</kbd> + <kbd>M</kbd> (macOS).
 - iOS: Press <kbd>Cmd ⌘</kbd> + <kbd>R</kbd> in the simulator.
 
 ## Additional Commands
 
-- **Lint the Code**: 
+- **Lint the Code**:
   ```sh
   npm run lint
   ```
-  
-- **Format the Code**: 
+- **Format the Code**:
   ```sh
     npm run format
-    ```
-  
+  ```
 - **Clean the Project**:
 - ```sh
   npm run clean
   ```
-  
+
 ## Deployment
 
 ### Android Release Build

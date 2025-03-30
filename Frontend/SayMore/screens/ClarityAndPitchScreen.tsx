@@ -68,9 +68,9 @@ const ClarityAndPitchScreen: React.FC<ClarityAndPitchScreenProps> = () => {
       setPitchVideos([]);
     }
   }, []);
-    /**
-     * Fetches recommended lessons from Firestore.
-     */
+  /**
+   * Fetches recommended lessons from Firestore.
+   */
   useEffect(() => {
     const fetchRecommendedLessons = async () => {
       try {

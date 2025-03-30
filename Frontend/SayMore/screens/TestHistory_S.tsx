@@ -109,7 +109,9 @@ const TestHistory_S: React.FC = () => {
   return (
     <ScrollView>
       <LinearGradient
-        colors={theme === 'dark' ? ['#1C1C1C', '#3A3A3A'] : ['#577BC1', '#577BC1']}
+        colors={
+          theme === 'dark' ? ['#1C1C1C', '#3A3A3A'] : ['#577BC1', '#577BC1']
+        }
         style={styles.container}>
         <ScrollView contentContainerStyle={styles.content}>
           <Text style={styles.title}>Your Stuttering Analysis</Text>
@@ -148,9 +150,7 @@ const TestHistory_S: React.FC = () => {
 
           <View style={styles.feedbackBlock}>
             <Text style={styles.label}>Language</Text>
-            <Text style={styles.valueHighlight}>
-              {responseData.language}
-            </Text>
+            <Text style={styles.valueHighlight}>{responseData.language}</Text>
           </View>
 
           <View style={styles.feedbackBlock}>

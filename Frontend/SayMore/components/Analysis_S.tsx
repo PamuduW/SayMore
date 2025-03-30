@@ -5,7 +5,6 @@ import {
   ScrollView,
   View,
   TouchableOpacity,
-  Button,
   Dimensions,
   Alert,
   ActivityIndicator,
