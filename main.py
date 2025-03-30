@@ -52,7 +52,7 @@ class RequestBody(BaseModel):
 async def root():
     """Root endpoint that returns a welcome message and checks environment variables."""
     return {
-        "message": "Backend with the Deep Learning model of the SayMore app\n"
+        "message": "Backend with the Deep Learning model of the SayMore app----"
         + check_env_variables()
     }
 
@@ -139,35 +139,24 @@ def check_env_variables():
     """
     google_credentials = os.getenv("GOOGLE_APPLICATION_CREDENTIALS_JSON")
     firebase_credentials = os.getenv("FIREBASE_CREDENTIALS")
-    asure_speech_key = os.getenv("AZURE_SPEECH_KEY")
-    asure_speech_region = os.getenv("AZURE_SPEECH_REGION")
+    azure_speech_key = os.getenv("AZURE_SPEECH_KEY")
+    azure_speech_region = os.getenv("AZURE_SPEECH_REGION")
     google_api_key = os.getenv("GOOGLE_API_KEY")
 
-    s = "...............................................................\n"
+    unset_vars = []
 
     if google_credentials is None:
-        s += "GOOGLE_APPLICATION_CREDENTIALS_JSON environment variable is not set.\n"
-    else:
-        s += "GOOGLE_APPLICATION_CREDENTIALS_JSON environment variable is set."
-
+        unset_vars.append("GOOGLE_APPLICATION_CREDENTIALS_JSON")
     if firebase_credentials is None:
-        s += "FIREBASE_CREDENTIALS environment variable is not set.\n"
-    else:
-        s += "FIREBASE_CREDENTIALS environment variable is set.\n"
-
-    if asure_speech_key is None:
-        s += "AZURE_SPEECH_KEY environment variable is not set.\n"
-    else:
-        s += "AZURE_SPEECH_KEY environment variable is set.\n"
-
-    if asure_speech_region is None:
-        s += "AZURE_SPEECH_REGION environment variable is not set.\n"
-    else:
-        s += "AZURE_SPEECH_REGION environment variable is set.\n"
-
+        unset_vars.append("FIREBASE_CREDENTIALS")
+    if azure_speech_key is None:
+        unset_vars.append("AZURE_SPEECH_KEY")
+    if azure_speech_region is None:
+        unset_vars.append("AZURE_SPEECH_REGION")
     if google_api_key is None:
-        s += "GOOGLE_API_KEY environment variable is not set.\n"
-    else:
-        s += "GOOGLE_API_KEY environment variable is set.\n"
+        unset_vars.append("GOOGLE_API_KEY")
 
-    return s
+    if not unset_vars:
+        return "All the variables (GOOGLE_APPLICATION_CREDENTIALS_JSON, FIREBASE_CREDENTIALS, AZURE_SPEECH_KEY, AZURE_SPEECH_REGION, GOOGLE_API_KEY) are set"
+    else:
+        return f"The following environment variables are not set: {', '.join(unset_vars)}"
