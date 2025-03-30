@@ -16,14 +16,19 @@ import { VideoItem, WatchedVideo } from '../types/types';
 
 interface LessonRedirectionPSProps {}
 
-
+const { width } = Dimensions.get('window');
+const videoBoxWidth = (width - 75) / 3;
+const videoBoxMargin = 15;
+const containerPadding = 20;
 /**
  * LessonRedirectionPS component that displays the last watched video and recommended lessons.
  * @returns {JSX.Element} The rendered component.
  */
 const LessonRedirectionPS: React.FC<LessonRedirectionPSProps> = () => {
   const navigation = useNavigation();
-  const [lastWatchedVideo, setLastWatchedVideo] = useState<WatchedVideo | null>(null);
+  const [lastWatchedVideo, setLastWatchedVideo] = useState<WatchedVideo | null>(
+    null
+  );
   const [recommendedLessons, setRecommendedLessons] = useState<
     {
       category: string;
@@ -32,7 +37,6 @@ const LessonRedirectionPS: React.FC<LessonRedirectionPSProps> = () => {
     }[]
   >([]);
   const [loading, setLoading] = useState(true);
-
   /**
    * Fetches the last watched video from Firestore.
    */
@@ -73,7 +77,6 @@ const LessonRedirectionPS: React.FC<LessonRedirectionPSProps> = () => {
       setLastWatchedVideo(null);
     }
   }, []);
-
   /**
    * Fetches the details of a specific video from Firestore.
    * @param {string} videoId - The ID of the video to fetch details for.
@@ -109,11 +112,10 @@ const LessonRedirectionPS: React.FC<LessonRedirectionPSProps> = () => {
     },
     []
   );
-
-  useEffect(() => {
     /**
      * Fetches recommended lessons from Firestore.
      */
+  useEffect(() => {
     const fetchRecommendedLessons = async () => {
       try {
         const publicSpeakingLessons = [
@@ -150,7 +152,6 @@ const LessonRedirectionPS: React.FC<LessonRedirectionPSProps> = () => {
         setLoading(false);
       }
     };
-
     /**
      * Loads data including last watched video and recommended lessons.
      */
@@ -163,14 +164,12 @@ const LessonRedirectionPS: React.FC<LessonRedirectionPSProps> = () => {
 
     loadData();
   }, [fetchLastWatchedVideo]);
-
   /**
    * Handles the back button press to navigate to the previous screen.
    */
   const handleBackPress = () => {
     navigation.goBack();
   };
-
   /**
    * Handles the press event on a video item to navigate to the VideoPlayer screen.
    * @param {VideoItem} video - The video item that was pressed.
@@ -187,7 +186,6 @@ const LessonRedirectionPS: React.FC<LessonRedirectionPSProps> = () => {
       lessonTitle: lessonTitle,
     });
   };
-
   /**
    * Formats a date string to a readable format.
    * @param {string} dateString - The date string to format.
@@ -211,7 +209,6 @@ const LessonRedirectionPS: React.FC<LessonRedirectionPSProps> = () => {
       return dateString;
     }
   };
-
   /**
    * Handles the press event on the last watched video to navigate to the VideoPlayer screen.
    */
@@ -379,7 +376,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#F0F8FF',
-    padding: 20,
+    padding: containerPadding,
   },
   headerContainer: {
     flexDirection: 'row',
