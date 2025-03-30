@@ -40,7 +40,6 @@ SayMore/
 │── README.md                    # Documentation for the project
 │── requirements.txt             # Python dependencies list
 │── runtime.txt                  # Specifies runtime version for deployment (e.g., Heroku)
-
 ```
 
 ## Installation

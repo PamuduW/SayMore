@@ -80,6 +80,19 @@ After launching the app, you can modify it by editing App.tsx or other component
   ./gradlew assembleRelease
   ```
 
+## Contributors
+
+- **Pamudu Wijesingha (Team Lead)** - Developer
+- **Disini Hettige** - Developer
+- **Janindu Sandanayaka** - Developer
+- **Arani Weerathunga** - Developer
+- **Kanila Gunasekara** - Developer
+- **Himara Joseph** - Developer
+
+## License
+
+This project is licensed under the MIT License.
+
 ## Project Structure
 
 ```
@@ -166,5 +179,4 @@ SayMore/
 │── package-lock.json
 │── README.md
 │── tsconfig.json
-
 ```
