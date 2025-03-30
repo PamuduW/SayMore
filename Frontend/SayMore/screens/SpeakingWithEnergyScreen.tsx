@@ -20,7 +20,15 @@ interface SpeakingWithEnergyScreenProps {}
  * related to speaking with energy.
  * @returns {JSX.Element} The rendered component.
  */
-const SpeakingWithEnergyScreen: React.FC<SpeakingWithEnergyScreenProps> = () => {
+
+const { width } = Dimensions.get('window');
+const videoBoxWidth = (width - 75) / 3;
+const videoBoxMargin = 15;
+const containerPadding = 20;
+
+const SpeakingWithEnergyScreen: React.FC<
+  SpeakingWithEnergyScreenProps
+> = () => {
   const navigation = useNavigation();
   const [energyVideos, setEnergyVideos] = useState<VideoItem[]>([]);
   const [recommendedLessons, setRecommendedLessons] = useState<
@@ -32,7 +40,7 @@ const SpeakingWithEnergyScreen: React.FC<SpeakingWithEnergyScreenProps> = () => 
   >([]);
   const [loading, setLoading] = useState(true);
 
-  /**
+   /**
    * Fetches videos related to speaking with energy from Firestore.
    */
   const fetchEnergyVideos = useCallback(async () => {
@@ -52,11 +60,10 @@ const SpeakingWithEnergyScreen: React.FC<SpeakingWithEnergyScreenProps> = () => 
       setEnergyVideos([]);
     }
   }, []);
-
-  useEffect(() => {
     /**
      * Fetches recommended lessons from Firestore.
      */
+  useEffect(() => {
     const fetchRecommendedLessons = async () => {
       try {
         const publicSpeakingLessons = [
@@ -87,17 +94,18 @@ const SpeakingWithEnergyScreen: React.FC<SpeakingWithEnergyScreenProps> = () => 
           }
         }
 
+        // Filter out Speaking with Energy lessons
         const filteredLessons = lessonsWithVideos.filter(
           lesson => lesson.category !== 'Speaking with Energy'
         );
 
         setRecommendedLessons(filteredLessons);
       } catch (error) {
+        // Handle error
       } finally {
         setLoading(false);
       }
     };
-
     /**
      * Loads data by fetching energy videos and recommended lessons.
      */
@@ -110,14 +118,12 @@ const SpeakingWithEnergyScreen: React.FC<SpeakingWithEnergyScreenProps> = () => 
 
     loadData();
   }, [fetchEnergyVideos]);
-
   /**
    * Handles the back button press to navigate to the previous screen.
    */
   const handleBackPress = () => {
     navigation.goBack();
   };
-
   /**
    * Handles the video press to navigate to the VideoPlayer screen.
    * @param {VideoItem} video - The video item to play.
@@ -143,10 +149,7 @@ const SpeakingWithEnergyScreen: React.FC<SpeakingWithEnergyScreenProps> = () => 
             <TouchableOpacity
               style={styles.backButton}
               onPress={handleBackPress}>
-              <Image
-                source={require('../assets/back.png')} // Update this path to your back.png location
-                style={styles.backButtonImage}
-              />
+              <Text style={styles.backButtonText}>←</Text>
             </TouchableOpacity>
             <View style={styles.headerTextContainer}>
               <Text style={styles.headerText}>Speaking with Energy</Text>
@@ -276,7 +279,7 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    backgroundColor: '#B9D9EB',
+    backgroundColor: '#F0F8FF',
     padding: containerPadding,
   },
   headerContainer: {
@@ -287,10 +290,6 @@ const styles = StyleSheet.create({
   headerTextContainer: {
     flex: 1,
     marginLeft: 10,
-  },
-  backButtonImage: {
-    width: 24,
-    height: 24,
   },
   headerText: {
     fontSize: 28,

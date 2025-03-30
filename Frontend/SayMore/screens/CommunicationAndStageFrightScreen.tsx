@@ -14,14 +14,12 @@ import firestore from '@react-native-firebase/firestore';
 import { VideoItem } from '../types/types';
 
 interface CommunicationAndStageFrightScreenProps {}
-
 // Get the width of the window
 const { width } = Dimensions.get('window');
 // Calculate the width and margin for video boxes
 const videoBoxWidth = (width - 75) / 3;
 const videoBoxMargin = 15;
 const containerPadding = 20;
-
 /**
  * CommunicationAndStageFrightScreen component that displays videos for improving communication and managing stage fright.
  * @returns {JSX.Element} The rendered component.
@@ -42,7 +40,6 @@ const CommunicationAndStageFrightScreen: React.FC<
     }[]
   >([]);
   const [loading, setLoading] = useState(true);
-
   /**
    * Fetches communication and stage fright videos from Firestore.
    */
@@ -76,11 +73,10 @@ const CommunicationAndStageFrightScreen: React.FC<
       setStageFrightVideos([]);
     }
   }, []);
-
-  useEffect(() => {
     /**
      * Fetches recommended lessons from Firestore.
      */
+  useEffect(() => {
     const fetchRecommendedLessons = async () => {
       try {
         const publicSpeakingLessons = [
@@ -135,14 +131,12 @@ const CommunicationAndStageFrightScreen: React.FC<
 
     loadData();
   }, [fetchImprovementVideos]);
-
   /**
    * Handles the back button press to navigate to the previous screen.
    */
   const handleBackPress = () => {
     navigation.goBack();
   };
-
   /**
    * Handles the video press to navigate to the VideoPlayer screen.
    * @param {VideoItem} video - The video item to be played.
