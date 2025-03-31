@@ -72,6 +72,7 @@ const PersonalDetailsScreen = () => {
         placeholder="First Name"
         value={fname}
         onChangeText={setFname}
+        placeholderTextColor="#999"
       />
       <TextInput
         key="sname"
@@ -79,6 +80,7 @@ const PersonalDetailsScreen = () => {
         placeholder="Surname"
         value={sname}
         onChangeText={setSname}
+        placeholderTextColor="#999"
       />
       <TextInput
         key="username"
@@ -86,6 +88,7 @@ const PersonalDetailsScreen = () => {
         placeholder="Username"
         value={username}
         onChangeText={setUsername}
+        placeholderTextColor="#999"
       />
 
       <TouchableOpacity
@@ -148,7 +151,7 @@ const styles = StyleSheet.create({
   },
   buttonText: { color: '#003366', fontWeight: 'bold' },
   dobText: { color: 'black' },
-  placeholderText: { color: 'gray' },
+  placeholderText: { color: '#999' },
 });
 
 export default PersonalDetailsScreen;
