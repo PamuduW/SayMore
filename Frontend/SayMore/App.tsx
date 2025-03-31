@@ -36,10 +36,10 @@ const MainApp: React.FC = () => {
 const styles = StyleSheet.create({
   darkContainer: {
     flex: 1,
-    backgroundColor: '#000000'
+    backgroundColor: '#000000',
   },
   lightContainer: {
     flex: 1,
-    backgroundColor: '#FFFFFF'
+    backgroundColor: '#FFFFFF',
   },
 });

@@ -27,9 +27,13 @@ const videoBoxMargin = 15;
  * LessonRedirectionStuttering component that displays the last watched video and recommended lessons for stuttering.
  * @returns {JSX.Element} The rendered component.
  */
-const LessonRedirectionStuttering: React.FC<LessonRedirectionStutteringProps> = () => {
+const LessonRedirectionStuttering: React.FC<
+  LessonRedirectionStutteringProps
+> = () => {
   const navigation = useNavigation();
-  const [lastWatchedVideo, setLastWatchedVideo] = useState<WatchedVideo | null>(null);
+  const [lastWatchedVideo, setLastWatchedVideo] = useState<WatchedVideo | null>(
+    null
+  );
   const [recommendedLessons, setRecommendedLessons] = useState<
     {
       category: string;

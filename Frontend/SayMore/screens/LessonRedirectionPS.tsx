@@ -112,9 +112,9 @@ const LessonRedirectionPS: React.FC<LessonRedirectionPSProps> = () => {
     },
     []
   );
-    /**
-     * Fetches recommended lessons from Firestore.
-     */
+  /**
+   * Fetches recommended lessons from Firestore.
+   */
   useEffect(() => {
     const fetchRecommendedLessons = async () => {
       try {

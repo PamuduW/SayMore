@@ -128,6 +128,7 @@ export default function SignInScreen() {
             keyboardType="email-address"
             autoCapitalize="none"
             autoCorrect={false}
+            placeholderTextColor="#999"
           />
           <TextInput
             style={styles.input}
@@ -137,6 +138,7 @@ export default function SignInScreen() {
             secureTextEntry
             autoCapitalize="none"
             autoCorrect={false}
+            placeholderTextColor="#999"
           />
           <TouchableOpacity style={styles.button} onPress={handleSignIn}>
             <Text style={styles.buttonText}>Sign In</Text>

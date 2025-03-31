@@ -18,7 +18,9 @@ type Category = 'PublicSpeaking' | 'Stuttering';
  * @returns {JSX.Element} The rendered component.
  */
 const TestHistory: React.FC = () => {
-  const [selectedCategory, setSelectedCategory] = useState<null | Category>(null);
+  const [selectedCategory, setSelectedCategory] = useState<null | Category>(
+    null
+  );
   const [historyData, setHistoryData] = useState<any>(null);
   const [loading, setLoading] = useState(false);
 
@@ -44,8 +46,11 @@ const TestHistory: React.FC = () => {
 
       if (userDoc.exists) {
         const data = userDoc.data();
-        const categoryKey = category === 'PublicSpeaking' ? 'PS_Check' : 'Stuttering_Check';
-        const categoryHistory = data?.results ? data.results[categoryKey] : null;
+        const categoryKey =
+          category === 'PublicSpeaking' ? 'PS_Check' : 'Stuttering_Check';
+        const categoryHistory = data?.results
+          ? data.results[categoryKey]
+          : null;
         setHistoryData(categoryHistory);
       } else {
         console.log('No user document found.');

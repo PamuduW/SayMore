@@ -169,9 +169,10 @@ const TabNavigator = () => {
 
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
-      <Stack.Screen name="TabNavigation" options={{ headerShown: false }} >
+      <Stack.Screen name="TabNavigation" options={{ headerShown: false }}>
         {() => (
-          <Tab.Navigator screenOptions={({ route }) => screenOptions(route, theme)}>
+          <Tab.Navigator
+            screenOptions={({ route }) => screenOptions(route, theme)}>
             <Tab.Screen name="Home" component={HomeStack} />
             <Tab.Screen name="More" component={MoreStack} />
             <Tab.Screen name="Account" component={AccountStack} />
@@ -179,7 +180,10 @@ const TabNavigator = () => {
         )}
       </Stack.Screen>
       <Stack.Screen name="VideoPlayer" component={VideoPlayerScreen} />
-      <Stack.Screen name="LessonsPointsScreen" component={LessonsPointsScreen} />
+      <Stack.Screen
+        name="LessonsPointsScreen"
+        component={LessonsPointsScreen}
+      />
     </Stack.Navigator>
   );
 };

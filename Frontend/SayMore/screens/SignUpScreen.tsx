@@ -138,6 +138,7 @@ export default function SignUpScreen() {
             keyboardType="email-address"
             autoCapitalize="none"
             autoCorrect={false}
+            placeholderTextColor="#999"
           />
           <TextInput
             style={styles.input}
@@ -147,6 +148,7 @@ export default function SignUpScreen() {
             secureTextEntry
             autoCapitalize="none"
             autoCorrect={false}
+            placeholderTextColor="#999"
           />
           <TextInput
             style={styles.input}
@@ -156,6 +158,7 @@ export default function SignUpScreen() {
             secureTextEntry
             autoCapitalize="none"
             autoCorrect={false}
+            placeholderTextColor="#999"
           />
           <TouchableOpacity
             style={[styles.button, loading && styles.buttonDisabled]}
