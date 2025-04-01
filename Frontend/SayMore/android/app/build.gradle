@@ -21,8 +21,8 @@ react {
     // cliFile = file("../../node_modules/react-native/cli.js")
 
     /* Variants */
-    //   The list of variants to that are debuggable. For those we're going to
-    //   skip the bundling of the JS bundle and the assets. By default is just 'debug'.
+    //   The list of variants that are debuggable. For those we're going to
+    //   skip the bundling of the JS bundle and the assets. By default it is just 'debug'.
     //   If you add flavors like lite, prod, etc. you'll have to list your debuggableVariants.
     // debuggableVariants = ["liteDebug", "prodDebug"]
 
@@ -58,7 +58,7 @@ react {
 }
 
 /**
- * Set this to true to Run Proguard on Release builds to minify the Java bytecode.
+ * Set this to true to run Proguard on Release builds to minify the Java bytecode.
  */
 def enableProguardInReleaseBuilds = false
 
@@ -68,9 +68,9 @@ def enableProguardInReleaseBuilds = false
  * For example, to use the international variant, you can use:
  * `def jscFlavor = 'org.webkit:android-jsc-intl:+'`
  *
- * The international variant includes ICU i18n library and necessary data
+ * The international variant includes the ICU i18n library and necessary data
  * allowing to use e.g. `Date.toLocaleString` and `String.localeCompare` that
- * give correct results when using with locales other than en-US. Note that
+ * give correct results when using locales other than en-US. Note that
  * this variant is about 6MiB larger per architecture than default.
  */
 def jscFlavor = 'org.webkit:android-jsc:+'
@@ -95,15 +95,21 @@ android {
             keyAlias 'androiddebugkey'
             keyPassword 'android'
         }
+        release {
+            // Use your generated keystore file for signing the release build.
+            storeFile file(System.getenv('KEYSTORE_FILE') ?: 'default.keystore')
+            storePassword System.getenv('KEYSTORE_PASSWORD') ?: 'defaultPassword'
+            keyAlias System.getenv('KEY_ALIAS') ?: 'defaultAlias'
+            keyPassword System.getenv('KEY_PASSWORD') ?: 'defaultPassword'
+        }
     }
     buildTypes {
         debug {
             signingConfig signingConfigs.debug
         }
         release {
-            // Caution! In production, you need to generate your own keystore file.
-            // see https://reactnative.dev/docs/signed-apk-android.
-            signingConfig signingConfigs.debug
+            // Sign the release build using the release signing configuration.
+            signingConfig signingConfigs.release
             minifyEnabled enableProguardInReleaseBuilds
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
         }
