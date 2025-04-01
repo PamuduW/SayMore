@@ -29,9 +29,9 @@ const TestHistory: React.FC = () => {
 
   const theme = useTheme();
 
-    const handleBackPress = () => {
-      navigation.goBack();
-    };
+  const handleBackPress = () => {
+    navigation.goBack();
+  };
 
   /**
    * Fetches the test history for the given category from Firestore.
@@ -102,35 +102,48 @@ const TestHistory: React.FC = () => {
           navigation.navigate('TestHistory_S', { testId: item.id });
         }
       }}>
-      <Text style={theme === 'dark' ? styles.darkHistoryItemText : styles.historyItemText}>Test ID: {item.id}</Text>
+      <Text
+        style={
+          theme === 'dark' ? styles.darkHistoryItemText : styles.historyItemText
+        }>
+        Test ID: {item.id}
+      </Text>
     </TouchableOpacity>
   );
 
   return (
     <View style={theme === 'dark' ? styles.darkContainer : styles.container}>
-    <TouchableOpacity
-              style={
-                theme === 'dark' ? styles.darkBackButton : styles.lightBackButton
-              }
-              onPress={handleBackPress}>
-              <Text
-                style={
-                  theme === 'dark'
-                    ? styles.darkBackButtonText
-                    : styles.lightBackButtonText
-                }>
-                ←
-              </Text>
-            </TouchableOpacity>
+      <TouchableOpacity
+        style={
+          theme === 'dark' ? styles.darkBackButton : styles.lightBackButton
+        }
+        onPress={handleBackPress}>
+        <Text
+          style={
+            theme === 'dark'
+              ? styles.darkBackButtonText
+              : styles.lightBackButtonText
+          }>
+          ←
+        </Text>
+      </TouchableOpacity>
       {!selectedCategory && (
         <View style={styles.categoryContainer}>
           <TouchableOpacity
-            style={theme === 'dark' ? styles.darkCategoryButton : styles.categoryButton}
+            style={
+              theme === 'dark'
+                ? styles.darkCategoryButton
+                : styles.categoryButton
+            }
             onPress={() => handleCategorySelect('PublicSpeaking')}>
             <Text style={styles.categoryText}>Public Speaking</Text>
           </TouchableOpacity>
           <TouchableOpacity
-            style={theme === 'dark' ? styles.darkCategoryButton : styles.categoryButton}
+            style={
+              theme === 'dark'
+                ? styles.darkCategoryButton
+                : styles.categoryButton
+            }
             onPress={() => handleCategorySelect('Stuttering')}>
             <Text style={styles.categoryText}>Stuttering</Text>
           </TouchableOpacity>
@@ -165,7 +178,14 @@ const TestHistory: React.FC = () => {
               setSelectedCategory(null);
               setHistoryData(null);
             }}>
-            <Text style={theme === 'dark' ? styles.darkBackButtonText : styles.backButtonText}>Back to Categories</Text>
+            <Text
+              style={
+                theme === 'dark'
+                  ? styles.darkBackTextText
+                  : styles.backButtonText
+              }>
+              Back to Categories
+            </Text>
           </TouchableOpacity>
         </>
       )}
@@ -196,7 +216,8 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     width: '80%',
     alignItems: 'center',
-  },darkCategoryButton: {
+  },
+  darkCategoryButton: {
     backgroundColor: '#3b3b3b',
     padding: 16,
     marginVertical: 10,
@@ -239,48 +260,48 @@ const styles = StyleSheet.create({
     color: '#214283',
     fontSize: 16,
   },
-  darkBackButtonText: {
+  darkBackTextText: {
     color: '#fff',
     fontSize: 16,
   },
-    lightBackButton: {
-      width: 48,
-      height: 48,
-      backgroundColor: '#F0F8FF',
-      borderRadius: 12,
-      justifyContent: 'center',
-      alignItems: 'center',
-      shadowColor: '#000',
-      shadowOffset: { width: 0, height: 2 },
-      shadowOpacity: 0.1,
-      shadowRadius: 4,
-      elevation: 3,
-    },
-    darkBackButton: {
-      width: 48,
-      height: 48,
-      backgroundColor: '#2C2C2C',
-      borderRadius: 12,
-      justifyContent: 'center',
-      alignItems: 'center',
-      shadowColor: '#000',
-      shadowOffset: { width: 0, height: 2 },
-      shadowOpacity: 0.2,
-      shadowRadius: 4,
-      elevation: 3,
-    },
-    lightBackButtonText: {
-      fontSize: 28,
-      fontWeight: 'bold',
-      color: '#2C3E50',
-      lineHeight: 28,
-    },
-    darkBackButtonText: {
-      fontSize: 28,
-      fontWeight: 'bold',
-      color: '#FFF',
-      lineHeight: 28,
-    },
+  lightBackButton: {
+    width: 48,
+    height: 48,
+    backgroundColor: '#F0F8FF',
+    borderRadius: 12,
+    justifyContent: 'center',
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  darkBackButton: {
+    width: 48,
+    height: 48,
+    backgroundColor: '#2C2C2C',
+    borderRadius: 12,
+    justifyContent: 'center',
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  lightBackButtonText: {
+    fontSize: 28,
+    fontWeight: 'bold',
+    color: '#2C3E50',
+    lineHeight: 28,
+  },
+  darkBackButtonText: {
+    fontSize: 28,
+    fontWeight: 'bold',
+    color: '#FFF',
+    lineHeight: 28,
+  },
 });
 
 export default TestHistory;
