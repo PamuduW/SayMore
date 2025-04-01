@@ -9,3 +9,6 @@ npm run format
 cd android
 ./gradlew assembleRelease
 
+
+.env inside android folder
+Saymore.keystore inside android/app folder
