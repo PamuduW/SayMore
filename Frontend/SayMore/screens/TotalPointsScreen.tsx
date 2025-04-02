@@ -114,7 +114,7 @@ const TotalPointsScreen: React.FC = () => {
   const [groupedVideos, setGroupedVideos] = useState<GroupedVideoData[]>([]);
   const [loading, setLoading] = useState(true);
   const navigation = useNavigation();
-  const theme = useTheme();
+  const { theme } = useTheme();
   const borderAnimation = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {

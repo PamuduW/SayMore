@@ -22,7 +22,7 @@ import { useTheme } from '../components/ThemeContext';
  */
 export default function AccountScreen() {
   const navigation = useNavigation();
-  const theme = useTheme();
+  const { theme } = useTheme();
 
   const [userData, setUserData] = useState(null);
   const [loading, setLoading] = useState(true);

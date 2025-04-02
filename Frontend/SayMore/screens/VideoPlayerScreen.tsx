@@ -59,7 +59,7 @@ const VideoPlayerScreen: React.FC<VideoPlayerScreenProps> = ({
   route,
   navigation,
 }) => {
-  const theme = useTheme();
+  const { theme } = useTheme();
   const isFocused = useIsFocused();
   const { video, lessonTitle } = route.params;
   const { width, height } = Dimensions.get('window');

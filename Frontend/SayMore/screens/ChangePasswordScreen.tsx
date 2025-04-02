@@ -22,7 +22,7 @@ export default function ChangePasswordScreen({ navigation }) {
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
 
-  const theme = useTheme();
+  const { theme } = useTheme();
 
   /**
    * Reauthenticates the user with the provided password.

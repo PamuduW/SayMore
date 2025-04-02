@@ -24,7 +24,7 @@ const HistoryScreen: React.FC<HistoryScreenProps> = () => {
   const [watchedVideos, setWatchedVideos] = useState<WatchedVideo[]>([]);
   const [loading, setLoading] = useState(true);
   const navigation = useNavigation();
-  const theme = useTheme();
+  const { theme } = useTheme();
 
   useEffect(() => {
     /**

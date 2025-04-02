@@ -26,7 +26,7 @@ import { useNavigation } from '@react-navigation/native';
  */
 const ProgressScreen = () => {
   const [watchedVideos, setWatchedVideos] = useState<WatchedVideo[]>([]);
-  const theme = useTheme();
+  const { theme } = useTheme();
   const navigation = useNavigation();
   const borderAnimation = useRef(new Animated.Value(0)).current;
 

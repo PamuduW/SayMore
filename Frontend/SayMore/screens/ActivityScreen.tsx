@@ -40,7 +40,7 @@ const ActivityScreen: React.FC<Props> = ({
     publicSpeakingQuizzes: 0,
   });
   const navigation = useNavigation();
-  const theme = useTheme();
+  const { theme } = useTheme();
 
   useEffect(() => {
     const fetchUserQuizAttempts = async () => {

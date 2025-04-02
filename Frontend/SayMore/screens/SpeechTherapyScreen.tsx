@@ -62,7 +62,7 @@ const therapists = [
  * @returns {JSX.Element} The rendered component.
  */
 const SpeechTherapyScreen = () => {
-  const theme = useTheme();
+  const { theme } = useTheme();
   const navigation = useNavigation();
   const borderAnimation = new Animated.Value(0);
 

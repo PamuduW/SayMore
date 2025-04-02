@@ -29,7 +29,7 @@ interface Question {
 }
 
 const StutteringQuestionScreen: React.FC = ({ navigation }: any) => {
-  const theme = useTheme();
+  const { theme } = useTheme();
   const [selectedSet, setSelectedSet] = useState<string | null>(null);
   const [questions, setQuestions] = useState<Question[]>([]);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState<number>(0);

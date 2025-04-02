@@ -30,7 +30,7 @@ const LessonsScreen: React.FC<LessonsScreenProps> = () => {
   const navigation = useNavigation();
   const [firstName, setFirstName] = useState<string | null>(null);
 
-  const theme = useTheme();
+  const { theme } = useTheme();
   useEffect(() => {
     /**
      * Fetches the first name of the current user from Firestore.

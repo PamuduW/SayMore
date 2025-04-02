@@ -17,7 +17,7 @@ import { useTheme } from '../components/ThemeContext';
  */
 const TermsAndConditionsScreen = () => {
   const navigation = useNavigation();
-  const theme = useTheme();
+  const { theme } = useTheme();
 
   return (
     <LinearGradient
