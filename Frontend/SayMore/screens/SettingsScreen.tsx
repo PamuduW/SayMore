@@ -12,11 +12,11 @@ import {
   Platform,
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
-import { useTheme } from '../components/ThemeContext'; // Import the theme context
+import { useTheme } from '../components/ThemeContext';
 import { useNavigation } from '@react-navigation/native';
 import messaging from '@react-native-firebase/messaging';
+import DropDownPicker from 'react-native-dropdown-picker';
 
-// Import icons
 import SettingsIcon from '../assets/settings.png';
 import NotificationIcon from '../assets/notificationsset.png';
 import DarkModeIcon from '../assets/darkmodeset.png';
@@ -25,16 +25,16 @@ import CookiesIcon from '../assets/cookieset.png';
 import AppInfoIcon from '../assets/appinfoset.png';
 
 export default function SettingsScreen() {
-  const navigation = useNavigation(); // Navigation hook for moving between screens
-  const { theme, toggleTheme } = useTheme(); // Access theme and toggle function from context
-  const [notificationsEnabled, setNotificationsEnabled] = useState(true); // State to manage notification toggle
+  const navigation = useNavigation();
+  const { theme, setTheme } = useTheme(); // Updated to use setTheme
+  const [notificationsEnabled, setNotificationsEnabled] = useState(true);
+  const [open, setOpen] = useState(false);
+  const [mode, setMode] = useState(theme);
 
-  // Run once when the component mounts to check notification permissions
   useEffect(() => {
     checkNotificationPermission();
   }, []);
 
-  // Check if the user has granted notification permissions
   const checkNotificationPermission = async () => {
     const authStatus = await messaging().hasPermission();
     setNotificationsEnabled(
@@ -42,14 +42,11 @@ export default function SettingsScreen() {
     );
   };
 
-  // Toggle notifications on or off
   const toggleNotifications = async () => {
     if (notificationsEnabled) {
-      // Disable notifications
       await messaging().deleteToken();
       setNotificationsEnabled(false);
     } else {
-      // Request permission for notifications if not granted
       if (Platform.OS === 'android' && Platform.Version >= 33) {
         await PermissionsAndroid.request(
           PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS
@@ -57,75 +54,71 @@ export default function SettingsScreen() {
       }
       const authStatus = await messaging().requestPermission();
       if (authStatus === messaging.AuthorizationStatus.AUTHORIZED) {
-        await messaging().getToken(); // Get new token if enabled
+        await messaging().getToken();
         setNotificationsEnabled(true);
       }
     }
   };
 
-  // Navigate back to the previous screen
-  const handleBackPress = () => {
-    navigation.goBack();
+  const handleModeChange = (value) => {
+    setMode(value);
+    setTheme(value);
   };
-
-  // Define preference settings options
-  const preferences = [
-    { label: 'Notifications', toggle: 'notifications', icon: NotificationIcon },
-    { label: 'Dark Mode', toggle: 'darkmode', icon: DarkModeIcon },
-  ];
-
-  // Define informational settings options
-  const info = [
-    { label: 'Privacy & Cookies', icon: CookiesIcon, screen: 'PrivacyCookiesScreen' },
-    { label: 'Terms & Conditions', icon: ConditionsIcon, screen: 'TermsAndConditionsScreen' },
-    { label: 'App Info', icon: AppInfoIcon, screen: 'AppInfoScreen' },
-  ];
 
   return (
     <LinearGradient
       colors={theme === 'dark' ? ['#121212', '#252525'] : ['#577BC1', '#8EA7E9']}
       style={styles.container}>
 
-      {/* Status bar to match theme */}
       <StatusBar barStyle="light-content" backgroundColor={theme === 'dark' ? '#121212' : '#577BC1'} />
 
-      {/* Header section */}
       <View style={styles.headerBar}>
-        <TouchableOpacity onPress={handleBackPress} style={styles.backButton}>
+        <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
           <Text style={styles.backButtonText}>←</Text>
         </TouchableOpacity>
         <Text style={styles.header}>Settings</Text>
         <Image source={SettingsIcon} style={styles.headerIcon} />
       </View>
 
-      {/* Scrollable content area */}
       <ScrollView contentContainerStyle={styles.scrollArea} showsVerticalScrollIndicator={false}>
 
-        {/* Preferences Section */}
         <View style={styles.sectionContainer}>
           <Text style={styles.sectionTitle}>Preferences</Text>
-          {preferences.map((item, index) => (
-            <TouchableOpacity key={index} style={styles.option}>
-              <View style={styles.leftSection}>
-                <Image source={item.icon} style={styles.optionIcon} />
-                <Text style={styles.optionText}>{item.label}</Text>
-              </View>
+          <TouchableOpacity style={styles.option}>
+            <View style={styles.leftSection}>
+              <Image source={NotificationIcon} style={styles.optionIcon} />
+              <Text style={styles.optionText}>Notifications</Text>
+            </View>
+            <Switch value={notificationsEnabled} onValueChange={toggleNotifications} />
+          </TouchableOpacity>
 
-              {/* Toggle Switch for Preferences */}
-              {item.toggle === 'notifications' && (
-                <Switch value={notificationsEnabled} onValueChange={toggleNotifications} />
-              )}
-              {item.toggle === 'darkmode' && (
-                <Switch value={theme === 'dark'} onValueChange={toggleTheme} />
-              )}
-            </TouchableOpacity>
-          ))}
+          <View style={styles.option}>
+            <View style={styles.leftSection}>
+              <Image source={DarkModeIcon} style={styles.optionIcon} />
+              <Text style={styles.optionText}>Theme</Text>
+            </View>
+            <DropDownPicker
+              open={open}
+              value={mode}
+              items={[
+                { label: 'Light Mode', value: 'light' },
+                { label: 'Dark Mode', value: 'dark' },
+                { label: 'System Mode', value: 'system' },
+              ]}
+              setOpen={setOpen}
+              setValue={setMode}
+              onChangeValue={handleModeChange}
+              containerStyle={{ width: 150 }}
+              dropDownStyle={{ backgroundColor: '#fafafa' }}
+            />
+          </View>
         </View>
 
-        {/* Information Section */}
         <View style={styles.sectionContainer}>
           <Text style={styles.sectionTitle}>Information</Text>
-          {info.map((item, index) => (
+          {[{ label: 'Privacy & Cookies', icon: CookiesIcon, screen: 'PrivacyCookiesScreen' },
+            { label: 'Terms & Conditions', icon: ConditionsIcon, screen: 'TermsAndConditionsScreen' },
+            { label: 'App Info', icon: AppInfoIcon, screen: 'AppInfoScreen' }].map((item, index) => (
             <TouchableOpacity key={index} style={styles.option} onPress={() => navigation.navigate(item.screen)}>
               <View style={styles.leftSection}>
                 <Image source={item.icon} style={styles.optionIcon} />
@@ -140,7 +133,6 @@ export default function SettingsScreen() {
   );
 }
 
-// Styles for the settings screen
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -157,27 +149,6 @@ const styles = StyleSheet.create({
     fontSize: 28,
     fontWeight: '700',
     color: '#FFFFFF',
-  },
-  headerIcon: {
-    width: 28,
-    height: 28,
-    tintColor: '#FFFFFF',
-  },
-  scrollArea: {
-    paddingHorizontal: 20,
-    paddingBottom: 30,
-  },
-  sectionContainer: {
-    borderRadius: 20,
-    padding: 22,
-    marginBottom: 25,
-    backgroundColor: '#FFFFFF',
-  },
-  sectionTitle: {
-    fontSize: 22,
-    marginBottom: 18,
-    fontWeight: '700',
-    color: '#2A2D57',
   },
   option: {
     flexDirection: 'row',
