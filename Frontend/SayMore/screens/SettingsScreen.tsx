@@ -26,7 +26,7 @@ import AppInfoIcon from '../assets/appinfoset.png';
 
 export default function SettingsScreen() {
   const navigation = useNavigation();
-  const { theme, setTheme } = useTheme(); // Updated to use setTheme
+  const { theme, setTheme } = useTheme();
   const [notificationsEnabled, setNotificationsEnabled] = useState(true);
   const [open, setOpen] = useState(false);
   const [mode, setMode] = useState(theme);
@@ -113,70 +113,17 @@ export default function SettingsScreen() {
             />
           </View>
         </View>
-
-        <View style={styles.sectionContainer}>
-          <Text style={styles.sectionTitle}>Information</Text>
-          {[{ label: 'Privacy & Cookies', icon: CookiesIcon, screen: 'PrivacyCookiesScreen' },
-            { label: 'Terms & Conditions', icon: ConditionsIcon, screen: 'TermsAndConditionsScreen' },
-            { label: 'App Info', icon: AppInfoIcon, screen: 'AppInfoScreen' }].map((item, index) => (
-            <TouchableOpacity key={index} style={styles.option} onPress={() => navigation.navigate(item.screen)}>
-              <View style={styles.leftSection}>
-                <Image source={item.icon} style={styles.optionIcon} />
-                <Text style={styles.optionText}>{item.label}</Text>
-              </View>
-              <Text style={styles.arrow}>→</Text>
-            </TouchableOpacity>
-          ))}
-        </View>
       </ScrollView>
     </LinearGradient>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    paddingTop: Platform.OS === 'ios' ? 60 : 50,
-  },
-  headerBar: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingHorizontal: 20,
-    marginBottom: 25,
-  },
-  header: {
-    fontSize: 28,
-    fontWeight: '700',
-    color: '#FFFFFF',
-  },
-  option: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingVertical: 16,
-    paddingHorizontal: 18,
-    borderRadius: 20,
-    marginBottom: 14,
-    backgroundColor: '#F7F7F7',
-  },
-  leftSection: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  optionIcon: {
-    width: 22,
-    height: 22,
-    marginRight: 15,
-  },
-  optionText: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#2A2D57',
-  },
-  arrow: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#577BC1',
-  },
+  container: { flex: 1, paddingTop: Platform.OS === 'ios' ? 60 : 50 },
+  headerBar: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 20, marginBottom: 25 },
+  header: { fontSize: 28, fontWeight: '700', color: '#FFFFFF' },
+  option: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingVertical: 16, paddingHorizontal: 18, borderRadius: 20, marginBottom: 14, backgroundColor: '#F7F7F7' },
+  leftSection: { flexDirection: 'row', alignItems: 'center' },
+  optionIcon: { width: 22, height: 22, marginRight: 15 },
+  optionText: { fontSize: 16, fontWeight: '600', color: '#2A2D57' },
 });
