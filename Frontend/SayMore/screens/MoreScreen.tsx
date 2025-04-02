@@ -39,7 +39,7 @@ const screenMap: Record<string, string> = {
 };
 
 const MoreScreen: React.FC<MoreScreenProps> = ({ navigation }) => {
-  const theme = useTheme();
+   const { theme } = useTheme();
   const screenWidth = Dimensions.get('window').width;
   const cardWidth = (screenWidth - 60) / 2;
 
