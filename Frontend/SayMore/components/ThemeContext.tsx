@@ -16,12 +16,8 @@ export const ThemeProvider = ({ children }) => {
   const systemTheme = useColorScheme();
   const [theme, setTheme] = useState(systemTheme || 'light');
 
-  const toggleTheme = () => {
-    setTheme((prevTheme) => (prevTheme === 'light' ? 'dark' : 'light'));
-  };
-
   return (
-    <ThemeContext.Provider value={{ theme, toggleTheme }}>
+    <ThemeContext.Provider value={{ theme, setTheme }}>
       {children}
     </ThemeContext.Provider>
   );
