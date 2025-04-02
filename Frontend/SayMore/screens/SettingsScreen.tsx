@@ -23,23 +23,15 @@ import ConditionsIcon from '../assets/conditionsset.png';
 import CookiesIcon from '../assets/cookieset.png';
 import AppInfoIcon from '../assets/appinfoset.png';
 
-/**
- * SettingsScreen component that displays the settings options.
- * @returns {JSX.Element} The rendered component.
- */
 export default function SettingsScreen() {
   const navigation = useNavigation();
-  const [isDarkMode, setIsDarkMode] = useState(false);
-  const theme = useTheme();
+  const { theme, toggleTheme } = useTheme();
   const [notificationsEnabled, setNotificationsEnabled] = useState(true);
 
   useEffect(() => {
     checkNotificationPermission();
   }, []);
 
-  /**
-   * Checks the notification permission status.
-   */
   const checkNotificationPermission = async () => {
     const authStatus = await messaging().hasPermission();
     setNotificationsEnabled(
@@ -47,9 +39,6 @@ export default function SettingsScreen() {
     );
   };
 
-  /**
-   * Toggles the notification settings.
-   */
   const toggleNotifications = async () => {
     if (notificationsEnabled) {
       await messaging().deleteToken();
@@ -68,9 +57,6 @@ export default function SettingsScreen() {
     }
   };
 
-  /**
-   * Handles the back button press to navigate to the previous screen.
-   */
   const handleBackPress = () => {
     navigation.goBack();
   };
@@ -94,157 +80,54 @@ export default function SettingsScreen() {
     { label: 'App Info', icon: AppInfoIcon, screen: 'AppInfoScreen' },
   ];
 
-  /**
-   * Renders an option item in the settings list.
-   * @param {object} item - The option item to render.
-   * @param {number} index - The index of the option item.
-   * @returns {JSX.Element} The rendered option item.
-   */
-  const renderOption = (item, index) => (
-    <TouchableOpacity
-      key={index}
-      style={[
-        styles.option,
-        theme === 'dark' ? styles.optionDark : styles.optionLight,
-      ]}
-      onPress={() => {
-        if (item.screen) {
-          navigation.navigate(item.screen);
-        }
-      }}>
-      <View style={styles.leftSection}>
-        <View
-          style={[
-            styles.iconContainer,
-            theme === 'dark'
-              ? styles.iconContainerDark
-              : styles.iconContainerLight,
-          ]}>
-          <Image
-            source={item.icon}
-            style={[
-              styles.optionIcon,
-              theme === 'dark' ? styles.iconDark : styles.iconLight,
-            ]}
-          />
-        </View>
-        <Text
-          style={[
-            styles.optionText,
-            theme === 'dark' ? styles.optionTextDark : styles.optionTextLight,
-          ]}>
-          {item.label}
-        </Text>
-      </View>
-
-      {item.toggle === 'notifications' && (
-        <Switch
-          value={notificationsEnabled}
-          onValueChange={toggleNotifications}
-          trackColor={{
-            false: '#E1E1E1',
-            true: theme === 'dark' ? '#3F51B5' : '#577BC1',
-          }}
-          thumbColor={'#FFFFFF'}
-          ios_backgroundColor="#E1E1E1"
-          style={styles.switch}
-        />
-      )}
-
-      {item.toggle === 'darkmode' && (
-        <Switch
-          value={isDarkMode}
-          onValueChange={setIsDarkMode}
-          trackColor={{
-            false: '#E1E1E1',
-            true: theme === 'dark' ? '#3F51B5' : '#577BC1',
-          }}
-          thumbColor={'#FFFFFF'}
-          ios_backgroundColor="#E1E1E1"
-          style={styles.switch}
-        />
-      )}
-
-      {!item.toggle && (
-        <View style={styles.arrowContainer}>
-          <Text
-            style={[
-              styles.arrow,
-              theme === 'dark' ? styles.arrowDark : styles.arrowLight,
-            ]}>
-            →
-          </Text>
-        </View>
-      )}
-    </TouchableOpacity>
-  );
-
   return (
     <LinearGradient
-      colors={
-        theme === 'dark' ? ['#121212', '#252525'] : ['#577BC1', '#8EA7E9']
-      }
+      colors={theme === 'dark' ? ['#121212', '#252525'] : ['#577BC1', '#8EA7E9']}
       style={styles.container}>
-      <StatusBar
-        barStyle="light-content"
-        backgroundColor={theme === 'dark' ? '#121212' : '#577BC1'}
-      />
+      <StatusBar barStyle="light-content" backgroundColor={theme === 'dark' ? '#121212' : '#577BC1'} />
 
       <View style={styles.headerBar}>
-        <TouchableOpacity
-          onPress={handleBackPress}
-          style={[
-            styles.backButton,
-            theme === 'dark' ? styles.backButtonDark : styles.backButtonLight,
-          ]}>
+        <TouchableOpacity onPress={handleBackPress} style={styles.backButton}>
           <Text style={styles.backButtonText}>←</Text>
         </TouchableOpacity>
 
         <Text style={styles.header}>Settings</Text>
 
-        <View style={styles.headerIconContainer}>
-          <Image
-            source={SettingsIcon}
-            style={[styles.headerIconRight, styles.headerIconTint]}
-          />
-        </View>
+        <Image source={SettingsIcon} style={styles.headerIcon} />
       </View>
 
-      <ScrollView
-        contentContainerStyle={styles.scrollArea}
-        showsVerticalScrollIndicator={false}>
-        <View
-          style={[
-            styles.sectionContainer,
-            theme === 'dark' ? styles.sectionDark : styles.sectionLight,
-          ]}>
-          <Text
-            style={[
-              styles.sectionTitle,
-              theme === 'dark'
-                ? styles.sectionTitleDark
-                : styles.sectionTitleLight,
-            ]}>
-            Preferences
-          </Text>
-          {preferences.map(renderOption)}
+      <ScrollView contentContainerStyle={styles.scrollArea} showsVerticalScrollIndicator={false}>
+        <View style={styles.sectionContainer}>
+          <Text style={styles.sectionTitle}>Preferences</Text>
+          {preferences.map((item, index) => (
+            <TouchableOpacity key={index} style={styles.option}>
+              <View style={styles.leftSection}>
+                <Image source={item.icon} style={styles.optionIcon} />
+                <Text style={styles.optionText}>{item.label}</Text>
+              </View>
+
+              {item.toggle === 'notifications' && (
+                <Switch value={notificationsEnabled} onValueChange={toggleNotifications} />
+              )}
+
+              {item.toggle === 'darkmode' && (
+                <Switch value={theme === 'dark'} onValueChange={toggleTheme} />
+              )}
+            </TouchableOpacity>
+          ))}
         </View>
 
-        <View
-          style={[
-            styles.sectionContainer,
-            theme === 'dark' ? styles.sectionDark : styles.sectionLight,
-          ]}>
-          <Text
-            style={[
-              styles.sectionTitle,
-              theme === 'dark'
-                ? styles.sectionTitleDark
-                : styles.sectionTitleLight,
-            ]}>
-            Information
-          </Text>
-          {info.map(renderOption)}
+        <View style={styles.sectionContainer}>
+          <Text style={styles.sectionTitle}>Information</Text>
+          {info.map((item, index) => (
+            <TouchableOpacity key={index} style={styles.option} onPress={() => navigation.navigate(item.screen)}>
+              <View style={styles.leftSection}>
+                <Image source={item.icon} style={styles.optionIcon} />
+                <Text style={styles.optionText}>{item.label}</Text>
+              </View>
+              <Text style={styles.arrow}>→</Text>
+            </TouchableOpacity>
+          ))}
         </View>
       </ScrollView>
     </LinearGradient>
@@ -256,7 +139,6 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingTop: Platform.OS === 'ios' ? 60 : 50,
   },
-
   headerBar: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -264,62 +146,32 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     marginBottom: 25,
   },
-
   header: {
     fontSize: 28,
     fontWeight: '700',
     color: '#FFFFFF',
-    letterSpacing: 0.5,
   },
-
-  headerIconContainer: {
-    width: 48,
-    height: 48,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-
-  headerIconRight: {
+  headerIcon: {
     width: 28,
     height: 28,
+    tintColor: '#FFFFFF',
   },
-
   scrollArea: {
     paddingHorizontal: 20,
     paddingBottom: 30,
   },
-
   sectionContainer: {
-    borderRadius: 28,
+    borderRadius: 20,
     padding: 22,
     marginBottom: 25,
-    elevation: 8,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.15,
-    shadowRadius: 8,
+    backgroundColor: '#FFFFFF',
   },
-
-  sectionLight: {
-    backgroundColor: 'rgba(255, 255, 255, 0.95)',
-  },
-  sectionDark: {
-    backgroundColor: 'rgba(40, 40, 40, 0.95)',
-  },
-
   sectionTitle: {
     fontSize: 22,
     marginBottom: 18,
     fontWeight: '700',
-    letterSpacing: 0.5,
-  },
-  sectionTitleLight: {
     color: '#2A2D57',
   },
-  sectionTitleDark: {
-    color: '#FFFFFF',
-  },
-
   option: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -328,124 +180,25 @@ const styles = StyleSheet.create({
     paddingHorizontal: 18,
     borderRadius: 20,
     marginBottom: 14,
+    backgroundColor: '#F7F7F7',
   },
-
-  optionLight: {
-    backgroundColor: '#FFFFFF',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.08,
-    shadowRadius: 4,
-    elevation: 3,
-  },
-  optionDark: {
-    backgroundColor: '#333333',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 4,
-    elevation: 3,
-  },
-
   leftSection: {
     flexDirection: 'row',
     alignItems: 'center',
-    flex: 1,
   },
-
-  iconContainer: {
-    width: 40,
-    height: 40,
-    borderRadius: 12,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginRight: 15,
-  },
-
-  iconContainerLight: {
-    backgroundColor: 'rgba(87, 123, 193, 0.1)',
-  },
-
-  iconContainerDark: {
-    backgroundColor: 'rgba(255, 255, 255, 0.1)',
-  },
-
   optionIcon: {
     width: 22,
     height: 22,
+    marginRight: 15,
   },
-
-  iconLight: {
-    tintColor: '#577BC1',
-  },
-  iconDark: {
-    tintColor: '#FFFFFF',
-  },
-
   optionText: {
     fontSize: 16,
     fontWeight: '600',
-  },
-
-  optionTextLight: {
     color: '#2A2D57',
   },
-  optionTextDark: {
-    color: '#FFFFFF',
-  },
-
-  backButton: {
-    width: 48,
-    height: 48,
-    borderRadius: 16,
-    justifyContent: 'center',
-    alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.15,
-    shadowRadius: 5,
-    elevation: 4,
-  },
-  backButtonLight: {
-    backgroundColor: 'rgba(255, 255, 255, 0.3)',
-  },
-  backButtonDark: {
-    backgroundColor: 'rgba(255, 255, 255, 0.1)',
-  },
-  backButtonText: {
-    fontSize: 22,
-    fontWeight: 'bold',
-    color: '#FFFFFF',
-    textAlign: 'center',
-    lineHeight: 32,
-  },
-
-  headerIconTint: {
-    tintColor: '#FFFFFF',
-  },
-
-  switch: {
-    transform: [{ scaleX: 1.1 }, { scaleY: 1.1 }],
-  },
-
-  arrowContainer: {
-    width: 30,
-    height: 30,
-    borderRadius: 15,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-
   arrow: {
     fontSize: 18,
     fontWeight: 'bold',
-  },
-
-  arrowLight: {
     color: '#577BC1',
-  },
-
-  arrowDark: {
-    color: '#AAAAAA',
   },
 });
