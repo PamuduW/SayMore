@@ -12,6 +12,7 @@ import { NavigationProp } from '@react-navigation/native';
 import { useTheme } from '../components/ThemeContext';
 import LinearGradient from 'react-native-linear-gradient';
 
+// Array containing different screen options along with icons
 const NewScreens = [
   { title: 'Activity', icon: require('../assets/activity2.png') },
   { title: 'Lessons', icon: require('../assets/lesson.png') },
@@ -23,10 +24,12 @@ const NewScreens = [
   { title: 'Test History', icon: require('../assets/refresh.png') },
 ];
 
+// Interface defining the navigation prop type
 interface MoreScreenProps {
   navigation: NavigationProp<any>;
 }
 
+// Mapping screen titles to actual navigation routes
 const screenMap: Record<string, string> = {
   'Activity': 'ActivityScreen',
   'Lessons': 'Lessons',
@@ -39,10 +42,14 @@ const screenMap: Record<string, string> = {
 };
 
 const MoreScreen: React.FC<MoreScreenProps> = ({ navigation }) => {
-   const { theme } = useTheme();
-  const screenWidth = Dimensions.get('window').width;
-  const cardWidth = (screenWidth - 60) / 2;
+  // Retrieve the current theme (light or dark mode)
+  const { theme } = useTheme();
 
+  // Get screen dimensions to calculate card width dynamically
+  const screenWidth = Dimensions.get('window').width;
+  const cardWidth = (screenWidth - 60) / 2; // Adjusting for margin and spacing
+
+  // Function to handle card press and navigate to the corresponding screen
   const handlePress = (title: string) => {
     const screenName = screenMap[title];
     if (screenName) {
@@ -52,12 +59,17 @@ const MoreScreen: React.FC<MoreScreenProps> = ({ navigation }) => {
 
   return (
     <ScrollView showsVerticalScrollIndicator={false} style={theme === 'dark' ? styles.darkBackground : styles.lightBackground}>
+      {/* Gradient Background */}
       <LinearGradient
         colors={theme === 'dark' ? ['#121212', '#1E1E1E'] : ['#577BC1', '#577BC1']}
         style={styles.container}>
+
+        {/* Title Section */}
         <View style={styles.titleContainer}>
           <Text style={theme === 'dark' ? styles.darkTitle : styles.lightTitle}>Explore More</Text>
         </View>
+
+        {/* Grid Layout for Different Options */}
         <View style={styles.gridContainer}>
           {NewScreens.map((item, index) => (
             <TouchableOpacity
@@ -65,11 +77,15 @@ const MoreScreen: React.FC<MoreScreenProps> = ({ navigation }) => {
               activeOpacity={0.85}
               style={[
                 styles.card,
-                { width: cardWidth },
+                { width: cardWidth }, // Dynamic width based on screen size
                 theme === 'dark' ? styles.darkCard : styles.lightCard,
               ]}
               onPress={() => handlePress(item.title)}>
+
+              {/* Icon */}
               <Image source={item.icon} style={styles.iconElevated} />
+
+              {/* Label */}
               <Text style={theme === 'dark' ? styles.darkCardText : styles.lightCardText}>{item.title}</Text>
             </TouchableOpacity>
           ))}
