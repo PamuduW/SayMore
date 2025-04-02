@@ -27,49 +27,36 @@ interface MoreScreenProps {
   navigation: NavigationProp<any>;
 }
 
-/**
- * MoreScreen component that displays a grid of options for the user to navigate to different screens.
- * @param {MoreScreenProps} props - The properties for the component.
- * @returns {JSX.Element} The rendered component.
- */
+const screenMap: Record<string, string> = {
+  'Activity': 'ActivityScreen',
+  'Lessons': 'Lessons',
+  'Quizzes & Challenges': 'QuizzesNavScreen',
+  'Speech Therapy': 'SpeechTherapyScreen',
+  'Watched Lessons': 'History',
+  'Points': 'PointsCategoryScreen',
+  'Progress': 'ProgressCategoryScreen',
+  'Test History': 'TestHistory',
+};
+
 const MoreScreen: React.FC<MoreScreenProps> = ({ navigation }) => {
   const theme = useTheme();
   const screenWidth = Dimensions.get('window').width;
   const cardWidth = (screenWidth - 60) / 2;
 
-  /**
-   * Handles the press event on a card to navigate to the corresponding screen.
-   * @param {string} title - The title of the screen to navigate to.
-   */
   const handlePress = (title: string) => {
-    if (title === 'Activity') {
-      navigation.navigate('ActivityScreen');
-    } else if (title === 'Lessons') {
-      navigation.navigate('Lessons');
-    } else if (title === 'Quizzes & Challenges') {
-      navigation.navigate('QuizzesNavScreen');
-    } else if (title === 'Speech Therapy') {
-      navigation.navigate('SpeechTherapyScreen');
-    } else if (title === 'Watched Lessons') {
-      navigation.navigate('History');
-    } else if (title === 'Points') {
-      navigation.navigate('PointsCategoryScreen');
-    } else if (title === 'Progress') {
-      navigation.navigate('ProgressCategoryScreen');
-    } else if (title === 'Test History') {
-      navigation.navigate('TestHistory');
+    const screenName = screenMap[title];
+    if (screenName) {
+      navigation.navigate(screenName);
     }
   };
 
   return (
-    <ScrollView showsVerticalScrollIndicator={false}>
+    <ScrollView showsVerticalScrollIndicator={false} style={theme === 'dark' ? styles.darkBackground : styles.lightBackground}>
       <LinearGradient
-        colors={
-          theme === 'dark' ? ['#1C1C1C', '#3A3A3A'] : ['#577BC1', '#577BC1']
-        }
+        colors={theme === 'dark' ? ['#121212', '#1E1E1E'] : ['#577BC1', '#577BC1']}
         style={styles.container}>
         <View style={styles.titleContainer}>
-          <Text style={styles.title}>Explore More</Text>
+          <Text style={theme === 'dark' ? styles.darkTitle : styles.lightTitle}>Explore More</Text>
         </View>
         <View style={styles.gridContainer}>
           {NewScreens.map((item, index) => (
@@ -83,13 +70,7 @@ const MoreScreen: React.FC<MoreScreenProps> = ({ navigation }) => {
               ]}
               onPress={() => handlePress(item.title)}>
               <Image source={item.icon} style={styles.iconElevated} />
-
-              <Text
-                style={
-                  theme === 'dark' ? styles.darkCardText : styles.lightCardText
-                }>
-                {item.title}
-              </Text>
+              <Text style={theme === 'dark' ? styles.darkCardText : styles.lightCardText}>{item.title}</Text>
             </TouchableOpacity>
           ))}
         </View>
@@ -105,11 +86,23 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingBottom: 30,
   },
+  darkBackground: {
+    backgroundColor: '#121212',
+  },
+  lightBackground: {
+    backgroundColor: '#FFFFFF',
+  },
   titleContainer: {
     marginBottom: 25,
     alignItems: 'center',
   },
-  title: {
+  lightTitle: {
+    fontSize: 24,
+    color: '#2A2D57',
+    fontWeight: 'bold',
+    letterSpacing: 1,
+  },
+  darkTitle: {
     fontSize: 24,
     color: '#FFFFFF',
     fontWeight: 'bold',
@@ -121,7 +114,6 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   card: {
-    backgroundColor: '#FFFFFF',
     borderRadius: 25,
     paddingVertical: 22,
     paddingHorizontal: 12,
@@ -138,7 +130,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#F9FAFC',
   },
   darkCard: {
-    backgroundColor: '#3B3B3B',
+    backgroundColor: '#2A2A2A',
   },
   iconElevated: {
     width: 75,
