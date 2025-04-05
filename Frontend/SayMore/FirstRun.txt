@@ -8,6 +8,7 @@ npm run format
 
 cd android
 ./gradlew assembleRelease
+./gradlew bundleRelease
 
 
 .env inside android folder
