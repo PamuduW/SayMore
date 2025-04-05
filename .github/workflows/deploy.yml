@@ -1,0 +1,22 @@
+name: Deploy Privacy Policy to GitHub Pages
+
+on:
+  push:
+    branches:
+      - main # or 'master', whichever is your default branch
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./privacy-policy-site
