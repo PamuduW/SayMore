@@ -19,7 +19,9 @@ jobs:
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./privacy-policy-site
+          publish_dir: privacy-policy-site  # Publish the contents of this directory
+          publish_branch: gh-pages         # Ensure we are pushing to the gh-pages branch
+
 
 
           
