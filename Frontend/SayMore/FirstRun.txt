@@ -13,4 +13,4 @@ cd android
 
 .env inside android folder
 Saymore.keystore inside android/app folder
-java -jar bundletool-all-1.18.1.jar build-apks --bundle=app/build/outputs/bundle/release/app-release.aab --output=app-release.apks --mode=universal --ks=app/SayMore.keystore --ks-key-alias=upload-key-alias --ks-pass=pass:pollebale2k20 --key-pass=pass:pollebale2k20
+java -jar bundletool.jar build-apks --bundle=app/build/outputs/bundle/release/app-release.aab --output=app-release.apks --mode=universal --ks=app/SayMore.keystore --ks-key-alias=upload-key-alias --ks-pass=pass:pollebale2k20 --key-pass=pass:pollebale2k20
